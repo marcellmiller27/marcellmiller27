@@ -62,9 +62,10 @@ npm run typecheck
 
 ## Product blueprint
 
-The full product specification and project management checklist are available in:
+The full product specification, project management checklist, and saved programming-script reference are available in:
 
 ```text
 docs/PRODUCT_BLUEPRINT.md
 docs/PROJECT_MANAGEMENT_CHECKLIST.md
+docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md
 ```

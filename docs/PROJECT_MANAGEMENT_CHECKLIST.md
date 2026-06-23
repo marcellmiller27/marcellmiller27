@@ -28,6 +28,7 @@ Current repository status: Front-end application prototype completed as a routed
 | Shared product data | [x] | Typed data model for pricing, users, modules, opportunities, diligence, portfolio, reports, assistant workflows, score factors, and stack layers |
 | Shared application shell | [x] | Navigation and layout shell for routed platform screens |
 | Product documentation | [x] | Product blueprint, route map, setup instructions, and AI work summary |
+| Programming scripts reference | [x] | Saved programming setup, commands, source file map, and verification commands in `docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md` |
 | Verification | [x] | Typecheck, lint, production build, and npm audit completed successfully |
 
 ## Project management workstreams
