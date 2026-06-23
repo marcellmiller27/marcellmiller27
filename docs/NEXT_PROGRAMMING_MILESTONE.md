@@ -451,6 +451,8 @@ Start with these concrete programming tasks:
 - [ ] Add admin-only route guard
 - [x] Add audit log table and logging helper
 
+Before implementing the remaining unchecked items, review and define the decisions in `docs/NEXT_ACTION_ITEMS_TO_DEFINE.md`.
+
 ## Suggested environment variables for next milestone
 
 ```bash

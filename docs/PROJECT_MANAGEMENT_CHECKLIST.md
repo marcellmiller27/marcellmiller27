@@ -29,6 +29,7 @@ Current repository status: Front-end application prototype completed as a routed
 | Shared application shell | [x] | Navigation and layout shell for routed platform screens |
 | Product documentation | [x] | Product blueprint, route map, setup instructions, and AI work summary |
 | Programming scripts reference | [x] | Saved programming setup, commands, source file map, and verification commands in `docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md` |
+| Next action items to define | [x] | Decision checklist for business, legal, provider, integration, billing, AI, and engineering inputs in `docs/NEXT_ACTION_ITEMS_TO_DEFINE.md` |
 | Next programming milestone | [x] | Recommended next implementation sequence in `docs/NEXT_PROGRAMMING_MILESTONE.md` |
 | Backend API prototype | [x] | FastAPI service for accounting journal entries, audit reports, financial reports, dashboards, and CRM in `backend/` |
 | External integration interfaces | [x] | Banking, vendor, Microsoft Office, accounting, and CRM connector contracts in `/api/v1/integrations/*` |
@@ -203,6 +204,7 @@ The first paid MVP should focus on a smaller production-ready surface:
 - [ ] Provide sample reports, sample opportunities, and sample portfolio data for production-like demos
 - [ ] Decide whether to prioritize B2C consumer subscriptions or B2B professional subscriptions
 - [ ] Approve next engineering milestone: authentication, database persistence, and subscription billing foundation
+- [ ] Review `docs/NEXT_ACTION_ITEMS_TO_DEFINE.md` and define production decisions
 - [ ] Review `docs/NEXT_PROGRAMMING_MILESTONE.md` and confirm implementation order
 
 ## Current verification record

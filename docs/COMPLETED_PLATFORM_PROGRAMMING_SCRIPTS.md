@@ -145,6 +145,7 @@ Expected result:
 | `README.md` | Project overview, route map, setup commands, and documentation links |
 | `docs/PRODUCT_BLUEPRINT.md` | Full SaaS platform product blueprint and route map |
 | `docs/PROJECT_MANAGEMENT_CHECKLIST.md` | Completed work checklist, remaining launch tasks, MVP checklist, and Marcellus Miller action items |
+| `docs/NEXT_ACTION_ITEMS_TO_DEFINE.md` | Decision checklist for the next platform programming phase |
 | `docs/AUTH_DATABASE_BILLING_FOUNDATION.md` | Authentication, database persistence, and billing foundation details |
 | `docs/NEXT_PROGRAMMING_MILESTONE.md` | Recommended next implementation sequence and add-on programming backlog |
 | `docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md` | This saved programming-script reference file |
