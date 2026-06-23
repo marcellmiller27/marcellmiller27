@@ -159,6 +159,8 @@ Crypto:
 - AI layer: OpenAI, Anthropic, custom financial models
 - Cloud: Amazon Web Services, Vercel, or private cloud hosting
 
+Estimated cloud storage, database capacity, network throughput, and processing requirements are documented in `docs/CLOUD_STORAGE_AND_CAPACITY_PLAN.md`.
+
 ## Back-end application build map
 
 The current repository includes a FastAPI backend prototype in `backend/` for internal operating workflows:

@@ -29,6 +29,7 @@ Current repository status: Front-end application prototype completed as a routed
 | Shared application shell | [x] | Navigation and layout shell for routed platform screens |
 | Product documentation | [x] | Product blueprint, route map, setup instructions, and AI work summary |
 | Programming scripts reference | [x] | Saved programming setup, commands, source file map, and verification commands in `docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md` |
+| Cloud capacity plan | [x] | Storage, database, network, compute, cache, AI, and monitoring estimates in `docs/CLOUD_STORAGE_AND_CAPACITY_PLAN.md` |
 | Next action items to define | [x] | Decision checklist for business, legal, provider, integration, billing, AI, and engineering inputs in `docs/NEXT_ACTION_ITEMS_TO_DEFINE.md` |
 | Next programming milestone | [x] | Recommended next implementation sequence in `docs/NEXT_PROGRAMMING_MILESTONE.md` |
 | Backend API prototype | [x] | FastAPI service for accounting journal entries, audit reports, financial reports, dashboards, and CRM in `backend/` |
@@ -125,6 +126,7 @@ Current repository status: Front-end application prototype completed as a routed
 
 - [ ] Choose production hosting: Vercel, AWS, or private cloud
 - [ ] Choose database provider: Supabase/PostgreSQL or managed AWS PostgreSQL
+- [ ] Review cloud capacity plan and select MVP infrastructure size
 - [ ] Configure environment variables
 - [ ] Configure CI checks for typecheck, lint, build, and audit
 - [ ] Configure preview deployments
