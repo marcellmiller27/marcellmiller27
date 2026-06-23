@@ -6,6 +6,8 @@ This document estimates realistic staffing needs, founder/operator feasibility, 
 
 These are planning estimates, not legal, tax, accounting, compensation, or investment advice. Actual expenses depend on jurisdiction, regulatory status, hiring strategy, compensation, legal counsel, customer mix, automation, integrations, and whether the platform provides educational tools or regulated advisory services.
 
+Detailed quarterly and annual compensation and professional-services projections are documented in `docs/COMPENSATION_AND_PRO_SERVICES_PROJECTIONS.md`.
+
 ## Can this be operated by one person?
 
 Short answer:

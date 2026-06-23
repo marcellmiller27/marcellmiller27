@@ -149,6 +149,7 @@ Expected result:
 | `docs/ESTIMATED_PLATFORM_COSTS.md` | Estimated monthly, annual, provider, AI, integration, compliance, and operating costs |
 | `docs/PROJECTED_EBITDA_MODEL.md` | Projected EBITDA, margin, break-even, and sensitivity scenarios |
 | `docs/STAFFING_LEGAL_PRO_FORMA.md` | Staffing, one-person operation, legal expenditure, compliance, and adjusted EBITDA projections |
+| `docs/COMPENSATION_AND_PRO_SERVICES_PROJECTIONS.md` | Per-person compensation, professional services, in-house conversion, quarterly and annual projections |
 | `docs/NEXT_ACTION_ITEMS_TO_DEFINE.md` | Decision checklist for the next platform programming phase |
 | `docs/AUTH_DATABASE_BILLING_FOUNDATION.md` | Authentication, database persistence, and billing foundation details |
 | `docs/NEXT_PROGRAMMING_MILESTONE.md` | Recommended next implementation sequence and add-on programming backlog |

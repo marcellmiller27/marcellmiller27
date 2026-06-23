@@ -211,6 +211,7 @@ The current platform now has a front-end application, FastAPI backend, accountin
 - [ ] Define audit log viewer requirements.
 - [ ] Define support workflow.
 - [ ] Define whether beta is one-person operated or contractor-supported.
+- [ ] Define which professional services stay outsourced versus move in-house using `docs/COMPENSATION_AND_PRO_SERVICES_PROJECTIONS.md`.
 - [ ] Define incident response workflow.
 - [ ] Define production launch checklist owner.
 

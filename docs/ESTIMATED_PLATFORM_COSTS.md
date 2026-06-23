@@ -10,6 +10,8 @@ Projected EBITDA scenarios based on these cost ranges are documented in `docs/PR
 
 Realistic staffing, one-person operation limits, legal expenditures, compliance costs, and staffing-adjusted EBITDA are documented in `docs/STAFFING_LEGAL_PRO_FORMA.md`.
 
+Per-person compensation assumptions, outsourced versus in-house professional-services comparisons, and quarterly/annual staffing projections are documented in `docs/COMPENSATION_AND_PRO_SERVICES_PROJECTIONS.md`.
+
 ## Cost tiers
 
 | Tier | Users | Description |

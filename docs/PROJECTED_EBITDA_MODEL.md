@@ -314,7 +314,7 @@ After staffing, customer acquisition, compliance, and legal expenses, early-stag
 
 The base EBITDA tables above should be treated as platform-level EBITDA before full staffing, customer acquisition, and many legal/compliance services.
 
-Detailed staffing and legal assumptions are documented in `docs/STAFFING_LEGAL_PRO_FORMA.md`.
+Detailed staffing and legal assumptions are documented in `docs/STAFFING_LEGAL_PRO_FORMA.md`. Per-person compensation, outsourced versus in-house professional-services comparisons, and quarterly/annual staffing projections are documented in `docs/COMPENSATION_AND_PRO_SERVICES_PROJECTIONS.md`.
 
 Base blended SaaS mix:
 

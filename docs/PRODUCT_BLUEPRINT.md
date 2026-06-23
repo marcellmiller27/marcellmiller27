@@ -161,7 +161,7 @@ Crypto:
 
 Estimated cloud storage, database capacity, network throughput, and processing requirements are documented in `docs/CLOUD_STORAGE_AND_CAPACITY_PLAN.md`.
 
-Estimated platform costs, projected EBITDA scenarios, and staffing/legal pro forma assumptions are documented in `docs/ESTIMATED_PLATFORM_COSTS.md`, `docs/PROJECTED_EBITDA_MODEL.md`, and `docs/STAFFING_LEGAL_PRO_FORMA.md`.
+Estimated platform costs, projected EBITDA scenarios, staffing/legal pro forma assumptions, and compensation/professional-services projections are documented in `docs/ESTIMATED_PLATFORM_COSTS.md`, `docs/PROJECTED_EBITDA_MODEL.md`, `docs/STAFFING_LEGAL_PRO_FORMA.md`, and `docs/COMPENSATION_AND_PRO_SERVICES_PROJECTIONS.md`.
 
 ## Back-end application build map
 
