@@ -6,6 +6,8 @@ This document estimates cloud storage, database capacity, network throughput, an
 
 These are planning estimates for infrastructure sizing. Actual production requirements should be validated with real usage analytics, load testing, provider monitoring, and cost reports.
 
+Estimated monthly and annual cost ranges for these capacity tiers are documented in `docs/ESTIMATED_PLATFORM_COSTS.md`.
+
 ## Platform workloads considered
 
 The estimates cover:

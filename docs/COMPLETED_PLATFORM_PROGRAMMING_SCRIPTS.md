@@ -146,6 +146,7 @@ Expected result:
 | `docs/PRODUCT_BLUEPRINT.md` | Full SaaS platform product blueprint and route map |
 | `docs/PROJECT_MANAGEMENT_CHECKLIST.md` | Completed work checklist, remaining launch tasks, MVP checklist, and Marcellus Miller action items |
 | `docs/CLOUD_STORAGE_AND_CAPACITY_PLAN.md` | Cloud storage, database, network, processing, cache, and monitoring estimates |
+| `docs/ESTIMATED_PLATFORM_COSTS.md` | Estimated monthly, annual, provider, AI, integration, compliance, and operating costs |
 | `docs/NEXT_ACTION_ITEMS_TO_DEFINE.md` | Decision checklist for the next platform programming phase |
 | `docs/AUTH_DATABASE_BILLING_FOUNDATION.md` | Authentication, database persistence, and billing foundation details |
 | `docs/NEXT_PROGRAMMING_MILESTONE.md` | Recommended next implementation sequence and add-on programming backlog |
