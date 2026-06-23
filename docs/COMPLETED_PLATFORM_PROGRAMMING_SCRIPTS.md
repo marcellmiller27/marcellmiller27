@@ -143,6 +143,7 @@ Expected result:
 | File | Purpose |
 | --- | --- |
 | `README.md` | Project overview, route map, setup commands, and documentation links |
+| `docs/SYSTEM_FLOWCHARTS_AND_PROCESS_MAPS.md` | End-to-end flowcharts, module process flows, feedback loops, interface protocols, and dependency maps |
 | `docs/investor_package/` | Pitch deck, PowerPoint, Excel financial model, DCF, projections, charts, and generator scripts |
 | `docs/PRODUCT_BLUEPRINT.md` | Full SaaS platform product blueprint and route map |
 | `docs/PROJECT_MANAGEMENT_CHECKLIST.md` | Completed work checklist, remaining launch tasks, MVP checklist, and Marcellus Miller action items |

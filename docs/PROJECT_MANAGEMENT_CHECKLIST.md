@@ -28,6 +28,7 @@ Current repository status: Front-end application prototype completed as a routed
 | Shared product data | [x] | Typed data model for pricing, users, modules, opportunities, diligence, portfolio, reports, assistant workflows, score factors, and stack layers |
 | Shared application shell | [x] | Navigation and layout shell for routed platform screens |
 | Product documentation | [x] | Product blueprint, route map, setup instructions, and AI work summary |
+| System flowcharts/process maps | [x] | End-to-end system map, module process flows, procedures, feedback loops, interface protocols, and dependency maps in `docs/SYSTEM_FLOWCHARTS_AND_PROCESS_MAPS.md` |
 | Investor package | [x] | Pitch deck, PowerPoint, Excel financial model, DCF, projections, charts, and hierarchy materials in `docs/investor_package/` |
 | Programming scripts reference | [x] | Saved programming setup, commands, source file map, and verification commands in `docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md` |
 | Cloud capacity plan | [x] | Storage, database, network, compute, cache, AI, and monitoring estimates in `docs/CLOUD_STORAGE_AND_CAPACITY_PLAN.md` |

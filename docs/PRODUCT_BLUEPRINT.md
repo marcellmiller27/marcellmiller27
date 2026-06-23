@@ -165,6 +165,8 @@ Estimated platform costs, projected EBITDA scenarios, staffing/legal pro forma a
 
 The investor package, pitch deck, PowerPoint presentation, Excel financial model, DCF model, revenue/expenditure/marketing projections, and personnel hierarchy materials are saved in `docs/investor_package/`.
 
+End-to-end system flowcharts, module process flows, feedback loops, interface protocols, and full platform dependency maps are documented in `docs/SYSTEM_FLOWCHARTS_AND_PROCESS_MAPS.md`.
+
 ## Back-end application build map
 
 The current repository includes a FastAPI backend prototype in `backend/` for internal operating workflows:
