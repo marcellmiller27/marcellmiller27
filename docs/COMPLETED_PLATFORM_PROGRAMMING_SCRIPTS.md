@@ -12,7 +12,7 @@ Purpose: Save the completed platform programming setup, commands, file map, and 
 - UI library: React
 - Backend framework: FastAPI
 - Backend language: Python
-- Current build: Routed front-end platform application with backend API prototype
+- Current build: Routed front-end platform application with backend API prototype and external integration interfaces
 - Branch used for platform work: `cursor/compose-ai-agent-work-239d`
 
 ## 2. Package programming scripts
@@ -111,7 +111,10 @@ Expected result:
 | `backend/app/routers/reports.py` | Audit and financial report endpoints |
 | `backend/app/routers/dashboards.py` | Executive dashboard endpoint |
 | `backend/app/routers/crm.py` | CRM contact, deal, activity, and summary endpoints |
+| `backend/app/routers/integrations.py` | Banking, vendor, Microsoft Office, accounting, and CRM integration endpoints |
 | `backend/tests/test_services.py` | Backend service tests |
+| `backend/tests/test_integrations.py` | Backend integration service tests |
+| `backend/tests/test_api.py` | Backend API route tests |
 | `backend/README.md` | Backend setup, route map, examples, verification, and production next steps |
 
 ## 8. Configuration programming files
@@ -246,3 +249,7 @@ These variables are placeholders for the next backend, billing, database, and AI
 - Add automated tests for critical workflows
 - Replace backend in-memory store with PostgreSQL/Supabase persistence
 - Add journal entry approval workflow and immutable audit logs
+- Connect Plaid or MX for live banking sync
+- Connect QuickBooks, NetSuite, or Bill.com for live vendor/accounting sync
+- Connect Microsoft Graph for Excel and Word file generation and storage
+- Connect Salesforce for enterprise CRM sync if required

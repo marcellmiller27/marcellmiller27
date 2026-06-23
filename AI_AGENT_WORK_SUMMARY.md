@@ -24,7 +24,7 @@ The application is a Next.js and TypeScript prototype that renders the supplied 
 
 The build now includes routed application screens for the dashboard, opportunity engine, due diligence center, portfolio management, intelligence reports, and AI research assistant.
 
-The repository also includes a FastAPI backend prototype for accounting journal entries, trial balance, audit reports, financial reports, executive dashboards, and CRM pipeline workflows.
+The repository also includes a FastAPI backend prototype for accounting journal entries, trial balance, audit reports, financial reports, executive dashboards, CRM pipeline workflows, and external integration interfaces for banking applications, vendor systems, Microsoft Office, accounting systems, and CRM platforms.
 
 ## Current git state at review time
 
@@ -42,4 +42,4 @@ The current application work includes:
 4. A formal product blueprint in `docs/PRODUCT_BLUEPRINT.md`.
 5. Project scripts for development, production builds, linting, and TypeScript checking.
 6. Routed application screens at `/dashboard`, `/opportunities`, `/due-diligence`, `/portfolio`, `/reports`, and `/assistant`.
-7. A backend API prototype in `backend/` with accounting, reporting, dashboard, and CRM modules.
+7. A backend API prototype in `backend/` with accounting, reporting, dashboard, CRM, and external integration modules.

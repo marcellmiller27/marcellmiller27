@@ -6,7 +6,7 @@ Project: John Henry Investments, LLC Investment Intelligence Platform
 
 Objective: Build a subscription SaaS platform for investors, business buyers, family offices, and professional advisors that provides opportunity discovery, due diligence, macro intelligence, portfolio tracking, AI research, and proprietary scoring.
 
-Current repository status: Front-end application prototype completed as a routed Next.js and TypeScript build, with a FastAPI backend prototype for accounting, reports, dashboards, and CRM.
+Current repository status: Front-end application prototype completed as a routed Next.js and TypeScript build, with a FastAPI backend prototype for accounting, reports, dashboards, CRM, and external integrations.
 
 ## Status legend
 
@@ -30,6 +30,7 @@ Current repository status: Front-end application prototype completed as a routed
 | Product documentation | [x] | Product blueprint, route map, setup instructions, and AI work summary |
 | Programming scripts reference | [x] | Saved programming setup, commands, source file map, and verification commands in `docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md` |
 | Backend API prototype | [x] | FastAPI service for accounting journal entries, audit reports, financial reports, dashboards, and CRM in `backend/` |
+| External integration interfaces | [x] | Banking, vendor, Microsoft Office, accounting, and CRM connector contracts in `/api/v1/integrations/*` |
 | Verification | [x] | Typecheck, lint, production build, and npm audit completed successfully |
 
 ## Project management workstreams
@@ -80,6 +81,7 @@ Current repository status: Front-end application prototype completed as a routed
 - [x] Add accounting journal entry and trial balance APIs
 - [x] Add audit report and financial report APIs
 - [x] Add dashboard and CRM APIs
+- [x] Add external integration API contracts for banking, vendor apps, Microsoft Office, accounting systems, and CRM
 - [ ] Add production authentication
 - [ ] Add multi-factor authentication
 - [ ] Add role-based permissions
@@ -92,6 +94,10 @@ Current repository status: Front-end application prototype completed as a routed
 - [ ] Add market data integrations
 - [ ] Add economic data integrations
 - [ ] Add portfolio account integrations
+- [ ] Add production banking provider integration such as Plaid or MX
+- [ ] Add production vendor/accounting provider integration such as QuickBooks, NetSuite, or Bill.com
+- [ ] Add Microsoft Graph integration for Excel and Word exports
+- [ ] Add Salesforce integration if enterprise CRM sync is required
 - [ ] Add report generation and PDF export
 - [ ] Add admin dashboard
 - [ ] Add observability, logging, and error monitoring

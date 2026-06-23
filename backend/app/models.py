@@ -41,6 +41,41 @@ class RiskLevel(StrEnum):
     HIGH = "high"
 
 
+class IntegrationCategory(StrEnum):
+    BANKING = "banking"
+    VENDOR = "vendor"
+    OFFICE = "office"
+    ACCOUNTING = "accounting"
+    CRM = "crm"
+
+
+class IntegrationStatus(StrEnum):
+    AVAILABLE = "available"
+    CONNECTED = "connected"
+    DISCONNECTED = "disconnected"
+    ACTION_REQUIRED = "action_required"
+
+
+class SyncStatus(StrEnum):
+    QUEUED = "queued"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+class DataDirection(StrEnum):
+    IMPORT = "import"
+    EXPORT = "export"
+    BIDIRECTIONAL = "bidirectional"
+
+
+class OfficeDocumentType(StrEnum):
+    EXCEL_WORKBOOK = "excel_workbook"
+    WORD_DOCUMENT = "word_document"
+    CSV = "csv"
+    PDF = "pdf"
+
+
 class Account(BaseModel):
     code: str
     name: str
@@ -212,3 +247,109 @@ class CRMSummary(BaseModel):
     active_deals: int
     weighted_pipeline: Money
     next_actions: list[str]
+
+
+class IntegrationConnector(BaseModel):
+    key: str
+    name: str
+    category: IntegrationCategory
+    direction: DataDirection
+    supported_objects: list[str]
+    auth_method: str
+    production_notes: str
+
+
+class IntegrationConnectionCreate(BaseModel):
+    connector_key: str
+    display_name: str
+    credential_reference: str = Field(
+        description="Reference to a secret manager record. Never send raw secrets."
+    )
+    enabled: bool = True
+
+
+class IntegrationConnection(IntegrationConnectionCreate):
+    id: UUID = Field(default_factory=uuid4)
+    status: IntegrationStatus = IntegrationStatus.CONNECTED
+    created_at: datetime = Field(default_factory=utc_now)
+    last_sync_at: datetime | None = None
+
+
+class SyncJobCreate(BaseModel):
+    connection_id: UUID
+    object_type: str
+    direction: DataDirection
+    requested_by: str = "system"
+
+
+class SyncJob(SyncJobCreate):
+    id: UUID = Field(default_factory=uuid4)
+    status: SyncStatus = SyncStatus.QUEUED
+    records_processed: int = 0
+    message: str = ""
+    created_at: datetime = Field(default_factory=utc_now)
+    completed_at: datetime | None = None
+
+
+class BankingTransactionCreate(BaseModel):
+    connection_id: UUID | None = None
+    transaction_date: date
+    external_id: str
+    account_name: str
+    description: str
+    amount: Money
+    currency: str = "USD"
+    counterparty: str = ""
+    category: str = ""
+
+
+class BankingTransaction(BankingTransactionCreate):
+    id: UUID = Field(default_factory=uuid4)
+    imported_at: datetime = Field(default_factory=utc_now)
+    suggested_account_code: str | None = None
+    suggested_journal_memo: str | None = None
+
+
+class VendorBillLine(BaseModel):
+    description: str
+    account_code: str
+    amount: Money
+
+
+class VendorBillCreate(BaseModel):
+    connection_id: UUID | None = None
+    vendor_name: str
+    external_id: str
+    bill_date: date
+    due_date: date | None = None
+    currency: str = "USD"
+    lines: list[VendorBillLine] = Field(min_length=1)
+
+
+class VendorBill(VendorBillCreate):
+    id: UUID = Field(default_factory=uuid4)
+    imported_at: datetime = Field(default_factory=utc_now)
+    total_amount: Money
+    suggested_journal_entry: JournalEntryCreate
+
+
+class OfficeExportRequest(BaseModel):
+    document_type: OfficeDocumentType
+    template_name: str
+    source_report: str
+    period_start: date | None = None
+    period_end: date | None = None
+    requested_by: str = "system"
+
+
+class OfficeExportPackage(BaseModel):
+    export_id: UUID = Field(default_factory=uuid4)
+    document_type: OfficeDocumentType
+    template_name: str
+    source_report: str
+    generated_at: datetime = Field(default_factory=utc_now)
+    file_name: str
+    mime_type: str
+    sheets_or_sections: list[str]
+    field_map: dict[str, str]
+    rows_preview: list[dict[str, str]]

@@ -11,6 +11,9 @@ This service supports:
 - Financial reports
 - Executive dashboards
 - CRM contacts, deals, activities, and pipeline summary
+- External banking integrations
+- Vendor and ERP application integrations
+- Microsoft Excel, Word, CSV, and PDF export package interfaces
 
 ## Setup
 
@@ -89,6 +92,30 @@ Base path:
 | `POST` | `/api/v1/crm/activities` | Create CRM activity |
 | `GET` | `/api/v1/crm/summary` | Generate CRM pipeline summary |
 
+### Integrations
+
+| Method | Route | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/v1/integrations/connectors` | List supported external connectors |
+| `GET` | `/api/v1/integrations/connections` | List configured integration connections |
+| `POST` | `/api/v1/integrations/connections` | Create integration connection record using a secret-manager reference |
+| `GET` | `/api/v1/integrations/sync-jobs` | List integration sync jobs |
+| `POST` | `/api/v1/integrations/sync-jobs` | Request an import/export sync job |
+| `GET` | `/api/v1/integrations/banking/transactions` | List imported banking transactions |
+| `POST` | `/api/v1/integrations/banking/transactions` | Import banking transaction and generate accounting suggestions |
+| `GET` | `/api/v1/integrations/vendor/bills` | List imported vendor bills |
+| `POST` | `/api/v1/integrations/vendor/bills` | Import vendor bill and generate accounts-payable journal suggestion |
+| `POST` | `/api/v1/integrations/office/export-package` | Create Excel, Word, CSV, or PDF export package manifest |
+
+Supported connector categories:
+
+- Banking: Plaid, MX
+- Accounting and vendor applications: QuickBooks Online, NetSuite, Bill.com
+- Microsoft Office: Microsoft 365 Excel and Word through Microsoft Graph
+- CRM: Salesforce
+
+Production integration rule: API requests must pass `credential_reference` values only. Do not send or store raw bank, vendor, Microsoft, or CRM credentials in request bodies or source code.
+
 ## Example journal entry
 
 ```json
@@ -130,6 +157,12 @@ python3 -m ruff check .
 - Add approval workflow for journal entries
 - Add immutable audit logs
 - Connect CRM deals to Stripe subscriptions and invoices
+- Connect Plaid or MX for bank account and transaction sync
+- Connect QuickBooks, NetSuite, or Bill.com for vendor bills and accounting workflow sync
+- Connect Microsoft Graph for Excel and Word template export
+- Connect Salesforce if enterprise CRM sync is required
 - Add report export to PDF
 - Add document storage for audit evidence
+- Add secret-manager integration for provider tokens
+- Add webhook verification for external provider callbacks
 - Add CI checks for backend tests and linting

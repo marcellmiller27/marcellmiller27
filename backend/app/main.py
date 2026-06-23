@@ -1,14 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import accounting, crm, dashboards, reports
+from app.routers import accounting, crm, dashboards, integrations, reports
 
 app = FastAPI(
     title="John Henry Investments Backend",
     version="0.1.0",
     description=(
         "Backend API for general journal accounting entries, audit reports, "
-        "financial reports, executive dashboards, and CRM workflows."
+        "financial reports, executive dashboards, CRM workflows, and external integrations."
     ),
 )
 
@@ -27,6 +27,7 @@ app.include_router(accounting.router, prefix="/api/v1")
 app.include_router(reports.router, prefix="/api/v1")
 app.include_router(dashboards.router, prefix="/api/v1")
 app.include_router(crm.router, prefix="/api/v1")
+app.include_router(integrations.router, prefix="/api/v1")
 
 
 @app.get("/")

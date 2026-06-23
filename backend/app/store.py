@@ -5,6 +5,8 @@ from uuid import UUID
 from app.models import (
     Account,
     AccountType,
+    BankingTransaction,
+    BankingTransactionCreate,
     CRMActivity,
     CRMActivityCreate,
     CRMContact,
@@ -12,9 +14,16 @@ from app.models import (
     CRMDeal,
     CRMDealCreate,
     DealStage,
+    IntegrationConnection,
+    IntegrationConnectionCreate,
     JournalEntry,
     JournalEntryCreate,
     JournalLine,
+    SyncJob,
+    SyncJobCreate,
+    SyncStatus,
+    VendorBill,
+    VendorBillCreate,
 )
 
 
@@ -27,6 +36,10 @@ class InMemoryStore:
         self.contacts: dict[UUID, CRMContact] = {}
         self.deals: dict[UUID, CRMDeal] = {}
         self.activities: dict[UUID, CRMActivity] = {}
+        self.integration_connections: dict[UUID, IntegrationConnection] = {}
+        self.sync_jobs: dict[UUID, SyncJob] = {}
+        self.banking_transactions: dict[UUID, BankingTransaction] = {}
+        self.vendor_bills: dict[UUID, VendorBill] = {}
         self._seed_records()
 
     def _seed_chart_of_accounts(self) -> dict[str, Account]:
@@ -163,6 +176,65 @@ class InMemoryStore:
         activity = CRMActivity(**payload.model_dump())
         self.activities[activity.id] = activity
         return activity
+
+    def create_integration_connection(
+        self,
+        payload: IntegrationConnectionCreate,
+    ) -> IntegrationConnection:
+        connection = IntegrationConnection(**payload.model_dump())
+        self.integration_connections[connection.id] = connection
+        return connection
+
+    def create_sync_job(self, payload: SyncJobCreate) -> SyncJob:
+        if payload.connection_id not in self.integration_connections:
+            raise KeyError(f"Unknown integration connection id: {payload.connection_id}")
+        job = SyncJob(**payload.model_dump())
+        self.sync_jobs[job.id] = job
+        return job
+
+    def complete_sync_job(self, job_id: UUID, records_processed: int, message: str) -> SyncJob:
+        job = self.sync_jobs[job_id]
+        completed = job.model_copy(
+            update={
+                "status": SyncStatus.COMPLETED,
+                "records_processed": records_processed,
+                "message": message,
+            }
+        )
+        self.sync_jobs[job_id] = completed
+        return completed
+
+    def create_banking_transaction(
+        self,
+        payload: BankingTransactionCreate,
+        suggested_account_code: str | None,
+        suggested_journal_memo: str | None,
+    ) -> BankingTransaction:
+        if payload.connection_id is not None and payload.connection_id not in self.integration_connections:
+            raise KeyError(f"Unknown integration connection id: {payload.connection_id}")
+        transaction = BankingTransaction(
+            **payload.model_dump(),
+            suggested_account_code=suggested_account_code,
+            suggested_journal_memo=suggested_journal_memo,
+        )
+        self.banking_transactions[transaction.id] = transaction
+        return transaction
+
+    def create_vendor_bill(
+        self,
+        payload: VendorBillCreate,
+        suggested_journal_entry: JournalEntryCreate,
+    ) -> VendorBill:
+        if payload.connection_id is not None and payload.connection_id not in self.integration_connections:
+            raise KeyError(f"Unknown integration connection id: {payload.connection_id}")
+        total_amount = sum(line.amount for line in payload.lines)
+        bill = VendorBill(
+            **payload.model_dump(),
+            total_amount=total_amount,
+            suggested_journal_entry=suggested_journal_entry,
+        )
+        self.vendor_bills[bill.id] = bill
+        return bill
 
 
 store = InMemoryStore()

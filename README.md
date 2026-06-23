@@ -19,6 +19,7 @@ The prototype in this repository turns the SaaS application blueprint into a run
 - Audit and financial reports
 - Executive dashboards
 - CRM pipeline management
+- External banking, vendor, Microsoft Office, and CRM integrations
 
 ## Tech stack
 
@@ -56,6 +57,10 @@ It includes API modules for:
 - Financial reports
 - Executive dashboards
 - CRM contacts, deals, activities, and pipeline summary
+- External banking connectors such as Plaid and MX
+- Vendor/accounting connectors such as QuickBooks, NetSuite, and Bill.com
+- Microsoft 365 Excel and Word export package interfaces
+- Salesforce CRM sync interface
 
 Backend documentation:
 

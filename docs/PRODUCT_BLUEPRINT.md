@@ -170,8 +170,16 @@ The current repository includes a FastAPI backend prototype in `backend/` for in
 | Financial reports | `/api/v1/reports/financial` | Income statement, balance sheet summary, cash-flow summary, and KPIs |
 | Dashboards | `/api/v1/dashboards/executive` | Cash position, CRM pipeline, accounting controls, and operating notes |
 | CRM | `/api/v1/crm/*` | Contacts, deals, activities, and weighted pipeline summary |
+| Integrations | `/api/v1/integrations/*` | Banking, vendor, Microsoft Office, accounting, and CRM connector interfaces |
 
-The backend currently uses an in-memory development repository with seeded data. The production target is PostgreSQL/Supabase persistence with authentication, approvals, audit logs, billing integration, and document storage.
+The backend currently uses an in-memory development repository with seeded data. The production target is PostgreSQL/Supabase persistence with authentication, approvals, audit logs, billing integration, document storage, secret-manager-backed provider credentials, and webhook verification.
+
+External interfaces currently represented:
+
+- Banking applications: Plaid and MX style bank account and transaction sync
+- Vendor/accounting applications: QuickBooks Online, NetSuite, and Bill.com style vendor bill and accounting workflow sync
+- Microsoft Office: Microsoft 365 Excel workbook, Word document, CSV, and PDF export package manifests
+- CRM: Salesforce style contacts, accounts, opportunities, and activities sync
 
 ## Current application build map
 
