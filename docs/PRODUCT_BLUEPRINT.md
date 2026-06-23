@@ -173,6 +173,8 @@ The current repository implements the first front-end build as a routed Next.js 
 | `/reports` | Branded macro, acquisition, crypto, and dividend report generation workflow |
 | `/assistant` | Private AI research assistant workflow examples |
 
+The organized project-management checklist for completed work and remaining launch tasks is available in `docs/PROJECT_MANAGEMENT_CHECKLIST.md`.
+
 ## Long-term vision
 
 The long-term strategy is to transform John Henry Investments from an investment company into a financial technology company with:
