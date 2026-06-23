@@ -33,8 +33,8 @@ export default function Home() {
             entrepreneurs to discover opportunities, analyze risk, value assets, and manage portfolios.
           </p>
           <div className="hero__actions">
-            <a className="button button--primary" href="#plans">
-              View subscription plans
+            <a className="button button--primary" href="/dashboard">
+              Open platform dashboard
             </a>
             <a className="button button--secondary" href="#modules">
               Explore platform modules

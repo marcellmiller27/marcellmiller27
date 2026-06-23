@@ -22,6 +22,8 @@ AI-agent-created application work is now present in this repository for the John
 
 The application is a Next.js and TypeScript prototype that renders the supplied SaaS blueprint as a product-facing platform experience. It includes subscription tiers, primary user types, dashboard widgets, platform modules, intelligence reports, the John Henry Opportunity Score, the recommended technology stack, and the long-term platform vision.
 
+The build now includes routed application screens for the dashboard, opportunity engine, due diligence center, portfolio management, intelligence reports, and AI research assistant.
+
 ## Current git state at review time
 
 - Working branch: `cursor/compose-ai-agent-work-239d`
@@ -34,6 +36,7 @@ The current application work includes:
 
 1. A runnable Next.js application scaffold.
 2. Typed product data for pricing tiers, user types, dashboard widgets, platform modules, score categories, and technology stack layers.
-3. A responsive landing/dashboard prototype for the John Henry Investments platform.
+3. A responsive landing page and application shell for the John Henry Investments platform.
 4. A formal product blueprint in `docs/PRODUCT_BLUEPRINT.md`.
 5. Project scripts for development, production builds, linting, and TypeScript checking.
+6. Routed application screens at `/dashboard`, `/opportunities`, `/due-diligence`, `/portfolio`, `/reports`, and `/assistant`.

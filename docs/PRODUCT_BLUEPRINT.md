@@ -159,6 +159,20 @@ Crypto:
 - AI layer: OpenAI, Anthropic, custom financial models
 - Cloud: Amazon Web Services, Vercel, or private cloud hosting
 
+## Current application build map
+
+The current repository implements the first front-end build as a routed Next.js application:
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Public platform overview, subscription positioning, modules, scoring model, stack, and vision |
+| `/dashboard` | Investor command center with portfolio metrics, market widgets, signals, and AI recommendations |
+| `/opportunities` | Investment and acquisition discovery engine with scores, thesis summaries, and metrics |
+| `/due-diligence` | Financial document intake and sample AI diligence findings |
+| `/portfolio` | Holdings allocation, cash-flow tracking, and bull/base/bear wealth projections |
+| `/reports` | Branded macro, acquisition, crypto, and dividend report generation workflow |
+| `/assistant` | Private AI research assistant workflow examples |
+
 ## Long-term vision
 
 The long-term strategy is to transform John Henry Investments from an investment company into a financial technology company with:

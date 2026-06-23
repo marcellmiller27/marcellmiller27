@@ -2,7 +2,7 @@
 
 John Henry Investments, LLC is a subscription-based investment intelligence platform concept for B2C and B2B customers.
 
-The prototype in this repository turns the SaaS application blueprint into a runnable Next.js and TypeScript application. It presents subscription plans, platform modules, opportunity scoring, macro intelligence, due diligence workflows, and the recommended technology stack.
+The prototype in this repository turns the SaaS application blueprint into a runnable Next.js and TypeScript application. It presents subscription plans, platform modules, opportunity scoring, macro intelligence, due diligence workflows, portfolio management, AI assistant workflows, and the recommended technology stack.
 
 ## Application focus
 
@@ -22,6 +22,16 @@ The prototype in this repository turns the SaaS application blueprint into a run
 - React
 - TypeScript
 - Future backend target: Python, FastAPI, PostgreSQL, Supabase, OpenAI, Anthropic, AWS or private cloud
+
+## Application routes
+
+- `/` - Public platform overview and subscription positioning
+- `/dashboard` - Investor command center with portfolio metrics, market widgets, and AI recommendations
+- `/opportunities` - Investment and acquisition opportunity engine with John Henry Opportunity Scores
+- `/due-diligence` - AI due diligence center for document upload and risk review workflows
+- `/portfolio` - Portfolio management and wealth projection scenarios
+- `/reports` - John Henry Intelligence Center report generation workflow
+- `/assistant` - Private AI research assistant workflow examples
 
 ## Getting started
 

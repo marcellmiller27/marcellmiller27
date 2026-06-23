@@ -25,6 +25,56 @@ export type StackLayer = {
   tools: string[];
 };
 
+export type DashboardMetric = {
+  label: string;
+  value: string;
+  change: string;
+  tone: "positive" | "neutral" | "warning";
+};
+
+export type MarketSignal = {
+  name: string;
+  value: string;
+  insight: string;
+};
+
+export type Opportunity = {
+  name: string;
+  category: string;
+  score: number;
+  recommendation: "Buy" | "Watch" | "Pass";
+  thesis: string;
+  metrics: string[];
+};
+
+export type DueDiligenceItem = {
+  document: string;
+  status: string;
+  finding: string;
+  risk: "Low" | "Medium" | "High";
+};
+
+export type PortfolioHolding = {
+  name: string;
+  assetClass: string;
+  allocation: string;
+  returnProfile: string;
+  cashFlow: string;
+};
+
+export type IntelligenceReport = {
+  title: string;
+  cadence: string;
+  audience: string;
+  highlights: string[];
+};
+
+export type AssistantWorkflow = {
+  prompt: string;
+  response: string;
+  outputs: string[];
+};
+
 export const pricingTiers: PricingTier[] = [
   {
     name: "Consumer Plan",
@@ -293,5 +343,203 @@ export const techStack: StackLayer[] = [
   {
     layer: "Cloud",
     tools: ["Amazon Web Services", "Vercel", "Private Cloud"]
+  }
+];
+
+export const dashboardMetrics: DashboardMetric[] = [
+  {
+    label: "Portfolio value",
+    value: "$4.82M",
+    change: "+8.4% YTD",
+    tone: "positive"
+  },
+  {
+    label: "Watch list alerts",
+    value: "18",
+    change: "5 high priority",
+    tone: "warning"
+  },
+  {
+    label: "Acquisition pipeline",
+    value: "$12.6M",
+    change: "7 active targets",
+    tone: "neutral"
+  },
+  {
+    label: "Macro risk",
+    value: "Moderate",
+    change: "Liquidity improving",
+    tone: "neutral"
+  }
+];
+
+export const marketSignals: MarketSignal[] = [
+  {
+    name: "BTC",
+    value: "$112,450",
+    insight: "Institutional flows remain positive while volatility compresses."
+  },
+  {
+    name: "Gold",
+    value: "$3,180",
+    insight: "Safe-haven demand remains elevated against fiscal deficit risk."
+  },
+  {
+    name: "S&P 500",
+    value: "6,240",
+    insight: "Earnings breadth is improving but valuation multiples remain extended."
+  },
+  {
+    name: "Treasury rates",
+    value: "4.12%",
+    insight: "Curve steepening supports bank margins and credit monitoring."
+  },
+  {
+    name: "Inflation",
+    value: "2.8%",
+    insight: "Services inflation is the key factor for rate-cut timing."
+  },
+  {
+    name: "Real estate",
+    value: "Selective",
+    insight: "Industrial and cash-flowing small multifamily remain preferred screens."
+  }
+];
+
+export const opportunities: Opportunity[] = [
+  {
+    name: "Dividend Compounder Basket",
+    category: "Public equities",
+    score: 84,
+    recommendation: "Buy",
+    thesis: "High free-cash-flow companies with durable margins and dividend growth.",
+    metrics: ["3.8% dividend yield", "12% five-year dividend CAGR", "Low leverage"]
+  },
+  {
+    name: "Regional HVAC Services Platform",
+    category: "Business acquisition",
+    score: 79,
+    recommendation: "Watch",
+    thesis: "Recurring maintenance revenue and fragmented local competition support roll-up potential.",
+    metrics: ["$1.2M EBITDA", "2.1x DSCR", "SBA eligible"]
+  },
+  {
+    name: "Bitcoin Cycle Allocation",
+    category: "Digital assets",
+    score: 72,
+    recommendation: "Watch",
+    thesis: "Liquidity and adoption signals are favorable, but position sizing should respect volatility.",
+    metrics: ["ETF inflows positive", "Liquidity trend up", "High volatility"]
+  },
+  {
+    name: "Distressed Retail Strip Center",
+    category: "Real estate",
+    score: 48,
+    recommendation: "Pass",
+    thesis: "Tenant concentration and refinancing risk outweigh current cap-rate discount.",
+    metrics: ["62% occupancy", "Near-term debt maturity", "Weak tenant mix"]
+  }
+];
+
+export const dueDiligenceQueue: DueDiligenceItem[] = [
+  {
+    document: "Three-year tax returns",
+    status: "Analyzed",
+    finding: "Revenue trend reconciles with bank deposits.",
+    risk: "Low"
+  },
+  {
+    document: "Profit and loss statements",
+    status: "Needs review",
+    finding: "Owner add-backs require supporting documentation.",
+    risk: "Medium"
+  },
+  {
+    document: "Balance sheet",
+    status: "Analyzed",
+    finding: "Working-capital swing appears seasonal.",
+    risk: "Low"
+  },
+  {
+    document: "Bank statements",
+    status: "Flagged",
+    finding: "Two large irregular withdrawals need explanation.",
+    risk: "High"
+  }
+];
+
+export const portfolioHoldings: PortfolioHolding[] = [
+  {
+    name: "Core equity portfolio",
+    assetClass: "Stocks and ETFs",
+    allocation: "42%",
+    returnProfile: "11.2% IRR",
+    cashFlow: "$86K annual dividends"
+  },
+  {
+    name: "Acquired operating businesses",
+    assetClass: "Private equity",
+    allocation: "28%",
+    returnProfile: "18.5% IRR",
+    cashFlow: "$410K owner distributions"
+  },
+  {
+    name: "Income real estate",
+    assetClass: "Real estate",
+    allocation: "21%",
+    returnProfile: "9.4% cash-on-cash",
+    cashFlow: "$168K net operating income"
+  },
+  {
+    name: "Digital assets",
+    assetClass: "Crypto",
+    allocation: "9%",
+    returnProfile: "High volatility",
+    cashFlow: "No current yield"
+  }
+];
+
+export const intelligenceReports: IntelligenceReport[] = [
+  {
+    title: "John Henry Weekly Macro Report",
+    cadence: "Weekly",
+    audience: "All paid subscribers",
+    highlights: ["Federal Reserve policy", "Treasury liquidity", "Inflation outlook"]
+  },
+  {
+    title: "Business Acquisition Report",
+    cadence: "Weekly",
+    audience: "Professional and Enterprise",
+    highlights: ["SBA deal screens", "Valuation trends", "Debt-service analysis"]
+  },
+  {
+    title: "Crypto Intelligence Report",
+    cadence: "Biweekly",
+    audience: "Consumer and Professional",
+    highlights: ["Bitcoin cycle", "ETF flows", "Liquidity and adoption signals"]
+  },
+  {
+    title: "Dividend Opportunities Report",
+    cadence: "Monthly",
+    audience: "All paid subscribers",
+    highlights: ["Dividend growth", "Balance-sheet quality", "Income portfolio ideas"]
+  }
+];
+
+export const assistantWorkflows: AssistantWorkflow[] = [
+  {
+    prompt: "Analyze Tesla for a long-term investor.",
+    response: "Compare valuation, margin durability, capital intensity, and competitive pressure.",
+    outputs: ["Bull/base/bear case", "Risk score", "Comparable valuation"]
+  },
+  {
+    prompt: "Evaluate this HVAC acquisition target.",
+    response: "Normalize EBITDA, estimate SBA debt service, and flag diligence questions.",
+    outputs: ["Buy/Watch/Pass", "DSCR estimate", "Document request list"]
+  },
+  {
+    prompt: "Build a dividend portfolio for monthly income.",
+    response: "Blend yield, dividend growth, sector exposure, and balance-sheet strength.",
+    outputs: ["Model allocation", "Expected yield", "Rebalancing rules"]
   }
 ];
