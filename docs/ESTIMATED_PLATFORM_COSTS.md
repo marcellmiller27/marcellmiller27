@@ -6,6 +6,8 @@ This document estimates monthly and annual costs for the John Henry Investments 
 
 These are planning ranges, not vendor quotes. Actual costs depend on selected providers, negotiated contracts, user behavior, AI usage, document volume, data retention rules, compliance requirements, and support expectations.
 
+Projected EBITDA scenarios based on these cost ranges are documented in `docs/PROJECTED_EBITDA_MODEL.md`.
+
 ## Cost tiers
 
 | Tier | Users | Description |

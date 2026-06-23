@@ -161,6 +161,8 @@ Crypto:
 
 Estimated cloud storage, database capacity, network throughput, and processing requirements are documented in `docs/CLOUD_STORAGE_AND_CAPACITY_PLAN.md`.
 
+Estimated platform costs and projected EBITDA scenarios are documented in `docs/ESTIMATED_PLATFORM_COSTS.md` and `docs/PROJECTED_EBITDA_MODEL.md`.
+
 ## Back-end application build map
 
 The current repository includes a FastAPI backend prototype in `backend/` for internal operating workflows:
