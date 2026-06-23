@@ -148,6 +148,7 @@ Expected result:
 | `docs/NEXT_ACTION_ITEMS_TO_DEFINE.md` | Decision checklist for the next platform programming phase |
 | `docs/AUTH_DATABASE_BILLING_FOUNDATION.md` | Authentication, database persistence, and billing foundation details |
 | `docs/NEXT_PROGRAMMING_MILESTONE.md` | Recommended next implementation sequence and add-on programming backlog |
+| `docs/FAILED_PROGRAMMING_CODES.md` | Failed commands, error messages, causes, and fixes from platform programming |
 | `docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md` | This saved programming-script reference file |
 | `AI_AGENT_WORK_SUMMARY.md` | Summary of AI-agent-created application work in the repository |
 | `backend/README.md` | Backend API setup and route documentation |
