@@ -195,7 +195,7 @@ The current repository implements the first front-end build as a routed Next.js 
 | `/reports` | Branded macro, acquisition, crypto, and dividend report generation workflow |
 | `/assistant` | Private AI research assistant workflow examples |
 
-The organized project-management checklist for completed work and remaining launch tasks is available in `docs/PROJECT_MANAGEMENT_CHECKLIST.md`.
+The organized project-management checklist for completed work and remaining launch tasks is available in `docs/PROJECT_MANAGEMENT_CHECKLIST.md`. The recommended next programming milestone and add-on backlog are available in `docs/NEXT_PROGRAMMING_MILESTONE.md`.
 
 ## Long-term vision
 
