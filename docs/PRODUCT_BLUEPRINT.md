@@ -163,6 +163,8 @@ Estimated cloud storage, database capacity, network throughput, and processing r
 
 Estimated platform costs, projected EBITDA scenarios, staffing/legal pro forma assumptions, and compensation/professional-services projections are documented in `docs/ESTIMATED_PLATFORM_COSTS.md`, `docs/PROJECTED_EBITDA_MODEL.md`, `docs/STAFFING_LEGAL_PRO_FORMA.md`, and `docs/COMPENSATION_AND_PRO_SERVICES_PROJECTIONS.md`.
 
+The investor package, pitch deck, PowerPoint presentation, Excel financial model, DCF model, revenue/expenditure/marketing projections, and personnel hierarchy materials are saved in `docs/investor_package/`.
+
 ## Back-end application build map
 
 The current repository includes a FastAPI backend prototype in `backend/` for internal operating workflows:

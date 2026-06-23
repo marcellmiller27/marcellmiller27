@@ -6,6 +6,8 @@ This document estimates projected EBITDA for the John Henry Investments platform
 
 These projections are planning estimates, not financial advice, valuation advice, accounting advice, or a guarantee of performance. Actual EBITDA will depend on pricing, customer mix, churn, payment methods, AI usage, document volume, support cost, compliance requirements, provider contracts, staffing, and sales efficiency.
 
+The investor-facing pitch deck, PowerPoint, Excel workbook, and DCF source files are saved in `docs/investor_package/`.
+
 ## EBITDA definition used
 
 For this planning model:

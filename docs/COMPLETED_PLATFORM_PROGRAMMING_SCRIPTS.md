@@ -143,6 +143,7 @@ Expected result:
 | File | Purpose |
 | --- | --- |
 | `README.md` | Project overview, route map, setup commands, and documentation links |
+| `docs/investor_package/` | Pitch deck, PowerPoint, Excel financial model, DCF, projections, charts, and generator scripts |
 | `docs/PRODUCT_BLUEPRINT.md` | Full SaaS platform product blueprint and route map |
 | `docs/PROJECT_MANAGEMENT_CHECKLIST.md` | Completed work checklist, remaining launch tasks, MVP checklist, and Marcellus Miller action items |
 | `docs/CLOUD_STORAGE_AND_CAPACITY_PLAN.md` | Cloud storage, database, network, processing, cache, and monitoring estimates |
