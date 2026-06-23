@@ -6,7 +6,7 @@ Project: John Henry Investments, LLC Investment Intelligence Platform
 
 Objective: Build a subscription SaaS platform for investors, business buyers, family offices, and professional advisors that provides opportunity discovery, due diligence, macro intelligence, portfolio tracking, AI research, and proprietary scoring.
 
-Current repository status: Front-end application prototype completed as a routed Next.js and TypeScript build.
+Current repository status: Front-end application prototype completed as a routed Next.js and TypeScript build, with a FastAPI backend prototype for accounting, reports, dashboards, and CRM.
 
 ## Status legend
 
@@ -29,6 +29,7 @@ Current repository status: Front-end application prototype completed as a routed
 | Shared application shell | [x] | Navigation and layout shell for routed platform screens |
 | Product documentation | [x] | Product blueprint, route map, setup instructions, and AI work summary |
 | Programming scripts reference | [x] | Saved programming setup, commands, source file map, and verification commands in `docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md` |
+| Backend API prototype | [x] | FastAPI service for accounting journal entries, audit reports, financial reports, dashboards, and CRM in `backend/` |
 | Verification | [x] | Typecheck, lint, production build, and npm audit completed successfully |
 
 ## Project management workstreams
@@ -75,13 +76,17 @@ Current repository status: Front-end application prototype completed as a routed
 - [x] Add typed mock data model
 - [x] Add responsive styling for platform screens
 - [x] Add project scripts for development, typecheck, lint, build, and audit
+- [x] Add FastAPI backend prototype
+- [x] Add accounting journal entry and trial balance APIs
+- [x] Add audit report and financial report APIs
+- [x] Add dashboard and CRM APIs
 - [ ] Add production authentication
 - [ ] Add multi-factor authentication
 - [ ] Add role-based permissions
 - [ ] Add team accounts
 - [ ] Add billing and subscription management
 - [ ] Add persistent database schema
-- [ ] Add API layer
+- [x] Add API layer prototype
 - [ ] Add document upload and secure storage
 - [ ] Add AI assistant backend integration
 - [ ] Add market data integrations
@@ -150,6 +155,9 @@ Current repository status: Front-end application prototype completed as a routed
 - [x] Verify current code passes lint
 - [x] Verify current code passes TypeScript checks
 - [x] Verify current dependency audit has zero moderate-or-higher findings
+- [x] Verify backend code compiles
+- [x] Add backend service tests for accounting, reporting, dashboard, and CRM services
+- [x] Verify backend code passes Ruff lint
 - [ ] Add unit tests for scoring helpers after scoring logic is implemented
 - [ ] Add integration tests for authentication, billing, and protected routes
 - [ ] Add end-to-end tests for signup, subscription, dashboard, reports, and assistant flows
@@ -196,6 +204,9 @@ npm run typecheck
 npm run lint
 npm run build
 npm audit --audit-level=moderate
+python3 -m compileall backend/app backend/tests
+python3 -m pytest backend/tests
+python3 -m ruff check backend
 ```
 
 All checks passed at the time this checklist was created.

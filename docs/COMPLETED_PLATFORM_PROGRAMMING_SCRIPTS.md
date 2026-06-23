@@ -10,7 +10,9 @@ Purpose: Save the completed platform programming setup, commands, file map, and 
 - Framework: Next.js
 - Language: TypeScript
 - UI library: React
-- Current build: Routed front-end platform application
+- Backend framework: FastAPI
+- Backend language: Python
+- Current build: Routed front-end platform application with backend API prototype
 - Branch used for platform work: `cursor/compose-ai-agent-work-239d`
 
 ## 2. Package programming scripts
@@ -59,6 +61,10 @@ npm run typecheck
 npm run lint
 npm run build
 npm audit --audit-level=moderate
+cd backend
+python3 -m compileall app tests
+python3 -m pytest
+python3 -m ruff check .
 ```
 
 Expected result:
@@ -67,6 +73,9 @@ Expected result:
 - ESLint passes
 - Next.js production build passes
 - npm audit reports no moderate-or-higher vulnerabilities
+- Backend Python modules compile
+- Backend service tests pass
+- Backend Ruff lint passes
 
 ## 5. Completed route programming files
 
@@ -89,7 +98,23 @@ Expected result:
 | `src/components/platform-shell.tsx` | Shared platform navigation and page shell component |
 | `src/lib/platform-data.ts` | Typed product data for pricing, users, dashboard metrics, market signals, opportunities, diligence, portfolio, reports, assistant workflows, score categories, and technology stack |
 
-## 7. Configuration programming files
+## 7. Backend programming files
+
+| File | Purpose |
+| --- | --- |
+| `backend/pyproject.toml` | Backend package metadata and dependencies |
+| `backend/app/main.py` | FastAPI application entrypoint, CORS, health checks, and router registration |
+| `backend/app/models.py` | Pydantic models for accounting, reports, dashboards, and CRM |
+| `backend/app/store.py` | In-memory prototype repository with seeded chart of accounts, journal entries, and CRM data |
+| `backend/app/services.py` | Accounting, reporting, dashboard, and CRM service logic |
+| `backend/app/routers/accounting.py` | Chart of accounts, journal entry, and trial balance endpoints |
+| `backend/app/routers/reports.py` | Audit and financial report endpoints |
+| `backend/app/routers/dashboards.py` | Executive dashboard endpoint |
+| `backend/app/routers/crm.py` | CRM contact, deal, activity, and summary endpoints |
+| `backend/tests/test_services.py` | Backend service tests |
+| `backend/README.md` | Backend setup, route map, examples, verification, and production next steps |
+
+## 8. Configuration programming files
 
 | File | Purpose |
 | --- | --- |
@@ -101,7 +126,7 @@ Expected result:
 | `next-env.d.ts` | Next.js generated type references |
 | `.gitignore` | Ignores build output, dependencies, environment files, logs, and TypeScript cache files |
 
-## 8. Documentation files saved with the programme
+## 9. Documentation files saved with the programme
 
 | File | Purpose |
 | --- | --- |
@@ -110,8 +135,9 @@ Expected result:
 | `docs/PROJECT_MANAGEMENT_CHECKLIST.md` | Completed work checklist, remaining launch tasks, MVP checklist, and Marcellus Miller action items |
 | `docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md` | This saved programming-script reference file |
 | `AI_AGENT_WORK_SUMMARY.md` | Summary of AI-agent-created application work in the repository |
+| `backend/README.md` | Backend API setup and route documentation |
 
-## 9. Dependency setup
+## 10. Dependency setup
 
 The platform currently uses these main dependencies:
 
@@ -143,15 +169,46 @@ The project also includes this override to keep the dependency audit clean:
 }
 ```
 
-## 10. One-command local verification bundle
+Backend dependencies are saved in `backend/pyproject.toml`:
+
+```toml
+dependencies = [
+  "fastapi",
+  "uvicorn[standard]",
+  "pydantic"
+]
+```
+
+## 11. One-command local verification bundle
 
 Run this full command when checking the saved platform:
 
 ```bash
-npm install && npm run typecheck && npm run lint && npm run build && npm audit --audit-level=moderate
+npm install && npm run typecheck && npm run lint && npm run build && npm audit --audit-level=moderate && python3 -m pip install -e "backend[dev]" && cd backend && python3 -m compileall app tests && python3 -m pytest && python3 -m ruff check .
 ```
 
-## 11. Deployment preparation commands
+## 12. Backend API commands
+
+Install backend dependencies:
+
+```bash
+python3 -m pip install -e "backend[dev]"
+```
+
+Run backend API:
+
+```bash
+cd backend
+python3 -m uvicorn app.main:app --reload
+```
+
+Open the API docs:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+## 13. Deployment preparation commands
 
 After choosing the hosting provider, use the production build script as the required deployment check:
 
@@ -176,7 +233,7 @@ MARKET_DATA_API_KEY=
 
 These variables are placeholders for the next backend, billing, database, and AI integration phases. Do not commit real secret values to the repository.
 
-## 12. Next programming milestones
+## 14. Next programming milestones
 
 - Add authentication and protected routes
 - Add Supabase/PostgreSQL database schema
@@ -187,3 +244,5 @@ These variables are placeholders for the next backend, billing, database, and AI
 - Add report PDF generation
 - Add role-based permissions and team accounts
 - Add automated tests for critical workflows
+- Replace backend in-memory store with PostgreSQL/Supabase persistence
+- Add journal entry approval workflow and immutable audit logs

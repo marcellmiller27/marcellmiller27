@@ -159,6 +159,20 @@ Crypto:
 - AI layer: OpenAI, Anthropic, custom financial models
 - Cloud: Amazon Web Services, Vercel, or private cloud hosting
 
+## Back-end application build map
+
+The current repository includes a FastAPI backend prototype in `backend/` for internal operating workflows:
+
+| Area | Routes | Purpose |
+| --- | --- | --- |
+| Accounting | `/api/v1/accounting/*` | Chart of accounts, balanced general journal entries, and trial balance |
+| Audit reports | `/api/v1/reports/audit` | Period-based audit findings, controls summary, scope, and risk score |
+| Financial reports | `/api/v1/reports/financial` | Income statement, balance sheet summary, cash-flow summary, and KPIs |
+| Dashboards | `/api/v1/dashboards/executive` | Cash position, CRM pipeline, accounting controls, and operating notes |
+| CRM | `/api/v1/crm/*` | Contacts, deals, activities, and weighted pipeline summary |
+
+The backend currently uses an in-memory development repository with seeded data. The production target is PostgreSQL/Supabase persistence with authentication, approvals, audit logs, billing integration, and document storage.
+
 ## Current application build map
 
 The current repository implements the first front-end build as a routed Next.js application:

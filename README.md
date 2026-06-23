@@ -2,7 +2,7 @@
 
 John Henry Investments, LLC is a subscription-based investment intelligence platform concept for B2C and B2B customers.
 
-The prototype in this repository turns the SaaS application blueprint into a runnable Next.js and TypeScript application. It presents subscription plans, platform modules, opportunity scoring, macro intelligence, due diligence workflows, portfolio management, AI assistant workflows, and the recommended technology stack.
+The prototype in this repository turns the SaaS application blueprint into a runnable Next.js and TypeScript application with a FastAPI backend. It presents subscription plans, platform modules, opportunity scoring, macro intelligence, due diligence workflows, portfolio management, AI assistant workflows, accounting workflows, reporting, dashboards, CRM, and the recommended technology stack.
 
 ## Application focus
 
@@ -15,13 +15,19 @@ The prototype in this repository turns the SaaS application blueprint into a run
 - Wealth projection
 - Corporate governance and capital raising tools
 - John Henry Opportunity Score
+- General journal accounting entries
+- Audit and financial reports
+- Executive dashboards
+- CRM pipeline management
 
 ## Tech stack
 
 - Next.js
 - React
 - TypeScript
-- Future backend target: Python, FastAPI, PostgreSQL, Supabase, OpenAI, Anthropic, AWS or private cloud
+- Python
+- FastAPI
+- Future backend target: PostgreSQL, Supabase, OpenAI, Anthropic, AWS or private cloud
 
 ## Application routes
 
@@ -32,6 +38,30 @@ The prototype in this repository turns the SaaS application blueprint into a run
 - `/portfolio` - Portfolio management and wealth projection scenarios
 - `/reports` - John Henry Intelligence Center report generation workflow
 - `/assistant` - Private AI research assistant workflow examples
+
+## Backend API
+
+The backend application is saved in:
+
+```text
+backend/
+```
+
+It includes API modules for:
+
+- Accounting journal entries
+- Chart of accounts
+- Trial balance
+- Audit reports
+- Financial reports
+- Executive dashboards
+- CRM contacts, deals, activities, and pipeline summary
+
+Backend documentation:
+
+```text
+backend/README.md
+```
 
 ## Getting started
 
@@ -58,6 +88,15 @@ Run static checks:
 ```bash
 npm run lint
 npm run typecheck
+```
+
+Run backend checks:
+
+```bash
+cd backend
+python3 -m compileall app tests
+python3 -m pytest
+python3 -m ruff check .
 ```
 
 ## Product blueprint
