@@ -151,8 +151,8 @@ export default function Home() {
           <article>
             <h3>Research assistant</h3>
             <p>
-              Answers questions like "Analyze Tesla", "Evaluate this business", "Compare SBA
-              loans", "Build a dividend portfolio", and "Analyze the Bitcoin cycle".
+              Answers questions like Analyze Tesla, Evaluate this business, Compare SBA loans,
+              Build a dividend portfolio, and Analyze the Bitcoin cycle.
             </p>
           </article>
         </div>
