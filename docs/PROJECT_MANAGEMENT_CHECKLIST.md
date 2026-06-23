@@ -32,6 +32,7 @@ Current repository status: Front-end application prototype completed as a routed
 | Next programming milestone | [x] | Recommended next implementation sequence in `docs/NEXT_PROGRAMMING_MILESTONE.md` |
 | Backend API prototype | [x] | FastAPI service for accounting journal entries, audit reports, financial reports, dashboards, and CRM in `backend/` |
 | External integration interfaces | [x] | Banking, vendor, Microsoft Office, accounting, and CRM connector contracts in `/api/v1/integrations/*` |
+| Auth/database/billing foundation | [x] | SQLAlchemy persistent organizations, users, memberships, subscriptions, audit logs, auth endpoints, billing contracts, and account/pricing screens |
 | Verification | [x] | Typecheck, lint, production build, and npm audit completed successfully |
 
 ## Project management workstreams
@@ -83,12 +84,12 @@ Current repository status: Front-end application prototype completed as a routed
 - [x] Add audit report and financial report APIs
 - [x] Add dashboard and CRM APIs
 - [x] Add external integration API contracts for banking, vendor apps, Microsoft Office, accounting systems, and CRM
-- [ ] Add production authentication
+- [x] Add authentication foundation
 - [ ] Add multi-factor authentication
-- [ ] Add role-based permissions
+- [x] Add role-based permissions foundation
 - [ ] Add team accounts
-- [ ] Add billing and subscription management
-- [ ] Add persistent database schema
+- [x] Add billing and subscription management foundation
+- [x] Add persistent database schema foundation
 - [x] Add API layer prototype
 - [ ] Add document upload and secure storage
 - [ ] Add AI assistant backend integration
@@ -102,6 +103,7 @@ Current repository status: Front-end application prototype completed as a routed
 - [ ] Add report generation and PDF export
 - [ ] Add admin dashboard
 - [ ] Add observability, logging, and error monitoring
+- [ ] Migrate accounting, CRM, reports, and integrations from in-memory store to database repositories
 
 ### 5. Data and AI systems
 

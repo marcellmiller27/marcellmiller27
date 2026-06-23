@@ -18,6 +18,9 @@ The repository already includes:
 - Accounting, audit report, financial report, dashboard, CRM, and integration API contracts
 - External integration interfaces for banking, vendor systems, Microsoft Office, accounting systems, and CRM platforms
 - Project management checklist and programming script documentation
+- SQLAlchemy persistence foundation for organizations, users, memberships, subscriptions, and audit logs
+- Authentication endpoints for registration, login, and current-user context
+- Subscription billing foundation endpoints for plans, checkout-session contracts, webhooks, and billing audit logs
 
 ## Recommended build order
 
@@ -29,12 +32,12 @@ Purpose: Users must have secure accounts before the application can safely store
 
 Programming tasks:
 
-- [ ] Add authentication provider integration
-- [ ] Add user registration
-- [ ] Add login and logout
-- [ ] Add session handling
-- [ ] Add protected front-end routes
-- [ ] Add protected backend endpoints
+- [ ] Add production authentication provider integration
+- [x] Add user registration API foundation
+- [x] Add login API foundation
+- [x] Add signed bearer-token session foundation
+- [ ] Add protected front-end route enforcement
+- [x] Add protected backend endpoint foundation
 - [ ] Add multi-factor authentication support
 - [ ] Add role-based access control
 - [ ] Add plan-based feature entitlements
@@ -72,16 +75,17 @@ Purpose: Replace the backend in-memory store with a real database so user, accou
 
 Programming tasks:
 
-- [ ] Add PostgreSQL or Supabase database connection
+- [x] Add SQLAlchemy database connection foundation
+- [ ] Add PostgreSQL or Supabase production database connection
 - [ ] Add migration system
 - [ ] Add database models
 - [ ] Add repository layer
 - [ ] Replace in-memory journal entry storage
 - [ ] Replace in-memory CRM storage
 - [ ] Replace in-memory integration storage
-- [ ] Add user and organization tables
+- [x] Add user and organization tables
 - [ ] Add team membership tables
-- [ ] Add audit log tables
+- [x] Add subscription and audit log tables
 - [ ] Add test database configuration
 
 Recommended implementation options:
@@ -139,11 +143,11 @@ Purpose: Convert the platform into a revenue-generating SaaS system with Consume
 Programming tasks:
 
 - [ ] Add Stripe products and prices
-- [ ] Add checkout session endpoint
+- [x] Add checkout session endpoint contract
 - [ ] Add billing portal endpoint
-- [ ] Add Stripe webhook endpoint
-- [ ] Persist subscription status
-- [ ] Map subscription plans to feature entitlements
+- [x] Add Stripe webhook endpoint contract
+- [x] Persist subscription status
+- [x] Map subscription plans to feature entitlements foundation
 - [ ] Add trial, cancellation, and failed payment handling
 - [ ] Add admin revenue dashboard data
 
@@ -417,6 +421,11 @@ Build this milestone first:
 Authentication + database persistence + subscription billing foundation
 ```
 
+Current status:
+
+- Foundation implementation has started in `backend/` and front-end account/pricing pages.
+- The next implementation step is production hardening: external auth provider or JWT key management, PostgreSQL/Supabase connection, Stripe SDK integration, webhook signature verification, and database repositories for accounting/CRM/reporting/integration modules.
+
 Why this comes first:
 
 - It converts the platform from a prototype into a real SaaS foundation.
@@ -431,16 +440,16 @@ Start with these concrete programming tasks:
 - [ ] Choose authentication provider
 - [ ] Choose database stack
 - [ ] Choose payment provider
-- [ ] Add organization and user schema
+- [x] Add organization and user schema
 - [ ] Add session-aware front-end layout
 - [ ] Add protected dashboard routes
-- [ ] Add backend auth dependency
-- [ ] Add subscription plan model
-- [ ] Add Stripe checkout endpoint
-- [ ] Add Stripe webhook endpoint
+- [x] Add backend auth dependency
+- [x] Add subscription plan model
+- [x] Add Stripe checkout endpoint contract
+- [x] Add Stripe webhook endpoint contract
 - [ ] Add plan entitlement middleware
 - [ ] Add admin-only route guard
-- [ ] Add audit log table and logging helper
+- [x] Add audit log table and logging helper
 
 ## Suggested environment variables for next milestone
 
@@ -463,13 +472,13 @@ ANTHROPIC_API_KEY=
 
 ## Definition of done for next milestone
 
-- [ ] Users can register and sign in
-- [ ] Users belong to an organization
+- [x] Users can register and sign in through backend APIs
+- [x] Users belong to an organization
 - [ ] Dashboard route is protected
-- [ ] Backend rejects unauthenticated protected requests
+- [x] Backend rejects unauthenticated protected requests
 - [ ] Database persists users, organizations, subscriptions, CRM records, journal entries, and audit logs
-- [ ] Stripe checkout creates a subscription
-- [ ] Stripe webhook updates local subscription status
+- [ ] Stripe checkout creates a live hosted checkout session
+- [x] Stripe webhook contract updates local subscription status
 - [ ] Feature access is controlled by plan
 - [ ] Admin can view user and subscription status
 - [ ] Frontend and backend tests pass

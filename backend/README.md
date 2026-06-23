@@ -14,6 +14,9 @@ This service supports:
 - External banking integrations
 - Vendor and ERP application integrations
 - Microsoft Excel, Word, CSV, and PDF export package interfaces
+- Organization registration and login
+- Bearer token authentication
+- Persistent subscription and audit log records
 
 ## Setup
 
@@ -57,6 +60,50 @@ Base path:
 ```text
 /api/v1
 ```
+
+### Authentication and account foundation
+
+| Method | Route | Purpose |
+| --- | --- | --- |
+| `POST` | `/api/v1/auth/register` | Create organization, admin user, membership, trial subscription, access token, and audit log |
+| `POST` | `/api/v1/auth/login` | Validate credentials and return access token |
+| `GET` | `/api/v1/auth/me` | Return authenticated user, organization, role, and subscription |
+
+### Billing foundation
+
+| Method | Route | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/v1/billing/plans` | List Consumer, Professional, and Enterprise plans |
+| `GET` | `/api/v1/billing/subscription` | Return current authenticated subscription context |
+| `POST` | `/api/v1/billing/checkout-session` | Create checkout-session contract and record billing intent |
+| `POST` | `/api/v1/billing/webhook` | Update local subscription status from billing event |
+| `GET` | `/api/v1/billing/audit-logs` | Return organization audit logs for admin users |
+
+## Database persistence
+
+The backend now initializes persistent SQLAlchemy tables using `DATABASE_URL`.
+
+Default development database:
+
+```text
+sqlite:///./john_henry_platform.db
+```
+
+Production target:
+
+```text
+PostgreSQL / Supabase
+```
+
+Current persistent tables:
+
+- `organizations`
+- `users`
+- `organization_memberships`
+- `subscriptions`
+- `audit_logs`
+
+The existing accounting, CRM, reporting, and integration prototype data still uses the in-memory store. The next persistence step is migrating those modules into SQLAlchemy repositories.
 
 ### Accounting
 
@@ -153,6 +200,10 @@ python3 -m ruff check .
 ## Production next steps
 
 - Replace in-memory store with PostgreSQL/Supabase persistence
+- Add Alembic migrations for persistent tables
+- Replace development token secret with managed `AUTH_JWT_SECRET`
+- Connect checkout-session endpoint to the Stripe SDK
+- Verify Stripe webhook signatures before applying billing events
 - Add authentication and role-based permissions
 - Add approval workflow for journal entries
 - Add immutable audit logs

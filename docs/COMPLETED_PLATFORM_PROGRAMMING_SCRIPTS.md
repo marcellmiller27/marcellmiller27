@@ -104,15 +104,24 @@ Expected result:
 | --- | --- |
 | `backend/pyproject.toml` | Backend package metadata and dependencies |
 | `backend/app/main.py` | FastAPI application entrypoint, CORS, health checks, and router registration |
+| `backend/app/database.py` | SQLAlchemy database engine and session setup |
+| `backend/app/db_models.py` | Persistent organizations, users, memberships, subscriptions, and audit-log tables |
+| `backend/app/security.py` | Password hashing and signed bearer token helpers |
+| `backend/app/dependencies.py` | Protected endpoint and admin dependencies |
+| `backend/app/foundation_models.py` | Auth, account, subscription, billing, and audit-log schemas |
+| `backend/app/foundation_services.py` | Registration, login, subscription, checkout, webhook, and audit-log services |
 | `backend/app/models.py` | Pydantic models for accounting, reports, dashboards, and CRM |
 | `backend/app/store.py` | In-memory prototype repository with seeded chart of accounts, journal entries, and CRM data |
 | `backend/app/services.py` | Accounting, reporting, dashboard, and CRM service logic |
 | `backend/app/routers/accounting.py` | Chart of accounts, journal entry, and trial balance endpoints |
+| `backend/app/routers/auth.py` | Registration, login, and current-user endpoints |
+| `backend/app/routers/billing.py` | Plan, subscription, checkout, webhook, and audit-log endpoints |
 | `backend/app/routers/reports.py` | Audit and financial report endpoints |
 | `backend/app/routers/dashboards.py` | Executive dashboard endpoint |
 | `backend/app/routers/crm.py` | CRM contact, deal, activity, and summary endpoints |
 | `backend/app/routers/integrations.py` | Banking, vendor, Microsoft Office, accounting, and CRM integration endpoints |
 | `backend/tests/test_services.py` | Backend service tests |
+| `backend/tests/test_foundation.py` | Authentication, billing, subscription, and audit-log tests |
 | `backend/tests/test_integrations.py` | Backend integration service tests |
 | `backend/tests/test_api.py` | Backend API route tests |
 | `backend/README.md` | Backend setup, route map, examples, verification, and production next steps |
@@ -136,6 +145,7 @@ Expected result:
 | `README.md` | Project overview, route map, setup commands, and documentation links |
 | `docs/PRODUCT_BLUEPRINT.md` | Full SaaS platform product blueprint and route map |
 | `docs/PROJECT_MANAGEMENT_CHECKLIST.md` | Completed work checklist, remaining launch tasks, MVP checklist, and Marcellus Miller action items |
+| `docs/AUTH_DATABASE_BILLING_FOUNDATION.md` | Authentication, database persistence, and billing foundation details |
 | `docs/NEXT_PROGRAMMING_MILESTONE.md` | Recommended next implementation sequence and add-on programming backlog |
 | `docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md` | This saved programming-script reference file |
 | `AI_AGENT_WORK_SUMMARY.md` | Summary of AI-agent-created application work in the repository |

@@ -20,6 +20,9 @@ The prototype in this repository turns the SaaS application blueprint into a run
 - Executive dashboards
 - CRM pipeline management
 - External banking, vendor, Microsoft Office, and CRM integrations
+- Authentication and organization accounts
+- Database persistence foundation
+- Subscription billing foundation
 
 ## Tech stack
 
@@ -39,6 +42,10 @@ The prototype in this repository turns the SaaS application blueprint into a run
 - `/portfolio` - Portfolio management and wealth projection scenarios
 - `/reports` - John Henry Intelligence Center report generation workflow
 - `/assistant` - Private AI research assistant workflow examples
+- `/register` - Organization and admin registration foundation
+- `/login` - Authentication and session contract overview
+- `/pricing` - Subscription plan and checkout contract overview
+- `/account` - Account, organization, subscription, and audit context
 
 ## Backend API
 
@@ -61,6 +68,9 @@ It includes API modules for:
 - Vendor/accounting connectors such as QuickBooks, NetSuite, and Bill.com
 - Microsoft 365 Excel and Word export package interfaces
 - Salesforce CRM sync interface
+- Organization and user registration
+- Login and bearer token authentication
+- Subscription plans, checkout sessions, webhooks, and audit logs
 
 Backend documentation:
 
@@ -106,11 +116,12 @@ python3 -m ruff check .
 
 ## Product blueprint
 
-The full product specification, project management checklist, next programming milestone, and saved programming-script reference are available in:
+The full product specification, project management checklist, auth/database/billing foundation, next programming milestone, and saved programming-script reference are available in:
 
 ```text
 docs/PRODUCT_BLUEPRINT.md
 docs/PROJECT_MANAGEMENT_CHECKLIST.md
+docs/AUTH_DATABASE_BILLING_FOUNDATION.md
 docs/NEXT_PROGRAMMING_MILESTONE.md
 docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md
 ```

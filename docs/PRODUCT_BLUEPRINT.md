@@ -165,6 +165,8 @@ The current repository includes a FastAPI backend prototype in `backend/` for in
 
 | Area | Routes | Purpose |
 | --- | --- | --- |
+| Authentication | `/api/v1/auth/*` | Organization registration, login, bearer token, and current-user context |
+| Billing | `/api/v1/billing/*` | Plan catalog, checkout-session contract, subscription status, webhook updates, and audit logs |
 | Accounting | `/api/v1/accounting/*` | Chart of accounts, balanced general journal entries, and trial balance |
 | Audit reports | `/api/v1/reports/audit` | Period-based audit findings, controls summary, scope, and risk score |
 | Financial reports | `/api/v1/reports/financial` | Income statement, balance sheet summary, cash-flow summary, and KPIs |
@@ -173,6 +175,8 @@ The current repository includes a FastAPI backend prototype in `backend/` for in
 | Integrations | `/api/v1/integrations/*` | Banking, vendor, Microsoft Office, accounting, and CRM connector interfaces |
 
 The backend currently uses an in-memory development repository with seeded data. The production target is PostgreSQL/Supabase persistence with authentication, approvals, audit logs, billing integration, document storage, secret-manager-backed provider credentials, and webhook verification.
+
+The authentication, database persistence, and billing foundation is documented in `docs/AUTH_DATABASE_BILLING_FOUNDATION.md`.
 
 External interfaces currently represented:
 
