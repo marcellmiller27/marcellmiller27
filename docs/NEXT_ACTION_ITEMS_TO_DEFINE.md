@@ -48,6 +48,7 @@ The current platform now has a front-end application, FastAPI backend, accountin
 ## 3. Legal and compliance items to define
 
 - [ ] Confirm whether legal counsel has reviewed the platform concept.
+- [ ] Define initial legal budget using `docs/STAFFING_LEGAL_PRO_FORMA.md`.
 - [ ] Define financial disclaimer language.
 - [ ] Define AI-output disclaimer language.
 - [ ] Define tax/legal/accounting advice disclaimer language.
@@ -209,6 +210,7 @@ The current platform now has a front-end application, FastAPI backend, accountin
 - [ ] Define integration health dashboard requirements.
 - [ ] Define audit log viewer requirements.
 - [ ] Define support workflow.
+- [ ] Define whether beta is one-person operated or contractor-supported.
 - [ ] Define incident response workflow.
 - [ ] Define production launch checklist owner.
 

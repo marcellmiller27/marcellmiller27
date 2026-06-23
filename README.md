@@ -116,7 +116,7 @@ python3 -m ruff check .
 
 ## Product blueprint
 
-The full product specification, project management checklist, cloud capacity plan, estimated platform costs, projected EBITDA model, next action items to define, auth/database/billing foundation, next programming milestone, failed programming codes log, and saved programming-script reference are available in:
+The full product specification, project management checklist, cloud capacity plan, estimated platform costs, projected EBITDA model, staffing/legal pro forma, next action items to define, auth/database/billing foundation, next programming milestone, failed programming codes log, and saved programming-script reference are available in:
 
 ```text
 docs/PRODUCT_BLUEPRINT.md
@@ -124,6 +124,7 @@ docs/PROJECT_MANAGEMENT_CHECKLIST.md
 docs/CLOUD_STORAGE_AND_CAPACITY_PLAN.md
 docs/ESTIMATED_PLATFORM_COSTS.md
 docs/PROJECTED_EBITDA_MODEL.md
+docs/STAFFING_LEGAL_PRO_FORMA.md
 docs/NEXT_ACTION_ITEMS_TO_DEFINE.md
 docs/AUTH_DATABASE_BILLING_FOUNDATION.md
 docs/NEXT_PROGRAMMING_MILESTONE.md

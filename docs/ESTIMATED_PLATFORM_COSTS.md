@@ -8,6 +8,8 @@ These are planning ranges, not vendor quotes. Actual costs depend on selected pr
 
 Projected EBITDA scenarios based on these cost ranges are documented in `docs/PROJECTED_EBITDA_MODEL.md`.
 
+Realistic staffing, one-person operation limits, legal expenditures, compliance costs, and staffing-adjusted EBITDA are documented in `docs/STAFFING_LEGAL_PRO_FORMA.md`.
+
 ## Cost tiers
 
 | Tier | Users | Description |

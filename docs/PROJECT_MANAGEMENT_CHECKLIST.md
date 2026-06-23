@@ -32,6 +32,7 @@ Current repository status: Front-end application prototype completed as a routed
 | Cloud capacity plan | [x] | Storage, database, network, compute, cache, AI, and monitoring estimates in `docs/CLOUD_STORAGE_AND_CAPACITY_PLAN.md` |
 | Estimated platform costs | [x] | Monthly, annual, and tiered cost estimates in `docs/ESTIMATED_PLATFORM_COSTS.md` |
 | Projected EBITDA model | [x] | Revenue, expenditure, EBITDA, margin, and break-even scenarios in `docs/PROJECTED_EBITDA_MODEL.md` |
+| Staffing/legal pro forma | [x] | One-person feasibility, staffing plan, legal expenditures, compliance costs, and staffing-adjusted EBITDA in `docs/STAFFING_LEGAL_PRO_FORMA.md` |
 | Next action items to define | [x] | Decision checklist for business, legal, provider, integration, billing, AI, and engineering inputs in `docs/NEXT_ACTION_ITEMS_TO_DEFINE.md` |
 | Next programming milestone | [x] | Recommended next implementation sequence in `docs/NEXT_PROGRAMMING_MILESTONE.md` |
 | Backend API prototype | [x] | FastAPI service for accounting journal entries, audit reports, financial reports, dashboards, and CRM in `backend/` |
@@ -131,6 +132,7 @@ Current repository status: Front-end application prototype completed as a routed
 - [ ] Review cloud capacity plan and select MVP infrastructure size
 - [ ] Review estimated platform costs and approve MVP budget range
 - [ ] Review projected EBITDA model and approve financial planning assumptions
+- [ ] Review staffing/legal pro forma and approve one-person beta or staffed MVP plan
 - [ ] Configure environment variables
 - [ ] Configure CI checks for typecheck, lint, build, and audit
 - [ ] Configure preview deployments

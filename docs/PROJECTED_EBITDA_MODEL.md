@@ -309,3 +309,38 @@ Conservative adjustment:
 ```text
 After staffing, customer acquisition, compliance, and legal expenses, early-stage EBITDA may be materially lower or negative until the platform reaches stable paid adoption.
 ```
+
+## Staffing and legal adjustment to pro forma
+
+The base EBITDA tables above should be treated as platform-level EBITDA before full staffing, customer acquisition, and many legal/compliance services.
+
+Detailed staffing and legal assumptions are documented in `docs/STAFFING_LEGAL_PRO_FORMA.md`.
+
+Base blended SaaS mix:
+
+```text
+85% Consumer, 13% Professional, 2% Enterprise
+```
+
+| Tier | Monthly revenue | Platform operating costs incl. processing | Staffing/professional services | Legal/compliance recurring | Adjusted monthly EBITDA | Adjusted annual EBITDA |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Prototype - 100 users | $11K | $434-$1,084 | $0-$15K | $0-$2.5K | ($6.5K)-$10.7K | ($78K)-$128K |
+| Paid MVP - 1,000 users | $111K | $5.8K-$15.3K | $35K-$90K | $2K-$10K | ($4K)-$68K | ($48K)-$816K |
+| Growth - 10,000 users | $1.114M | $58K-$158K | $250K-$650K | $25K-$100K | $206K-$781K | $2.47M-$9.37M |
+| Scale - 50,000 users | $5.569M | $317K-$817K | $1.0M-$2.5M | $100K-$300K | $1.95M-$4.15M | $23.4M-$49.8M |
+| Enterprise - 100,000 users | $11.137M | $734K-$1.834M | $2.25M-$6.0M | $250K-$800K | $2.50M-$7.90M | $30.0M-$94.8M |
+
+One-person operation view:
+
+```text
+One person can operate prototype and limited controlled beta workflows, but a paid production financial SaaS platform requires contractor support or a team for support, security, compliance, legal review, billing, integrations, and engineering.
+```
+
+Near-term planning recommendation:
+
+```text
+Founder-led controlled beta + outside counsel + contractor engineering + limited AI/document usage.
+Initial monthly operating budget excluding founder salary: $5,000-$20,000.
+Initial legal/security budget before broad paid launch: $25,000-$100,000.
+Paid MVP staffing budget: $35,000-$90,000/month.
+```
