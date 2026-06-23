@@ -35,6 +35,7 @@ Current repository status: Front-end application prototype completed as a routed
 | Projected EBITDA model | [x] | Revenue, expenditure, EBITDA, margin, and break-even scenarios in `docs/PROJECTED_EBITDA_MODEL.md` |
 | Staffing/legal pro forma | [x] | One-person feasibility, staffing plan, legal expenditures, compliance costs, and staffing-adjusted EBITDA in `docs/STAFFING_LEGAL_PRO_FORMA.md` |
 | Compensation/professional-services projections | [x] | Per-person compensation, outsourced versus in-house services, quarterly/annual staffing, and expenditure comparisons in `docs/COMPENSATION_AND_PRO_SERVICES_PROJECTIONS.md` |
+| Job descriptions/staffing requirements | [x] | Department-level job descriptions, skill requirements, education/experience expectations, legal personnel, and law firm requirements in `docs/JOB_DESCRIPTIONS_AND_STAFFING_REQUIREMENTS.md` |
 | Next action items to define | [x] | Decision checklist for business, legal, provider, integration, billing, AI, and engineering inputs in `docs/NEXT_ACTION_ITEMS_TO_DEFINE.md` |
 | Next programming milestone | [x] | Recommended next implementation sequence in `docs/NEXT_PROGRAMMING_MILESTONE.md` |
 | Backend API prototype | [x] | FastAPI service for accounting journal entries, audit reports, financial reports, dashboards, and CRM in `backend/` |
@@ -136,6 +137,7 @@ Current repository status: Front-end application prototype completed as a routed
 - [ ] Review projected EBITDA model and approve financial planning assumptions
 - [ ] Review staffing/legal pro forma and approve one-person beta or staffed MVP plan
 - [ ] Review compensation and professional-services projections before converting contractors to in-house roles
+- [ ] Review job descriptions and staffing requirements before recruiting or contracting roles
 - [ ] Review investor package and add live assumptions, screenshots, demo video, pilot customers, and final use-of-funds ask
 - [ ] Configure environment variables
 - [ ] Configure CI checks for typecheck, lint, build, and audit

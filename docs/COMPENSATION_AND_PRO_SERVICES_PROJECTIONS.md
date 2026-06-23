@@ -6,6 +6,8 @@ This document estimates sustainable staffing compensation, professional services
 
 These are planning estimates, not compensation, tax, accounting, legal, HR, or investment advice. Actual costs depend on geography, hiring market, benefits, contractor rates, founder compensation, legal scope, regulatory status, customer mix, revenue, and vendor contracts.
 
+Department-level job descriptions and legal/professional staffing requirements are documented in `docs/JOB_DESCRIPTIONS_AND_STAFFING_REQUIREMENTS.md`.
+
 ## Planning definitions
 
 Loaded compensation means:

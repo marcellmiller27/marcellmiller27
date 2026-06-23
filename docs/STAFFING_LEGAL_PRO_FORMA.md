@@ -8,6 +8,8 @@ These are planning estimates, not legal, tax, accounting, compensation, or inves
 
 Detailed quarterly and annual compensation and professional-services projections are documented in `docs/COMPENSATION_AND_PRO_SERVICES_PROJECTIONS.md`.
 
+Department-level job descriptions, skill requirements, education/experience expectations, and legal personnel requirements are documented in `docs/JOB_DESCRIPTIONS_AND_STAFFING_REQUIREMENTS.md`.
+
 ## Can this be operated by one person?
 
 Short answer:
