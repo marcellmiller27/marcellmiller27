@@ -47,6 +47,40 @@ def test_opportunity_scores_snapshot(monkeypatch) -> None:
     assert all(0.0 <= s["opportunity_score"] <= 100.0 for s in body["scores"])
 
 
+def test_equity_oos_backtest_runs_and_reports_fields(monkeypatch) -> None:
+    monkeypatch.setattr(research_services, "yahoo_chart_history", fake_history)
+    body = client.get("/api/v1/research/equity-oos-backtest").json()
+    assert body["status"] == "ok"
+    assert body["in_sample_periods"] > 0 and body["oos_periods"] > 0
+    assert set(body["factor_weights"]) and abs(sum(body["factor_weights"].values()) - 1.0) < 0.05
+    assert body["pass_criteria"]
+    assert isinstance(body["oos_pass"], bool)
+    # Momentum should dominate the learned weights on momentum-driven synthetic data.
+    assert body["factor_weights"].get("momentum_12_1", 0) >= max(
+        body["factor_weights"].get("reversal_guard", 0),
+        body["factor_weights"].get("low_volatility", 0),
+    )
+    assert body["net_annualized_long_short"] is not None
+    assert body["oos_mean_information_coefficient"] is not None
+
+
+def test_equity_oos_backtest_handles_outage(monkeypatch) -> None:
+    monkeypatch.setattr(
+        research_services, "yahoo_chart_history",
+        lambda *a, **k: (_ for _ in ()).throw(RuntimeError("down")),
+    )
+    body = client.get("/api/v1/research/equity-oos-backtest").json()
+    assert body["status"] == "unavailable"
+    assert body["oos_pass"] is False
+    assert body["solution_if_failed"]
+
+
+def test_fundamentals_status_discloses_data_gap() -> None:
+    body = client.get("/api/v1/research/fundamentals-status").json()
+    assert body["available"] is False
+    assert len(body["required_solution"]) >= 3
+
+
 def test_score_backtest_handles_provider_outage(monkeypatch) -> None:
     def boom(symbol, range_="10y", interval="1mo"):
         raise RuntimeError("network down")

@@ -31,7 +31,13 @@ from app.db_models import (
     UserSecurityDB,
 )
 from app.market_services import fred_api_key, yahoo_chart_history
-from app.opportunity_score import WEIGHTS, composite_scores, opportunity_scores
+from app.opportunity_score import (
+    WEIGHTS,
+    _factors_at,
+    _zscore,
+    composite_scores,
+    opportunity_scores,
+)
 from app.research_models import (
     AcquisitionCaseResult,
     AcquisitionValidation,
@@ -40,8 +46,35 @@ from app.research_models import (
     BacktestResult,
     CoverageRow,
     DataCoverageReport,
+    EquityOOSBacktestResult,
+    FundamentalsStatus,
     OpportunityScoreSnapshot,
 )
+
+# Equity-only universe (no bonds/commodities/ETFs that diluted the mixed back-test).
+EQUITY_UNIVERSE = [
+    "AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "ORCL", "CSCO", "INTC", "IBM",
+    "JPM", "BAC", "WFC", "GS", "XOM", "CVX", "JNJ", "PFE", "MRK", "UNH",
+    "PG", "KO", "PEP", "WMT", "HD", "MCD", "DIS", "NKE", "VZ", "T",
+]
+PRICE_FACTORS = ["momentum_12_1", "low_volatility", "trend", "reversal_guard"]
+COST_BPS_PER_SIDE = 10.0
+# Pre-registered OUT-OF-SAMPLE success criteria (declared before reading results).
+OOS_MIN_IC = 0.02
+OOS_MIN_T = 1.5
+OOS_PASS_CRITERIA = (
+    f"OOS mean IC >= {OOS_MIN_IC} AND |OOS t-stat| >= {OOS_MIN_T} "
+    "AND net (after-cost) annualized long-short > 0"
+)
+_FUNDAMENTALS_SOLUTION = [
+    "License a point-in-time fundamentals dataset (e.g., Sharadar/Compustat/Tiingo/FMP) "
+    "to avoid look-ahead and survivorship bias.",
+    "Add value (E/P, B/P), quality (ROE, margins, low accruals), and growth factors to "
+    "the cross-sectional score alongside the price factors.",
+    "Use a survivorship-bias-free universe and a risk model (sector/beta neutralization).",
+    "Keep the walk-forward, costed, out-of-sample protocol already implemented here; only "
+    "the historical fundamentals data is missing in this environment.",
+]
 
 # Expanded, diversified universe + long window for statistical power (fixes the
 # "incomplete dataset" deficiency behind the weak earlier back-test).
@@ -259,6 +292,189 @@ class ResearchService:
         bottom = statistics.fmean([f for _s, f in paired[:k]])
         top = statistics.fmean([f for _s, f in paired[-k:]])
         return top - bottom
+
+    # --- Fundamentals-based research program ------------------------------ #
+    def fundamentals_status(self) -> FundamentalsStatus:
+        """Whether historical fundamentals are available for a fundamentals factor."""
+        return FundamentalsStatus(
+            available=False,
+            provider="none",
+            note=(
+                "No programmatic fundamentals source is reachable without credentials "
+                "(Yahoo quoteSummary/v7 return 401), and free sources do not provide "
+                "point-in-time historical fundamentals. A fundamentals factor therefore "
+                "cannot be back-tested here without look-ahead/survivorship bias."
+            ),
+            required_solution=_FUNDAMENTALS_SOLUTION,
+            as_of=_now(),
+        )
+
+    def equity_oos_backtest(self) -> EquityOOSBacktestResult:
+        """Equity-only, costed, out-of-sample price-factor back-test.
+
+        Factor *weights* are learned on the in-sample window (weight ∝ positive
+        in-sample IC) and then FROZEN and evaluated on a disjoint out-of-sample
+        window with transaction costs. This is the historically valid portion of the
+        fundamentals program; fundamentals require a licensed data source (see
+        ``fundamentals_status``).
+        """
+        caveats = [
+            "Price factors only — fundamentals unavailable without a licensed source.",
+            "Equity-only universe; no survivorship-bias control; single vendor (Yahoo).",
+            f"Costs modeled at {COST_BPS_PER_SIDE} bps/side via portfolio turnover.",
+        ]
+        unavailable = EquityOOSBacktestResult(
+            protocol="equity-only, costed, walk-forward in-sample/out-of-sample",
+            universe=EQUITY_UNIVERSE, n_assets=0, in_sample_periods=0, oos_periods=0,
+            factor_weights={}, oos_mean_information_coefficient=None, oos_ic_t_stat=None,
+            oos_hit_rate=None, gross_annualized_long_short=None,
+            net_annualized_long_short=None, cost_bps_per_side=COST_BPS_PER_SIDE,
+            avg_monthly_turnover=None, pass_criteria=OOS_PASS_CRITERIA, oos_pass=False,
+            interpretation="Insufficient equity history fetched to run the protocol.",
+            solution_if_failed=_FUNDAMENTALS_SOLUTION, caveats=caveats,
+            status="unavailable", as_of=_now(),
+        )
+
+        usable = self._load_series(EQUITY_UNIVERSE, min_points=48)
+        if len(usable) < 8:
+            return unavailable
+        min_len = min(len(c) for c in usable.values())
+        aligned = {s: c[-min_len:] for s, c in usable.items()}
+        evaluable = list(range(12, min_len - 1))
+        if len(evaluable) < 24:
+            return unavailable
+
+        split = int(len(evaluable) * 0.6)
+        in_sample, oos = evaluable[:split], evaluable[split:]
+
+        # 1) Learn factor weights from in-sample single-factor ICs (clip at 0).
+        factor_ic: dict[str, list[float]] = {f: [] for f in PRICE_FACTORS}
+        for t in in_sample:
+            raw, fwds = self._factor_matrix(aligned, t)
+            if len(raw) < 4:
+                continue
+            assets = list(raw.keys())
+            forward = [fwds[a] for a in assets]
+            for factor in PRICE_FACTORS:
+                z = _zscore([raw[a][factor] for a in assets])
+                ic = _spearman(z, forward)
+                if ic is not None:
+                    factor_ic[factor].append(ic)
+        weights = {f: max(0.0, statistics.fmean(v)) for f, v in factor_ic.items() if v}
+        total = sum(weights.values())
+        if total <= 0:
+            weights = {f: 1.0 / len(PRICE_FACTORS) for f in PRICE_FACTORS}
+        else:
+            weights = {f: round(w / total, 4) for f, w in weights.items()}
+
+        # 2) Freeze weights; evaluate out-of-sample with costs.
+        oos_ics: list[float] = []
+        gross: list[float] = []
+        net: list[float] = []
+        turnovers: list[float] = []
+        prev_port: dict[str, float] = {}
+        for t in oos:
+            raw, fwds = self._factor_matrix(aligned, t)
+            if len(raw) < 6:
+                continue
+            assets = list(raw.keys())
+            composite = {a: 0.0 for a in assets}
+            for factor, weight in weights.items():
+                z = _zscore([raw[a][factor] for a in assets])
+                for a, zv in zip(assets, z):
+                    composite[a] += weight * zv
+            forward = [fwds[a] for a in assets]
+            ic = _spearman([composite[a] for a in assets], forward)
+            if ic is not None:
+                oos_ics.append(ic)
+            port, g = self._long_short_portfolio(composite, fwds)
+            gross.append(g)
+            turnover = self._turnover(prev_port, port)
+            turnovers.append(turnover)
+            net.append(g - turnover * (2 * COST_BPS_PER_SIDE / 10_000.0))
+            prev_port = port
+
+        if not oos_ics:
+            return unavailable
+
+        oos_mean_ic = statistics.fmean(oos_ics)
+        oos_sd = statistics.pstdev(oos_ics) if len(oos_ics) > 1 else 0.0
+        oos_t = (oos_mean_ic / (oos_sd / (len(oos_ics) ** 0.5))) if oos_sd > 0 else None
+        oos_hit = sum(1 for ic in oos_ics if ic > 0) / len(oos_ics)
+        gross_ann = statistics.fmean(gross) * 12 if gross else None
+        net_ann = statistics.fmean(net) * 12 if net else None
+        avg_turnover = statistics.fmean(turnovers) if turnovers else None
+
+        oos_pass = bool(
+            oos_mean_ic >= OOS_MIN_IC
+            and oos_t is not None
+            and abs(oos_t) >= OOS_MIN_T
+            and net_ann is not None
+            and net_ann > 0
+        )
+        verdict = "PASS" if oos_pass else "FAIL"
+        interpretation = (
+            f"OOS H5 = {verdict}. OOS mean IC {oos_mean_ic:.4f}, t-stat "
+            f"{(round(oos_t, 2) if oos_t is not None else 'n/a')}, hit {oos_hit:.0%}, "
+            f"net annualized long-short {(round(net_ann, 4) if net_ann is not None else 'n/a')} "
+            f"over {len(oos_ics)} OOS months / {len(usable)} equities."
+        )
+        return EquityOOSBacktestResult(
+            protocol="equity-only, costed, walk-forward in-sample/out-of-sample",
+            universe=list(usable.keys()),
+            n_assets=len(usable),
+            in_sample_periods=len(in_sample),
+            oos_periods=len(oos_ics),
+            factor_weights=weights,
+            oos_mean_information_coefficient=round(oos_mean_ic, 4),
+            oos_ic_t_stat=round(oos_t, 2) if oos_t is not None else None,
+            oos_hit_rate=round(oos_hit, 3),
+            gross_annualized_long_short=round(gross_ann, 4) if gross_ann is not None else None,
+            net_annualized_long_short=round(net_ann, 4) if net_ann is not None else None,
+            cost_bps_per_side=COST_BPS_PER_SIDE,
+            avg_monthly_turnover=round(avg_turnover, 4) if avg_turnover is not None else None,
+            pass_criteria=OOS_PASS_CRITERIA,
+            oos_pass=oos_pass,
+            interpretation=interpretation,
+            solution_if_failed=[] if oos_pass else _FUNDAMENTALS_SOLUTION,
+            caveats=caveats,
+            as_of=_now(),
+        )
+
+    @staticmethod
+    def _factor_matrix(
+        aligned: dict[str, list[float]], t: int
+    ) -> tuple[dict[str, dict[str, float]], dict[str, float]]:
+        raw: dict[str, dict[str, float]] = {}
+        fwds: dict[str, float] = {}
+        for asset, closes in aligned.items():
+            factors = _factors_at(closes, t)
+            if factors is not None and t + 1 < len(closes):
+                raw[asset] = factors
+                fwds[asset] = closes[t + 1] / closes[t] - 1.0
+        return raw, fwds
+
+    @staticmethod
+    def _long_short_portfolio(
+        composite: dict[str, float], fwds: dict[str, float]
+    ) -> tuple[dict[str, float], float]:
+        ordered = sorted(composite.items(), key=lambda kv: kv[1])
+        n = len(ordered)
+        k = max(1, n // 3)
+        shorts = [a for a, _v in ordered[:k]]
+        longs = [a for a, _v in ordered[-k:]]
+        port = {a: 1.0 / k for a in longs}
+        for a in shorts:
+            port[a] = port.get(a, 0.0) - 1.0 / k
+        gross = statistics.fmean([fwds[a] for a in longs]) - statistics.fmean(
+            [fwds[a] for a in shorts]
+        )
+        return port, gross
+
+    @staticmethod
+    def _turnover(prev: dict[str, float], curr: dict[str, float]) -> float:
+        names = set(prev) | set(curr)
+        return 0.5 * sum(abs(curr.get(a, 0.0) - prev.get(a, 0.0)) for a in names)
 
     # --- §8.4 ------------------------------------------------------------- #
     def adoption_study(self) -> AdoptionStudy:
