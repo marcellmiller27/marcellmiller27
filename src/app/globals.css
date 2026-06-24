@@ -1,16 +1,32 @@
 :root {
   color-scheme: dark;
-  --background: #071018;
-  --background-soft: #0c1824;
-  --background-card: rgba(17, 33, 48, 0.82);
-  --border: rgba(167, 192, 211, 0.18);
-  --gold: #d7ad5b;
-  --gold-soft: rgba(215, 173, 91, 0.14);
-  --green: #61d394;
-  --text: #eef6fb;
-  --muted: #9fb0bd;
-  --muted-strong: #c4d1da;
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+  --background: #06121f;
+  --background-soft: #0b1f33;
+  --background-card: rgba(13, 30, 49, 0.82);
+  --border: rgba(151, 182, 212, 0.18);
+
+  /* Trust (deep blue): signals credibility, security, competence. Reduces
+     perceived risk so visitors feel safe signing up. Anchors B2B confidence. */
+  --trust: #2f74ff;
+  --trust-strong: #195fe6;
+  --trust-soft: rgba(47, 116, 255, 0.14);
+
+  /* Growth (emerald): the "gain / go / money" association. Reserved for the
+     primary action so the single decisive CTA stands out (isolation effect). */
+  --growth: #1fc585;
+  --growth-strong: #15a86e;
+  --growth-soft: rgba(31, 197, 133, 0.14);
+  --green: var(--growth);
+
+  /* Premium (gold): prestige, achievement, aspiration. Frames wealth identity
+     and premium tiers; leads the warmer, aspiration-driven B2C story. */
+  --gold: #e3b765;
+  --gold-soft: rgba(227, 183, 101, 0.14);
+
+  --text: #eef5fb;
+  --muted: #9db0c0;
+  --muted-strong: #c6d4e0;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
 }
 
 * {
@@ -24,8 +40,9 @@ html {
 body {
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(215, 173, 91, 0.18), transparent 30rem),
-    radial-gradient(circle at top right, rgba(97, 211, 148, 0.13), transparent 28rem),
+    radial-gradient(circle at top left, rgba(47, 116, 255, 0.17), transparent 30rem),
+    radial-gradient(circle at top right, rgba(31, 197, 133, 0.14), transparent 28rem),
+    radial-gradient(circle at 62% 6%, rgba(227, 183, 101, 0.1), transparent 26rem),
     var(--background);
   color: var(--text);
   font-family:
@@ -78,6 +95,22 @@ main {
   line-height: 1.7;
 }
 
+.hero__brand {
+  display: inline-flex;
+  gap: 0.7rem;
+  align-items: center;
+  margin-bottom: 1.4rem;
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.hero__brand svg {
+  width: 2.7rem;
+  height: 2.7rem;
+}
+
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
@@ -95,8 +128,19 @@ main {
 }
 
 .button--primary {
-  background: var(--gold);
-  color: #111820;
+  background: var(--growth);
+  color: #04140d;
+  box-shadow: 0 12px 30px rgba(31, 197, 133, 0.28);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.button--primary:hover {
+  background: var(--growth-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 16px 38px rgba(31, 197, 133, 0.36);
 }
 
 .button--secondary {
@@ -250,6 +294,25 @@ main {
   margin-top: 1rem;
   color: var(--green);
   font-size: 2.1rem;
+}
+
+/* Segment-tuned accents: each tier leads with the color that converts its
+   audience best. Consumer (B2C) -> gold aspiration, Professional -> growth/ROI,
+   Enterprise (B2B) -> trust-blue credibility. */
+.pricing-grid .pricing-card {
+  border-top-width: 3px;
+}
+
+.pricing-grid .pricing-card:nth-child(1) {
+  border-top-color: var(--gold);
+}
+
+.pricing-grid .pricing-card:nth-child(2) {
+  border-top-color: var(--growth);
+}
+
+.pricing-grid .pricing-card:nth-child(3) {
+  border-top-color: var(--trust);
 }
 
 ul {
@@ -432,15 +495,10 @@ li::before {
   font-weight: 900;
 }
 
-.app-header__brand span {
+.app-header__brand svg {
   display: inline-flex;
   width: 2.4rem;
   height: 2.4rem;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: var(--gold);
-  color: #111820;
 }
 
 .app-nav {
@@ -715,12 +773,20 @@ li::before {
 .report-card button {
   border: 0;
   border-radius: 999px;
-  background: var(--gold);
-  color: #111820;
+  background: var(--growth);
+  color: #04140d;
   cursor: pointer;
   font: inherit;
   font-weight: 900;
   padding: 0.9rem 1rem;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+.report-card button:hover {
+  background: var(--growth-strong);
+  transform: translateY(-1px);
 }
 
 .assistant-panel {
@@ -754,8 +820,8 @@ li::before {
 .chat-card__prompt {
   justify-self: end;
   max-width: 82%;
-  background: var(--gold);
-  color: #111820;
+  background: var(--trust);
+  color: #f3f7ff;
   font-weight: 900;
 }
 
@@ -767,6 +833,409 @@ li::before {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+/* ----------------------------------------------------------------------------
+   Mobile app experience (/mobile) — phone-framed dual-access companion app
+---------------------------------------------------------------------------- */
+.mobile-stage {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem 1rem;
+}
+
+.mobile-stage__intro {
+  max-width: 420px;
+  text-align: center;
+  color: var(--muted-strong);
+}
+
+.mobile-stage__intro a {
+  color: var(--growth);
+  font-weight: 800;
+}
+
+.device-frame {
+  position: relative;
+  width: 100%;
+  max-width: 392px;
+  height: 800px;
+  max-height: 88vh;
+  border: 10px solid #05101b;
+  border-radius: 2.8rem;
+  background: linear-gradient(180deg, #08182a, #06121f);
+  box-shadow:
+    0 40px 90px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(151, 182, 212, 0.12);
+  overflow: hidden;
+}
+
+.device-frame::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 5;
+  width: 42%;
+  height: 1.6rem;
+  transform: translateX(-50%);
+  border-radius: 0 0 1rem 1rem;
+  background: #05101b;
+}
+
+.device-screen {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  padding: 2.6rem 1.4rem 1.6rem;
+  overflow-y: auto;
+}
+
+.device-screen::-webkit-scrollbar {
+  width: 0;
+}
+
+.m-brand {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  font-weight: 900;
+}
+
+.m-brand svg {
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+.m-brand small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.m-eyebrow {
+  margin: 1.6rem 0 0.3rem;
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.m-title {
+  margin: 0;
+  font-size: 1.7rem;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.m-sub {
+  margin: 0.6rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.m-spacer {
+  flex: 1;
+}
+
+.m-stack {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1.3rem;
+}
+
+.m-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.m-field label {
+  color: var(--muted-strong);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.m-field input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+  padding: 0.85rem 0.95rem;
+}
+
+.m-field input:focus {
+  border-color: var(--trust);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--trust-soft);
+}
+
+.m-btn {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 900;
+  padding: 0.95rem 1rem;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.m-btn:active {
+  transform: translateY(1px);
+}
+
+.m-btn:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.m-btn--primary {
+  background: var(--growth);
+  color: #04140d;
+  box-shadow: 0 12px 30px rgba(31, 197, 133, 0.28);
+}
+
+.m-btn--trust {
+  background: var(--trust);
+  color: #f3f7ff;
+}
+
+.m-btn--ghost {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+}
+
+.m-link {
+  border: 0;
+  background: none;
+  color: var(--growth);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  padding: 0;
+}
+
+.m-method {
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 1.1rem;
+  background: var(--background-card);
+  cursor: pointer;
+  padding: 1rem;
+  text-align: left;
+}
+
+.m-method:hover {
+  border-color: var(--trust);
+}
+
+.m-method__icon {
+  display: inline-flex;
+  width: 2.7rem;
+  height: 2.7rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.9rem;
+  background: var(--trust-soft);
+  font-size: 1.3rem;
+}
+
+.m-method__icon--bio {
+  background: var(--growth-soft);
+}
+
+.m-method__icon--gold {
+  background: var(--gold-soft);
+}
+
+.m-method strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.m-method span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.m-otp {
+  display: flex;
+  justify-content: center;
+  margin: 0.4rem 0;
+}
+
+.m-otp input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font: inherit;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 0.6em;
+  padding: 0.8rem 0.4rem 0.8rem 1rem;
+  text-align: center;
+}
+
+.m-note {
+  border: 1px dashed var(--border);
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted-strong);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  padding: 0.7rem 0.85rem;
+}
+
+.m-note strong {
+  color: var(--gold);
+}
+
+.m-note--code strong {
+  color: var(--growth);
+  font-size: 1.1rem;
+  letter-spacing: 0.18em;
+}
+
+.m-error {
+  border: 1px solid rgba(255, 138, 110, 0.4);
+  border-radius: 0.9rem;
+  background: rgba(255, 138, 110, 0.12);
+  color: #ffc4ad;
+  font-size: 0.85rem;
+  padding: 0.7rem 0.85rem;
+}
+
+.m-bio-orb {
+  display: flex;
+  width: 6.5rem;
+  height: 6.5rem;
+  margin: 1.6rem auto 0.8rem;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--growth);
+  border-radius: 999px;
+  background: var(--growth-soft);
+  box-shadow: 0 0 40px rgba(31, 197, 133, 0.25);
+  font-size: 2.6rem;
+}
+
+.m-card {
+  border: 1px solid var(--border);
+  border-radius: 1.1rem;
+  background: var(--background-card);
+  padding: 0.95rem 1.05rem;
+}
+
+.m-card span {
+  color: var(--gold);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.m-card strong {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 1.5rem;
+}
+
+.m-card p {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.m-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.m-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--background-card);
+  padding: 0.85rem 1rem;
+}
+
+.m-row strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.m-row span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.m-pill {
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.7rem;
+  text-transform: uppercase;
+}
+
+.m-pill--on {
+  background: var(--growth-soft);
+  color: var(--growth);
+}
+
+.m-pill--off {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+}
+
+.m-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.m-back {
+  border: 0;
+  background: none;
+  color: var(--muted-strong);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  padding: 0;
 }
 
 @media (max-width: 980px) {

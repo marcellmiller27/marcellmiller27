@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { Logo } from "@/components/logo";
 
 const navigation = [
   { href: "/", label: "Home" },
@@ -25,7 +26,7 @@ export function PlatformShell({ eyebrow, title, description, children }: Platfor
     <main className="app-shell">
       <header className="app-header">
         <Link className="app-header__brand" href="/">
-          <span>JH</span>
+          <Logo size={38} />
           John Henry Investments
         </Link>
         <nav className="app-nav" aria-label="Application navigation">

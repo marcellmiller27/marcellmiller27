@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { Logo } from "@/components/logo";
 import {
   dashboardWidgets,
   platformModules,
@@ -26,6 +28,10 @@ export default function Home() {
     <main>
       <section className="hero section">
         <div className="hero__content">
+          <Link className="hero__brand" href="/">
+            <Logo size={44} />
+            John Henry Investments
+          </Link>
           <p className="eyebrow">John Henry Investments, LLC</p>
           <h1>Investment intelligence for markets, acquisitions, and generational wealth.</h1>
           <p className="hero__lead">

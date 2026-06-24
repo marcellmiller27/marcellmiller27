@@ -1,0 +1,20 @@
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="jhNavy" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c2438" />
+      <stop offset="1" stop-color="#06121f" />
+    </linearGradient>
+    <linearGradient id="jhGrowth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e9c877" />
+      <stop offset="1" stop-color="#1fc585" />
+    </linearGradient>
+  </defs>
+  <rect x="3" y="3" width="42" height="42" rx="12" fill="url(#jhNavy)" stroke="#e3b765" stroke-width="1.5" stroke-opacity="0.85" />
+  <g fill="url(#jhGrowth)">
+    <rect x="11" y="29" width="5" height="8" rx="1.5" />
+    <rect x="18" y="24" width="5" height="13" rx="1.5" />
+    <rect x="25" y="19" width="5" height="18" rx="1.5" />
+    <rect x="32" y="15" width="5" height="22" rx="1.5" />
+  </g>
+  <path d="M34.5 7 L39 13.5 L30 13.5 Z" fill="#e3b765" />
+</svg>

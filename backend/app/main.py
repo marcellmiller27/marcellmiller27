@@ -2,7 +2,16 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import init_db
-from app.routers import accounting, auth, billing, crm, dashboards, integrations, reports
+from app.routers import (
+    accounting,
+    auth,
+    billing,
+    crm,
+    dashboards,
+    integrations,
+    mobile_auth,
+    reports,
+)
 
 init_db()
 
@@ -28,6 +37,7 @@ app.add_middleware(
 
 app.include_router(accounting.router, prefix="/api/v1")
 app.include_router(auth.router, prefix="/api/v1")
+app.include_router(mobile_auth.router, prefix="/api/v1")
 app.include_router(billing.router, prefix="/api/v1")
 app.include_router(reports.router, prefix="/api/v1")
 app.include_router(dashboards.router, prefix="/api/v1")
