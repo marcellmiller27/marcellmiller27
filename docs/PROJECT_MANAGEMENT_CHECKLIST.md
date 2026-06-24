@@ -28,6 +28,7 @@ Current repository status: Front-end application prototype completed as a routed
 | Shared product data | [x] | Typed data model for pricing, users, modules, opportunities, diligence, portfolio, reports, assistant workflows, score factors, and stack layers |
 | Shared application shell | [x] | Navigation and layout shell for routed platform screens |
 | Product documentation | [x] | Product blueprint, route map, setup instructions, and AI work summary |
+| Source-code audit | [x] | Front-end `src` audit with automated verification results, findings, risks, and remediation plan in `docs/SRC_CODE_AUDIT.md` |
 | System flowcharts/process maps | [x] | End-to-end system map, module process flows, procedures, feedback loops, interface protocols, and dependency maps in `docs/SYSTEM_FLOWCHARTS_AND_PROCESS_MAPS.md` |
 | Investor package | [x] | Pitch deck, PowerPoint, Excel financial model, DCF, projections, charts, and hierarchy materials in `docs/investor_package/` |
 | Five-stage valuation model | [x] | Market-cap/equity-value ranges, stage probabilities, probability-weighted outcomes, and milestone valuation requirements in `docs/FIVE_STAGE_VALUATION_MODEL.md` |
@@ -142,6 +143,7 @@ Current repository status: Front-end application prototype completed as a routed
 - [ ] Review job descriptions and staffing requirements before recruiting or contracting roles
 - [ ] Review investor package and add live assumptions, screenshots, demo video, pilot customers, and final use-of-funds ask
 - [ ] Review five-stage valuation model after real customer and revenue data exists
+- [ ] Review source-code audit and prioritize front-end auth, API integration, disclaimers, route protection, and tests
 - [ ] Configure environment variables
 - [ ] Configure CI checks for typecheck, lint, build, and audit
 - [ ] Configure preview deployments

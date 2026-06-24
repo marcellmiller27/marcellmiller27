@@ -143,6 +143,7 @@ Expected result:
 | File | Purpose |
 | --- | --- |
 | `README.md` | Project overview, route map, setup commands, and documentation links |
+| `docs/SRC_CODE_AUDIT.md` | Front-end source-code audit, automated check results, findings, and remediation plan |
 | `docs/SYSTEM_FLOWCHARTS_AND_PROCESS_MAPS.md` | End-to-end flowcharts, module process flows, feedback loops, interface protocols, and dependency maps |
 | `docs/investor_package/` | Pitch deck, PowerPoint, Excel financial model, DCF, projections, charts, and generator scripts |
 | `docs/FIVE_STAGE_VALUATION_MODEL.md` | Five-stage valuation ranges, market-cap/equity-value scenarios, probabilities, and milestone valuation requirements |
