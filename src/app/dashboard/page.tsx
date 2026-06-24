@@ -1,10 +1,6 @@
+import { LiveMarket } from "@/components/live-market";
 import { PlatformShell } from "@/components/platform-shell";
-import {
-  dashboardMetrics,
-  dashboardWidgets,
-  marketSignals,
-  opportunities
-} from "@/lib/platform-data";
+import { dashboardMetrics, dashboardWidgets, opportunities } from "@/lib/platform-data";
 
 export default function DashboardPage() {
   const topOpportunities = opportunities.slice(0, 3);
@@ -35,17 +31,7 @@ export default function DashboardPage() {
             ))}
           </div>
         </div>
-        <div className="signal-list">
-          {marketSignals.map((signal) => (
-            <article className="signal-card" key={signal.name}>
-              <div>
-                <span>{signal.name}</span>
-                <strong>{signal.value}</strong>
-              </div>
-              <p>{signal.insight}</p>
-            </article>
-          ))}
-        </div>
+        <LiveMarket symbols="BTC,ETH,GOLD,SPX,UST10Y,INFLATION" />
       </section>
 
       <section className="app-section">
