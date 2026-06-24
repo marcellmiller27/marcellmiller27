@@ -11,6 +11,7 @@ from app.research_models import (
     AdoptionStudy,
     BacktestResult,
     DataCoverageReport,
+    OpportunityScoreSnapshot,
 )
 from app.research_services import ResearchService
 
@@ -20,6 +21,11 @@ router = APIRouter(prefix="/research", tags=["research"])
 @router.get("/score-backtest", response_model=BacktestResult)
 def score_backtest() -> BacktestResult:
     return ResearchService().score_backtest()
+
+
+@router.get("/opportunity-scores", response_model=OpportunityScoreSnapshot)
+def opportunity_scores() -> OpportunityScoreSnapshot:
+    return ResearchService().opportunity_score_snapshot()
 
 
 @router.get("/acquisition-validation", response_model=AcquisitionValidation)

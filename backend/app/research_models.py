@@ -14,10 +14,26 @@ class BacktestResult(BaseModel):
     ic_t_stat: float | None
     ic_hit_rate: float | None
     mean_top_minus_bottom_monthly_return: float | None
+    annualized_long_short_return: float | None = None
+    pass_criteria: str = ""
+    h5_pass: bool = False
     interpretation: str
     caveats: list[str]
     status: str = "ok"
     as_of: datetime
+
+
+class AssetScore(BaseModel):
+    symbol: str
+    opportunity_score: float
+
+
+class OpportunityScoreSnapshot(BaseModel):
+    as_of: datetime
+    score_definition: str
+    n_assets: int
+    scores: list[AssetScore]
+    status: str = "ok"
 
 
 # --- §8.4 Segment adoption study ----------------------------------------- #

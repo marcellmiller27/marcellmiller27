@@ -18,40 +18,44 @@ def _trending_series(start: float, monthly_drift: float, n: int = 40) -> list[tu
     return series
 
 
-def test_score_backtest_with_predictive_synthetic_data(monkeypatch) -> None:
-    # Construct a universe where higher momentum -> higher forward return, so a
-    # momentum score should produce a positive information coefficient.
-    drifts = {
-        "AAPL": 0.03, "MSFT": 0.025, "GOOGL": 0.02, "AMZN": 0.015, "NVDA": 0.01,
-        "JPM": 0.005, "XOM": 0.0, "JNJ": -0.005, "PG": -0.01, "KO": -0.015,
-        "SPY": 0.012, "QQQ": 0.018, "GLD": 0.002, "TLT": -0.002, "VNQ": 0.004, "IEF": 0.001,
-    }
+def fake_history(symbol, range_="10y", interval="1mo"):
+    # Distinct, deterministic drift per symbol so higher momentum -> higher forward
+    # return; the defined factor score should then be strongly predictive (H5 PASS).
+    drift = (sum(ord(c) for c in symbol) % 50) / 1000.0
+    return _trending_series(100.0, drift, n=72)
 
-    def fake_history(symbol, range_="3y", interval="1mo"):
-        return _trending_series(100.0, drifts.get(symbol, 0.0))
 
+def test_score_backtest_passes_h5_on_predictive_data(monkeypatch) -> None:
     monkeypatch.setattr(research_services, "yahoo_chart_history", fake_history)
-
     response = client.get("/api/v1/research/score-backtest")
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "ok"
-    assert body["n_assets"] >= 4
+    assert body["n_assets"] >= 6
     assert body["n_periods"] > 0
-    assert body["mean_information_coefficient"] is not None
-    # Monotonic drift universe => momentum factor should be positively predictive.
     assert body["mean_information_coefficient"] > 0
-    assert body["ic_hit_rate"] > 0.5
+    assert body["pass_criteria"]
+    # Monotonic momentum→return relationship => significant positive IC => H5 PASS.
+    assert body["h5_pass"] is True
+
+
+def test_opportunity_scores_snapshot(monkeypatch) -> None:
+    monkeypatch.setattr(research_services, "yahoo_chart_history", fake_history)
+    body = client.get("/api/v1/research/opportunity-scores").json()
+    assert body["status"] == "ok"
+    assert body["n_assets"] >= 6
+    assert all(0.0 <= s["opportunity_score"] <= 100.0 for s in body["scores"])
 
 
 def test_score_backtest_handles_provider_outage(monkeypatch) -> None:
-    def boom(symbol, range_="3y", interval="1mo"):
+    def boom(symbol, range_="10y", interval="1mo"):
         raise RuntimeError("network down")
 
     monkeypatch.setattr(research_services, "yahoo_chart_history", boom)
     response = client.get("/api/v1/research/score-backtest")
     assert response.status_code == 200
     assert response.json()["status"] == "unavailable"
+    assert response.json()["h5_pass"] is False
 
 
 def test_acquisition_validation_reports_agreement() -> None:
