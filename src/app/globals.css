@@ -1,16 +1,32 @@
 :root {
   color-scheme: dark;
-  --background: #071018;
-  --background-soft: #0c1824;
-  --background-card: rgba(17, 33, 48, 0.82);
-  --border: rgba(167, 192, 211, 0.18);
-  --gold: #d7ad5b;
-  --gold-soft: rgba(215, 173, 91, 0.14);
-  --green: #61d394;
-  --text: #eef6fb;
-  --muted: #9fb0bd;
-  --muted-strong: #c4d1da;
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+  --background: #06121f;
+  --background-soft: #0b1f33;
+  --background-card: rgba(13, 30, 49, 0.82);
+  --border: rgba(151, 182, 212, 0.18);
+
+  /* Trust (deep blue): signals credibility, security, competence. Reduces
+     perceived risk so visitors feel safe signing up. Anchors B2B confidence. */
+  --trust: #2f74ff;
+  --trust-strong: #195fe6;
+  --trust-soft: rgba(47, 116, 255, 0.14);
+
+  /* Growth (emerald): the "gain / go / money" association. Reserved for the
+     primary action so the single decisive CTA stands out (isolation effect). */
+  --growth: #1fc585;
+  --growth-strong: #15a86e;
+  --growth-soft: rgba(31, 197, 133, 0.14);
+  --green: var(--growth);
+
+  /* Premium (gold): prestige, achievement, aspiration. Frames wealth identity
+     and premium tiers; leads the warmer, aspiration-driven B2C story. */
+  --gold: #e3b765;
+  --gold-soft: rgba(227, 183, 101, 0.14);
+
+  --text: #eef5fb;
+  --muted: #9db0c0;
+  --muted-strong: #c6d4e0;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
 }
 
 * {
@@ -24,8 +40,9 @@ html {
 body {
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(215, 173, 91, 0.18), transparent 30rem),
-    radial-gradient(circle at top right, rgba(97, 211, 148, 0.13), transparent 28rem),
+    radial-gradient(circle at top left, rgba(47, 116, 255, 0.17), transparent 30rem),
+    radial-gradient(circle at top right, rgba(31, 197, 133, 0.14), transparent 28rem),
+    radial-gradient(circle at 62% 6%, rgba(227, 183, 101, 0.1), transparent 26rem),
     var(--background);
   color: var(--text);
   font-family:
@@ -78,6 +95,22 @@ main {
   line-height: 1.7;
 }
 
+.hero__brand {
+  display: inline-flex;
+  gap: 0.7rem;
+  align-items: center;
+  margin-bottom: 1.4rem;
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.hero__brand svg {
+  width: 2.7rem;
+  height: 2.7rem;
+}
+
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
@@ -95,8 +128,19 @@ main {
 }
 
 .button--primary {
-  background: var(--gold);
-  color: #111820;
+  background: var(--growth);
+  color: #04140d;
+  box-shadow: 0 12px 30px rgba(31, 197, 133, 0.28);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.button--primary:hover {
+  background: var(--growth-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 16px 38px rgba(31, 197, 133, 0.36);
 }
 
 .button--secondary {
@@ -250,6 +294,25 @@ main {
   margin-top: 1rem;
   color: var(--green);
   font-size: 2.1rem;
+}
+
+/* Segment-tuned accents: each tier leads with the color that converts its
+   audience best. Consumer (B2C) -> gold aspiration, Professional -> growth/ROI,
+   Enterprise (B2B) -> trust-blue credibility. */
+.pricing-grid .pricing-card {
+  border-top-width: 3px;
+}
+
+.pricing-grid .pricing-card:nth-child(1) {
+  border-top-color: var(--gold);
+}
+
+.pricing-grid .pricing-card:nth-child(2) {
+  border-top-color: var(--growth);
+}
+
+.pricing-grid .pricing-card:nth-child(3) {
+  border-top-color: var(--trust);
 }
 
 ul {
@@ -432,15 +495,10 @@ li::before {
   font-weight: 900;
 }
 
-.app-header__brand span {
+.app-header__brand svg {
   display: inline-flex;
   width: 2.4rem;
   height: 2.4rem;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: var(--gold);
-  color: #111820;
 }
 
 .app-nav {
@@ -715,12 +773,20 @@ li::before {
 .report-card button {
   border: 0;
   border-radius: 999px;
-  background: var(--gold);
-  color: #111820;
+  background: var(--growth);
+  color: #04140d;
   cursor: pointer;
   font: inherit;
   font-weight: 900;
   padding: 0.9rem 1rem;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+.report-card button:hover {
+  background: var(--growth-strong);
+  transform: translateY(-1px);
 }
 
 .assistant-panel {
@@ -754,8 +820,8 @@ li::before {
 .chat-card__prompt {
   justify-self: end;
   max-width: 82%;
-  background: var(--gold);
-  color: #111820;
+  background: var(--trust);
+  color: #f3f7ff;
   font-weight: 900;
 }
 
