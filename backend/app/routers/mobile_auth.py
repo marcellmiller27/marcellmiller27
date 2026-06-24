@@ -12,6 +12,8 @@ from app.mobile_models import (
     BiometricChallengeResponse,
     BiometricRegisterRequest,
     BiometricRegisterResponse,
+    DevCodeRequest,
+    DevCodeResponse,
     Enable2FAResponse,
     LoginInitiateRequest,
     LoginInitiateResponse,
@@ -19,7 +21,7 @@ from app.mobile_models import (
     SimpleStatusResponse,
     TwoFactorVerifyRequest,
 )
-from app.mobile_services import MobileAuthService
+from app.mobile_services import MobileAuthService, is_dev_mode
 
 router = APIRouter(prefix="/auth", tags=["mobile-auth"])
 
@@ -42,6 +44,19 @@ def two_factor_verify(
 ) -> AuthResponse:
     try:
         return MobileAuthService(db).two_factor_verify(payload.challenge_token, payload.code)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(exc)) from exc
+
+
+@router.post("/2fa/dev-code", response_model=DevCodeResponse)
+def two_factor_dev_code(
+    payload: DevCodeRequest,
+    db: Annotated[Session, Depends(get_db)],
+) -> DevCodeResponse:
+    if not is_dev_mode():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not available.")
+    try:
+        return MobileAuthService(db).current_dev_code(payload.challenge_token)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(exc)) from exc
 

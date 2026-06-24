@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Logo } from "@/components/logo";
 
 const API_BASE =
@@ -163,6 +163,35 @@ export default function MobileApp() {
       void refreshSecurity(session.access_token);
     }
   };
+
+  // Live demo authenticator: refresh the displayed code like a real TOTP app so
+  // it never goes stale during manual entry (dev only; 404s in production).
+  useEffect(() => {
+    if (screen !== "twofactor" || !challengeToken) {
+      return;
+    }
+    let active = true;
+    const pull = () => {
+      api<{ code: string }>("/auth/2fa/dev-code", {
+        method: "POST",
+        body: { challenge_token: challengeToken }
+      })
+        .then((result) => {
+          if (active) {
+            setDevCode(result.code);
+          }
+        })
+        .catch(() => {
+          /* dev-code endpoint disabled in production; keep last value */
+        });
+    };
+    pull();
+    const timer = setInterval(pull, 3000);
+    return () => {
+      active = false;
+      clearInterval(timer);
+    };
+  }, [screen, challengeToken]);
 
   const handlePassword = async () => {
     resetMessages();
@@ -470,7 +499,7 @@ export default function MobileApp() {
               </p>
               {devCode && (
                 <p className="m-note m-note--code">
-                  Demo authenticator code: <strong>{devCode}</strong>
+                  Demo authenticator code (auto-refreshes): <strong>{devCode}</strong>
                 </p>
               )}
               <div className="m-stack">

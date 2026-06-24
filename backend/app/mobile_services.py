@@ -1,4 +1,5 @@
 import os
+import time
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -23,6 +24,7 @@ from app.foundation_services import organization_read, subscription_read, user_r
 from app.mobile_models import (
     BiometricChallengeResponse,
     BiometricRegisterResponse,
+    DevCodeResponse,
     DeviceRead,
     Enable2FAResponse,
     LoginInitiateResponse,
@@ -41,10 +43,15 @@ from app.security import (
 )
 
 TOTP_ISSUER = "John Henry Investments"
+TOTP_PERIOD = 30
 
 
-def _is_dev() -> bool:
+def is_dev_mode() -> bool:
     return os.getenv("APP_ENV", "development").lower() != "production"
+
+
+# Backwards-compatible alias for internal callers.
+_is_dev = is_dev_mode
 
 
 class MobileAuthService:
@@ -72,9 +79,28 @@ class MobileAuthService:
         if user is None or not user.is_active:
             raise ValueError("Account is no longer available.")
         security = self._security_row(user.id)
-        if not security.totp_secret or not verify_totp(security.totp_secret, code):
+        # window=2 tolerates ~±60s of clock drift / manual entry latency.
+        if not security.totp_secret or not verify_totp(security.totp_secret, code, window=2):
             raise ValueError("Invalid verification code.")
         return self._issue_auth(user)
+
+    def current_dev_code(self, challenge_token: str) -> DevCodeResponse:
+        """Dev-only: return the live TOTP code for a pending 2FA challenge.
+
+        Mirrors an authenticator app that refreshes every period so the demo
+        always shows a current code. Never exposed when APP_ENV=production.
+        """
+        payload = decode_scoped_token(challenge_token, scope="2fa")
+        user = self.db.get(UserDB, payload["sub"])
+        if user is None:
+            raise ValueError("Account is no longer available.")
+        security = self._security_row(user.id)
+        if not security.totp_secret:
+            raise ValueError("Two-factor is not enabled.")
+        return DevCodeResponse(
+            code=totp_now(security.totp_secret),
+            seconds_remaining=TOTP_PERIOD - int(time.time()) % TOTP_PERIOD,
+        )
 
     def enable_two_factor(self, principal: Principal) -> Enable2FAResponse:
         security = self._security_row(principal.user_id)

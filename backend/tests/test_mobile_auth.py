@@ -74,6 +74,30 @@ def test_two_factor_enable_and_verify_flow() -> None:
     assert verify.json()["access_token"]
 
 
+def test_two_factor_dev_code_matches_and_verifies() -> None:
+    user = register_user()
+    headers = {"Authorization": f"Bearer {user['access_token']}"}
+    client.post("/api/v1/auth/2fa/enable", headers=headers)
+    initiate = client.post(
+        "/api/v1/auth/login/initiate",
+        json={"email": user["user"]["email"], "password": PASSWORD},
+    ).json()
+    challenge_token = initiate["challenge_token"]
+
+    dev_code = client.post("/api/v1/auth/2fa/dev-code", json={"challenge_token": challenge_token})
+    assert dev_code.status_code == 200
+    body = dev_code.json()
+    assert body["code"].isdigit()
+    assert 0 < body["seconds_remaining"] <= 30
+
+    verify = client.post(
+        "/api/v1/auth/2fa/verify",
+        json={"challenge_token": challenge_token, "code": body["code"]},
+    )
+    assert verify.status_code == 200
+    assert verify.json()["access_token"]
+
+
 def test_two_factor_verify_rejects_bad_code() -> None:
     user = register_user()
     headers = {"Authorization": f"Bearer {user['access_token']}"}

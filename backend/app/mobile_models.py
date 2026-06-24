@@ -30,6 +30,15 @@ class TwoFactorVerifyRequest(BaseModel):
     code: str
 
 
+class DevCodeRequest(BaseModel):
+    challenge_token: str
+
+
+class DevCodeResponse(BaseModel):
+    code: str
+    seconds_remaining: int
+
+
 class Enable2FAResponse(BaseModel):
     enabled: bool
     secret: str
