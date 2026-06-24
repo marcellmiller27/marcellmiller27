@@ -11,6 +11,33 @@ required to confirm fit at **market** scale. As of the 2026-06-24 update below,
 parts of the §8 program have been executed, upgrading the evidence to
 **design-confirmed + partially market-evidenced** (see "Status update").
 
+> **PROVEN AS A MARKET-CONFIRMED SOLUTION: FALSE.** Proven at the architecture and
+> live-data level (TRUE); not proven at market efficacy (H5 unproven; coverage and
+> datasets incomplete). See the "Verdict" table below.
+
+---
+
+## Verdict — Proven? **FALSE** (as a market-confirmed solution)
+
+Explicit, claim-by-claim ruling as of 2026-06-24:
+
+| Claim | Proven? |
+| --- | --- |
+| The targeted market problem is real and structural | **TRUE** |
+| Design-level problem–solution fit (features map 1:1 to the problem) | **TRUE** |
+| Live real-world data is wired for liquid/tradable asset classes | **TRUE** |
+| A runnable, honest evaluation harness exists | **TRUE** |
+| Real-time data across **all** asset classes | **FALSE** (partial: live for liquid + public proxies; FRED macro key-gated; private/illiquid inherently non-real-time) |
+| Opportunity Score has demonstrated predictive validity (H5) | **FALSE** (back-test IC weak & statistically insignificant) |
+| Representative adoption / retention / willingness-to-pay evidence | **FALSE** (test accounts only) |
+| Acquisition engine validated against expert underwriters | **FALSE** (synthetic fixture only) |
+| **Overall: a proven, market-confirmed solution** | **FALSE** |
+
+**Bottom line:** the thesis is **proven at the architecture and live-data-plumbing
+level (TRUE)** but **not proven at the market-efficacy level (FALSE)**. Calling it a
+"proven solution" overall would be false until H5 passes a pre-registered IC floor
+on a defined score and representative usage/expert datasets exist.
+
 ---
 
 ## Status update — 2026-06-24 (post-§8 execution)
