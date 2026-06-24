@@ -7,7 +7,53 @@ and wealth-technology market.*
 **Status of evidence:** the platform in this repository is a working **prototype**.
 This paper confirms problem–solution fit at the **architecture and design** level
 using direct evidence from the codebase, and specifies the empirical methodology
-required to confirm fit at **market** scale (which a prototype cannot yet prove).
+required to confirm fit at **market** scale. As of the 2026-06-24 update below,
+parts of the §8 program have been executed, upgrading the evidence to
+**design-confirmed + partially market-evidenced** (see "Status update").
+
+---
+
+## Status update — 2026-06-24 (post-§8 execution)
+
+Several §8 items have now been **built and run on real data** (companion PR #8;
+results in `docs/SECTION_8_VALIDATION_RESULTS.md`). This materially strengthens the
+thesis, but does **not** make it a fully "proven solution," and the platform does
+**not** yet have real-time data for *all* market classes. Precise standing:
+
+**What is now demonstrated (upgrades to the thesis):**
+
+- **Live real-world market data is wired** for the tradable/liquid classes —
+  crypto (CoinGecko), equities/indices/commodities/treasury yields/REIT proxy
+  (Yahoo Finance), and inflation/CPI (US BLS) — surfaced via `/api/v1/market/quotes`
+  and rendered on an auto-refreshing dashboard. This **closes §8.1** and removes the
+  earlier "static data" limitation for those classes.
+- **A runnable, honest evaluation harness exists** (`/api/v1/research/*`): score
+  back-test, segment-adoption KPIs, acquisition-engine validation, and a data-
+  coverage matrix — i.e., the thesis is now **empirically testable**, not just
+  asserted.
+- **The acquisition engine is internally consistent** (100% agreement vs a labeled
+  fixture), and the **adoption measurement instrument** computes correct KPIs from
+  real platform tables.
+
+**What is NOT yet proven (claims deliberately not made):**
+
+- **Predictive validity (H5) is unconfirmed.** The score back-test on real history
+  produced a **weak, statistically insignificant** information coefficient
+  (mean IC ≈ 0.01, t-stat ≈ 0.25, hit rate ≈ 46%). This is first-pass signal only;
+  it does **not** prove the score works.
+- **"All market classes" is not accurate.** Only **7 of 14** tracked categories
+  have real-time feeds. FX, corporate/muni bonds, and full macro (FRED) are not
+  wired; direct real estate, private businesses, and private equity are inherently
+  non-real-time.
+- **No representative market dataset.** Adoption KPIs run on development/test
+  accounts; acquisition labels are a synthetic fixture, not expert-underwriter
+  ground truth.
+
+**Net standing:** problem–solution fit is **design-confirmed and now partially
+market-evidenced**. It is **not** a fully proven, market-confirmed solution: that
+still requires a defined, outcome-validated score (H5) and representative
+usage/expert datasets. The remaining gaps are enumerated in
+`docs/SECTION_8_VALIDATION_RESULTS.md` ("Confirmed deficiencies").
 
 ---
 
@@ -25,16 +71,20 @@ portfolio tracking** (including a non-custodial crypto holdings store), and
 multi-factor **dual-access** authentication packaged as B2C + B2B SaaS. We
 **confirm** that (a) the targeted problem is real and well-documented, and (b) the
 prototype implements a coherent, internally consistent solution that maps 1:1 to
-the sub-problems. We **withhold** confirmation of market-level efficacy pending the
-falsifiable validation program defined in §8, because the prototype currently uses
-static market data and has no live cohort, retention, or model-accuracy evidence.
+the sub-problems. As of the 2026-06-24 update, we have **partially executed** §8: live market data is
+wired for the liquid asset classes and the evaluation harness runs on real data. We
+still **withhold** confirmation of market-level efficacy, because the score's
+predictive validity (H5) tested **weak and insignificant**, several asset classes
+lack real-time feeds, and there is no representative usage cohort.
 
 **Thesis statement.** *John Henry Investments targets a real and structural market
 problem — the fragmentation and access-asymmetry of investment intelligence across
 heterogeneous asset classes — and the prototype demonstrates a coherent,
-defensible solution architecture; however, confirmed market-level problem-solving
-is contingent on validating the proprietary scoring model against realized
-outcomes and on replacing simulated data with live, auditable feeds.*
+defensible solution architecture now backed by live real-world data across the
+liquid asset classes and a runnable evaluation harness; however, fully confirmed
+market-level problem-solving still depends on validating the proprietary scoring
+model against realized outcomes (H5 remains unconfirmed) and on extending live data
+to the asset classes that still lack it.*
 
 ---
 
@@ -188,20 +238,17 @@ problem–solution fit. It does **not** by itself establish **market-level** fit
 
 To move from "confirmed by design" to "confirmed by market," run:
 
-1. **Live-data substitution.** Replace static `marketSignals`
-   (`src/lib/platform-data.ts`) with auditable market/macro feeds; this is a
-   prerequisite for any outcome study.
-2. **Score back-test (tests H5).** Compute historical Opportunity Scores and measure
-   association with realized forward risk-adjusted returns (e.g., information
-   coefficient, decile spread, hit rate vs benchmark). Pre-register thresholds.
-3. **Workflow-efficiency study (tests H1).** Time-to-decision and tool-switch count
-   for JHI users vs a multi-tool control group.
-4. **Access/adoption study (tests H2).** Activation, conversion, and retention by
-   segment and tier; willingness-to-pay.
-5. **Acquisition-engine validation (tests H4).** Agreement of DSCR/SBA/diligence
-   outputs with expert underwriters on a labeled deal set.
-6. **Consistency study (tests H3).** Inter-rater variance of prioritization with vs
-   without the standardized score.
+1. **Live-data substitution.** ✅ **Done (2026-06-24).** Live `/api/v1/market/quotes`
+   (CoinGecko/Yahoo/BLS) feeds an auto-refreshing dashboard for the liquid classes.
+2. **Score back-test (tests H5).** ⚠️ **Run; not passed.** Real-history IC was weak
+   and statistically insignificant (mean IC ≈ 0.01, t-stat ≈ 0.25). Harness exists;
+   H5 remains unconfirmed (`docs/SECTION_8_VALIDATION_RESULTS.md`).
+3. **Workflow-efficiency study (tests H1).** ⬜ Pending (needs real user cohort).
+4. **Access/adoption study (tests H2).** ⚠️ **Instrument built and run** on real DB
+   tables; dataset is non-representative (test accounts), so H2 is not yet evidenced.
+5. **Acquisition-engine validation (tests H4).** ⚠️ **Engine validated** vs a labeled
+   fixture (100% agreement); needs expert-underwriter ground truth for H4.
+6. **Consistency study (tests H3).** ⬜ Pending (requires a defined score formula).
 
 **Primary success metrics:** retention/NRR by segment; score information
 coefficient > pre-registered floor; measurable reduction in decision latency.
@@ -210,9 +257,10 @@ coefficient > pre-registered floor; measurable reduction in decision latency.
 
 ## 9. Risks, limitations, and threats to validity
 
-- **Simulated data.** Market values are currently static literals, not a live feed
-  (`src/lib/platform-data.ts`); confirmed in the codebase. No real-time intelligence
-  exists yet, so the "live" framing is aspirational until §8.1 is completed.
+- **~~Simulated data.~~ Resolved for liquid classes (2026-06-24).** §8.1 is done:
+  the dashboard now consumes live `/api/v1/market/quotes` (CoinGecko/Yahoo/BLS).
+  The residual gap is **coverage breadth** — FX, corporate/muni bonds, and full
+  macro are not wired, and private/illiquid classes are inherently non-real-time.
 - **Unvalidated model.** The Opportunity Score's predictive validity (H5) is
   asserted, not demonstrated; model risk and overfitting are open threats.
 - **Prototype persistence/security.** Backend uses development token signing and
@@ -235,23 +283,32 @@ coefficient > pre-registered floor; measurable reduction in decision latency.
    maps to at least one concrete, runnable capability, with no major capability
    lacking a corresponding problem. **Design-level problem–solution fit is
    confirmed.**
-3. **Market-level problem-solving is not yet confirmed.** It is *conditional* on
-   (a) live, auditable data and (b) demonstrated predictive validity of the
-   Opportunity Score, per the falsifiable program in §8.
+3. **Market-level problem-solving is partially evidenced, not fully confirmed
+   (updated 2026-06-24).** Live real-world data is wired for the liquid classes and
+   the evaluation harness runs on real data — so condition (a) is largely met for
+   tradable assets. Condition (b), demonstrated predictive validity (H5), is
+   **not** met: the back-test signal is weak and insignificant. Coverage also
+   remains incomplete (7/14 categories live).
 
 In short: **yes, the platform is a legitimate problem-solving artifact for a real
-market gap — and its ultimate, durable value rests on validating the proprietary
-score against realized outcomes once live data is in place.**
+market gap, now backed by live data and a runnable evaluation harness — but it is
+not yet a fully proven, market-confirmed solution, because the score's predictive
+validity is unproven and several asset classes still lack real-time data.**
 
 ---
 
 ## 11. Conclusion and future work
 
 JHI is a defensible answer to a genuine market problem rather than a solution in
-search of one. The highest-leverage next steps are not more features but
-**evidence**: wire live data, back-test the score, and run the segment adoption and
-acquisition-engine validation studies. Completing §8 would convert a
-design-confirmed thesis into a market-confirmed one.
+search of one. As of 2026-06-24, the highest-leverage §8 evidence steps have been
+**partially executed**: live data is wired and the evaluation harness runs on real
+data, moving the thesis to **design-confirmed + partially market-evidenced**. The
+remaining steps to reach a fully market-confirmed thesis are now sharply defined:
+(1) define and **outcome-validate** the Opportunity Score so H5 passes with a
+pre-registered IC floor, (2) extend live data to the uncovered classes (FX, bonds,
+full macro), and (3) gather a representative usage cohort and expert-underwriter
+labels. Until then, the honest claim is "proven in architecture and live-data
+plumbing; not yet proven in market efficacy."
 
 ---
 
@@ -259,9 +316,11 @@ design-confirmed thesis into a market-confirmed one.
 
 - `README.md` — product scope and routes.
 - `docs/PRODUCT_BLUEPRINT.md` — modules, macro layer, segments, monetization.
-- `src/lib/platform-data.ts` — segments, scoring categories, opportunities, static market signals.
+- `src/lib/platform-data.ts` — segments, scoring categories, opportunities.
 - `src/app/opportunities/page.tsx`, `src/app/dashboard/page.tsx`, `src/app/due-diligence/page.tsx`, `src/app/portfolio/page.tsx` — decision surfaces.
 - `src/components/platform-shell.tsx`, `src/app/mobile/page.tsx` — unified shell and dual-access mobile app.
 - `backend/app/main.py`, `backend/app/routers/*` — auth, billing, accounting, reports, dashboards, CRM, integrations, mobile auth.
+- Live market data — `/api/v1/market/quotes` (`backend/app/market_services.py`, `src/components/live-market.tsx`); see `docs/MARKET_DATA_SOURCES.md` (companion PR #7).
+- §8 validation harness + results — `/api/v1/research/*` and `docs/SECTION_8_VALIDATION_RESULTS.md` (companion PR #8).
 - Non-custodial crypto holdings store and `docs/CRYPTO_HOLDINGS_STORAGE.md` — companion change (PR #5).
 - `backend/README.md` — persistence/security production next steps.
