@@ -214,6 +214,7 @@ The current platform now has a front-end application, FastAPI backend, accountin
 - [ ] Define which professional services stay outsourced versus move in-house using `docs/COMPENSATION_AND_PRO_SERVICES_PROJECTIONS.md`.
 - [ ] Review `docs/JOB_DESCRIPTIONS_AND_STAFFING_REQUIREMENTS.md` before posting jobs or signing contractor agreements.
 - [ ] Review `docs/SYSTEM_FLOWCHARTS_AND_PROCESS_MAPS.md` before defining detailed implementation tickets.
+- [ ] Review `docs/FIVE_STAGE_VALUATION_MODEL.md` before discussing valuation or fundraising terms.
 - [ ] Define incident response workflow.
 - [ ] Define production launch checklist owner.
 

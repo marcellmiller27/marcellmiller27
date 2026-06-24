@@ -161,7 +161,7 @@ Crypto:
 
 Estimated cloud storage, database capacity, network throughput, and processing requirements are documented in `docs/CLOUD_STORAGE_AND_CAPACITY_PLAN.md`.
 
-Estimated platform costs, projected EBITDA scenarios, staffing/legal pro forma assumptions, compensation/professional-services projections, and job descriptions are documented in `docs/ESTIMATED_PLATFORM_COSTS.md`, `docs/PROJECTED_EBITDA_MODEL.md`, `docs/STAFFING_LEGAL_PRO_FORMA.md`, `docs/COMPENSATION_AND_PRO_SERVICES_PROJECTIONS.md`, and `docs/JOB_DESCRIPTIONS_AND_STAFFING_REQUIREMENTS.md`.
+Estimated platform costs, projected EBITDA scenarios, five-stage valuation ranges, staffing/legal pro forma assumptions, compensation/professional-services projections, and job descriptions are documented in `docs/ESTIMATED_PLATFORM_COSTS.md`, `docs/PROJECTED_EBITDA_MODEL.md`, `docs/FIVE_STAGE_VALUATION_MODEL.md`, `docs/STAFFING_LEGAL_PRO_FORMA.md`, `docs/COMPENSATION_AND_PRO_SERVICES_PROJECTIONS.md`, and `docs/JOB_DESCRIPTIONS_AND_STAFFING_REQUIREMENTS.md`.
 
 The investor package, pitch deck, PowerPoint presentation, Excel financial model, DCF model, revenue/expenditure/marketing projections, and personnel hierarchy materials are saved in `docs/investor_package/`.
 

@@ -12,6 +12,7 @@ This folder contains the investor-facing pitch deck, PowerPoint presentation, fi
 | `JOHN_HENRY_INVESTMENTS_PITCH_DECK.pptx` | Generated PowerPoint presentation |
 | `FINANCIAL_MODEL_DCF.md` | Narrative financial model with DCF, charts, assumptions, and investor interpretation |
 | `JOHN_HENRY_INVESTMENTS_FINANCIAL_MODEL.xlsx` | Generated Excel workbook with operating model, DCF, marketing, and personnel sheets |
+| `../FIVE_STAGE_VALUATION_MODEL.md` | Five-stage market-cap/equity-value scenarios and probability-weighted valuation ranges |
 | `financial_model_base_case.csv` | Full five-year base-case model |
 | `dcf_model.csv` | Discounted cash flow schedule |
 | `revenue_projection.csv` | Revenue projection chart data |

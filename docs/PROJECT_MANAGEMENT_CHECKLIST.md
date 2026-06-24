@@ -30,6 +30,7 @@ Current repository status: Front-end application prototype completed as a routed
 | Product documentation | [x] | Product blueprint, route map, setup instructions, and AI work summary |
 | System flowcharts/process maps | [x] | End-to-end system map, module process flows, procedures, feedback loops, interface protocols, and dependency maps in `docs/SYSTEM_FLOWCHARTS_AND_PROCESS_MAPS.md` |
 | Investor package | [x] | Pitch deck, PowerPoint, Excel financial model, DCF, projections, charts, and hierarchy materials in `docs/investor_package/` |
+| Five-stage valuation model | [x] | Market-cap/equity-value ranges, stage probabilities, probability-weighted outcomes, and milestone valuation requirements in `docs/FIVE_STAGE_VALUATION_MODEL.md` |
 | Programming scripts reference | [x] | Saved programming setup, commands, source file map, and verification commands in `docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md` |
 | Cloud capacity plan | [x] | Storage, database, network, compute, cache, AI, and monitoring estimates in `docs/CLOUD_STORAGE_AND_CAPACITY_PLAN.md` |
 | Estimated platform costs | [x] | Monthly, annual, and tiered cost estimates in `docs/ESTIMATED_PLATFORM_COSTS.md` |
@@ -140,6 +141,7 @@ Current repository status: Front-end application prototype completed as a routed
 - [ ] Review compensation and professional-services projections before converting contractors to in-house roles
 - [ ] Review job descriptions and staffing requirements before recruiting or contracting roles
 - [ ] Review investor package and add live assumptions, screenshots, demo video, pilot customers, and final use-of-funds ask
+- [ ] Review five-stage valuation model after real customer and revenue data exists
 - [ ] Configure environment variables
 - [ ] Configure CI checks for typecheck, lint, build, and audit
 - [ ] Configure preview deployments
