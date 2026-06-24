@@ -1,72 +1,47 @@
-# Crypto Holdings Storage — Design & Security Advice
+# Decision Record — Crypto wallets / holdings storage
 
-## Short answer to "store users' crypto wallet keys?"
+**Status:** Decided — **the platform does not hold crypto wallets and does not
+store wallet data.** Prior watch-only holdings code was removed.
 
-**Do not store users' private keys or seed phrases in the application database.**
-Holding private keys makes John Henry Investments a *custodial* service, which is
-one of the highest‑risk things a fintech can do:
+## Question
 
-- **Catastrophic, irreversible breach impact.** A single database compromise (or a
-  malicious insider, leaked backup, or logging mistake) means attackers can drain
-  every user's funds. There is no chargeback or reversal on-chain.
-- **Regulatory / licensing exposure.** Custody of customer crypto typically triggers
-  money‑transmitter and custody regimes (e.g., US state MTLs / NYDFS BitLicense,
-  EU MiCA CASP authorization) plus AML/KYC, audits, and capital requirements.
-- **Operational burden.** Real custody requires HSMs or MPC, cold storage, key
-  ceremonies, withdrawal controls, SOC 2, insurance, and 24/7 security operations —
-  not an app table.
+Should John Henry Investments hold users' crypto wallets (private keys), or store
+crypto wallet data (e.g., public addresses) for holdings tracking?
 
-This platform's purpose is **investment intelligence and portfolio tracking**, which
-does not require custody at all. So the implemented design is **non‑custodial,
-watch‑only**.
+## Decision
 
-## What we built instead (recommended design)
+1. **Custodial wallets (private keys / seed phrases): NO — never.** Holding keys
+   makes the platform custodial, with catastrophic, irreversible breach impact and
+   heavy licensing/AML obligations (MTL / BitLicense / MiCA), HSM/MPC, cold
+   storage, SOC 2, and insurance requirements. This is out of scope for an
+   investment-intelligence product and was never implemented.
 
-Store only **public, watch‑only** data: networks, asset symbols, optional public
-addresses, quantities, and labels. The schema has **no column for a private key or
-seed phrase**, and the API actively **rejects** anything that looks like a secret.
+2. **Non-custodial, watch-only address storage: removed.** A watch-only store
+   (public addresses + quantities, with guardrails rejecting private keys/seed
+   phrases) was prototyped, but is **not retained**. Rationale:
+   - It is **not core** to the platform's intelligence/scoring thesis.
+   - Persisting users' public wallet addresses is an unnecessary
+     privacy/clustering and data-protection surface (addresses are linkable and
+     de-anonymizable on-chain).
+   - It blurs positioning — the platform is decision intelligence, **not a wallet**.
+   - The same user value can be delivered later without storing any wallet data.
 
-### Data model — `crypto_holdings` (`backend/app/db_models.py`)
+## Consequence
 
-| Column | Notes |
-| --- | --- |
-| `user_id` / `organization_id` | Owner scope; queries are filtered per authenticated user. |
-| `network` | `bitcoin`, `ethereum`, `xrpl`, `stellar`, `solana`, `other`. |
-| `asset_symbol` | `BTC`, `ETH`, `XRP`, `XLM`, tokens, … |
-| `address` | **Public** receive address (optional). Never a private key. |
-| `quantity` | Decimal stored as string (no float drift). |
-| `label`, `notes` | User annotations. |
-| `custody_model` | Always `non_custodial_watch_only`. |
+- No `crypto_holdings` table, no `/api/v1/crypto/*` endpoints, no wallet/key/address
+  persistence anywhere in the codebase.
+- The platform remains strictly **non-custodial**: it never holds, stores, or can
+  move funds or fund-moving credentials.
 
-### API (`/api/v1/crypto`, `backend/app/routers/crypto.py`)
+## If crypto exposure is wanted later (safe path)
 
-| Method | Route | Purpose |
-| --- | --- | --- |
-| `GET` | `/crypto/networks` | Supported networks/assets + non‑custodial notice (public). |
-| `POST` | `/crypto/holdings` | Add a watch‑only holding (validates address, rejects secrets). |
-| `GET` | `/crypto/holdings` | List the authenticated user's holdings. |
-| `GET` | `/crypto/holdings/summary` | Totals by asset + network/holding counts. |
-| `DELETE` | `/crypto/holdings/{id}` | Remove a holding. |
+Represent crypto as **read-only portfolio analytics** without persisting wallet
+data: let a user enter a quantity/allocation, or pull balances on demand from a
+public block explorer the user points at, and price them via a market-data API.
+Store positions/quantities — never private keys, and avoid persisting addresses
+unless there is a clear, consented product reason and a privacy review. If true
+custody is ever required, integrate a regulated custody/MPC provider (Fireblocks,
+BitGo, Coinbase Custody, Anchorage) rather than a database of keys.
 
-### Guardrails (`backend/app/crypto_services.py`)
-
-- **Secret detection** rejects (HTTP 422) inputs in any field that match a private
-  key or seed: 32‑byte hex, Bitcoin WIF, Stellar `S…` secret keys, XRP `s…` seeds,
-  extended private keys (`xprv`/`yprv`/`zprv`), and 12–24‑word BIP‑39 mnemonics.
-- **Public address format validation** per network (HTTP 400 on mismatch).
-- **Per‑user scoping** so one user can never read another's holdings.
-
-## If true custody is ever required
-
-Only pursue this with explicit product/legal intent, and even then **never** store
-raw keys in the app database. Use one of:
-
-- A regulated **custody provider** (Fireblocks, BitGo, Coinbase Custody, Anchorage).
-- **MPC / threshold signatures** so no single system ever holds a complete key.
-- **HSM‑backed** keys with envelope encryption via a managed KMS, strict withdrawal
-  policies, and independent security audits — plus the relevant licenses, AML/KYC,
-  and insurance.
-
-To enrich the watch‑only experience without custody, balances/prices can be read
-from public blockchain explorers / market data APIs keyed off the stored public
-addresses (read‑only), keeping the platform free of any fund‑moving credentials.
+> The previously prototyped watch-only implementation is preserved in version
+> control history and can be restored if a future decision reverses this one.

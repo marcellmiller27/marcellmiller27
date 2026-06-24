@@ -7,7 +7,6 @@ from app.routers import (
     auth,
     billing,
     crm,
-    crypto,
     dashboards,
     integrations,
     mobile_auth,
@@ -43,7 +42,6 @@ app.include_router(billing.router, prefix="/api/v1")
 app.include_router(reports.router, prefix="/api/v1")
 app.include_router(dashboards.router, prefix="/api/v1")
 app.include_router(crm.router, prefix="/api/v1")
-app.include_router(crypto.router, prefix="/api/v1")
 app.include_router(integrations.router, prefix="/api/v1")
 
 
