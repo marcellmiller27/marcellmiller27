@@ -71,6 +71,29 @@ class SubscriptionDB(Base):
     organization: Mapped[OrganizationDB] = relationship(back_populates="subscriptions")
 
 
+class UserSecurityDB(Base):
+    __tablename__ = "user_security"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), nullable=False, unique=True)
+    totp_secret: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    two_factor_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+
+class DeviceCredentialDB(Base):
+    __tablename__ = "device_credentials"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    credential_id: Mapped[str] = mapped_column(String(512), nullable=False, unique=True, index=True)
+    public_key: Mapped[str | None] = mapped_column(Text, nullable=True)
+    label: Mapped[str] = mapped_column(String(120), nullable=False, default="Mobile device")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
 class AuditLogDB(Base):
     __tablename__ = "audit_logs"
 
