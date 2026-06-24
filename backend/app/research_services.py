@@ -30,7 +30,7 @@ from app.db_models import (
     UserDB,
     UserSecurityDB,
 )
-from app.market_services import yahoo_chart_history
+from app.market_services import fred_api_key, yahoo_chart_history
 from app.research_models import (
     AcquisitionCaseResult,
     AcquisitionValidation,
@@ -349,61 +349,73 @@ class ResearchService:
 
     # --- Coverage / deficiency matrix ------------------------------------- #
     def data_coverage(self) -> DataCoverageReport:
+        fred_live = bool(fred_api_key())
         rows = [
             CoverageRow(category="Crypto", realtime=True, provider="coingecko", status="live"),
             CoverageRow(category="Equities", realtime=True, provider="yahoo", status="live"),
             CoverageRow(category="Equity indices", realtime=True, provider="yahoo", status="live"),
             CoverageRow(category="Commodities", realtime=True, provider="yahoo", status="live"),
             CoverageRow(
-                category="Treasury yields", realtime=True, provider="yahoo", status="live"
+                category="Treasury yield curve (3M/5Y/10Y/30Y)", realtime=True, provider="yahoo",
+                status="live",
             ),
             CoverageRow(
-                category="Real estate (REIT proxy)", realtime=True, provider="yahoo", status="live"
+                category="FX / currencies", realtime=True, provider="yahoo", status="live",
+                corrective_action="For production use a licensed FX feed (ToS/SLA-compliant).",
+            ),
+            CoverageRow(
+                category="Fixed income (AGG/LQD/HY/MUNI/TIPS proxies)", realtime=True,
+                provider="yahoo", status="partial",
+                deficiency="ETF proxies are live; CUSIP-level direct bond pricing is not.",
+                corrective_action="Add a licensed fixed-income vendor adapter for direct pricing.",
+            ),
+            CoverageRow(
+                category="Real estate (REIT/ETF proxy)", realtime=True, provider="yahoo",
+                status="partial",
+                deficiency="Public REIT proxy is live; per-property valuation is not real-time.",
+                corrective_action="Integrate an AVM/appraisal API for per-property estimates.",
             ),
             CoverageRow(category="Inflation / CPI", realtime=True, provider="us_bls", status="live"),
             CoverageRow(
-                category="FX / currencies", realtime=False, provider=None, status="none",
-                deficiency="No FX provider wired (Yahoo FX or a quotes vendor needed).",
+                category="Macro (M2 / GDP / unemployment)", realtime=fred_live, provider="fred",
+                status="live" if fred_live else "requires_credentials",
+                deficiency=None if fred_live else "FRED adapter implemented but no FRED_API_KEY.",
+                corrective_action=None if fred_live else "Set FRED_API_KEY secret to activate.",
             ),
             CoverageRow(
-                category="Bonds (corporate/muni)", realtime=False, provider=None, status="none",
-                deficiency="No fixed-income pricing source integrated.",
+                category="Private equity holdings", realtime=True, provider="yahoo (PSP proxy)",
+                status="partial",
+                deficiency="Listed-PE proxy is live; true GP marks are periodic/manual.",
+                corrective_action="Ingest GP capital-account statements for actual marks.",
             ),
             CoverageRow(
-                category="Direct real estate (per-property)", realtime=False, provider=None,
-                status="none",
-                deficiency="Illiquid by nature; needs estimate/appraisal feed, not a live quote.",
-            ),
-            CoverageRow(
-                category="Private businesses / SMB", realtime=False, provider=None, status="none",
-                deficiency="No public price; valuation is model/diligence-driven, not real-time.",
-            ),
-            CoverageRow(
-                category="Private equity holdings", realtime=False, provider=None, status="none",
-                deficiency="Marks are periodic/manual; no live feed exists.",
-            ),
-            CoverageRow(
-                category="Macro (rates curve, M2, GDP, unemployment)", realtime=False,
-                provider="us_bls (partial)", status="partial",
-                deficiency="Only CPI wired; add FRED series for full macro coverage.",
+                category="Private businesses / SMB", realtime=True, provider="yahoo (IWM proxy)",
+                status="partial",
+                deficiency="Small-cap public proxy is live; specific SMBs have no public price.",
+                corrective_action="Use the model/diligence engine for deal-specific valuation.",
             ),
             CoverageRow(
                 category="Opportunity Score predictive validity", realtime=False, provider=None,
                 status="partial",
                 deficiency="Back-test gives first evidence (H5); production validation pending.",
+                corrective_action="Define a score formula and outcome-validate to a pre-set IC floor.",
             ),
         ]
         live = sum(1 for r in rows if r.status == "live")
-        open_def = [f"{r.category}: {r.deficiency}" for r in rows if r.deficiency]
+        open_def = [
+            f"{r.category}: {r.deficiency}  -> ACTION: {r.corrective_action}"
+            for r in rows
+            if r.deficiency or r.corrective_action
+        ]
         return DataCoverageReport(
             generated_at=_now(),
             live_categories=live,
             total_categories=len(rows),
             rows=rows,
             summary=(
-                f"{live}/{len(rows)} categories have real-time live data. Tradable, "
-                "liquid asset classes are covered; illiquid/private categories are "
-                "inherently non-real-time, and FX/bonds/full-macro remain to be wired."
+                f"{live}/{len(rows)} categories now stream real-time data; the remainder are "
+                "'partial' via live public proxies (with corrective actions for true direct "
+                "pricing) or require a credentialed source (FRED/licensed vendor)."
             ),
             open_deficiencies=open_def,
         )

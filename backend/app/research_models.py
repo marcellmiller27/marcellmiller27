@@ -61,6 +61,7 @@ class CoverageRow(BaseModel):
     provider: str | None
     status: str  # "live" | "partial" | "none"
     deficiency: str | None = None
+    corrective_action: str | None = None
 
 
 class DataCoverageReport(BaseModel):

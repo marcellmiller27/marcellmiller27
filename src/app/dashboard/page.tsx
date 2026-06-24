@@ -34,6 +34,32 @@ export default function DashboardPage() {
         <LiveMarket symbols="BTC,ETH,GOLD,SPX,UST10Y,INFLATION" />
       </section>
 
+      <section className="app-section app-section--split">
+        <div>
+          <p className="eyebrow">Currencies</p>
+          <h2>Live FX</h2>
+          <div className="widget-strip">
+            {["EUR/USD", "GBP/USD", "USD/JPY", "Dollar Index"].map((label) => (
+              <span key={label}>{label}</span>
+            ))}
+          </div>
+        </div>
+        <LiveMarket symbols="EURUSD,GBPUSD,USDJPY,DXY" />
+      </section>
+
+      <section className="app-section app-section--split">
+        <div>
+          <p className="eyebrow">Fixed income</p>
+          <h2>Rates curve & bonds</h2>
+          <div className="widget-strip">
+            {["3M", "5Y", "10Y", "30Y", "Aggregate", "IG", "High yield"].map((label) => (
+              <span key={label}>{label}</span>
+            ))}
+          </div>
+        </div>
+        <LiveMarket symbols="UST3M,UST5Y,UST10Y,UST30Y,BOND_AGG,BOND_IG,BOND_HY" />
+      </section>
+
       <section className="app-section">
         <div className="app-section__heading">
           <p className="eyebrow">AI recommendations</p>

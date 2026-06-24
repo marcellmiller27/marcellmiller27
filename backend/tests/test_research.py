@@ -73,7 +73,12 @@ def test_data_coverage_lists_live_and_deficient_categories() -> None:
     assert body["total_categories"] > body["live_categories"]
     categories = {row["category"]: row for row in body["rows"]}
     assert categories["Crypto"]["status"] == "live"
-    assert categories["Private businesses / SMB"]["status"] == "none"
+    assert categories["FX / currencies"]["status"] == "live"
+    assert categories["Private businesses / SMB"]["status"] == "partial"
+    # Every non-live row carries a concrete corrective action.
+    for row in body["rows"]:
+        if row["status"] != "live":
+            assert row["corrective_action"]
     assert len(body["open_deficiencies"]) >= 4
 
 

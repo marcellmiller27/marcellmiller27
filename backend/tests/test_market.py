@@ -31,6 +31,10 @@ def _fake_yahoo(provider_symbol):
         "GC=F": {"regularMarketPrice": 3180.4, "chartPreviousClose": 3150.0, "currency": "USD"},
         "^TNX": {"regularMarketPrice": 4.12, "chartPreviousClose": 4.08, "currency": "USD"},
         "AAPL": {"regularMarketPrice": 240.5, "chartPreviousClose": 238.0, "currency": "USD"},
+        "EURUSD=X": {"regularMarketPrice": 1.085, "chartPreviousClose": 1.08, "currency": "USD"},
+        "AGG": {"regularMarketPrice": 99.2, "chartPreviousClose": 99.0, "currency": "USD"},
+        "PSP": {"regularMarketPrice": 62.1, "chartPreviousClose": 61.5, "currency": "USD"},
+        "IWM": {"regularMarketPrice": 230.7, "chartPreviousClose": 232.0, "currency": "USD"},
     }
     if provider_symbol not in table:
         raise ProviderError(f"No data for {provider_symbol}")
@@ -124,6 +128,81 @@ def test_providers_lists_live_and_credentialed_sources() -> None:
     assert providers["yahoo"]["status"] == "live"
     assert providers["bloomberg"]["status"] == "requires_credentials"
     assert providers["tradingview"]["status"] == "unsupported"
+    # FRED is implemented but key-gated; without a key it advertises credentials needed.
+    assert providers["fred"]["key"] == "fred"
+    assert providers["fred"]["status"] in {"live", "requires_credentials"}
+
+
+def test_fx_bond_and_proxy_symbols_are_live(patched_providers) -> None:
+    response = client.get(
+        "/api/v1/market/quotes",
+        params={"symbols": "EURUSD,BOND_AGG,PE_PROXY,SMB_PROXY"},
+    )
+    assert response.status_code == 200
+    quotes = {q["symbol"]: q for q in response.json()["quotes"]}
+    assert quotes["EURUSD"]["asset_class"] == "fx"
+    assert quotes["EURUSD"]["status"] == "ok"
+    assert quotes["BOND_AGG"]["asset_class"] == "bond_proxy"
+    assert quotes["PE_PROXY"]["status"] == "ok"
+    assert quotes["SMB_PROXY"]["status"] == "ok"
+
+
+def test_fred_macro_symbol_gated_without_key(monkeypatch) -> None:
+    market_services.reset_cache()
+    monkeypatch.delenv("FRED_API_KEY", raising=False)
+    response = client.get("/api/v1/market/quotes", params={"symbols": "M2"})
+    assert response.status_code == 200
+    quote = response.json()["quotes"][0]
+    assert quote["symbol"] == "M2"
+    assert quote["status"] == "unavailable"
+    assert "fred" in quote["note"].lower()
+
+
+def test_licensed_vendor_used_as_primary_when_keyed(monkeypatch, patched_providers) -> None:
+    market_services.reset_cache()
+    monkeypatch.setenv("TWELVEDATA_API_KEY", "vendor-key")
+    monkeypatch.setattr(
+        market_services,
+        "twelvedata_quote",
+        lambda vsym: {"price": 1.2345, "percent_change": 0.42, "currency": "USD"},
+    )
+    response = client.get("/api/v1/market/quotes", params={"symbols": "EURUSD"})
+    quote = response.json()["quotes"][0]
+    assert quote["source"] == "twelvedata"
+    assert quote["price"] == 1.2345
+    assert quote["change_percent"] == 0.42
+
+
+def test_licensed_vendor_falls_back_to_yahoo_on_error(monkeypatch, patched_providers) -> None:
+    market_services.reset_cache()
+    monkeypatch.setenv("TWELVEDATA_API_KEY", "vendor-key")
+
+    def _vendor_down(_vsym):
+        raise market_services.ProviderError("vendor 429")
+
+    monkeypatch.setattr(market_services, "twelvedata_quote", _vendor_down)
+    response = client.get("/api/v1/market/quotes", params={"symbols": "EURUSD"})
+    quote = response.json()["quotes"][0]
+    assert quote["status"] == "ok"
+    assert quote["source"] == "yahoo"  # graceful fallback
+
+
+def test_providers_includes_twelvedata() -> None:
+    providers = {p["key"]: p for p in client.get("/api/v1/market/providers").json()["providers"]}
+    assert providers["twelvedata"]["status"] in {"live", "requires_credentials"}
+
+
+def test_fred_macro_symbol_live_with_key(monkeypatch) -> None:
+    market_services.reset_cache()
+    monkeypatch.setenv("FRED_API_KEY", "test-key")
+    monkeypatch.setattr(
+        market_services, "fred_series_latest", lambda series_id: (21000.5, "2026-05-01")
+    )
+    response = client.get("/api/v1/market/quotes", params={"symbols": "M2"})
+    assert response.status_code == 200
+    quote = response.json()["quotes"][0]
+    assert quote["status"] == "ok"
+    assert quote["price"] == 21000.5
 
 
 def test_symbols_catalog_includes_defaults() -> None:
