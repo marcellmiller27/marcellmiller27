@@ -835,6 +835,53 @@ li::before {
   gap: 0.5rem;
 }
 
+.support-meta {
+  margin: 0 0 0.4rem;
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.support-form {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.support-form input {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font: inherit;
+  padding: 0.85rem 1.1rem;
+}
+
+.support-form input:focus {
+  border-color: var(--trust);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--trust-soft);
+}
+
+.support-form button {
+  border: 0;
+  border-radius: 999px;
+  background: var(--growth);
+  color: #04140d;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+  padding: 0.85rem 1.4rem;
+}
+
+.support-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 /* ----------------------------------------------------------------------------
    Mobile app experience (/mobile) — phone-framed dual-access companion app
 ---------------------------------------------------------------------------- */

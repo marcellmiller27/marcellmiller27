@@ -11,7 +11,8 @@ const navigation = [
   { href: "/reports", label: "Reports" },
   { href: "/assistant", label: "AI Assistant" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/account", label: "Account" }
+  { href: "/account", label: "Account" },
+  { href: "/support", label: "Help" }
 ];
 
 type PlatformShellProps = {
