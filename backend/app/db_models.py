@@ -94,6 +94,34 @@ class DeviceCredentialDB(Base):
     last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
+class CryptoHoldingDB(Base):
+    """A user's crypto holding stored as PUBLIC, watch-only data only.
+
+    Security note: there is deliberately NO column for a private key, seed phrase,
+    or any other secret. This platform is non-custodial — it tracks balances by
+    public address and never holds the credentials that can move funds.
+    """
+
+    __tablename__ = "crypto_holdings"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    organization_id: Mapped[str | None] = mapped_column(String, nullable=True, index=True)
+    network: Mapped[str] = mapped_column(String(40), nullable=False)
+    asset_symbol: Mapped[str] = mapped_column(String(20), nullable=False)
+    # Public receive address (xpub/individual). Optional: a user may track a
+    # quantity without disclosing an address. Never a private key.
+    address: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    quantity: Mapped[str] = mapped_column(String(64), nullable=False, default="0")
+    label: Mapped[str] = mapped_column(String(120), nullable=False, default="")
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    custody_model: Mapped[str] = mapped_column(
+        String(40), nullable=False, default="non_custodial_watch_only"
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+
 class AuditLogDB(Base):
     __tablename__ = "audit_logs"
 
