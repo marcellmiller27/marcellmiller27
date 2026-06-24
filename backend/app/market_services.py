@@ -160,6 +160,32 @@ def yahoo_chart(provider_symbol: str) -> dict[str, Any]:
     return result[0].get("meta") or {}
 
 
+def yahoo_chart_history(
+    provider_symbol: str, range_: str = "3y", interval: str = "1mo"
+) -> list[tuple[int, float]]:
+    """Return [(unix_ts, close), ...] historical closes from Yahoo Finance."""
+    quoted = urllib.parse.quote(provider_symbol)
+    url = (
+        f"https://query1.finance.yahoo.com/v8/finance/chart/{quoted}"
+        f"?interval={interval}&range={range_}"
+    )
+    payload = _http_get_json(url)
+    result = (payload.get("chart") or {}).get("result") or []
+    if not result:
+        raise ProviderError(f"No Yahoo history for {provider_symbol}.")
+    node = result[0]
+    timestamps = node.get("timestamp") or []
+    quote = ((node.get("indicators") or {}).get("quote") or [{}])[0]
+    closes = quote.get("close") or []
+    series: list[tuple[int, float]] = []
+    for ts, close in zip(timestamps, closes):
+        if ts is not None and close is not None:
+            series.append((int(ts), float(close)))
+    if not series:
+        raise ProviderError(f"Empty Yahoo history for {provider_symbol}.")
+    return series
+
+
 def bls_cpi_series() -> list[dict[str, Any]]:
     url = f"https://api.bls.gov/publicAPI/v1/timeseries/data/{CPI_SERIES_ID}"
     payload = _http_get_json(url)
