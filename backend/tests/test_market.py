@@ -158,6 +158,40 @@ def test_fred_macro_symbol_gated_without_key(monkeypatch) -> None:
     assert "fred" in quote["note"].lower()
 
 
+def test_licensed_vendor_used_as_primary_when_keyed(monkeypatch, patched_providers) -> None:
+    market_services.reset_cache()
+    monkeypatch.setenv("TWELVEDATA_API_KEY", "vendor-key")
+    monkeypatch.setattr(
+        market_services,
+        "twelvedata_quote",
+        lambda vsym: {"price": 1.2345, "percent_change": 0.42, "currency": "USD"},
+    )
+    response = client.get("/api/v1/market/quotes", params={"symbols": "EURUSD"})
+    quote = response.json()["quotes"][0]
+    assert quote["source"] == "twelvedata"
+    assert quote["price"] == 1.2345
+    assert quote["change_percent"] == 0.42
+
+
+def test_licensed_vendor_falls_back_to_yahoo_on_error(monkeypatch, patched_providers) -> None:
+    market_services.reset_cache()
+    monkeypatch.setenv("TWELVEDATA_API_KEY", "vendor-key")
+
+    def _vendor_down(_vsym):
+        raise market_services.ProviderError("vendor 429")
+
+    monkeypatch.setattr(market_services, "twelvedata_quote", _vendor_down)
+    response = client.get("/api/v1/market/quotes", params={"symbols": "EURUSD"})
+    quote = response.json()["quotes"][0]
+    assert quote["status"] == "ok"
+    assert quote["source"] == "yahoo"  # graceful fallback
+
+
+def test_providers_includes_twelvedata() -> None:
+    providers = {p["key"]: p for p in client.get("/api/v1/market/providers").json()["providers"]}
+    assert providers["twelvedata"]["status"] in {"live", "requires_credentials"}
+
+
 def test_fred_macro_symbol_live_with_key(monkeypatch) -> None:
     market_services.reset_cache()
     monkeypatch.setenv("FRED_API_KEY", "test-key")

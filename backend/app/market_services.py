@@ -50,6 +50,12 @@ def fred_api_key() -> str | None:
     return os.getenv("FRED_API_KEY")
 
 
+def twelvedata_api_key() -> str | None:
+    """Licensed-vendor API key (Twelve Data). When set, it becomes the primary
+    quote source for equities/FX with Yahoo as fallback."""
+    return os.getenv("TWELVEDATA_API_KEY")
+
+
 class ProviderError(RuntimeError):
     """A market-data provider call failed."""
 
@@ -66,6 +72,7 @@ class SymbolSpec:
     asset_class: str
     unit: str
     aliases: tuple[str, ...] = field(default_factory=tuple)
+    vendor_symbol: str | None = None  # symbol form for the licensed vendor (Twelve Data)
 
 
 SYMBOLS: list[SymbolSpec] = [
@@ -89,9 +96,18 @@ SYMBOLS: list[SymbolSpec] = [
     SymbolSpec("UST30Y", "US 30Y Treasury yield", "yahoo", "^TYX", "rate", "%", ("TYX", "US30Y")),
     SymbolSpec("REIT", "US Real Estate (VNQ)", "yahoo", "VNQ", "reit", "USD", ("VNQ", "REALESTATE")),
     # --- FX (Yahoo, no key) --------------------------------------------------
-    SymbolSpec("EURUSD", "Euro / US Dollar", "yahoo", "EURUSD=X", "fx", "USD", ("EUR",)),
-    SymbolSpec("GBPUSD", "British Pound / US Dollar", "yahoo", "GBPUSD=X", "fx", "USD", ("GBP",)),
-    SymbolSpec("USDJPY", "US Dollar / Japanese Yen", "yahoo", "JPY=X", "fx", "JPY", ("JPY",)),
+    SymbolSpec(
+        "EURUSD", "Euro / US Dollar", "yahoo", "EURUSD=X", "fx", "USD", ("EUR",),
+        vendor_symbol="EUR/USD",
+    ),
+    SymbolSpec(
+        "GBPUSD", "British Pound / US Dollar", "yahoo", "GBPUSD=X", "fx", "USD", ("GBP",),
+        vendor_symbol="GBP/USD",
+    ),
+    SymbolSpec(
+        "USDJPY", "US Dollar / Japanese Yen", "yahoo", "JPY=X", "fx", "JPY", ("JPY",),
+        vendor_symbol="USD/JPY",
+    ),
     SymbolSpec("DXY", "US Dollar Index", "yahoo", "DX-Y.NYB", "fx", "index", ("USDOLLAR",)),
     # --- Fixed income via liquid ETF proxies (Yahoo, no key) -----------------
     SymbolSpec("BOND_AGG", "US Aggregate Bond (AGG)", "yahoo", "AGG", "bond_proxy", "USD", ("AGG",)),
@@ -127,7 +143,8 @@ def resolve_symbol(symbol: str) -> SymbolSpec:
     key = symbol.strip().upper()
     if key in _ALIAS_INDEX:
         return _ALIAS_INDEX[key]
-    return SymbolSpec(key, key, "yahoo", key, "equity", "USD")
+    # Unknown symbol: treat as an equity ticker (works for both Yahoo and the vendor).
+    return SymbolSpec(key, key, "yahoo", key, "equity", "USD", vendor_symbol=key)
 
 
 # --------------------------------------------------------------------------- #
@@ -197,6 +214,31 @@ def yahoo_chart(provider_symbol: str) -> dict[str, Any]:
     if not result:
         raise ProviderError(f"No Yahoo data for {provider_symbol}.")
     return result[0].get("meta") or {}
+
+
+def twelvedata_quote(vendor_symbol: str) -> dict[str, Any]:
+    """Quote from the licensed vendor (Twelve Data). Requires TWELVEDATA_API_KEY.
+
+    Returns a dict with at least ``price``; ``percent_change`` and ``currency`` when
+    available. Normalizes the vendor's error payloads into ProviderError.
+    """
+    key = twelvedata_api_key()
+    if not key:
+        raise ProviderError("TWELVEDATA_API_KEY is not configured.")
+    url = (
+        "https://api.twelvedata.com/quote"
+        f"?symbol={urllib.parse.quote(vendor_symbol)}&apikey={urllib.parse.quote(key)}"
+    )
+    payload = _http_get_json(url)
+    if not isinstance(payload, dict) or payload.get("status") == "error" or "close" not in payload:
+        message = payload.get("message") if isinstance(payload, dict) else "bad response"
+        raise ProviderError(f"Twelve Data error for {vendor_symbol}: {message}")
+    result: dict[str, Any] = {"price": float(payload["close"])}
+    if payload.get("percent_change") not in (None, ""):
+        result["percent_change"] = float(payload["percent_change"])
+    if payload.get("currency"):
+        result["currency"] = payload["currency"]
+    return result
 
 
 def fred_series_latest(series_id: str) -> tuple[float, str]:
@@ -346,14 +388,15 @@ class MarketDataService:
                     ),
                 ),
                 ProviderInfo(
-                    key="licensed_vendor",
-                    name="Licensed quotes vendor (Polygon / Twelve Data / Finnhub / Tiingo)",
-                    asset_classes=["equity", "fx", "crypto", "bond", "index"],
-                    status="requires_credentials",
+                    key="twelvedata",
+                    name="Twelve Data (licensed vendor)",
+                    asset_classes=["equity", "fx", "crypto", "index"],
+                    status="live" if twelvedata_api_key() else "requires_credentials",
                     requires_key=True,
                     notes=(
-                        "Recommended for production-grade, ToS-compliant real-time quotes and "
-                        "direct fixed-income pricing. Add an adapter keyed by env var."
+                        "Production-grade, ToS-compliant quotes. Adapter implemented; set "
+                        "TWELVEDATA_API_KEY to make it the PRIMARY source for equities/FX "
+                        "(Yahoo remains the automatic fallback)."
                     ),
                 ),
                 ProviderInfo(
@@ -426,15 +469,21 @@ class MarketDataService:
                 if entry.get("usd_24h_change") is not None:
                     base.change_percent = round(float(entry["usd_24h_change"]), 2)
             elif spec.provider == "yahoo":
-                meta = self._cached(f"yahoo:{spec.provider_symbol}", lambda: yahoo_chart(spec.provider_symbol))
-                price = meta.get("regularMarketPrice")
-                prev = meta.get("chartPreviousClose") or meta.get("previousClose")
-                if price is None:
-                    raise ProviderError("No price in Yahoo response.")
-                base.price = float(price)
-                base.currency = meta.get("currency") or "USD"
-                if prev:
-                    base.change_percent = round((float(price) - float(prev)) / float(prev) * 100, 2)
+                if not self._fill_from_vendor(spec, base):
+                    meta = self._cached(
+                        f"yahoo:{spec.provider_symbol}",
+                        lambda: yahoo_chart(spec.provider_symbol),
+                    )
+                    price = meta.get("regularMarketPrice")
+                    prev = meta.get("chartPreviousClose") or meta.get("previousClose")
+                    if price is None:
+                        raise ProviderError("No price in Yahoo response.")
+                    base.price = float(price)
+                    base.currency = meta.get("currency") or "USD"
+                    if prev:
+                        base.change_percent = round(
+                            (float(price) - float(prev)) / float(prev) * 100, 2
+                        )
             elif spec.provider == "bls":
                 data = self._cpi_series()
                 yoy, _latest, period = self._cpi_yoy(data)
@@ -453,6 +502,25 @@ class MarketDataService:
             base.status = "unavailable"
             base.note = f"{spec.provider} fetch failed: {exc}"
         return base
+
+    def _fill_from_vendor(self, spec: SymbolSpec, base: Quote) -> bool:
+        """Try the licensed vendor first when configured; return True on success."""
+        if not twelvedata_api_key() or not spec.vendor_symbol:
+            return False
+        try:
+            data = self._cached(
+                f"twelvedata:{spec.vendor_symbol}",
+                lambda: twelvedata_quote(spec.vendor_symbol),
+            )
+        except ProviderError:
+            return False  # fall back to Yahoo
+        base.price = float(data["price"])
+        base.source = "twelvedata"
+        if data.get("currency"):
+            base.currency = data["currency"]
+        if data.get("percent_change") is not None:
+            base.change_percent = round(float(data["percent_change"]), 2)
+        return True
 
     def _cpi_series(self) -> list[dict[str, Any]]:
         return self._cached("bls:cpi", bls_cpi_series)
