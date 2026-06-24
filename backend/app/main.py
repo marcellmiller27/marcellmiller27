@@ -11,6 +11,7 @@ from app.routers import (
     integrations,
     mobile_auth,
     reports,
+    support,
 )
 
 init_db()
@@ -42,6 +43,7 @@ app.include_router(billing.router, prefix="/api/v1")
 app.include_router(reports.router, prefix="/api/v1")
 app.include_router(dashboards.router, prefix="/api/v1")
 app.include_router(crm.router, prefix="/api/v1")
+app.include_router(support.router, prefix="/api/v1")
 app.include_router(integrations.router, prefix="/api/v1")
 
 
