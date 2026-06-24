@@ -23,6 +23,15 @@ const reportExamples = [
   "Dividend Opportunities Report"
 ];
 
+const missionPrinciples = [
+  "Stewardship over speculation",
+  "Capital preservation first",
+  "Discipline compounds",
+  "Evidence over noise",
+  "Aligned interests",
+  "A generational time horizon"
+];
+
 export default function Home() {
   return (
     <main>
@@ -68,6 +77,44 @@ export default function Home() {
             <strong>{metric.value}</strong>
           </article>
         ))}
+      </section>
+
+      <section className="section split" id="mission">
+        <div>
+          <p className="eyebrow">Our mission</p>
+          <h2>Institutional intelligence in service of family legacy.</h2>
+        </div>
+        <div className="mission">
+          <p className="mission__statement">
+            To compound and protect capital across generations. John Henry
+            Investments unites institutional-grade research, disciplined risk
+            management, and our proprietary Opportunity Score across public
+            markets, private businesses, real assets, and digital assets — turning
+            conviction into durable, multi-generational wealth for the families and
+            allocators we serve.
+          </p>
+          <blockquote className="mission__creed">
+            We steward capital like family — preserving it first, compounding it
+            patiently, and measuring every decision against the generations who
+            inherit it.
+          </blockquote>
+          <p className="mission__story">
+            John Henry Investments carries the name of the steel-driving man — the
+            worker who met the machine of his age with nothing but resolve and
+            refused to let it decide his family&rsquo;s future. We bring that
+            temperament to capital: relentless, unglamorous, and built to endure.
+            We were founded to hand the family at the kitchen table the same
+            research, risk discipline, and access that quietly compound wealth
+            inside the great institutions.
+          </p>
+          <div className="tag-grid">
+            {missionPrinciples.map((principle) => (
+              <span className="tag" key={principle}>
+                {principle}
+              </span>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="section split">
