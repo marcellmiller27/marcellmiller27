@@ -86,12 +86,12 @@ export default function Home() {
         </div>
         <div className="mission">
           <p className="mission__statement">
-            To compound and protect capital across generations. John Henry
-            Investments unites institutional-grade research, disciplined risk
-            management, and our proprietary Opportunity Score across public
-            markets, private businesses, real assets, and digital assets — turning
-            conviction into durable, multi-generational wealth for the families and
-            allocators we serve.
+            To put institutional-grade research and modern technology in the hands of
+            everyday investors and the allocators who serve them — scrutinizing
+            opportunities across every asset class, from public markets to private
+            businesses, real assets, and digital assets, so people can invest their
+            time and capital with confidence and build durable, multi-generational
+            wealth.
           </p>
           <blockquote className="mission__creed">
             We steward capital like family — preserving it first, compounding it

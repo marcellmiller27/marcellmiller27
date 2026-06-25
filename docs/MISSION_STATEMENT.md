@@ -4,13 +4,32 @@
 
 **Institutional intelligence. Family legacy.**
 
-## Mission statement (concise)
+## Mission statement (official — adopted 2026-06-25)
 
-> To compound and protect capital across generations. John Henry Investments
-> unites institutional-grade research, disciplined risk management, and our
-> proprietary Opportunity Score across public markets, private businesses, real
-> assets, and digital assets — turning conviction into durable, multi-generational
+> To put institutional-grade research and modern technology in the hands of everyday
+> investors and the allocators who serve them — scrutinizing opportunities across
+> every asset class, from public markets to private businesses, real assets, and
+> digital assets, so people can invest their time and capital with confidence and
+> build durable, multi-generational wealth.
+
+*Rationale: broadens past any single category ("every asset class" covers crypto as
+"digital assets"), names the audience (everyday investors + allocators), and keeps
+"technology" as the differentiator. Selection write-up: `docs/MISSION_AND_ETHOS_REVIEW.md`.*
+
+### Prior mission (superseded)
+
+> To compound and protect capital across generations… durable, multi-generational
 > wealth for the families and allocators we serve.
+
+## Company ethos (manifesto / brand voice)
+
+> At John Henry Investments, our focus is bringing the most innovative technology to a
+> fast-changing world. Our dedicated research team scrutinizes every new project
+> entering finance and crypto, because hard-working people deserve solid, vetted
+> opportunities for their resources. We also believe wealth is measured in time as
+> much as money — there are 168 hours in every week, and how you use them shapes your
+> life. Give us the chance to expand your horizons, and together we'll build something
+> that lasts.
 
 ### One-line form
 
