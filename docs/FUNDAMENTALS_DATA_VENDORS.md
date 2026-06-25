@@ -54,6 +54,18 @@ These are different products — only fundamentals close H5:
 - **Best practical buy-now choice:** **Sharadar SF1 via Nasdaq Data Link** (#5) —
   genuinely PIT, survivorship-bias-free, self-serve API key, integrates fastest.
 
+## Procurement decision (confirmed 2026-06-25)
+
+**Chosen dataset: Sharadar Core US Fundamentals (SF1) on Nasdaq Data Link.** It meets
+every requirement: point-in-time (time-indexed to filing date), survivorship-bias-free
+(6k active + 10k delisted), restatement control, ~24y history, ~16k companies, 150
+indicators, and a Nasdaq Data Link API. Buy the **single-user/developer** license.
+
+**Critical PIT usage rule (for the adapter):** query the **As-Reported** dimensions
+(`ARQ`/`ART`/`ARY`) and align on the **filing date `datekey`** — NOT the
+most-recent/restated dimensions (`MRQ`/`MRT`/`MRY`) — to avoid look-ahead bias.
+SF1 is US-listed (plus ADRs/Canadian); global coverage would need a separate dataset.
+
 ## Integration plan (after purchase)
 
 1. Add the key in the **Secrets** panel. Default env vars the adapter will read:
