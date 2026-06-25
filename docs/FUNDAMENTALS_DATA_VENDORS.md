@@ -33,6 +33,21 @@ the platform will consume the API key once purchased.
 **Affordable API-first runners-up:** Tiingo Fundamentals, Financial Modeling Prep
 (FMP), Intrinio, EOD Historical Data (EODHD).
 
+## Do NOT confuse: market-data feeds vs fundamentals
+
+These are different products — only fundamentals close H5:
+
+- **Nasdaq Depth Data / TotalView (depth-of-book, Level 2)** — the live order book
+  (all bids/asks at every price level). Priced as a market-data license (e.g.,
+  "External Distribution ~$4,230/firm/month" plus per-user/exchange fees). Used for
+  execution / routing / HFT / TCA. **NOT fundamentals — wrong data for factor
+  research, and not needed anywhere in this platform.**
+- **Nasdaq Data Link (formerly Quandl)** — a data *marketplace* that hosts
+  **Sharadar SF1**, the point-in-time fundamentals we actually need. Same parent
+  brand ("Nasdaq"), completely different product. **This is the correct one.**
+- The platform's live price widgets need only last-price quotes (CoinGecko/Yahoo/
+  Twelve Data) — never depth-of-book.
+
 ## Recommendation
 
 - **Highest accuracy:** Compustat PIT (#1) — enterprise contract.
