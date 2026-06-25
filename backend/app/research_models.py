@@ -14,9 +14,56 @@ class BacktestResult(BaseModel):
     ic_t_stat: float | None
     ic_hit_rate: float | None
     mean_top_minus_bottom_monthly_return: float | None
+    annualized_long_short_return: float | None = None
+    pass_criteria: str = ""
+    h5_pass: bool = False
     interpretation: str
     caveats: list[str]
     status: str = "ok"
+    as_of: datetime
+
+
+class AssetScore(BaseModel):
+    symbol: str
+    opportunity_score: float
+
+
+class OpportunityScoreSnapshot(BaseModel):
+    as_of: datetime
+    score_definition: str
+    n_assets: int
+    scores: list[AssetScore]
+    status: str = "ok"
+
+
+class EquityOOSBacktestResult(BaseModel):
+    protocol: str
+    universe: list[str]
+    n_assets: int
+    in_sample_periods: int
+    oos_periods: int
+    factor_weights: dict[str, float]
+    oos_mean_information_coefficient: float | None
+    oos_ic_t_stat: float | None
+    oos_hit_rate: float | None
+    gross_annualized_long_short: float | None
+    net_annualized_long_short: float | None
+    cost_bps_per_side: float
+    avg_monthly_turnover: float | None
+    pass_criteria: str
+    oos_pass: bool
+    interpretation: str
+    solution_if_failed: list[str] = Field(default_factory=list)
+    caveats: list[str] = Field(default_factory=list)
+    status: str = "ok"
+    as_of: datetime
+
+
+class FundamentalsStatus(BaseModel):
+    available: bool
+    provider: str
+    note: str
+    required_solution: list[str]
     as_of: datetime
 
 

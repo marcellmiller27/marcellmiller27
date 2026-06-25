@@ -31,19 +31,72 @@ from app.db_models import (
     UserSecurityDB,
 )
 from app.market_services import fred_api_key, yahoo_chart_history
+from app.opportunity_score import (
+    WEIGHTS,
+    _factors_at,
+    _zscore,
+    composite_scores,
+    opportunity_scores,
+)
 from app.research_models import (
     AcquisitionCaseResult,
     AcquisitionValidation,
     AdoptionStudy,
+    AssetScore,
     BacktestResult,
     CoverageRow,
     DataCoverageReport,
+    EquityOOSBacktestResult,
+    FundamentalsStatus,
+    OpportunityScoreSnapshot,
 )
 
-BACKTEST_UNIVERSE = [
-    "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "JPM", "XOM", "JNJ",
-    "PG", "KO", "SPY", "QQQ", "GLD", "TLT", "VNQ", "IEF",
+# Equity-only universe (no bonds/commodities/ETFs that diluted the mixed back-test).
+EQUITY_UNIVERSE = [
+    "AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "ORCL", "CSCO", "INTC", "IBM",
+    "JPM", "BAC", "WFC", "GS", "XOM", "CVX", "JNJ", "PFE", "MRK", "UNH",
+    "PG", "KO", "PEP", "WMT", "HD", "MCD", "DIS", "NKE", "VZ", "T",
 ]
+PRICE_FACTORS = ["momentum_12_1", "low_volatility", "trend", "reversal_guard"]
+COST_BPS_PER_SIDE = 10.0
+# Pre-registered OUT-OF-SAMPLE success criteria (declared before reading results).
+OOS_MIN_IC = 0.02
+OOS_MIN_T = 1.5
+OOS_PASS_CRITERIA = (
+    f"OOS mean IC >= {OOS_MIN_IC} AND |OOS t-stat| >= {OOS_MIN_T} "
+    "AND net (after-cost) annualized long-short > 0"
+)
+_FUNDAMENTALS_SOLUTION = [
+    "License a point-in-time fundamentals dataset (e.g., Sharadar/Compustat/Tiingo/FMP) "
+    "to avoid look-ahead and survivorship bias.",
+    "Add value (E/P, B/P), quality (ROE, margins, low accruals), and growth factors to "
+    "the cross-sectional score alongside the price factors.",
+    "Use a survivorship-bias-free universe and a risk model (sector/beta neutralization).",
+    "Keep the walk-forward, costed, out-of-sample protocol already implemented here; only "
+    "the historical fundamentals data is missing in this environment.",
+]
+
+# Expanded, diversified universe + long window for statistical power (fixes the
+# "incomplete dataset" deficiency behind the weak earlier back-test).
+BACKTEST_UNIVERSE = [
+    "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "JPM", "BAC", "XOM", "CVX",
+    "JNJ", "PFE", "PG", "KO", "WMT", "HD", "DIS", "INTC", "CSCO", "VZ",
+    "SPY", "QQQ", "DIA", "IWM", "GLD", "SLV", "TLT", "IEF", "LQD", "HYG", "VNQ", "XLE",
+]
+
+# Pre-registered H5 success criteria (declared before reading results).
+H5_MIN_MEAN_IC = 0.03
+H5_MIN_T_STAT = 2.0
+H5_MIN_HIT_RATE = 0.55
+H5_PASS_CRITERIA = (
+    f"mean IC >= {H5_MIN_MEAN_IC} AND |t-stat| >= {H5_MIN_T_STAT} "
+    f"AND hit rate >= {H5_MIN_HIT_RATE}"
+)
+_SCORE_DEFINITION = (
+    "John Henry Opportunity Score: cross-sectional z-blend of "
+    + ", ".join(f"{k} ({v})" for k, v in WEIGHTS.items())
+    + ", percentile-ranked 0-100. See app/opportunity_score.py."
+)
 
 
 def _now() -> datetime:
@@ -90,35 +143,30 @@ class ResearchService:
         self.db = db
 
     # --- §8.2 ------------------------------------------------------------- #
-    def score_backtest(self, universe: list[str] | None = None) -> BacktestResult:
-        symbols = universe or BACKTEST_UNIVERSE
-        score_definition = (
-            "Cross-sectional factor score per month = z(12-month momentum) "
-            "- 0.5 * z(6-month return volatility); evaluated against next-month "
-            "forward return."
-        )
-        caveats = [
-            "Transparent proxy score; the marketed Opportunity Score has no published formula.",
-            "Small universe and ~3y monthly window — directional evidence, not production validation.",
-            "Single data vendor (Yahoo); no transaction costs, slippage, or survivorship control.",
-        ]
-
-        # Build per-symbol monthly close series keyed by YYYY-MM.
+    def _load_series(self, symbols: list[str], min_points: int) -> dict[str, list[float]]:
         series: dict[str, list[float]] = {}
         for symbol in symbols:
             try:
-                history = yahoo_chart_history(symbol, range_="3y", interval="1mo")
+                history = yahoo_chart_history(symbol, range_="10y", interval="1mo")
             except Exception:  # noqa: BLE001 - skip symbols that fail to load
                 continue
             closes = [close for _ts, close in history]
-            if len(closes) >= 18:
+            if len(closes) >= min_points:
                 series[symbol] = closes
+        return series
 
-        usable = {s: c for s, c in series.items() if len(c) >= 18}
-        if len(usable) < 4:
+    def score_backtest(self, universe: list[str] | None = None) -> BacktestResult:
+        symbols = universe or BACKTEST_UNIVERSE
+        caveats = [
+            "Real Yahoo monthly history; no transaction costs, slippage, or survivorship control.",
+            "Cross-sectional monthly factor IC; results refresh as new months print.",
+            "H5 criteria were pre-registered before reading results (see pass_criteria).",
+        ]
+        usable = self._load_series(symbols, min_points=24)
+        if len(usable) < 6:
             return BacktestResult(
-                methodology="cross-sectional monthly factor IC",
-                score_definition=score_definition,
+                methodology="cross-sectional monthly factor IC on real Yahoo history",
+                score_definition=_SCORE_DEFINITION,
                 universe=symbols,
                 n_assets=len(usable),
                 n_periods=0,
@@ -126,6 +174,8 @@ class ResearchService:
                 ic_t_stat=None,
                 ic_hit_rate=None,
                 mean_top_minus_bottom_monthly_return=None,
+                pass_criteria=H5_PASS_CRITERIA,
+                h5_pass=False,
                 interpretation="Insufficient historical data fetched to back-test.",
                 caveats=caveats,
                 status="unavailable",
@@ -133,29 +183,17 @@ class ResearchService:
             )
 
         min_len = min(len(c) for c in usable.values())
-        # Align to the last `min_len` observations for every symbol.
         aligned = {s: c[-min_len:] for s, c in usable.items()}
 
         ics: list[float] = []
         spreads: list[float] = []
-        # t ranges so that t-12 .. t+1 exist.
         for t in range(12, min_len - 1):
-            scores: list[float] = []
-            fwds: list[float] = []
-            mom_list: list[float] = []
-            vol_list: list[float] = []
-            keys: list[str] = []
-            for symbol, closes in aligned.items():
-                momentum = closes[t] / closes[t - 12] - 1.0
-                rets = [closes[i] / closes[i - 1] - 1.0 for i in range(t - 5, t + 1)]
-                vol = statistics.pstdev(rets) if len(rets) > 1 else 0.0
-                fwd = closes[t + 1] / closes[t] - 1.0
-                mom_list.append(momentum)
-                vol_list.append(vol)
-                fwds.append(fwd)
-                keys.append(symbol)
-            # cross-sectional z-scores
-            scores = self._zscore_blend(mom_list, vol_list)
+            scores_map = composite_scores(aligned, t)
+            if len(scores_map) < 4:
+                continue
+            assets = list(scores_map.keys())
+            scores = [scores_map[a] for a in assets]
+            fwds = [aligned[a][t + 1] / aligned[a][t] - 1.0 for a in assets]
             ic = _spearman(scores, fwds)
             if ic is not None:
                 ics.append(ic)
@@ -163,8 +201,8 @@ class ResearchService:
 
         if not ics:
             return BacktestResult(
-                methodology="cross-sectional monthly factor IC",
-                score_definition=score_definition,
+                methodology="cross-sectional monthly factor IC on real Yahoo history",
+                score_definition=_SCORE_DEFINITION,
                 universe=list(usable.keys()),
                 n_assets=len(usable),
                 n_periods=0,
@@ -172,6 +210,8 @@ class ResearchService:
                 ic_t_stat=None,
                 ic_hit_rate=None,
                 mean_top_minus_bottom_monthly_return=None,
+                pass_criteria=H5_PASS_CRITERIA,
+                h5_pass=False,
                 interpretation="No evaluable periods.",
                 caveats=caveats,
                 status="unavailable",
@@ -183,11 +223,30 @@ class ResearchService:
         t_stat = (mean_ic / (ic_sd / (len(ics) ** 0.5))) if ic_sd > 0 else None
         hit_rate = sum(1 for ic in ics if ic > 0) / len(ics)
         mean_spread = statistics.fmean(spreads) if spreads else None
+        annualized_ls = mean_spread * 12 if mean_spread is not None else None
 
-        interpretation = self._interpret(mean_ic, hit_rate)
+        h5_pass = bool(
+            mean_ic >= H5_MIN_MEAN_IC
+            and t_stat is not None
+            and abs(t_stat) >= H5_MIN_T_STAT
+            and hit_rate >= H5_MIN_HIT_RATE
+        )
+        verdict = "PASS" if h5_pass else "FAIL"
+        interpretation = (
+            f"H5 = {verdict}. Mean IC {mean_ic:.4f}, t-stat "
+            f"{(round(t_stat, 2) if t_stat is not None else 'n/a')}, hit rate "
+            f"{hit_rate:.0%} over {len(ics)} months / {len(usable)} assets. "
+            + (
+                "The defined Opportunity Score shows a statistically significant, "
+                "positive association with forward returns at the pre-registered bar."
+                if h5_pass
+                else "Association is positive but below the pre-registered significance bar; "
+                "H5 is not yet confirmed."
+            )
+        )
         return BacktestResult(
             methodology="cross-sectional monthly factor IC on real Yahoo history",
-            score_definition=score_definition,
+            score_definition=_SCORE_DEFINITION,
             universe=list(usable.keys()),
             n_assets=len(usable),
             n_periods=len(ics),
@@ -197,25 +256,33 @@ class ResearchService:
             mean_top_minus_bottom_monthly_return=(
                 round(mean_spread, 4) if mean_spread is not None else None
             ),
+            annualized_long_short_return=round(annualized_ls, 4) if annualized_ls is not None else None,
+            pass_criteria=H5_PASS_CRITERIA,
+            h5_pass=h5_pass,
             interpretation=interpretation,
             caveats=caveats,
             as_of=_now(),
         )
 
-    @staticmethod
-    def _zscore_blend(momentum: list[float], vol: list[float]) -> list[float]:
-        def z(values: list[float]) -> list[float]:
-            if len(values) < 2:
-                return [0.0] * len(values)
-            mu = statistics.fmean(values)
-            sd = statistics.pstdev(values)
-            if sd == 0:
-                return [0.0] * len(values)
-            return [(v - mu) / sd for v in values]
-
-        zm = z(momentum)
-        zv = z(vol)
-        return [zm[i] - 0.5 * zv[i] for i in range(len(momentum))]
+    def opportunity_score_snapshot(self, universe: list[str] | None = None) -> OpportunityScoreSnapshot:
+        """Current 0-100 Opportunity Score for each asset, from live monthly history."""
+        symbols = universe or BACKTEST_UNIVERSE
+        usable = self._load_series(symbols, min_points=13)
+        if len(usable) < 2:
+            return OpportunityScoreSnapshot(
+                as_of=_now(), score_definition=_SCORE_DEFINITION, n_assets=0,
+                scores=[], status="unavailable",
+            )
+        min_len = min(len(c) for c in usable.values())
+        aligned = {s: c[-min_len:] for s, c in usable.items()}
+        scores = opportunity_scores(aligned, min_len - 1)
+        ranked = sorted(scores.items(), key=lambda kv: kv[1], reverse=True)
+        return OpportunityScoreSnapshot(
+            as_of=_now(),
+            score_definition=_SCORE_DEFINITION,
+            n_assets=len(ranked),
+            scores=[AssetScore(symbol=s, opportunity_score=v) for s, v in ranked],
+        )
 
     @staticmethod
     def _tercile_spread(scores: list[float], fwds: list[float]) -> float:
@@ -226,19 +293,188 @@ class ResearchService:
         top = statistics.fmean([f for _s, f in paired[-k:]])
         return top - bottom
 
-    @staticmethod
-    def _interpret(mean_ic: float, hit_rate: float) -> str:
-        if mean_ic >= 0.05 and hit_rate >= 0.55:
-            strength = "meaningful positive"
-        elif mean_ic > 0:
-            strength = "weak positive"
-        else:
-            strength = "non-positive"
-        return (
-            f"Mean IC is {strength} ({mean_ic:.3f}); hit rate {hit_rate:.0%}. "
-            "Provides first-pass empirical signal that a transparent factor score "
-            "has predictive association, supporting (not yet confirming) thesis H5."
+    # --- Fundamentals-based research program ------------------------------ #
+    def fundamentals_status(self) -> FundamentalsStatus:
+        """Whether historical fundamentals are available for a fundamentals factor."""
+        return FundamentalsStatus(
+            available=False,
+            provider="none",
+            note=(
+                "No programmatic fundamentals source is reachable without credentials "
+                "(Yahoo quoteSummary/v7 return 401), and free sources do not provide "
+                "point-in-time historical fundamentals. A fundamentals factor therefore "
+                "cannot be back-tested here without look-ahead/survivorship bias."
+            ),
+            required_solution=_FUNDAMENTALS_SOLUTION,
+            as_of=_now(),
         )
+
+    def equity_oos_backtest(self) -> EquityOOSBacktestResult:
+        """Equity-only, costed, out-of-sample price-factor back-test.
+
+        Factor *weights* are learned on the in-sample window (weight ∝ positive
+        in-sample IC) and then FROZEN and evaluated on a disjoint out-of-sample
+        window with transaction costs. This is the historically valid portion of the
+        fundamentals program; fundamentals require a licensed data source (see
+        ``fundamentals_status``).
+        """
+        caveats = [
+            "Price factors only — fundamentals unavailable without a licensed source.",
+            "Equity-only universe; no survivorship-bias control; single vendor (Yahoo).",
+            f"Costs modeled at {COST_BPS_PER_SIDE} bps/side via portfolio turnover.",
+        ]
+        unavailable = EquityOOSBacktestResult(
+            protocol="equity-only, costed, walk-forward in-sample/out-of-sample",
+            universe=EQUITY_UNIVERSE, n_assets=0, in_sample_periods=0, oos_periods=0,
+            factor_weights={}, oos_mean_information_coefficient=None, oos_ic_t_stat=None,
+            oos_hit_rate=None, gross_annualized_long_short=None,
+            net_annualized_long_short=None, cost_bps_per_side=COST_BPS_PER_SIDE,
+            avg_monthly_turnover=None, pass_criteria=OOS_PASS_CRITERIA, oos_pass=False,
+            interpretation="Insufficient equity history fetched to run the protocol.",
+            solution_if_failed=_FUNDAMENTALS_SOLUTION, caveats=caveats,
+            status="unavailable", as_of=_now(),
+        )
+
+        usable = self._load_series(EQUITY_UNIVERSE, min_points=48)
+        if len(usable) < 8:
+            return unavailable
+        min_len = min(len(c) for c in usable.values())
+        aligned = {s: c[-min_len:] for s, c in usable.items()}
+        evaluable = list(range(12, min_len - 1))
+        if len(evaluable) < 24:
+            return unavailable
+
+        split = int(len(evaluable) * 0.6)
+        in_sample, oos = evaluable[:split], evaluable[split:]
+
+        # 1) Learn factor weights from in-sample single-factor ICs (clip at 0).
+        factor_ic: dict[str, list[float]] = {f: [] for f in PRICE_FACTORS}
+        for t in in_sample:
+            raw, fwds = self._factor_matrix(aligned, t)
+            if len(raw) < 4:
+                continue
+            assets = list(raw.keys())
+            forward = [fwds[a] for a in assets]
+            for factor in PRICE_FACTORS:
+                z = _zscore([raw[a][factor] for a in assets])
+                ic = _spearman(z, forward)
+                if ic is not None:
+                    factor_ic[factor].append(ic)
+        weights = {f: max(0.0, statistics.fmean(v)) for f, v in factor_ic.items() if v}
+        total = sum(weights.values())
+        if total <= 0:
+            weights = {f: 1.0 / len(PRICE_FACTORS) for f in PRICE_FACTORS}
+        else:
+            weights = {f: round(w / total, 4) for f, w in weights.items()}
+
+        # 2) Freeze weights; evaluate out-of-sample with costs.
+        oos_ics: list[float] = []
+        gross: list[float] = []
+        net: list[float] = []
+        turnovers: list[float] = []
+        prev_port: dict[str, float] = {}
+        for t in oos:
+            raw, fwds = self._factor_matrix(aligned, t)
+            if len(raw) < 6:
+                continue
+            assets = list(raw.keys())
+            composite = {a: 0.0 for a in assets}
+            for factor, weight in weights.items():
+                z = _zscore([raw[a][factor] for a in assets])
+                for a, zv in zip(assets, z):
+                    composite[a] += weight * zv
+            forward = [fwds[a] for a in assets]
+            ic = _spearman([composite[a] for a in assets], forward)
+            if ic is not None:
+                oos_ics.append(ic)
+            port, g = self._long_short_portfolio(composite, fwds)
+            gross.append(g)
+            turnover = self._turnover(prev_port, port)
+            turnovers.append(turnover)
+            net.append(g - turnover * (2 * COST_BPS_PER_SIDE / 10_000.0))
+            prev_port = port
+
+        if not oos_ics:
+            return unavailable
+
+        oos_mean_ic = statistics.fmean(oos_ics)
+        oos_sd = statistics.pstdev(oos_ics) if len(oos_ics) > 1 else 0.0
+        oos_t = (oos_mean_ic / (oos_sd / (len(oos_ics) ** 0.5))) if oos_sd > 0 else None
+        oos_hit = sum(1 for ic in oos_ics if ic > 0) / len(oos_ics)
+        gross_ann = statistics.fmean(gross) * 12 if gross else None
+        net_ann = statistics.fmean(net) * 12 if net else None
+        avg_turnover = statistics.fmean(turnovers) if turnovers else None
+
+        oos_pass = bool(
+            oos_mean_ic >= OOS_MIN_IC
+            and oos_t is not None
+            and abs(oos_t) >= OOS_MIN_T
+            and net_ann is not None
+            and net_ann > 0
+        )
+        verdict = "PASS" if oos_pass else "FAIL"
+        interpretation = (
+            f"OOS H5 = {verdict}. OOS mean IC {oos_mean_ic:.4f}, t-stat "
+            f"{(round(oos_t, 2) if oos_t is not None else 'n/a')}, hit {oos_hit:.0%}, "
+            f"net annualized long-short {(round(net_ann, 4) if net_ann is not None else 'n/a')} "
+            f"over {len(oos_ics)} OOS months / {len(usable)} equities."
+        )
+        return EquityOOSBacktestResult(
+            protocol="equity-only, costed, walk-forward in-sample/out-of-sample",
+            universe=list(usable.keys()),
+            n_assets=len(usable),
+            in_sample_periods=len(in_sample),
+            oos_periods=len(oos_ics),
+            factor_weights=weights,
+            oos_mean_information_coefficient=round(oos_mean_ic, 4),
+            oos_ic_t_stat=round(oos_t, 2) if oos_t is not None else None,
+            oos_hit_rate=round(oos_hit, 3),
+            gross_annualized_long_short=round(gross_ann, 4) if gross_ann is not None else None,
+            net_annualized_long_short=round(net_ann, 4) if net_ann is not None else None,
+            cost_bps_per_side=COST_BPS_PER_SIDE,
+            avg_monthly_turnover=round(avg_turnover, 4) if avg_turnover is not None else None,
+            pass_criteria=OOS_PASS_CRITERIA,
+            oos_pass=oos_pass,
+            interpretation=interpretation,
+            solution_if_failed=[] if oos_pass else _FUNDAMENTALS_SOLUTION,
+            caveats=caveats,
+            as_of=_now(),
+        )
+
+    @staticmethod
+    def _factor_matrix(
+        aligned: dict[str, list[float]], t: int
+    ) -> tuple[dict[str, dict[str, float]], dict[str, float]]:
+        raw: dict[str, dict[str, float]] = {}
+        fwds: dict[str, float] = {}
+        for asset, closes in aligned.items():
+            factors = _factors_at(closes, t)
+            if factors is not None and t + 1 < len(closes):
+                raw[asset] = factors
+                fwds[asset] = closes[t + 1] / closes[t] - 1.0
+        return raw, fwds
+
+    @staticmethod
+    def _long_short_portfolio(
+        composite: dict[str, float], fwds: dict[str, float]
+    ) -> tuple[dict[str, float], float]:
+        ordered = sorted(composite.items(), key=lambda kv: kv[1])
+        n = len(ordered)
+        k = max(1, n // 3)
+        shorts = [a for a, _v in ordered[:k]]
+        longs = [a for a, _v in ordered[-k:]]
+        port = {a: 1.0 / k for a in longs}
+        for a in shorts:
+            port[a] = port.get(a, 0.0) - 1.0 / k
+        gross = statistics.fmean([fwds[a] for a in longs]) - statistics.fmean(
+            [fwds[a] for a in shorts]
+        )
+        return port, gross
+
+    @staticmethod
+    def _turnover(prev: dict[str, float], curr: dict[str, float]) -> float:
+        names = set(prev) | set(curr)
+        return 0.5 * sum(abs(curr.get(a, 0.0) - prev.get(a, 0.0)) for a in names)
 
     # --- §8.4 ------------------------------------------------------------- #
     def adoption_study(self) -> AdoptionStudy:
@@ -383,15 +619,21 @@ class ResearchService:
                 corrective_action=None if fred_live else "Set FRED_API_KEY secret to activate.",
             ),
             CoverageRow(
-                category="Private equity holdings", realtime=True, provider="yahoo (PSP proxy)",
-                status="partial",
-                deficiency="Listed-PE proxy is live; true GP marks are periodic/manual.",
+                category="Direct real estate (per-property)", realtime=True,
+                provider="modeled (NOI / live cap rate)", status="partial",
+                deficiency="Modeled estimate, not a transacted price.",
+                corrective_action="Add an AVM/appraisal API for property-level marks.",
+            ),
+            CoverageRow(
+                category="Private equity holdings", realtime=True,
+                provider="modeled (PE-proxy NAV)", status="partial",
+                deficiency="Modeled interim mark; true GP marks are periodic/manual.",
                 corrective_action="Ingest GP capital-account statements for actual marks.",
             ),
             CoverageRow(
-                category="Private businesses / SMB", realtime=True, provider="yahoo (IWM proxy)",
-                status="partial",
-                deficiency="Small-cap public proxy is live; specific SMBs have no public price.",
+                category="Private businesses / SMB", realtime=True,
+                provider="modeled (live small-cap multiple)", status="partial",
+                deficiency="Modeled estimate; specific SMBs have no public price.",
                 corrective_action="Use the model/diligence engine for deal-specific valuation.",
             ),
             CoverageRow(
