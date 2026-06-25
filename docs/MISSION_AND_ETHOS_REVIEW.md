@@ -87,6 +87,29 @@ Creed stays: **"Institutional intelligence. Family legacy."**
 > purpose? Are you making the most of your time?* Give us the chance to expand your
 > horizons, and together we'll build something that lasts.
 
+## A1 refinement — broaden beyond crypto (decision pending)
+
+Feedback: replace "crypto" with "technology" to cover the whole industry. Note: a
+literal "markets and technology" repeats "technology" (already in "financial
+technology") and can read as the *tech sector* (narrower). Better: name the breadth
+as **every asset class** and let **technology** describe the edge.
+
+- **A1‑refined (recommended):** *To put institutional‑grade research and modern
+  technology in the hands of everyday investors and the allocators who serve them —
+  scrutinizing opportunities across every asset class, from public markets to private
+  businesses, real assets, and digital assets, so people can invest their time and
+  capital with confidence and build durable, multi‑generational wealth.*
+- **A1‑concise:** *To put institutional‑grade research and modern technology in the
+  hands of everyday investors — scrutinizing opportunities across every asset class so
+  people can invest their time and capital with confidence and build durable,
+  multi‑generational wealth.*
+- **A1‑tech‑forward:** *To harness the latest technology and institutional‑grade
+  research so everyday investors and allocators can evaluate opportunities across
+  every asset class — and build durable, multi‑generational wealth.*
+
+Recommended choice: **A1‑refined.** Once confirmed, this replaces the mission in
+`docs/MISSION_STATEMENT.md` and the on‑site mission section.
+
 ## My recommendation (do both)
 
 1. **Keep the mission tight** — use **A1** if you want to fold in the "everyday
