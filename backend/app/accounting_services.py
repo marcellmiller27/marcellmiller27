@@ -31,7 +31,9 @@ _SEED_ACCOUNTS = [
     ("1000", "Cash and Cash Equivalents", "asset"),
     ("1100", "Accounts Receivable", "asset"),
     ("1200", "Prepaid Software", "asset"),
-    ("1500", "Platform Development Asset", "asset"),
+    ("1500", "Platform Development Asset (capitalized IP)", "asset"),
+    ("1510", "Accumulated Amortization - Platform IP", "asset"),  # contra-asset
+    ("1600", "Trademarks & Brand (indefinite-lived)", "asset"),
     ("2000", "Accounts Payable", "liability"),
     ("2100", "Deferred Revenue", "liability"),
     ("3000", "Member Equity", "equity"),
@@ -40,6 +42,7 @@ _SEED_ACCOUNTS = [
     ("5000", "Cloud Infrastructure Expense", "expense"),
     ("5100", "AI Data Processing Expense", "expense"),
     ("5200", "Sales and Marketing Expense", "expense"),
+    ("5300", "Amortization Expense", "expense"),
 ]
 
 
@@ -138,10 +141,16 @@ class AccountingService:
         )
 
     def seed_if_empty(self, db: Session) -> None:
-        if db.scalar(select(AccountDB.code)) is None:
-            db.add_all(
-                [AccountDB(code=c, name=n, account_type=t) for c, n, t in _SEED_ACCOUNTS]
-            )
+        # Ensure every chart-of-accounts entry exists (idempotent; adds new ones such
+        # as the IP/amortization accounts even on an already-seeded database).
+        existing = {a.code for a in db.scalars(select(AccountDB)).all()}
+        new = [
+            AccountDB(code=c, name=n, account_type=t)
+            for c, n, t in _SEED_ACCOUNTS
+            if c not in existing
+        ]
+        if new:
+            db.add_all(new)
             db.commit()
         if db.scalar(select(JournalEntryDB.id)) is None:
             for entry in self._seed_entries():

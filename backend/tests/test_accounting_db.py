@@ -9,6 +9,37 @@ def test_chart_of_accounts_seeded() -> None:
     rows = client.get("/api/v1/accounting/chart-of-accounts").json()
     codes = {a["code"] for a in rows}
     assert {"1000", "4000", "5000"}.issubset(codes)
+    # IP capitalization + amortization accounts present.
+    assert {"1500", "1510", "1600", "5300"}.issubset(codes)
+
+
+def test_capitalize_and_amortize_ip_entries() -> None:
+    # Capitalize dev cost.
+    cap = client.post(
+        "/api/v1/accounting/journal-entries",
+        json={
+            "entry_date": "2026-07-01",
+            "memo": "Capitalize platform development (IP)",
+            "lines": [
+                {"account_code": "1500", "debit": "180000.00", "credit": "0.00"},
+                {"account_code": "1000", "debit": "0.00", "credit": "180000.00"},
+            ],
+        },
+    )
+    assert cap.status_code == 201
+    # Record one month of amortization.
+    amort = client.post(
+        "/api/v1/accounting/journal-entries",
+        json={
+            "entry_date": "2026-07-31",
+            "memo": "Monthly IP amortization",
+            "lines": [
+                {"account_code": "5300", "debit": "5000.00", "credit": "0.00"},
+                {"account_code": "1510", "debit": "0.00", "credit": "5000.00"},
+            ],
+        },
+    )
+    assert amort.status_code == 201
 
 
 def test_seeded_trial_balance_is_balanced() -> None:
