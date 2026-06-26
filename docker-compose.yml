@@ -1,0 +1,28 @@
+# John Henry Investments — full platform (backend + frontend) for sandbox deploy.
+# Usage:  docker compose up --build
+#   Frontend: http://localhost:3000   Backend API: http://localhost:8000/docs
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      # SQLite by default; point at Postgres for production, e.g.:
+      # DATABASE_URL: postgresql+psycopg://user:pass@db:5432/jhi
+      DATABASE_URL: sqlite:///./john_henry_platform.db
+      # APP_ENV: production   # uncomment to disable dev-only 2FA demo-code endpoint
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:8000/api/v1
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped

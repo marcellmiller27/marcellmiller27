@@ -114,6 +114,34 @@ python3 -m pytest
 python3 -m ruff check .
 ```
 
+## Deploy with Docker (sandbox)
+
+The whole platform (FastAPI backend + Next.js frontend) runs with one command:
+
+```bash
+docker compose up --build
+```
+
+- Frontend: `http://localhost:3000`
+- Backend API + interactive docs: `http://localhost:8000/docs`
+
+Notes:
+
+- Uses SQLite by default (no external DB needed for the sandbox). Set `DATABASE_URL`
+  to a Postgres URL in `docker-compose.yml` for production.
+- The frontend reads the backend via `NEXT_PUBLIC_API_BASE_URL`
+  (defaults to `http://localhost:8000/api/v1`).
+- Leave `APP_ENV` unset for sandbox testing (enables the 2FA demo code); set
+  `APP_ENV=production` to disable dev-only endpoints.
+
+### What to exercise after `docker compose up`
+
+- `/` landing + mission, `/dashboard` (live market data + FX + bonds, auto-refresh),
+  `/mobile` (password / 2FA / biometric sign-in), `/support` (AI FAQ assistant),
+  `/pricing`, `/opportunities`, `/portfolio`, `/reports`, `/account`.
+- API: `/api/v1/market/quotes`, `/api/v1/research/*`, `/api/v1/valuations/estimate`,
+  `/api/v1/support/ask`, `/api/v1/auth/*`.
+
 ## Product blueprint
 
 The full product specification, project management checklist, source-code audit, system flowcharts, investor package, five-stage valuation model, cloud capacity plan, estimated platform costs, projected EBITDA model, staffing/legal pro forma, compensation/professional-services projections, job descriptions/staffing requirements, next action items to define, auth/database/billing foundation, next programming milestone, failed programming codes log, and saved programming-script reference are available in:
