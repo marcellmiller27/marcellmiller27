@@ -10,7 +10,7 @@ def test_chart_of_accounts_seeded() -> None:
     codes = {a["code"] for a in rows}
     assert {"1000", "4000", "5000"}.issubset(codes)
     # IP capitalization + amortization accounts present.
-    assert {"1500", "1510", "1600", "5300"}.issubset(codes)
+    assert {"1500", "1510", "1600", "5300", "5400"}.issubset(codes)
 
 
 def test_capitalize_and_amortize_ip_entries() -> None:

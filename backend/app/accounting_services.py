@@ -43,6 +43,7 @@ _SEED_ACCOUNTS = [
     ("5100", "AI Data Processing Expense", "expense"),
     ("5200", "Sales and Marketing Expense", "expense"),
     ("5300", "Amortization Expense", "expense"),
+    ("5400", "AI Agents & Automation Expense", "expense"),
 ]
 
 
