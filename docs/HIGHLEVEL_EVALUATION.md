@@ -1,7 +1,14 @@
 # HighLevel (GoHighLevel) for John Henry Investments — Two‑Sided Evaluation
 
-Founder decision aid: should we use HighLevel, Inc. (GoHighLevel / "GHL") to launch
-the platform? Unbiased, argued from both sides, with a recommendation framework.
+> ## DECISION: REJECTED — HighLevel is a NON‑FACTOR, removed from our launch approach.
+> Founder decision (2026‑06‑26): we will **not** use HighLevel/GoHighLevel for launch
+> or GTM. It does not host our platform, duplicates what we've built, adds lock‑in, and
+> the $497 tier targets a resale model that isn't ours. **Go‑to‑market runs on our own
+> Next.js site** (see `docs/GTM_FUNNELS_NEXTJS.md`). The analysis below is retained only
+> as the record of why.
+
+Founder decision aid (record): should we use HighLevel, Inc. (GoHighLevel / "GHL") to
+launch the platform? Unbiased, argued from both sides, with the conclusion above.
 (Pricing/features change — verify current terms with HighLevel.)
 
 ## First, frame it correctly
@@ -81,7 +88,8 @@ GHL at all, start at **$97** and upgrade only if usage demands it.
 4. **Never buy the $497 tier** unless your model changes to *reselling* software to other
    businesses.
 
-**Bottom line:** GHL can be a useful *marketing/CRM accelerator*, but it is not a launch
-/deployment solution for your custom platform, and the **$497 package is the wrong tier**
-for your model. If you want all‑in‑one GTM speed, trial **$97**; otherwise run lean with
-your own site + a free CRM. The deployment itself stays on Docker/AWS.
+**Bottom line / final call:** **HighLevel is removed from our approach — a non‑factor.**
+It is not a launch/deployment solution for our custom platform, it duplicates what we've
+already built, and the $497 tier targets an agency‑resale model that isn't ours.
+**Go‑to‑market runs on our own Next.js site** with a few lean integrations
+(`docs/GTM_FUNNELS_NEXTJS.md`); deployment stays on Docker/AWS.

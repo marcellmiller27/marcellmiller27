@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
+import { WaitlistForm } from "@/components/waitlist-form";
 import {
   dashboardWidgets,
   platformModules,
@@ -48,11 +49,11 @@ export default function Home() {
             entrepreneurs to discover opportunities, analyze risk, value assets, and manage portfolios.
           </p>
           <div className="hero__actions">
-            <a className="button button--primary" href="/dashboard">
-              Open platform dashboard
+            <a className="button button--primary" href="#waitlist">
+              Join the waitlist
             </a>
-            <a className="button button--secondary" href="#modules">
-              Explore platform modules
+            <a className="button button--secondary" href="/dashboard">
+              Open platform dashboard
             </a>
           </div>
         </div>
@@ -67,6 +68,18 @@ export default function Home() {
               <span key={widget}>{widget}</span>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="section waitlist-section" id="waitlist">
+        <div className="waitlist-section__inner">
+          <p className="eyebrow">Early access</p>
+          <h2>Get on the John Henry Investments waitlist.</h2>
+          <p className="waitlist-section__lead">
+            Be first to access institutional-grade research, the Opportunity Score, and
+            live multi-asset intelligence. Tell us who you are and we&rsquo;ll invite you in.
+          </p>
+          <WaitlistForm source="landing" />
         </div>
       </section>
 

@@ -94,6 +94,19 @@ class DeviceCredentialDB(Base):
     last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
+class LeadDB(Base):
+    """A marketing waitlist / lead captured from the GTM funnel (public)."""
+
+    __tablename__ = "leads"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    email: Mapped[str] = mapped_column(String(320), nullable=False, index=True)
+    full_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    interest: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    source: Mapped[str] = mapped_column(String(80), nullable=False, default="waitlist")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+
 class AuditLogDB(Base):
     __tablename__ = "audit_logs"
 

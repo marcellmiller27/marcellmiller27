@@ -9,6 +9,7 @@ from app.routers import (
     crm,
     dashboards,
     integrations,
+    leads,
     market,
     mobile_auth,
     reports,
@@ -50,6 +51,7 @@ app.include_router(market.router, prefix="/api/v1")
 app.include_router(research.router, prefix="/api/v1")
 app.include_router(valuations.router, prefix="/api/v1")
 app.include_router(support.router, prefix="/api/v1")
+app.include_router(leads.router, prefix="/api/v1")
 app.include_router(integrations.router, prefix="/api/v1")
 
 
