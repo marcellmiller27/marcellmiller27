@@ -145,6 +145,45 @@ class CRMActivityDB(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
 
 
+class AccountDB(Base):
+    """Chart-of-accounts entry (durable)."""
+
+    __tablename__ = "accounts"
+
+    code: Mapped[str] = mapped_column(String(20), primary_key=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    account_type: Mapped[str] = mapped_column(String(20), nullable=False)
+
+
+class JournalEntryDB(Base):
+    __tablename__ = "journal_entries"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    entry_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    memo: Mapped[str] = mapped_column(String(500), nullable=False)
+    source_module: Mapped[str] = mapped_column(String(80), nullable=False, default="manual")
+    created_by: Mapped[str] = mapped_column(String(120), nullable=False, default="system")
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="posted")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    posted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+
+class JournalLineDB(Base):
+    __tablename__ = "journal_lines"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    entry_id: Mapped[str] = mapped_column(ForeignKey("journal_entries.id"), nullable=False, index=True)
+    line_no: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    account_code: Mapped[str] = mapped_column(String(20), nullable=False)
+    description: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    debit: Mapped[str] = mapped_column(String(40), nullable=False, default="0.00")
+    credit: Mapped[str] = mapped_column(String(40), nullable=False, default="0.00")
+    entity: Mapped[str] = mapped_column(String(120), nullable=False, default="John Henry Investments, LLC")
+    department: Mapped[str] = mapped_column(String(120), nullable=False, default="Platform")
+    account_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    account_type: Mapped[str] = mapped_column(String(20), nullable=False)
+
+
 class SupportTicketDB(Base):
     """An escalated support ticket forwarded to the founder for further action."""
 

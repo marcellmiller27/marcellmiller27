@@ -14,8 +14,9 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 - [ ] `docker compose up --build` in the sandbox; verify `/`, `/dashboard`, `/mobile`, `/support`, `/team`, `/join`, and `/api/v1/.../docs`.
 
 ## 1. P0 — durability & real functionality (biggest robustness wins)
-- [x] **CRM migrated to Postgres/SQLAlchemy** (durable; survives restart; seeded; 86 tests pass). 2026‑06‑26.
-- [ ] Migrate remaining in‑memory modules to Postgres: **accounting → reports/dashboards → integrations** (one at a time, with tests).
+- [x] **CRM migrated to Postgres/SQLAlchemy** (durable; survives restart; seeded). 2026‑06‑26.
+- [x] **Accounting migrated to Postgres/SQLAlchemy** (chart of accounts, balanced journal entries, trial balance; durable; seeded; 92 tests pass). 2026‑06‑26.
+- [ ] Migrate remaining in‑memory modules to Postgres: **reports/dashboards → integrations** (one at a time, with tests).
 - [ ] Wire the static module pages to live data/actions: **opportunities, portfolio, reports, due‑diligence, assistant, account** (so every button returns a real result).
 - [ ] **Live Stripe**: real checkout session + webhook signature verification (replace the mock).
 

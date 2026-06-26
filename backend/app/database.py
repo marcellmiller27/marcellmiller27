@@ -20,12 +20,14 @@ def init_db() -> None:
 
     Base.metadata.create_all(bind=engine)
 
-    # Seed durable CRM demo data if empty (keeps the /crm/summary contract).
+    # Seed durable demo data if empty (keeps the CRM + accounting API contracts).
+    from app.accounting_services import AccountingService
     from app.crm_services import CRMService
 
     db = SessionLocal()
     try:
         CRMService().seed_if_empty(db)
+        AccountingService().seed_if_empty(db)
     finally:
         db.close()
 
