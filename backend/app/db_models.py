@@ -94,6 +94,23 @@ class DeviceCredentialDB(Base):
     last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
+class SupportTicketDB(Base):
+    """An escalated support ticket forwarded to the founder for further action."""
+
+    __tablename__ = "support_tickets"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    user_email: Mapped[str | None] = mapped_column(String(320), nullable=True, index=True)
+    agent: Mapped[str] = mapped_column(String(80), nullable=False)
+    subject: Mapped[str] = mapped_column(String(255), nullable=False)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
+    category: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    priority: Mapped[str] = mapped_column(String(20), nullable=False, default="normal")
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="open")
+    assigned_to: Mapped[str] = mapped_column(String(80), nullable=False, default="founder")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+
 class LeadDB(Base):
     """A marketing waitlist / lead captured from the GTM funnel (public)."""
 

@@ -7,12 +7,14 @@ const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v1";
 
 type FaqItem = { id: string; category: string; question: string; answer: string };
-type AskResponse = {
+type AgentReply = {
+  agent_name: string;
+  agent_role: string;
   answer: string;
-  matched_question: string | null;
   category: string | null;
   confidence: number;
-  escalate: boolean;
+  escalated: boolean;
+  ticket_id: string | null;
   suggestions: string[];
 };
 type ChatMessage = {
@@ -25,8 +27,9 @@ type ChatMessage = {
 const GREETING: ChatMessage = {
   role: "assistant",
   text:
-    "Hi! I'm the John Henry Investments assistant. Ask me about plans, sign-in and " +
-    "security, market data, the mobile app, or crypto — or pick a question below.",
+    "Hi! You're chatting with the John Henry Investments AI team — Ava (onboarding), " +
+    "Max (billing), Sage (security), Quinn (product), and Tess (technical, who escalates " +
+    "to the founder). Ask anything, and I'll route you to the right specialist.",
   suggestions: [
     "How much does it cost?",
     "Is the market data real-time?",
@@ -60,15 +63,17 @@ export default function SupportPage() {
     setInput("");
     setBusy(true);
     try {
-      const response = await fetch(`${API_BASE}/support/ask`, {
+      const response = await fetch(`${API_BASE}/agents/message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: trimmed })
+        body: JSON.stringify({ message: trimmed })
       });
-      const data: AskResponse = await response.json();
-      const meta = data.escalate
-        ? "Not confident · escalate to a human"
-        : `${data.category ?? "Answer"} · confidence ${(data.confidence * 100).toFixed(0)}%`;
+      const data: AgentReply = await response.json();
+      const meta = data.escalated
+        ? `${data.agent_name} · forwarded to the founder${
+            data.ticket_id ? ` · ticket ${data.ticket_id.slice(0, 8)}` : ""
+          }`
+        : `${data.agent_name} · ${data.agent_role}`;
       setMessages((prev) => [
         ...prev,
         { role: "assistant", text: data.answer, meta, suggestions: data.suggestions }

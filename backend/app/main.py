@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import init_db
 from app.routers import (
     accounting,
+    agents,
     auth,
     billing,
     crm,
@@ -51,6 +52,7 @@ app.include_router(market.router, prefix="/api/v1")
 app.include_router(research.router, prefix="/api/v1")
 app.include_router(valuations.router, prefix="/api/v1")
 app.include_router(support.router, prefix="/api/v1")
+app.include_router(agents.router, prefix="/api/v1")
 app.include_router(leads.router, prefix="/api/v1")
 app.include_router(integrations.router, prefix="/api/v1")
 
