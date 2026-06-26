@@ -4,6 +4,24 @@ Honest assessment of what's missing to make John Henry Investments a robust, top
 asset, plus the Docker production hardening needed to run it "without anomalies."
 Grounded in the current codebase.
 
+## Progress update (2026-06-26 hardening pass)
+
+Completed in the production-hardening pass:
+- ✅ **Config/secret validation** — `app/config.py` fails fast in production on a default
+  `AUTH_JWT_SECRET` or SQLite DB (`get_settings().validate()` at startup).
+- ✅ **Readiness probe** `GET /ready` (verifies DB connectivity).
+- ✅ **Rate limiting** — env-gated in-process middleware (`RATE_LIMIT_PER_MINUTE`, off by default).
+- ✅ **Postgres support** — `psycopg[binary]` dependency; Compose now runs Postgres with
+  durable persistence for the SQLAlchemy modules (auth, billing, security, leads, tickets).
+- ✅ **Docker hardening** — non-root users, `HEALTHCHECK`s, multi-worker backend, Postgres
+  service in Compose with healthcheck/depends-on.
+- ✅ **Sharadar SF1 adapter pre-wired (gated)** — activates on `NASDAQ_DATA_LINK_API_KEY`;
+  `fundamentals-status` and `/market/providers` reflect it.
+
+Still open (next): migrate the in-memory modules (accounting/CRM/reports) to Postgres,
+wire the static module pages to live data, live Stripe, WebAuthn signature verification,
+observability (Sentry/metrics), CI/CD, SES email + password reset, and H5 validation.
+
 ## Where we are (strong foundation)
 
 Functional today: auth (password/2FA/biometric), live market data (CoinGecko/Yahoo/BLS

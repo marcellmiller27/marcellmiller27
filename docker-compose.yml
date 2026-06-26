@@ -1,7 +1,22 @@
-# John Henry Investments — full platform (backend + frontend) for sandbox deploy.
+# John Henry Investments — full platform (Postgres + backend + frontend).
 # Usage:  docker compose up --build
 #   Frontend: http://localhost:3000   Backend API: http://localhost:8000/docs
 services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: jhi
+      POSTGRES_PASSWORD: jhi
+      POSTGRES_DB: jhi
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jhi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   backend:
     build:
       context: .
@@ -9,10 +24,15 @@ services:
     ports:
       - "8000:8000"
     environment:
-      # SQLite by default; point at Postgres for production, e.g.:
-      # DATABASE_URL: postgresql+psycopg://user:pass@db:5432/jhi
-      DATABASE_URL: sqlite:///./john_henry_platform.db
-      # APP_ENV: production   # uncomment to disable dev-only 2FA demo-code endpoint
+      # Durable Postgres persistence (parity with production).
+      DATABASE_URL: postgresql+psycopg://jhi:jhi@db:5432/jhi
+      WEB_CONCURRENCY: "2"
+      # For production, set these (config validation enforces them):
+      # APP_ENV: production
+      # AUTH_JWT_SECRET: <set-a-strong-secret>
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
   frontend:
@@ -26,3 +46,6 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+
+volumes:
+  pgdata:

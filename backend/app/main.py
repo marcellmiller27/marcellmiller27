@@ -1,7 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
-from app.database import init_db
+from app.config import get_settings
+from app.database import engine, init_db
+from app.rate_limit import RateLimitMiddleware
 from app.routers import (
     accounting,
     agents,
@@ -19,6 +22,7 @@ from app.routers import (
     valuations,
 )
 
+get_settings().validate()
 init_db()
 
 app = FastAPI(
@@ -40,6 +44,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(RateLimitMiddleware)
 
 app.include_router(accounting.router, prefix="/api/v1")
 app.include_router(auth.router, prefix="/api/v1")
@@ -69,3 +74,14 @@ def root() -> dict[str, str]:
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "healthy"}
+
+
+@app.get("/ready")
+def ready() -> dict[str, str]:
+    """Readiness probe: verifies the database is reachable."""
+    try:
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+    except Exception as exc:  # noqa: BLE001 - report not-ready on any DB failure
+        raise HTTPException(status_code=503, detail="Database not ready.") from exc
+    return {"status": "ready"}

@@ -30,7 +30,11 @@ from app.db_models import (
     UserDB,
     UserSecurityDB,
 )
-from app.market_services import fred_api_key, yahoo_chart_history
+from app.market_services import (
+    fred_api_key,
+    nasdaq_data_link_api_key,
+    yahoo_chart_history,
+)
 from app.opportunity_score import (
     WEIGHTS,
     _factors_at,
@@ -295,15 +299,25 @@ class ResearchService:
 
     # --- Fundamentals-based research program ------------------------------ #
     def fundamentals_status(self) -> FundamentalsStatus:
-        """Whether historical fundamentals are available for a fundamentals factor."""
+        """Whether point-in-time fundamentals are available for a fundamentals factor."""
+        if nasdaq_data_link_api_key():
+            return FundamentalsStatus(
+                available=True,
+                provider="sharadar_sf1",
+                note=(
+                    "Sharadar SF1 point-in-time fundamentals are configured. Run the "
+                    "equity OOS back-test with value/quality/growth factors enabled."
+                ),
+                required_solution=[],
+                as_of=_now(),
+            )
         return FundamentalsStatus(
             available=False,
             provider="none",
             note=(
-                "No programmatic fundamentals source is reachable without credentials "
-                "(Yahoo quoteSummary/v7 return 401), and free sources do not provide "
-                "point-in-time historical fundamentals. A fundamentals factor therefore "
-                "cannot be back-tested here without look-ahead/survivorship bias."
+                "No fundamentals source configured. Set NASDAQ_DATA_LINK_API_KEY "
+                "(Sharadar SF1) to enable point-in-time fundamentals; free sources do not "
+                "provide point-in-time history (no look-ahead/survivorship control)."
             ),
             required_solution=_FUNDAMENTALS_SOLUTION,
             as_of=_now(),

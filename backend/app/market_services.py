@@ -56,6 +56,11 @@ def twelvedata_api_key() -> str | None:
     return os.getenv("TWELVEDATA_API_KEY")
 
 
+def nasdaq_data_link_api_key() -> str | None:
+    """Point-in-time fundamentals key (Nasdaq Data Link / Sharadar SF1)."""
+    return os.getenv("NASDAQ_DATA_LINK_API_KEY") or os.getenv("FUNDAMENTALS_API_KEY")
+
+
 class ProviderError(RuntimeError):
     """A market-data provider call failed."""
 
@@ -283,6 +288,29 @@ def yahoo_chart_history(
     return series
 
 
+def sharadar_sf1_fundamentals(ticker: str, dimension: str = "ARQ") -> dict[str, Any]:
+    """Point-in-time fundamentals for one ticker from Sharadar SF1 (Nasdaq Data Link).
+
+    Uses the As-Reported dimension (``ARQ``) by default so values are point-in-time
+    (no look-ahead). Requires NASDAQ_DATA_LINK_API_KEY. Returns a column->value dict.
+    """
+    key = nasdaq_data_link_api_key()
+    if not key:
+        raise ProviderError("NASDAQ_DATA_LINK_API_KEY is not configured.")
+    url = (
+        "https://data.nasdaq.com/api/v3/datatables/SHARADAR/SF1"
+        f"?ticker={urllib.parse.quote(ticker)}&dimension={urllib.parse.quote(dimension)}"
+        f"&qopts.per_page=1&api_key={urllib.parse.quote(key)}"
+    )
+    payload = _http_get_json(url)
+    table = payload.get("datatable") or {}
+    rows = table.get("data") or []
+    if not rows:
+        raise ProviderError(f"No Sharadar SF1 data for {ticker}.")
+    columns = [c.get("name") for c in (table.get("columns") or [])]
+    return dict(zip(columns, rows[0]))
+
+
 def bls_cpi_series() -> list[dict[str, Any]]:
     url = f"https://api.bls.gov/publicAPI/v1/timeseries/data/{CPI_SERIES_ID}"
     payload = _http_get_json(url)
@@ -397,6 +425,18 @@ class MarketDataService:
                         "Production-grade, ToS-compliant quotes. Adapter implemented; set "
                         "TWELVEDATA_API_KEY to make it the PRIMARY source for equities/FX "
                         "(Yahoo remains the automatic fallback)."
+                    ),
+                ),
+                ProviderInfo(
+                    key="sharadar_sf1",
+                    name="Sharadar Core US Fundamentals (Nasdaq Data Link)",
+                    asset_classes=["fundamentals"],
+                    status="live" if nasdaq_data_link_api_key() else "requires_credentials",
+                    requires_key=True,
+                    notes=(
+                        "Point-in-time fundamentals (As-Reported, survivorship-bias-free) for "
+                        "the Opportunity Score validation. Adapter implemented; set "
+                        "NASDAQ_DATA_LINK_API_KEY to activate."
                     ),
                 ),
                 ProviderInfo(

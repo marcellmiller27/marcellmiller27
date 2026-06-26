@@ -127,12 +127,16 @@ docker compose up --build
 
 Notes:
 
-- Uses SQLite by default (no external DB needed for the sandbox). Set `DATABASE_URL`
-  to a Postgres URL in `docker-compose.yml` for production.
+- Compose runs **Postgres + backend + frontend** with healthchecks; the backend
+  uses durable Postgres (`DATABASE_URL`) and runs multiple workers (`WEB_CONCURRENCY`).
+  Images run as **non-root** with container `HEALTHCHECK`s; readiness probe at
+  `GET /ready` (verifies the DB).
 - The frontend reads the backend via `NEXT_PUBLIC_API_BASE_URL`
   (defaults to `http://localhost:8000/api/v1`).
-- Leave `APP_ENV` unset for sandbox testing (enables the 2FA demo code); set
-  `APP_ENV=production` to disable dev-only endpoints.
+- Leave `APP_ENV` unset for sandbox testing (enables the 2FA demo code). For
+  production set `APP_ENV=production` **and** a strong `AUTH_JWT_SECRET` + Postgres
+  `DATABASE_URL` — startup config validation fails fast otherwise. Optionally set
+  `RATE_LIMIT_PER_MINUTE` to throttle the API (off by default).
 
 ### What to exercise after `docker compose up`
 
