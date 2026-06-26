@@ -49,6 +49,17 @@ deeply negative early and, in the Conservative case, **never recovers within yea
 | 11 | 819 | 57,330 | 2,320 | 20,400 | 53,101 | 35,022 | 252,639 | 41,636 |
 | 12 | 1,010 | 70,700 | 2,325 | 20,400 | 66,021 | 47,947 | 318,660 | 89,583 |
 
+## Downloads & chart
+
+- CSVs (one per scenario + summary): `docs/projections/cashflow_{conservative,base,optimistic}.csv`,
+  `docs/projections/summary.csv`.
+- Break-even charts (SVG): `docs/projections/breakeven_{conservative,base,optimistic}.svg`.
+- Regenerate anytime: `python3 docs/projections/generate_projections.py`.
+
+Break-even (Base scenario) — lean is positive from month 1; staffed crosses ~month 10:
+
+![Break-even — Base scenario](projections/breakeven_base.svg)
+
 ## Insights
 
 1. **Lean prints cash immediately.** Even Conservative is +$2.9k in month 1 and
