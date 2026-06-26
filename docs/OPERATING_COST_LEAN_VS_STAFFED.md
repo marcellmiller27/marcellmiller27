@@ -9,11 +9,17 @@ real personnel and office space, **without sacrificing outstanding customer serv
 > usage) scale with volume. Complements `docs/ESTIMATED_PLATFORM_COSTS.md` and
 > `docs/PROJECTED_EBITDA_MODEL.md`.
 
-## Stage assumption — "Paid MVP"
+## Stages
 
-- Billing live (Stripe). **~300–3,000 paying users.**
-- Support volume: **~300–1,500 tickets/month** (email/chat), bursty, needs 24/7 cover.
-- Requirements: reliable hosting, real auth/security, fast support, room to scale.
+| Stage | Users | Support volume | Lean all‑in / mo | Staffed+office / mo |
+| --- | --- | --- | ---: | ---: |
+| **Prototype** (pre/low revenue) | 0–~300 | < ~150 tickets | **~$50–$300** | n/a (founder handles) |
+| **Paid MVP** (billing live) | ~300–3,000 | ~300–1,500 tickets | **~$600–$3,600** | ~$10k–$38k |
+
+- **Prototype:** smallest managed tiers (or free tiers) + the deterministic AI FAQ;
+  founder handles the handful of emails. Effectively **$50–$300/mo**.
+- **Paid MVP (focus of this analysis):** billing live, reliable hosting, real
+  auth/security, 24/7 support expected, room to scale.
 
 ---
 
