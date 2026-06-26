@@ -13,6 +13,7 @@ from app.routers import (
     mobile_auth,
     reports,
     research,
+    support,
     valuations,
 )
 
@@ -48,6 +49,7 @@ app.include_router(crm.router, prefix="/api/v1")
 app.include_router(market.router, prefix="/api/v1")
 app.include_router(research.router, prefix="/api/v1")
 app.include_router(valuations.router, prefix="/api/v1")
+app.include_router(support.router, prefix="/api/v1")
 app.include_router(integrations.router, prefix="/api/v1")
 
 
