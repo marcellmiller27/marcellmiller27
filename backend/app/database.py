@@ -20,6 +20,15 @@ def init_db() -> None:
 
     Base.metadata.create_all(bind=engine)
 
+    # Seed durable CRM demo data if empty (keeps the /crm/summary contract).
+    from app.crm_services import CRMService
+
+    db = SessionLocal()
+    try:
+        CRMService().seed_if_empty(db)
+    finally:
+        db.close()
+
 
 def get_db() -> Generator[Session]:
     db = SessionLocal()

@@ -18,7 +18,9 @@ Completed in the production-hardening pass:
 - ✅ **Sharadar SF1 adapter pre-wired (gated)** — activates on `NASDAQ_DATA_LINK_API_KEY`;
   `fundamentals-status` and `/market/providers` reflect it.
 
-Still open (next): migrate the in-memory modules (accounting/CRM/reports) to Postgres,
+- ✅ **CRM migrated to durable Postgres/SQLAlchemy** (seeded; survives restart; 86 tests).
+
+Still open (next): migrate the remaining in-memory modules (accounting/reports/dashboards/integrations) to Postgres,
 wire the static module pages to live data, live Stripe, WebAuthn signature verification,
 observability (Sentry/metrics), CI/CD, SES email + password reset, and H5 validation.
 

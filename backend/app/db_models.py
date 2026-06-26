@@ -1,7 +1,16 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from uuid import uuid4
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text, UniqueConstraint
+from sqlalchemy import (
+    Boolean,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -92,6 +101,48 @@ class DeviceCredentialDB(Base):
     label: Mapped[str] = mapped_column(String(120), nullable=False, default="Mobile device")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
     last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class CRMContactDB(Base):
+    """Durable CRM contact (migrated from the in-memory store)."""
+
+    __tablename__ = "crm_contacts"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    full_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    organization: Mapped[str] = mapped_column(String(255), nullable=False)
+    email: Mapped[str] = mapped_column(String(320), nullable=False)
+    phone: Mapped[str] = mapped_column(String(40), nullable=False, default="")
+    role: Mapped[str] = mapped_column(String(120), nullable=False, default="")
+    relationship_type: Mapped[str] = mapped_column(String(80), nullable=False, default="prospect")
+    owner: Mapped[str] = mapped_column(String(120), nullable=False, default="platform")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+
+class CRMDealDB(Base):
+    __tablename__ = "crm_deals"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    contact_id: Mapped[str] = mapped_column(ForeignKey("crm_contacts.id"), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    stage: Mapped[str] = mapped_column(String(40), nullable=False, default="lead")
+    expected_value: Mapped[str] = mapped_column(String(40), nullable=False, default="0.00")
+    probability: Mapped[int] = mapped_column(Integer, nullable=False, default=10)
+    next_step: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+
+class CRMActivityDB(Base):
+    __tablename__ = "crm_activities"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    contact_id: Mapped[str] = mapped_column(ForeignKey("crm_contacts.id"), nullable=False, index=True)
+    deal_id: Mapped[str | None] = mapped_column(ForeignKey("crm_deals.id"), nullable=True)
+    activity_type: Mapped[str] = mapped_column(String(80), nullable=False)
+    summary: Mapped[str] = mapped_column(Text, nullable=False)
+    due_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
 
 
 class SupportTicketDB(Base):
