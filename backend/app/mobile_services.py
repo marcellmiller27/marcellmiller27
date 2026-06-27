@@ -43,6 +43,7 @@ from app.security import (
     verify_password,
     verify_totp,
 )
+from app.webauthn import verify_es256_assertion
 
 
 def _totp_plaintext(security: UserSecurityDB) -> str | None:
@@ -177,7 +178,15 @@ class MobileAuthService:
             credential_ids=[credential.credential_id for credential in credentials],
         )
 
-    def biometric_assert(self, challenge_token: str, credential_id: str) -> AuthResponse:
+    def biometric_assert(
+        self,
+        challenge_token: str,
+        credential_id: str,
+        *,
+        signature: str | None = None,
+        authenticator_data: str | None = None,
+        client_data_json: str | None = None,
+    ) -> AuthResponse:
         payload = decode_scoped_token(challenge_token, scope="biometric")
         user = self.db.get(UserDB, payload["sub"])
         if user is None or not user.is_active:
@@ -190,6 +199,24 @@ class MobileAuthService:
         )
         if credential is None:
             raise ValueError("Unrecognized device credential.")
+
+        has_assertion = bool(signature and authenticator_data and client_data_json)
+        if has_assertion:
+            if not credential.public_key:
+                raise ValueError("No public key registered for this credential.")
+            new_count = verify_es256_assertion(
+                credential.public_key,
+                authenticator_data,
+                client_data_json,
+                signature,
+                expected_challenge=payload["nonce"],
+                previous_sign_count=credential.sign_count,
+            )
+            credential.sign_count = new_count
+        elif not is_dev_mode():
+            # Production requires a cryptographically verified assertion.
+            raise ValueError("Biometric assertion signature is required.")
+
         credential.last_used_at = utc_now()
         self.db.commit()
         return self._issue_auth(user)
