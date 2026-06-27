@@ -104,3 +104,8 @@ static, key data isn't durably persisted, billing/security aren't production‑g
 and there's no observability/CI/Docker hardening. Close the **P0 + Docker hardening**
 items first; that's the shortest path to a platform that deploys in Docker and
 "performs exceptionally without anomalies."
+
+> **Security deep-dive:** for a full, honest security & data-protection assessment
+> (what data we hold, what we deliberately do *not* store, OWASP threat model, and a
+> prioritized bank-grade hardening roadmap), see
+> `docs/SECURITY_POSTURE_AND_DATA_PROTECTION.md`.

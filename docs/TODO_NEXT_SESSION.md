@@ -22,9 +22,14 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 - [ ] **Live Stripe**: real checkout session + webhook signature verification (replace the mock).
 
 ## 2. P0 — security hardening
+> Full assessment + roadmap: `docs/SECURITY_POSTURE_AND_DATA_PROTECTION.md`.
 - [ ] Enforce a real `AUTH_JWT_SECRET` everywhere; rotate dev default.
 - [ ] **WebAuthn**: real biometric assertion (challenge + signature + counter) verification.
-- [ ] Turn on `RATE_LIMIT_PER_MINUTE` in prod; add RBAC checks on protected routes.
+- [ ] **Encrypt `totp_secret` (and future PII) at rest** (KMS) + enable RDS at-rest encryption.
+- [ ] **Swap hand-rolled JWT for a vetted library** (PyJWT/authlib); keep scoped-token semantics.
+- [ ] **Live Stripe webhook signature verification** (`construct_event`).
+- [ ] Turn on `RATE_LIMIT_PER_MINUTE` in prod (shared Redis store) + **account lockout/backoff**; add RBAC checks on protected routes.
+- [ ] Add **security headers** (HSTS/CSP/X-Frame-Options/X-Content-Type-Options) + tighten CORS to prod origins.
 - [ ] Tighten 2FA window back to ±30s now that the demo code refreshes.
 
 ## 3. P1 — operate "without anomalies"
