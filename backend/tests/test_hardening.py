@@ -28,9 +28,17 @@ def test_config_validation_ok_in_dev(monkeypatch) -> None:
 
 def test_config_validation_ok_with_real_prod_secret(monkeypatch) -> None:
     monkeypatch.setenv("APP_ENV", "production")
-    monkeypatch.setenv("AUTH_JWT_SECRET", "a-strong-secret")
+    monkeypatch.setenv("AUTH_JWT_SECRET", "x" * 40)  # >= 32 bytes
     monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://u:p@db:5432/jhi")
     Settings().validate()  # no raise
+
+
+def test_config_validation_rejects_short_prod_secret(monkeypatch) -> None:
+    monkeypatch.setenv("APP_ENV", "production")
+    monkeypatch.setenv("AUTH_JWT_SECRET", "too-short-secret")  # < 32 bytes
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://u:p@db:5432/jhi")
+    with pytest.raises(RuntimeError):
+        Settings().validate()
 
 
 def test_rate_limit_is_env_gated(monkeypatch) -> None:

@@ -25,6 +25,10 @@ class Settings:
         problems: list[str] = []
         if self.auth_secret == DEFAULT_DEV_SECRET:
             problems.append("AUTH_JWT_SECRET must be set to a strong secret in production.")
+        elif len(self.auth_secret.encode("utf-8")) < 32:
+            problems.append(
+                "AUTH_JWT_SECRET must be at least 32 bytes (RFC 7518) for HS256 signing."
+            )
         if self.database_url.startswith("sqlite"):
             problems.append("Use a Postgres DATABASE_URL in production (SQLite is dev-only).")
         if problems:
