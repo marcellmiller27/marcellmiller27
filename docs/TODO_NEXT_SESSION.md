@@ -3,14 +3,25 @@
 Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 `docs/ROBUSTNESS_READINESS_GAP_ANALYSIS.md`.
 
-## Where we left off (2026‑06‑26)
+## Where we left off (2026‑06‑27)
 - Unified, Docker‑ready platform on branch `cursor/unified-platform-0d47` (PR #13 → main).
 - Production hardening done: config/secret validation, `/ready` probe, env‑gated rate
   limiting, Postgres + Docker hardening (non‑root, healthchecks, workers), Sharadar
-  SF1 adapter pre‑wired (gated). 81 backend tests pass; build clean.
+  SF1 adapter pre‑wired (gated). Backend tests pass; build clean.
+- **CRM, Accounting, and Reports/Dashboards** migrated to durable Postgres (seeded + tests).
+- **IP/intangibles** capitalization + amortization accounting and **AI‑agent operating‑cost**
+  treatment added to the ledger.
+- Strategy/research docs added: honest **company valuation**, **services pricing‑fit**,
+  **mutual + one‑way NDAs** (Delaware default), **Research Phase Two marketing strategy**
+  (PR #14), and an **honest security posture & data‑protection assessment** (PR #15).
+
+### Open PRs to triage first
+- [ ] **PR #13** → merge `cursor/unified-platform-0d47` into `main` (single source of truth) or confirm we keep building on the branch.
+- [ ] **PR #14** → `docs/MARKETING_STRATEGY_CAMPAIGN.md` (Research Phase Two) — review/merge.
+- [ ] **PR #15** → `docs/SECURITY_POSTURE_AND_DATA_PROTECTION.md` — review/merge.
 
 ## 0. Kick‑off (5 min)
-- [ ] Merge PR #13 into `main` (single source of truth), or confirm we keep working on the branch.
+- [ ] Triage the open PRs above.
 - [ ] `docker compose up --build` in the sandbox; verify `/`, `/dashboard`, `/mobile`, `/support`, `/team`, `/join`, and `/api/v1/.../docs`.
 
 ## 1. P0 — durability & real functionality (biggest robustness wins)
@@ -43,7 +54,15 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 - [ ] DR: backups + restore drill; IaC (Terraform/CDK) for reproducible infra.
 - [ ] Performance/a11y/SEO pass; founder "ticket inbox" UI for escalated agent tickets.
 
-## Suggested first task tomorrow
-**Migrate the CRM module to Postgres** (self‑contained, high‑value template) + wire the
-`/account` and `/portfolio` pages to live data — then repeat the pattern for the other
-modules. Pairs well with turning on observability so we can watch for anomalies.
+## Suggested first task for Saturday's session
+**Start executing the security P0 list** — it directly protects clients' data and is the
+highest‑trust work right now (`docs/SECURITY_POSTURE_AND_DATA_PROTECTION.md`):
+1. Real **WebAuthn** biometric verification (challenge + signature + counter).
+2. **Encrypt `totp_secret` at rest** (KMS) — stop storing the 2FA seed in plaintext.
+3. **Swap the hand‑rolled JWT** for a vetted library (PyJWT/authlib), keep scoped tokens.
+4. **Live Stripe** checkout + **webhook signature verification**.
+
+Then resume the durability track: wire the static module pages (`/opportunities`,
+`/portfolio`, `/reports`, `/due-diligence`, `/assistant`, `/account`) to live
+data/actions, and migrate **integrations** to Postgres. Pair with **observability**
+(Sentry + structured logs) so we can watch for anomalies as we harden.
