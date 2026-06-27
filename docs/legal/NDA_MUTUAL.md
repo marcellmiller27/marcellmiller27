@@ -89,9 +89,10 @@ Disclosing Party is entitled to seek injunctive or equitable relief in addition 
 other remedies available at law or in equity.
 
 ## 11. Governing Law and Venue
-This Agreement is governed by the laws of the **State of [Governing Law State]**,
-without regard to its conflict‑of‑laws rules. The Parties consent to the exclusive
-jurisdiction and venue of the state and federal courts located in **[County, State]**.
+This Agreement is governed by the laws of the **State of Delaware** *(default — confirm
+this matches your entity's state of formation/operations; change if needed)*, without
+regard to its conflict‑of‑laws rules. The Parties consent to the exclusive jurisdiction
+and venue of the state and federal courts located in **New Castle County, Delaware**.
 
 ## 12. Miscellaneous
 (a) **Entire Agreement.** This Agreement is the entire agreement between the Parties
