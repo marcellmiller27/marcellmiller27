@@ -43,6 +43,11 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 - [ ] DR: backups + restore drill; IaC (Terraform/CDK) for reproducible infra.
 - [ ] Performance/a11y/SEO pass; founder "ticket inbox" UI for escalated agent tickets.
 
+## 6. Go‑to‑market (Research Phase Two)
+- [ ] Execute `docs/MARKETING_STRATEGY_CAMPAIGN.md` 90‑day experiment: stand up the lean
+      stack (PostHog + free CRM + Resend/SES), ship the Segment‑A lead magnet, publish
+      cornerstone SEO/MDX, and validate PT‑H1/H2/H3 (demand, conversion, segment‑fit).
+
 ## Suggested first task tomorrow
 **Migrate the CRM module to Postgres** (self‑contained, high‑value template) + wire the
 `/account` and `/portfolio` pages to live data — then repeat the pattern for the other

@@ -351,3 +351,4 @@ plumbing; not yet proven in market efficacy."
 - §8 validation harness + results — `/api/v1/research/*` and `docs/SECTION_8_VALIDATION_RESULTS.md` (companion PR #8).
 - Non-custodial crypto holdings store and `docs/CRYPTO_HOLDINGS_STORAGE.md` — companion change (PR #5).
 - `backend/README.md` — persistence/security production next steps.
+- **Research Phase Two — Marketing Strategy & Campaign:** `docs/MARKETING_STRATEGY_CAMPAIGN.md` — demand generation, demographics, channels, funnel/conversion mechanics, and the falsifiable PT-H1/H2/H3 hypotheses (demand, conversion, segment-fit).
