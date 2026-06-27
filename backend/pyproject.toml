@@ -8,7 +8,10 @@ dependencies = [
   "sqlalchemy",
   "uvicorn[standard]",
   "pydantic",
-  "psycopg[binary]"
+  "psycopg[binary]",
+  "cryptography",
+  "PyJWT",
+  "stripe"
 ]
 
 [project.optional-dependencies]
