@@ -43,6 +43,14 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 - [ ] DR: backups + restore drill; IaC (Terraform/CDK) for reproducible infra.
 - [ ] Performance/a11y/SEO pass; founder "ticket inbox" UI for escalated agent tickets.
 
+## 6. IP & provenance (founder action)
+- [ ] **Founder: file a formal copyright registration** to establish provenance for the JHI
+      platform code/IP. The repo already carries a proprietary `LICENSE` (© John Henry
+      Investments, LLC) and the founder signature `69M2705M` on every source/config file
+      (`docs/CODE_SIGNATURE.md`) — but a **registered copyright** (e.g., U.S. Copyright
+      Office) is what provides the strongest legal protection/standing. Keep IP-assignment
+      records aligned with `docs/IP_INTANGIBLES_AMORTIZATION.md`.
+
 ## Suggested first task tomorrow
 **Migrate the CRM module to Postgres** (self‑contained, high‑value template) + wire the
 `/account` and `/portfolio` pages to live data — then repeat the pattern for the other
