@@ -1,3 +1,5 @@
+# John Henry Investments, LLC — Copyright (c) 2026. All rights reserved. Proprietary & confidential. See LICENSE.
+# JHI-SIG: 69M2705M | Build & Deploy | John Henry Investments (proprietary)
 # John Henry Investments — full platform (Postgres + backend + frontend).
 # Usage:  docker compose up --build
 #   Frontend: http://localhost:3000   Backend API: http://localhost:8000/docs

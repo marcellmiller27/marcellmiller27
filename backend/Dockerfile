@@ -1,3 +1,5 @@
+# John Henry Investments, LLC — Copyright (c) 2026. All rights reserved. Proprietary & confidential. See LICENSE.
+# JHI-SIG: 69M2705M | Build & Deploy | John Henry Investments (proprietary)
 # John Henry Investments — backend (FastAPI) image (production-hardened)
 FROM python:3.12-slim
 
