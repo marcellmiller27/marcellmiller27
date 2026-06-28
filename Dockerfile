@@ -1,3 +1,5 @@
+# John Henry Investments, LLC — Copyright (c) 2026. All rights reserved. Proprietary & confidential. See LICENSE.
+# JHI-SIG: 69M2705M | Build & Deploy | John Henry Investments (proprietary)
 # John Henry Investments — frontend (Next.js) image (production-hardened)
 FROM node:22-alpine AS build
 WORKDIR /app
