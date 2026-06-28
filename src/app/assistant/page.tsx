@@ -1,3 +1,4 @@
+// JHI-SIG: 69M2705M | Research & Opportunity Score | John Henry Investments (proprietary)
 import { PlatformShell } from "@/components/platform-shell";
 import { assistantWorkflows } from "@/lib/platform-data";
 

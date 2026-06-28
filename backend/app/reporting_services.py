@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Accounting & Reporting | John Henry Investments (proprietary)
 """Durable, DB-backed reporting & dashboard services.
 
 Compute audit/financial reports and the executive dashboard from the Postgres-backed

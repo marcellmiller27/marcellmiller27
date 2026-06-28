@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Accounting & Reporting | John Henry Investments (proprietary)
 from fastapi.testclient import TestClient
 
 from app.main import app

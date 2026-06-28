@@ -1,3 +1,4 @@
+// JHI-SIG: 69M2705M | Accounting & Reporting | John Henry Investments (proprietary)
 import { PlatformShell } from "@/components/platform-shell";
 import { intelligenceReports, marketSignals } from "@/lib/platform-data";
 

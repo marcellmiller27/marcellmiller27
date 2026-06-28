@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Research & Opportunity Score | John Henry Investments (proprietary)
 """John Henry Opportunity Score — a defined, testable multi-factor model.
 
 OBJECTIVE: replace the undefined/ad-hoc score with a transparent, reproducible

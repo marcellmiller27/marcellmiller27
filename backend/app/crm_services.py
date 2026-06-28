@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | CRM | John Henry Investments (proprietary)
 """Durable, Postgres/SQLAlchemy-backed CRM service.
 
 Migrated from the in-memory store so contacts/deals/activities persist across

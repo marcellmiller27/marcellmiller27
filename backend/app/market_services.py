@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Market Data | John Henry Investments (proprietary)
 """Real market-data integration.
 
 Providers (free / no-key, stdlib-only HTTP):

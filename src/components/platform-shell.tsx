@@ -1,3 +1,4 @@
+// JHI-SIG: 69M2705M | Frontend shell | John Henry Investments (proprietary)
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Logo } from "@/components/logo";

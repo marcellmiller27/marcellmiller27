@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Platform spine | John Henry Investments (proprietary)
 from collections import defaultdict
 from datetime import date
 from decimal import Decimal

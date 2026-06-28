@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Support & AI Agents | John Henry Investments (proprietary)
 from datetime import datetime
 
 from pydantic import BaseModel, Field
