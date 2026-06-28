@@ -20,8 +20,20 @@ from pathlib import Path
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import landscape, letter
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.platypus import (
+    Paragraph,
+    SimpleDocTemplate,
+    Spacer,
+    Table,
+    TableStyle,
+)
 
 OUT = Path(__file__).resolve().parent / "JHI_Coding_Disclosure.xlsx"
+OUT_PDF = Path(__file__).resolve().parent / "JHI_Coding_Disclosure.pdf"
 
 SIGNATURE = "69M2705M"
 
@@ -236,7 +248,42 @@ def build() -> None:
     for i, w in enumerate([30, 14, 16], start=1):
         ss.column_dimensions[get_column_letter(i)].width = w
 
-    # ============ Sheet 4: Notes / Disclosure ============
+    # ============ Sheet 4: By Job Title ============
+    jt = wb.create_sheet("By Job Title")
+    jt["A1"] = "Summary by Job Title (skillset)"
+    jt["A1"].font = TITLE_FONT
+    jt_headers = ["Job title (skillset)", "Actions", "Est. hours", "Value ($)", "Mid rate ($/hr)"]
+    for i, h in enumerate(jt_headers, start=1):
+        jt.cell(row=3, column=i, value=h)
+    _style_header(jt, 3, len(jt_headers))
+    titles: list[str] = []
+    for (_sub, _act, title, *_rest) in ROWS:
+        if title not in titles:
+            titles.append(title)
+    drange_title = f"Disclosure!$C${hrow + 1}:$C${last}"
+    jr = 4
+    for title in titles:
+        jt.cell(row=jr, column=1, value=title)
+        jt.cell(row=jr, column=2, value=f'=COUNTIF({drange_title},A{jr})')
+        jt.cell(row=jr, column=3, value=f'=SUMIF({drange_title},A{jr},{drange_hrs})')
+        jt.cell(row=jr, column=4, value=f'=SUMIF({drange_title},A{jr},{drange_val})').number_format = CURRENCY
+        jt.cell(row=jr, column=5, value=RATES[title][2]).number_format = CURRENCY
+        for c in range(1, 6):
+            jt.cell(row=jr, column=c).border = BORDER
+        jr += 1
+    jt.cell(row=jr, column=1, value="TOTAL")
+    jt.cell(row=jr, column=2, value=f"=SUM(B4:B{jr - 1})")
+    jt.cell(row=jr, column=3, value=f"=SUM(C4:C{jr - 1})")
+    jt.cell(row=jr, column=4, value=f"=SUM(D4:D{jr - 1})").number_format = CURRENCY
+    for c in range(1, 6):
+        cell = jt.cell(row=jr, column=c)
+        cell.fill = TOTAL_FILL
+        cell.font = TOTAL_FONT
+        cell.border = BORDER
+    for i, w in enumerate([26, 10, 12, 16, 16], start=1):
+        jt.column_dimensions[get_column_letter(i)].width = w
+
+    # ============ Sheet 5: Notes / Disclosure ============
     nt = wb.create_sheet("Notes & Disclosure")
     nt["A1"] = "Methodology & Full Disclosure"
     nt["A1"].font = TITLE_FONT
@@ -277,5 +324,96 @@ def build() -> None:
     print(f"Wrote {OUT}")
 
 
+def _money(n: float) -> str:
+    return f"${n:,.0f}"
+
+
+def build_pdf() -> None:
+    """Render a self-contained PDF from the same source data (in sync with the xlsx)."""
+    navy = colors.HexColor("#0B2A4A")
+    gold = colors.HexColor("#D4AF37")
+    styles = getSampleStyleSheet()
+    title_style = styles["Title"]
+    title_style.textColor = navy
+    body = styles["BodyText"]
+    small = styles["BodyText"].clone("small")
+    small.fontSize = 7.5
+    small.leading = 9
+    head = styles["BodyText"].clone("head")
+    head.fontSize = 8
+    head.leading = 10
+    head.textColor = colors.white
+
+    doc = SimpleDocTemplate(
+        str(OUT_PDF), pagesize=landscape(letter),
+        leftMargin=0.4 * inch, rightMargin=0.4 * inch,
+        topMargin=0.5 * inch, bottomMargin=0.5 * inch,
+        title="JHI Coding Disclosure", author="John Henry Investments",
+    )
+    elems: list = []
+    elems.append(Paragraph("John Henry Investments — Coding Disclosure by Component (Subsystem)", title_style))
+    elems.append(Paragraph(
+        f"Signature: {SIGNATURE} &nbsp;|&nbsp; Realistic equivalent professional value of all coding performed "
+        "&nbsp;|&nbsp; Rates = mid-market. Estimates of equivalent professional effort (founder-led, AI-assisted "
+        "build) — a disclosure artifact, not an invoice or audited record.", body))
+    elems.append(Spacer(1, 8))
+
+    # --- Disclosure table ---
+    header = ["Subsystem", "Work item / action", "Job title", "Level", "Rate", "Hrs", "Value", "Status"]
+    data = [[Paragraph(f"<font color='white'><b>{h}</b></font>", head) for h in header]]
+    tot_hours = 0.0
+    tot_value = 0.0
+    for (sub, action, title, level, hours, _files, status) in ROWS:
+        mid = RATES[title][2]
+        val = mid * hours
+        tot_hours += hours
+        tot_value += val
+        data.append([
+            Paragraph(sub, small), Paragraph(action, small), Paragraph(title, small),
+            Paragraph(level, small), _money(mid), f"{hours:g}", _money(val), Paragraph(status, small),
+        ])
+    data.append(["", Paragraph("<b>TOTAL</b>", small), "", "", "", f"{tot_hours:g}", _money(tot_value), ""])
+    col_w = [1.25 * inch, 3.3 * inch, 1.5 * inch, 0.7 * inch, 0.6 * inch, 0.45 * inch, 0.8 * inch, 0.9 * inch]
+    t = Table(data, colWidths=col_w, repeatRows=1)
+    t.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), navy),
+        ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#CCCCCC")),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("FONTSIZE", (0, 1), (-1, -1), 7.5),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -2), [colors.white, colors.HexColor("#F3F6FA")]),
+        ("BACKGROUND", (0, -1), (-1, -1), gold),
+        ("FONTNAME", (0, -1), (-1, -1), "Helvetica-Bold"),
+        ("ALIGN", (4, 1), (6, -1), "RIGHT"),
+    ]))
+    elems.append(t)
+    elems.append(Spacer(1, 14))
+
+    # --- Rate card + by-subsystem side summaries ---
+    elems.append(Paragraph("Rate Card (realistic hourly rates by job title)", styles["Heading2"]))
+    rc_data = [["Job title", "Level", "Low", "Mid", "High"]]
+    for title, (level, low, mid, high) in RATES.items():
+        rc_data.append([title, level, _money(low), _money(mid), _money(high)])
+    rc = Table(rc_data, colWidths=[2.2 * inch, 1.3 * inch, 0.9 * inch, 0.9 * inch, 0.9 * inch], repeatRows=1)
+    rc.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), navy), ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#CCCCCC")),
+        ("FONTSIZE", (0, 0), (-1, -1), 8), ("ALIGN", (2, 1), (4, -1), "RIGHT"),
+    ]))
+    elems.append(rc)
+    elems.append(Spacer(1, 12))
+
+    elems.append(Paragraph(
+        f"<b>Headline (mid):</b> {len(ROWS)} work items &nbsp;•&nbsp; {tot_hours:g} equivalent professional hours "
+        f"&nbsp;•&nbsp; {_money(tot_value)} equivalent professional value. &nbsp; Rate anchors: "
+        "docs/COMPENSATION_AND_PRO_SERVICES_PROJECTIONS.md.", body))
+    elems.append(Paragraph(
+        f"<i>Not an invoice, audited record, or tax/accounting advice. Founder signature {SIGNATURE} — "
+        "John Henry Investments (proprietary).</i>", small))
+
+    doc.build(elems)
+    print(f"Wrote {OUT_PDF}")
+
+
 if __name__ == "__main__":
     build()
+    build_pdf()
