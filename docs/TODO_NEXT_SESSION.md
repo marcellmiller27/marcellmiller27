@@ -34,6 +34,9 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 - [ ] **Email (SES)**: lead + escalation notifications, transactional email, and a real **password‑reset** flow.
 
 ## 4. Data / research (drop‑in when ready)
+- [ ] **Sharadar SF1 procurement — AWAITING NASDAQ RESPONSE (as of 2026‑06‑29).** Purchase
+      inquiry submitted for the **single‑user/developer** license; no key yet, adapter stays
+      gated. See `docs/FUNDAMENTALS_DATA_VENDORS.md` → "Procurement status".
 - [ ] When the **Sharadar SF1** key arrives → add `NASDAQ_DATA_LINK_API_KEY` to Secrets;
       integrate value/quality/growth factors; re‑run the equity OOS back‑test to **|t| ≥ 2.0** and report.
 - [ ] Optionally add `FRED_API_KEY` (macro) and `TWELVEDATA_API_KEY` (licensed quotes) to go fully live.

@@ -54,6 +54,15 @@ These are different products — only fundamentals close H5:
 - **Best practical buy-now choice:** **Sharadar SF1 via Nasdaq Data Link** (#5) —
   genuinely PIT, survivorship-bias-free, self-serve API key, integrates fastest.
 
+## Procurement status (updated 2026-06-29)
+
+**Status: AWAITING NASDAQ RESPONSE.** A purchase inquiry for the **Sharadar SF1
+single-user/developer** license has been submitted to NASDAQ / Nasdaq Data Link; we are
+awaiting their response. No API key yet — the adapter remains **gated/inactive** and
+`/research/fundamentals-status` reports `available: false`. Next action: once NASDAQ
+responds and the license is purchased, add the key to Secrets and follow the integration
+plan below.
+
 ## Procurement decision (confirmed 2026-06-25)
 
 **Chosen dataset: Sharadar Core US Fundamentals (SF1) on Nasdaq Data Link.** It meets
