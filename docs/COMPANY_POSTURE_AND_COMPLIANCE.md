@@ -101,6 +101,14 @@ investors' interests, and makes the platform cleanly fundable.
 > and outside equity is sold **only in the subsidiary**. This also **firewalls liability**
 > (a platform dispute/data-license/breach issue can't reach the family's investment assets,
 > and vice versa) — one blended entity is a single liability pool for both.
+>
+> **A DBA does NOT create separation.** Operating the platform as a trade name (e.g.,
+> "JHI Research Analysis") + its own bank account is fine for **branding, deposits, and
+> bookkeeping**, but a DBA is **just a name — not a separate legal entity.** It provides
+> **no liability firewall** and you **cannot sell equity in a DBA** (equity is ownership of
+> the whole corporation). It also won't give investors **QSBS** eligibility (needs a
+> C-corp). **Practical path:** run as the DBA now if no imminent raise; **convert the
+> platform to a subsidiary C-corp the moment outside capital is taken.**
 
 **Guardrails that keep this "not in conflict" (confirm with securities + corporate counsel):**
 1. **Separate legal entity** for the platform (subsidiary/sister **Delaware C-corp**),
