@@ -1,9 +1,9 @@
 # Company Valuation — Honest Assessment (current state)
 
-> **Posture note:** JHI is a **private family office with NO outside investors — ever**
-> (`docs/COMPANY_POSTURE_AND_COMPLIANCE.md`). This valuation is for **internal, IP,
-> estate/insurance, and lending** purposes only — **not** to raise capital or price an
-> equity round.
+> **Posture note:** JHI is a **research & analytics firm** that **never manages outside
+> funds / client money**, but **is open to outside equity (VC/seed)** to fund the company
+> (`docs/COMPANY_POSTURE_AND_COMPLIANCE.md`). This valuation supports **fundraising** as
+> well as internal/IP/estate/lending use. (Raising company equity ≠ managing client money.)
 
 
 What is John Henry Investments worth *today*, based on what's actually built? Short

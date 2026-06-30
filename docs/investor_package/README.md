@@ -1,14 +1,15 @@
 # John Henry Investments Investor Package
 
-> **⚠️ Posture note (controls this folder):** JHI is a **private family office and will
-> NOT take outside investors — ever** (`docs/COMPANY_POSTURE_AND_COMPLIANCE.md`). These
-> materials are **NOT** to be used to solicit outside equity investors. Repurpose them only
-> as **internal** planning, IP valuation, estate/insurance, and **lender/banking**
-> materials.
+> **Posture note:** JHI is a **research & analytics firm** that **never manages outside
+> funds / client money**, but **is open to outside equity (VC/seed)** to fund the company
+> (`docs/COMPANY_POSTURE_AND_COMPLIANCE.md`). These materials support **fundraising** (and
+> internal/IP/estate/lending use). To raise VC, plan for a fundable structure (Delaware
+> C-corp, clean cap table, IP assignment) — confirm with counsel. Be honest in diligence:
+> the Opportunity Score's predictive validity is still unproven (position as research/insight).
 
 ## Purpose
 
-This folder contains a pitch deck, PowerPoint presentation, financial model, DCF model, chart data, and diligence materials for the John Henry Investments platform — retained for **internal planning, IP valuation, estate/insurance, and lender/banking** use only (not outside-equity solicitation; see posture note above).
+This folder contains a pitch deck, PowerPoint presentation, financial model, DCF model, chart data, and diligence materials for the John Henry Investments platform — for **fundraising** (VC/seed) as well as internal planning, IP valuation, estate/insurance, and lender/banking use.
 
 ## Files
 
