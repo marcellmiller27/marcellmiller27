@@ -64,6 +64,24 @@ platform under a **DBA (e.g., "JHI Research Analysis")** with its **own bank acc
 - **Separate bank account + clean books** for the research platform (good hygiene + tax),
   distinct from family-office investment transactions.
 
+### Registration & multi-state footprint (as of 2026-06-30)
+- **Domicile:** **Wyoming** corporation (no state corporate income tax, privacy, low cost,
+  asset protection — a good fit for a private, non-VC company).
+- **Operating states:** **Georgia** (current) and **Florida** (to add) → **foreign-qualify**
+  the WY corp in each, with a **registered agent in all three states** (WY, GA, FL).
+- **Income tax follows nexus:** WY's no-income-tax benefit does **not** erase tax owed where
+  you operate (GA corporate income tax; FL corporate income tax for C-corps). File where you
+  have nexus.
+- **SaaS sales tax (don't skip):** subscriptions can be taxable in many states via
+  **economic nexus** (driven by sales volume, not just registration). Use **Stripe Tax**
+  (billing already on Stripe) or Avalara/TaxJar to automate taxability + thresholds.
+- **Entity tax election (confirm with CPA):** if the **family-office entity** owns the
+  platform corp, an **S-corp election is likely unavailable** (S-corp shareholders must be
+  individuals/eligible trusts) → default **C-corp** (plan for double taxation/distributions).
+- Keep a **registered-agent + annual-report calendar** for all three states to stay in good
+  standing. The DBA ("JHI Research Analysis") rides under this corp (name only; no separate
+  liability shield).
+
 ## Bootstrapping & phased scale-up (feasibility)
 Self-funding is feasible because this is a high-margin, low-infra SaaS (see
 `docs/OPERATING_COST_LEAN_VS_STAFFED.md`, `docs/AWS_COST_10K_USERS.md`,
