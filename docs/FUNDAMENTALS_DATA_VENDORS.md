@@ -171,3 +171,60 @@ our use case on a call.
 Thank you,
 [Name] — John Henry Investments, LLC — [email] — [phone]
 ```
+
+## NASDAQ engagement guidelines: one-week R&D → commercial MSA
+
+**Goal:** secure a short, low-cost **R&D/evaluation window** on SF1 single-user/developer
+to run our pre-registered validation (see `docs/RND_VALIDATION_PROTOCOL.md`, ~1 week of
+work), then move directly to a **commercial MSA** for client serving — ideally with the
+R&D fee credited.
+
+**Negotiation principles (what to hold firm on):**
+1. **Separate the two phases explicitly.** Phase 1 = internal R&D (single-user/developer,
+   short term). Phase 2 = commercial production (B2C/B2B) — a different license scope.
+2. **Ask for a trial/short eval first.** Many data vendors offer a **free trial or a
+   short evaluation** of single-user data. Request a **1–2 week** eval (or the smallest
+   single-user term) sufficient to run our backtest — we don't need a 12-month single-user
+   commitment just to validate.
+3. **Get an upgrade/credit path in writing.** Request that R&D/eval spend be **credited
+   toward** the commercial MSA when we upgrade.
+4. **Nail derived-data rights for Phase 2.** The commercial MSA must permit **display of
+   SF1-derived analytics (scores/rankings) to external clients** (and redistribution if
+   raw fields are ever shown). Confirm in writing.
+5. **Term ≠ scope.** Accept a 12-month *commercial* MSA term — but only the **commercial
+   scope** enables client serving. A 12-month *single-user* term does not.
+6. **No client serving on single-user.** We will not deploy any client-facing feature on
+   the R&D license; commercial launch waits for the commercial MSA.
+
+> Reality check: if NASDAQ has **no** short trial and only sells single-user annually, the
+> single-user annual license is still a low-cost R&D on-ramp — buy it, validate in ~1 week,
+> and upgrade to commercial before serving clients (ask for the credit per #3).
+
+### Cover message (one-week R&D → commercial MSA)
+
+```
+Subject: SF1 evaluation (1 week) → commercial MSA — John Henry Investments
+
+Hello [Nasdaq Data Link / Sharadar team],
+
+I'm [Name], founder of John Henry Investments, LLC (fintech SaaS). We've selected Sharadar
+SF1 and want to move efficiently in two phases:
+
+PHASE 1 — R&D (now): We need a short evaluation/single-user-developer window — ideally
+about ONE WEEK — to run an internal, point-in-time backtest validating our derived
+"Opportunity Score." Could you provide a free trial or the smallest single-user term that
+covers this? No client access during this phase.
+
+PHASE 2 — Commercial (immediately after, if validation passes): We will move to a
+COMMERCIAL MSA to serve B2C/B2B clients SF1-DERIVED analytics. Please confirm:
+  • the commercial tier that permits production SaaS use + display of derived data to
+    external clients (and redistribution if raw fields are shown);
+  • a 12-month MSA term and pricing (per-seat/per-user/flat);
+  • whether our Phase 1 R&D fee can be CREDITED toward the commercial MSA.
+
+We validate quickly, so we expect a short gap between phases. Please send trial details,
+the commercial license schedule, MSA, and a quote.
+
+Thank you,
+[Name] — John Henry Investments, LLC — [email] — [phone]
+```
