@@ -43,6 +43,17 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 - [ ] DR: backups + restore drill; IaC (Terraform/CDK) for reproducible infra.
 - [ ] Performance/a11y/SEO pass; founder "ticket inbox" UI for escalated agent tickets.
 
+## 6. Entity formation (GATED — only after H5 validation + proof of concept)
+> Founder decision: complete the validation first, then incorporate. Do NOT form the entity
+> until H5 is validated and the proof of concept is confirmed.
+- [ ] **Verify H5** (run the SF1 pre-registered OOS backtest to |t| ≥ 2.0 — `docs/RND_VALIDATION_PROTOCOL.md`).
+- [ ] **Confirm proof of concept** (validation passes + research/decision-support working end-to-end).
+- [ ] **Then incorporate "JHI Research Analysis" as a Wyoming corporation** (private, bootstrapped — no outside investors).
+- [ ] Foreign-qualify in **Georgia** and **Florida**; appoint **registered agents** in WY/GA/FL.
+- [ ] EIN; **C-corp vs S-corp** election with CPA (family-office entity owner likely → C-corp).
+- [ ] Turn on **Stripe Tax** (SaaS sales-tax nexus); set registered-agent + annual-report calendar.
+- [ ] Context: `docs/COMPANY_POSTURE_AND_COMPLIANCE.md` (posture + registration footprint).
+
 ## Suggested first task tomorrow
 **Migrate the CRM module to Postgres** (self‑contained, high‑value template) + wire the
 `/account` and `/portfolio` pages to live data — then repeat the pattern for the other
