@@ -86,6 +86,25 @@ Self-funding is feasible because this is a high-margin, low-infra SaaS (see
 
 ---
 
+## Legal surface as a research-only firm (honest scope)
+Being research-only (never managing money, never trading for clients) **removes the heavy
+regime** (no investment-manager, broker-dealer, or custody rules). It is **low-risk, not
+zero-risk.** What remains:
+1. **Adviser line (key):** general, non-personalized research is typically protected
+   ("publisher's exclusion"); **personalized, for-a-fee recommendations can make you an
+   investment adviser even without managing money.** Keep outputs general/educational, not
+   tailored "buy this" advice. Confirm the publisher's-exclusion posture with counsel.
+2. **Data licensing:** NASDAQ **commercial** SF1 license required to serve derived data to
+   clients; honor free-feed terms (CoinGecko/Yahoo/BLS).
+3. **Marketing/consumer protection:** no misleading performance claims; clear
+   "not investment advice" disclaimers; testimonial rules.
+4. **Normal business legal:** liability entity, Terms of Service, privacy/data protection
+   (user PII), billing terms, IP.
+5. **Founder/family own trading:** trading the family's own money is fine; avoid
+   front-running subscribers and disclose conflicts.
+
+> Market this as a **"low, well-understood legal surface,"** not "no legal issues."
+
 ## Implications for product, messaging & internal docs
 - Client-facing copy stays in the **research / analysis / education / decision-support**
   register; never imply JHI manages money or guarantees outcomes.
