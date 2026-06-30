@@ -106,6 +106,18 @@ investors' interests, and makes the platform cleanly fundable.
    advice-for-fee (keeps it out of investment-adviser territory).
 5. **Investment Company Act check:** an operating SaaS C-corp is normally fine, but don't
    let the platform entity become a holder of investment securities with raised cash.
+6. **Banking & fund separation (a separate account is necessary, NOT sufficient):**
+   - The platform C-corp holds its **own bank account(s) in the entity's name** (own EIN) —
+     not personal/family-office accounts.
+   - **No free money movement** between the platform and the family office. Funds cross the
+     line only via **documented, legitimate channels:** dividends/distributions
+     (**pro-rata to ALL shareholders** once outside investors exist), **arm's-length service
+     agreements**, or **documented intercompany loans** (note + interest).
+   - **Platform revenue and investor capital belong to the platform entity** — do **not**
+     sweep them into the family office's main account. After outside investors, doing so can
+     be breach of fiduciary duty / veil-piercing / fraud, not just messy bookkeeping.
+   - Keep **separate books** per entity; observe corporate formalities; adequately
+     capitalize the C-corp. Set this up with a **CPA + corporate counsel.**
 
 > This is a working model, **not legal/tax advice.** The "not in conflict" determination
 > requires securities + corporate counsel to bless the entity structure, the offering
