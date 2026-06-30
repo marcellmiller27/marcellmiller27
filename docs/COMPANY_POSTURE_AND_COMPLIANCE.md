@@ -91,6 +91,17 @@ equity in the **platform company**, not in the family office or its capital. Kee
 platform in its own C-corp prevents commingling the family's own investing with outside
 investors' interests, and makes the platform cleanly fundable.
 
+> **Common misconception (important):** a separate **bank account** prevents *cash*
+> commingling, but it does **not** let you raise equity into "a segment." **Equity is
+> ownership of a whole legal entity, not a division.** If everything is one umbrella
+> entity, an outside investor who buys equity owns a slice of **the entire company —
+> including the family's investments** (with information rights and economic claims over
+> them). "Under one umbrella" still works — but via **parent → subsidiary ownership**, not
+> a single blended entity: the family office (parent) **owns** the platform **subsidiary**,
+> and outside equity is sold **only in the subsidiary**. This also **firewalls liability**
+> (a platform dispute/data-license/breach issue can't reach the family's investment assets,
+> and vice versa) — one blended entity is a single liability pool for both.
+
 **Guardrails that keep this "not in conflict" (confirm with securities + corporate counsel):**
 1. **Separate legal entity** for the platform (subsidiary/sister **Delaware C-corp**),
    owned by the family office; IP assigned to the C-corp; clean cap table; founder
