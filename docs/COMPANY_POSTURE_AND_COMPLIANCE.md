@@ -84,6 +84,23 @@ Self-funding is feasible because this is a high-margin, low-infra SaaS (see
 - **Real constraint = distribution + founder bandwidth, not capital.** Lean on the AI
   agents and the GTM/waitlist funnel; grow at a revenue-paced clip.
 
+### Non-dilutive financing (debt / line of credit) — permitted, with discipline
+Debt is **not** outside investment — no dilution, no investors, no board seats — so a
+business loan or **line of credit is fully consistent** with staying 100% private. Options
+once there is real ARR: **revenue-based financing** (Pipe/Capchase/Arc — fast, non-dilutive,
+but can be pricey), **bank LOC** (cheapest; needs history + usually a personal guarantee),
+**SBA loan**, or **MRR/ARR lines**. Discipline:
+- **Borrow against ARR you have, not hope for** — lenders want real revenue + low churn +
+  history. This is a **growth accelerant after traction**, not startup capital.
+- **The collateral that matters is the recurring-revenue stream**, not the code/IP (lenders
+  rarely lend much against early-stage software IP).
+- **Avoid pledging family assets** (personal guarantees) — keep the family-office firewall.
+- **Service debt from cash flow**; use it only for **specific, ROI-positive** needs (e.g.,
+  the NASDAQ commercial license, a marketing push) — **never to fund operating losses.**
+- **Option unique to this structure:** the family office can lend to the platform via a
+  **documented, arm's-length intercompany loan** (note + interest) — non-dilutive, in-house,
+  no external PG — provided the books stay clean (no commingling).
+
 ---
 
 ## Legal surface as a research-only firm (honest scope)
