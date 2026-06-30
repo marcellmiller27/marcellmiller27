@@ -1,5 +1,11 @@
 # Company Valuation — Honest Assessment (current state)
 
+> **Posture note:** JHI is a **private family office with NO outside investors — ever**
+> (`docs/COMPANY_POSTURE_AND_COMPLIANCE.md`). This valuation is for **internal, IP,
+> estate/insurance, and lending** purposes only — **not** to raise capital or price an
+> equity round.
+
+
 What is John Henry Investments worth *today*, based on what's actually built? Short
 answer: a **large "market cap" is unwarranted now**, because value in software is
 driven by traction (users, revenue, retention) and validated IP — all currently

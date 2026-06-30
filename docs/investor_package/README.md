@@ -1,8 +1,14 @@
 # John Henry Investments Investor Package
 
+> **⚠️ Posture note (controls this folder):** JHI is a **private family office and will
+> NOT take outside investors — ever** (`docs/COMPANY_POSTURE_AND_COMPLIANCE.md`). These
+> materials are **NOT** to be used to solicit outside equity investors. Repurpose them only
+> as **internal** planning, IP valuation, estate/insurance, and **lender/banking**
+> materials.
+
 ## Purpose
 
-This folder contains the investor-facing pitch deck, PowerPoint presentation, financial model, DCF model, chart data, and recommended diligence materials for the John Henry Investments platform.
+This folder contains a pitch deck, PowerPoint presentation, financial model, DCF model, chart data, and diligence materials for the John Henry Investments platform — retained for **internal planning, IP valuation, estate/insurance, and lender/banking** use only (not outside-equity solicitation; see posture note above).
 
 ## Files
 
