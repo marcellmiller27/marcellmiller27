@@ -7,147 +7,93 @@
 
 ---
 
-## Founder directives (definitive)
+## Founder directives (definitive — decided 2026-06-30)
 
-1. **JHI is a research firm** — deep-dive, cross-asset market research and analysis
-   delivered to clients as **research, insight, education, and decision-support** (SaaS).
-2. **JHI will NEVER manage outside funds or other people's money.** No client AUM, no
-   custody, no discretionary management, no pooled vehicles, no investment-manager/RIA
-   role over client assets.
-3. **JHI is open to outside *equity* investment (VC / seed rounds)** to fund the company's
-   growth — via an appropriate fundable structure (see below).
+1. **JHI is a research & analytics firm** — deep-dive, cross-asset market research and
+   analysis sold to clients as **research, insight, education, and decision-support** (SaaS).
+2. **JHI will NEVER manage outside funds or other people's money.** No client AUM, custody,
+   discretionary management, pooled vehicles, or investment-manager/RIA role.
+3. **JHI stays 100% private and bootstrapped.** **No VC, no seed rounds, no outside
+   investors, no outside raised capital — ever.** The venture is **self-funded from
+   revenue**, scaling resources in phases as paying users grow.
 
-### ⚠️ The distinction that makes #2 and #3 compatible
-- **Managing other people's money** = holding/investing *clients'* funds (AUM, custody,
-  discretion). **JHI will never do this.**
-- **Raising VC/seed** = outside investors buying **equity in the company**. This funds the
-  *business*, not client portfolios. **This is allowed and intended.**
-
-These are different activities. A research/analytics firm can raise venture capital while
-never managing a dollar of client money.
+> Decision history: earlier drafts explored VC/seed; the founder has **decided against
+> outside capital entirely**. JHI is bootstrapped and private. This supersedes any prior
+> fundraising framing.
 
 ---
 
 ## What JHI IS
-- A **research & analytics firm / SaaS** selling cross-asset research, the John Henry
-  Opportunity Score, and decision-support tools by subscription (B2C/B2B). Clients make
-  **their own** decisions.
-- A **venture-fundable company** (open to seed/VC equity) once structured for it.
+- A **private, founder-owned research & analytics firm / SaaS** selling cross-asset
+  research, the John Henry Opportunity Score, and decision-support tools by subscription.
+  Clients make **their own** decisions.
+- **Self-funded** — growth paced by revenue, not investors.
 
 ## What JHI is NOT
 - **Not** an investment manager, adviser-of-funds, broker-dealer, custodian, or fund.
-- **Not** a manager of client or third-party money (never takes custody or discretion).
+- **Not** a manager of client/third-party money (never takes custody or discretion).
+- **Not** raising or accepting outside investment of any kind.
 
 ---
 
-## Compliance line (the one that still matters)
-Selling software/research isn't money management — but giving **personalized investment
-advice for compensation** can implicate investment-adviser rules **even without managing
-money**. So the platform stays on the **research / education / analysis / decision-support**
-side:
-- Market the Opportunity Score and rankings as **analysis/education**, not advice.
-- The score is **one input**, never a directive; include disclaimers.
-- No promises of returns or performance.
-- Confirm the advice-vs-tools line with counsel before scaling client acquisition.
+## Why fully-private + bootstrapped is the clean path
+Taking **no outside capital** removes a whole class of complexity and risk:
+- **No securities offering** → no Reg D, no Form D, no accredited-investor/solicitation rules.
+- **No investor fiduciary duties**, board seats, dilution, or growth-at-all-costs pressure.
+- **No need for a separate entity to "sell equity in a segment"** — that problem only exists
+  if you raise. Since JHI never sells equity, the structure can stay simple.
+- **Full founder control.**
 
-> Because JHI never manages money, the **investment-manager / custody / fund** rulebook
-> does not apply. The go-live bar is honest research validation
-> (`docs/RND_VALIDATION_PROTOCOL.md`) + tools-not-advice positioning.
-
----
-
-## Fundraising readiness (for VC / seed)
-
-To actually raise venture capital, plan for:
-- **Entity:** a **Delaware C-corp** (VCs rarely invest in LLCs/family offices), clean cap
-  table, IP assigned to the entity, founder vesting + 83(b), option pool. If a private
-  family-office arm is desired, it can simply be a **shareholder** of the C-corp.
-- **What VCs fund:** large TAM, scalable SaaS metrics (growth, retention/NRR), a
-  differentiation/moat story, and **traction** (users/revenue). Pre-seed/seed can be raised
-  on team + vision + early traction; Series A needs real metrics.
-- **Diligence honesty:** the Opportunity Score's predictive validity is **unproven (H5)** —
-  position as **research/insight**, not proven alpha, and strengthen it via the SF1
-  validation. Don't overclaim in the deck.
-- **Materials:** `docs/investor_package/` (pitch deck, DCF, financial model) and the
-  valuation docs support fundraising **and** internal/IP/estate/lending use.
+The one line that still matters: selling software/research isn't money management, but
+**personalized investment advice for compensation** can implicate adviser rules even
+without managing money. Keep the platform on the **research / education / analysis /
+decision-support** side (score = one input, with disclaimers; no promised returns;
+confirm with counsel).
 
 ---
 
-## Corporate structure (working model — pending counsel)
+## Structure (simplified for a bootstrapped, private firm)
+Because there are **no outside investors**, the earlier "platform must be a separate C-corp
+to take equity" requirement **does not apply.** A single company operating the research
+platform under a **DBA (e.g., "JHI Research Analysis")** with its **own bank account** is a
+**sound** approach. Remaining best-practices (not funding-driven):
+- **A liability entity** (LLC or corporation) so a platform dispute/data issue doesn't reach
+  personal/family assets — **a DBA alone gives no liability shield.** (A separate subsidiary
+  is *optional*, only if you want to firewall the platform from the family's investment
+  activity for liability/insurance reasons.)
+- **Separate bank account + clean books** for the research platform (good hygiene + tax),
+  distinct from family-office investment transactions.
 
-```
-        John Henry Investments — Family Office (parent)
-        • invests the family's OWN funds (private; no outside money managed)
-                         │ owns
-                         ▼
-        Research/Education Platform — separate entity (recommended: Delaware C-corp)
-        • cross-asset research + analysis SaaS (the product)
-        • MAY take outside EQUITY investors (VC/seed) into THIS entity only
-        • never manages client money; research/education, not advice
-```
+## Bootstrapping & phased scale-up (feasibility)
+Self-funding is feasible because this is a high-margin, low-infra SaaS (see
+`docs/OPERATING_COST_LEAN_VS_STAFFED.md`, `docs/AWS_COST_10K_USERS.md`,
+`docs/CASHFLOW_PROJECTION_12MO.md`):
 
-**Why a separate entity (not just an internal "segment"):** outside investors must buy
-equity in the **platform company**, not in the family office or its capital. Keeping the
-platform in its own C-corp prevents commingling the family's own investing with outside
-investors' interests, and makes the platform cleanly fundable.
+| Phase | Run cost | Notes |
+| --- | --- | --- |
+| Prototype | **~$50–$300/mo** | free/lean tiers + deterministic AI FAQ; founder handles support |
+| Paid MVP (lean) | **~$600–$1,600/mo** | billing live, reliable hosting, AI-first support |
+| Production (~10k users, multi-AZ) | **~$950/mo** | scale infra as users grow |
 
-> **Common misconception (important):** a separate **bank account** prevents *cash*
-> commingling, but it does **not** let you raise equity into "a segment." **Equity is
-> ownership of a whole legal entity, not a division.** If everything is one umbrella
-> entity, an outside investor who buys equity owns a slice of **the entire company —
-> including the family's investments** (with information rights and economic claims over
-> them). "Under one umbrella" still works — but via **parent → subsidiary ownership**, not
-> a single blended entity: the family office (parent) **owns** the platform **subsidiary**,
-> and outside equity is sold **only in the subsidiary**. This also **firewalls liability**
-> (a platform dispute/data-license/breach issue can't reach the family's investment assets,
-> and vice versa) — one blended entity is a single liability pool for both.
->
-> **A DBA does NOT create separation.** Operating the platform as a trade name (e.g.,
-> "JHI Research Analysis") + its own bank account is fine for **branding, deposits, and
-> bookkeeping**, but a DBA is **just a name — not a separate legal entity.** It provides
-> **no liability firewall** and you **cannot sell equity in a DBA** (equity is ownership of
-> the whole corporation). It also won't give investors **QSBS** eligibility (needs a
-> C-corp). **Practical path:** run as the DBA now if no imminent raise; **convert the
-> platform to a subsidiary C-corp the moment outside capital is taken.**
+- **Blended ARPU ~$70/user/mo → break-even at ~a few dozen paying users** (lean MVP) — and
+  ~1–5 users at prototype scale. Cash-flow positive early; **let revenue fund each phase.**
+- **Lumpy expense to time:** the **NASDAQ commercial SF1 license** (single-user dev ≈
+  $120/mo; commercial tier TBD/awaiting quote). Validate on the cheap dev license first;
+  buy the **commercial** license only when paying-user revenue justifies serving SF1-derived
+  data to clients.
+- **Real constraint = distribution + founder bandwidth, not capital.** Lean on the AI
+  agents and the GTM/waitlist funnel; grow at a revenue-paced clip.
 
-**Guardrails that keep this "not in conflict" (confirm with securities + corporate counsel):**
-1. **Separate legal entity** for the platform (subsidiary/sister **Delaware C-corp**),
-   owned by the family office; IP assigned to the C-corp; clean cap table; founder
-   vesting/83(b).
-2. **Securities-compliant raise:** outside equity is a regulated offering — use an
-   exemption (e.g., Reg D 506(b)/506(c)), typically **accredited investors**, file
-   **Form D**, and follow **solicitation rules** (no general advertising under 506(b)).
-   Proper offering documents required.
-3. **Conflict-of-interest walls + disclosure** between the family office's **own investing**
-   and the **platform's research** (e.g., timing/priority of acting on research; whether the
-   platform favors family positions). Disclose; don't mislead clients or investors.
-4. **Platform stays research/education** — never manages client money or gives personalized
-   advice-for-fee (keeps it out of investment-adviser territory).
-5. **Investment Company Act check:** an operating SaaS C-corp is normally fine, but don't
-   let the platform entity become a holder of investment securities with raised cash.
-6. **Banking & fund separation (a separate account is necessary, NOT sufficient):**
-   - The platform C-corp holds its **own bank account(s) in the entity's name** (own EIN) —
-     not personal/family-office accounts.
-   - **No free money movement** between the platform and the family office. Funds cross the
-     line only via **documented, legitimate channels:** dividends/distributions
-     (**pro-rata to ALL shareholders** once outside investors exist), **arm's-length service
-     agreements**, or **documented intercompany loans** (note + interest).
-   - **Platform revenue and investor capital belong to the platform entity** — do **not**
-     sweep them into the family office's main account. After outside investors, doing so can
-     be breach of fiduciary duty / veil-piercing / fraud, not just messy bookkeeping.
-   - Keep **separate books** per entity; observe corporate formalities; adequately
-     capitalize the C-corp. Set this up with a **CPA + corporate counsel.**
+---
 
-> This is a working model, **not legal/tax advice.** The "not in conflict" determination
-> requires securities + corporate counsel to bless the entity structure, the offering
-> exemption, and the conflict disclosures.
-
-## Implications for product & messaging
+## Implications for product, messaging & internal docs
 - Client-facing copy stays in the **research / analysis / education / decision-support**
   register; never imply JHI manages money or guarantees outcomes.
 - Subscriptions sell **access to research and tools**, not money management.
-- The platform **"Capital Raising Center"** (Module 12, `docs/PRODUCT_BLUEPRINT.md`) is a
-  **client-facing feature** helping *users* with *their own* ventures — separate from JHI's
-  own (allowed) equity fundraising.
+- **Internal financial models** (`docs/COMPANY_VALUATION_ANALYSIS.md`,
+  `docs/investor_package/`, EBITDA/DCF) are for **internal planning, IP valuation,
+  estate/insurance, and lending** only — **not** fundraising (no outside investors).
+- The platform **"Capital Raising Center"** (Module 12) is a **client-facing feature** for
+  *users'* own ventures — unrelated to JHI's own funding (JHI raises nothing).
 
-> Founder signature: `69M2705M` · John Henry Investments — research & analytics firm.
+> Founder signature: `69M2705M` · John Henry Investments — private, bootstrapped research firm.
