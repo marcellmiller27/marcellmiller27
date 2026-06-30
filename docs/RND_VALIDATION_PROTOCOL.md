@@ -71,10 +71,19 @@ Fix and write down these *before* touching results:
 
 ---
 
-## What would RAISE the bar (be honest)
-- If JHI ever **manages money** or **promises outcomes**, ~4 weeks is NOT enough — that
-  requires a longer live track record **and** RIA registration. As transparent
-  **research/decision-support**, the ~3–4 week gate is defensible; as advice/management, it isn't.
+## Firm posture (controls the go-live bar)
+**JHI is a private family office and will NEVER manage outside funds or other people's
+money** (see `docs/COMPANY_POSTURE_AND_COMPLIANCE.md`). The money-management / custody /
+"RIA-for-managing-funds" path is therefore **off the table by design**, so go-live is
+**not** gated on a long live money-management track record.
+
+What this means:
+- The ~3–4 week pre-registered validation + **research/education/decision-support
+  positioning** is the responsible standard. We sell **tools and research**, never advice,
+  money management, or promised outcomes.
+- The only remaining compliance line is **tools/education vs. personalized advice** (which
+  can implicate adviser rules even without managing money) — keep outputs as analysis/one
+  input, with disclaimers; confirm with counsel.
 - A failed gate → limited, disciplined iteration only; if it keeps failing, **say so
   honestly** and ship the platform's other value (organization, macro, acquisition tools)
   without over-claiming predictive alpha.
