@@ -73,6 +73,44 @@ To actually raise venture capital, plan for:
 
 ---
 
+## Corporate structure (working model — pending counsel)
+
+```
+        John Henry Investments — Family Office (parent)
+        • invests the family's OWN funds (private; no outside money managed)
+                         │ owns
+                         ▼
+        Research/Education Platform — separate entity (recommended: Delaware C-corp)
+        • cross-asset research + analysis SaaS (the product)
+        • MAY take outside EQUITY investors (VC/seed) into THIS entity only
+        • never manages client money; research/education, not advice
+```
+
+**Why a separate entity (not just an internal "segment"):** outside investors must buy
+equity in the **platform company**, not in the family office or its capital. Keeping the
+platform in its own C-corp prevents commingling the family's own investing with outside
+investors' interests, and makes the platform cleanly fundable.
+
+**Guardrails that keep this "not in conflict" (confirm with securities + corporate counsel):**
+1. **Separate legal entity** for the platform (subsidiary/sister **Delaware C-corp**),
+   owned by the family office; IP assigned to the C-corp; clean cap table; founder
+   vesting/83(b).
+2. **Securities-compliant raise:** outside equity is a regulated offering — use an
+   exemption (e.g., Reg D 506(b)/506(c)), typically **accredited investors**, file
+   **Form D**, and follow **solicitation rules** (no general advertising under 506(b)).
+   Proper offering documents required.
+3. **Conflict-of-interest walls + disclosure** between the family office's **own investing**
+   and the **platform's research** (e.g., timing/priority of acting on research; whether the
+   platform favors family positions). Disclose; don't mislead clients or investors.
+4. **Platform stays research/education** — never manages client money or gives personalized
+   advice-for-fee (keeps it out of investment-adviser territory).
+5. **Investment Company Act check:** an operating SaaS C-corp is normally fine, but don't
+   let the platform entity become a holder of investment securities with raised cash.
+
+> This is a working model, **not legal/tax advice.** The "not in conflict" determination
+> requires securities + corporate counsel to bless the entity structure, the offering
+> exemption, and the conflict disclosures.
+
 ## Implications for product & messaging
 - Client-facing copy stays in the **research / analysis / education / decision-support**
   register; never imply JHI manages money or guarantees outcomes.
