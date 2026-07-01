@@ -1,7 +1,32 @@
 # NASDAQ / Sharadar SF1 — MSA Call Checklist (09:00 prep)
 
-> Quote on the table: **SF1 commercial usage — "$1,500 per pd."** Bring this list to the
-> call. NOT legal advice — have counsel review the MSA before signing.
+> Quote on the table: **SF1 commercial — $1,500/month × 12 = $18,000/year.** Bring this
+> list to the call. NOT legal advice — have counsel review the MSA before signing.
+
+## 🧭 Cy's recommendation on the $18k/yr commercial quote (read first)
+**Do NOT commit to the $1,500/mo commercial license *yet*.** It's a material fixed cost for
+a pre-revenue, bootstrapped firm, and you don't need it to validate the product. Two-step it:
+
+1. **R&D phase (now): buy only the cheaper single-user/developer license** to run the H5
+   validation (historically ~$150/mo, ~$1,500/**yr** — ~10× cheaper than commercial). You do
+   **not** need commercial display rights just to backtest internally.
+2. **Commercial phase (later): sign the $1,500/mo commercial *only when you're actually
+   serving paying clients***, ideally timed so early subscription revenue offsets it.
+
+**Break-even reality at $1,500/mo (≈$70 blended ARPU):**
+- Data line alone → **~22 paying subscribers**.
+- Data + lean infra (~$600–1,600/mo) → **~30–44 subscribers** just to cover costs.
+Paying **$18k/yr before validation and before revenue** is the classic bootstrapping trap —
+avoid it.
+
+**What to ask for on the call:**
+- The **single-user/developer (non-commercial) R&D price** + an **upgrade path with the R&D
+  spend credited** toward the commercial MSA.
+- **Month-to-month or a short initial term** on the commercial tier (avoid locking $18k for
+  12 months before you have subscribers); or start commercial **at launch**, not now.
+- **Flat** commercial pricing (not per-end-user/AUM).
+
+---
 
 ## 🔴 Confirm FIRST (these change the deal materially)
 
