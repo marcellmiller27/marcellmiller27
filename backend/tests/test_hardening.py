@@ -48,8 +48,14 @@ def test_rate_limit_off_by_default() -> None:
 
 
 def test_fundamentals_status_gated_by_key(monkeypatch) -> None:
-    monkeypatch.delenv("NASDAQ_DATA_LINK_API_KEY", raising=False)
-    monkeypatch.delenv("FUNDAMENTALS_API_KEY", raising=False)
+    # Clear every env var name the key helper recognizes.
+    for name in (
+        "NASDAQ_DATA_LINK_API_KEY",
+        "FUNDAMENTALS_API_KEY",
+        "NASDAQ_MY_API_KEY",
+        "NASDAQ_PYTHON",
+    ):
+        monkeypatch.delenv(name, raising=False)
     assert client.get("/api/v1/research/fundamentals-status").json()["available"] is False
 
     monkeypatch.setenv("NASDAQ_DATA_LINK_API_KEY", "test-key")
