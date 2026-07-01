@@ -26,6 +26,25 @@ avoid it.
   12 months before you have subscribers); or start commercial **at launch**, not now.
 - **Flat** commercial pricing (not per-end-user/AUM).
 
+### On the "$1,000/mo single-user" quote — verify, don't assume a lie
+The old famous ~$150/mo Sharadar SF1 was a **personal, NON-commercial, self-serve** tier —
+a **company** generally can't use it for business R&D, and Nasdaq has restructured Sharadar
+distribution (higher sales minimums). So **$1,000/mo for a *business* single-user seat is
+plausible, not necessarily a lie** (and the old ~$150 figure is likely outdated for a 2026
+commercial buyer). Verify with:
+1. "Is there a **personal / academic / non-commercial** SF1 tier, and its price?" (benchmark).
+2. "Why is single-user **$1,000/mo** — is that a business minimum, and what does it include
+   **vs. the $1,500/mo commercial**?" (If the delta is only ~$500, the cheap-R&D-first plan
+   mostly collapses — they may be nudging you straight to commercial.)
+
+### 🏆 Best move: get a TRIAL and validate before paying
+You need the data for a **~1-week validation, not a year**:
+- **Ask for a FREE or short-term EVALUATION of the full SF1 dataset** (As-Reported + history)
+  for R&D — vendors often grant **2–4 week evals**. I can run the **entire pre-registered H5
+  backtest during a free trial** and give a PASS/FAIL **before you pay**.
+- If no trial: **one month of the cheapest tier that includes As-Reported + history**, run
+  the validation immediately, then decide — **watch for annual lock-in / auto-renew.**
+
 ---
 
 ## 🔴 Confirm FIRST (these change the deal materially)
