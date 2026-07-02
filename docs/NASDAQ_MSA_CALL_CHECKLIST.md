@@ -3,7 +3,17 @@
 > Quote on the table: **SF1 commercial — $1,500/month × 12 = $18,000/year.** Bring this
 > list to the call. NOT legal advice — have counsel review the MSA before signing.
 
-## 🧭 Cy's recommendation on the $18k/yr commercial quote (read first)
+## ✅ Confirmed deal shape (2026-07-02)
+**$18,000/year FLAT, up to 1,000 clients** (not a per-client charge), with a **5-day
+evaluation** and **cancel-if-POC-fails**. This is a **favorable** structure:
+- At 1,000 clients (~$70 ARPU ≈ $70k/mo revenue), $18k/yr data ≈ **~2% of revenue**.
+- **Break-even on the data line alone ≈ 21 paying clients**; past that it pays for itself.
+- Only risk = paying $18k with **zero** clients → the 5-day eval + $0 cancellation is the
+  protection. **Validate during the eval; commit the $18k at/near client launch.**
+- Still confirm: **next-tier price past 1,000 clients**, that the eval uses **FULL data**
+  (not the sample), and the **$0 cancellation / auto-renew** mechanics.
+
+## 🧭 Cy's recommendation (read first)
 **Do NOT commit to the $1,500/mo commercial license *yet*.** It's a material fixed cost for
 a pre-revenue, bootstrapped firm, and you don't need it to validate the product. Two-step it:
 
