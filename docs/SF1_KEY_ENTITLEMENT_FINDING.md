@@ -54,3 +54,19 @@ for R&D — see `docs/FUNDAMENTALS_DATA_VENDORS.md`) unlocks:
 
 > Good news: the plumbing is proven end-to-end on real SF1 responses — we're one dataset
 > upgrade away from the real run.
+
+## Readiness built (2026-07-02) — for the 5-day eval
+To execute immediately when full-data (As-Reported + history) access is granted:
+- **`market_services.sharadar_sf1_history(ticker, dimension)`** — pulls all SF1 rows for a
+  ticker, sorted by `datekey` (verified live against the sample).
+- **`app/fundamentals.py`** — pure, unit-tested PIT factor computation
+  (`pit_fundamental_factors`): value (earnings yield, book/price), quality (ROE, net
+  margin), growth (revenue/EPS YoY), with a strict **no-look-ahead** cutoff (`datekey <=
+  as_of`). 6 unit tests + verified on a real SF1 sample row.
+- **Remaining step (during eval):** wire these factors into the costed OOS backtest
+  (`equity_oos_backtest`) alongside price factors, run over full history, report PASS/FAIL
+  vs **|t| ≥ 2.0**. Kept for the eval so it's built against real full-data shapes.
+
+**5-day-eval prerequisites to confirm in the contract:** (1) the eval exposes the **full**
+dataset (As-Reported ARQ/ART/ARY + ~20yr + full universe), not the sample; (2) exact
+**$0 cancellation** mechanic within 5 days (and whether it auto-renews into the $18k/yr).
