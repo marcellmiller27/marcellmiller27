@@ -52,35 +52,48 @@ confirm with counsel).
 
 ---
 
-## Structure (simplified for a bootstrapped, private firm)
-Because there are **no outside investors**, the earlier "platform must be a separate C-corp
-to take equity" requirement **does not apply.** A single company operating the research
-platform under a **DBA (e.g., "JHI Research Analysis")** with its **own bank account** is a
-**sound** approach. Remaining best-practices (not funding-driven):
-- **A liability entity** (LLC or corporation) so a platform dispute/data issue doesn't reach
-  personal/family assets — **a DBA alone gives no liability shield.** (A separate subsidiary
-  is *optional*, only if you want to firewall the platform from the family's investment
-  activity for liability/insurance reasons.)
-- **Separate bank account + clean books** for the research platform (good hygiene + tax),
-  distinct from family-office investment transactions.
+## Structure — TWO separate entities (decided 2026-07-02)
+Founder decision: the research platform is its **own separate company**, not a DBA:
+
+```
+  John Henry Investments, LLC          JHI Research & Analytics Firm, LLC
+  (family office — own funds,          (separate WYOMING LLC — the research/SaaS
+   private, no outside money)           business; holds the data license, client
+                                        contracts, platform IP & liability)
+  ───────── kept separate; intercompany only via documented, arm's-length terms ─────────
+```
+
+- **Two distinct legal entities** (not a "dba" of one). This gives a real **liability
+  firewall** — a platform dispute / data-license / breach issue stays in the research LLC and
+  can't reach the family office's investment assets, and vice versa.
+- **The research entity is the contracting party** for third-party deals — importantly the
+  **NASDAQ SF1 data license must be held by JHI Research & Analytics Firm, LLC**, not the
+  family office (see `docs/legal/nasdaq/ORDER_FORM_REVIEW.md` — the current Order Form's
+  "dba" wording must be corrected to the separate WY entity before signing).
+- **Separate bank accounts + clean books per entity**; no commingling; any value moving
+  between them goes through **documented, arm's-length** channels (service agreements /
+  intercompany loans / distributions).
+- LLC is fine (bootstrapped, no outside investors → no C-corp/QSBS need). The family office
+  may own the research LLC (parent/subsidiary) or hold it as a sibling — either preserves
+  separation; confirm with counsel/CPA.
 
 ### Registration & multi-state footprint (as of 2026-06-30)
-- **Domicile:** **Wyoming** corporation (no state corporate income tax, privacy, low cost,
-  asset protection — a good fit for a private, non-VC company).
+- **Domicile:** **JHI Research & Analytics Firm, LLC** — a **Wyoming LLC** (no state corporate
+  income tax, privacy, low cost, asset protection — a good fit for a private, non-VC company).
 - **Operating states:** **Georgia** (current) and **Florida** (to add) → **foreign-qualify**
-  the WY corp in each, with a **registered agent in all three states** (WY, GA, FL).
+  the WY LLC in each, with a **registered agent in all three states** (WY, GA, FL).
 - **Income tax follows nexus:** WY's no-income-tax benefit does **not** erase tax owed where
   you operate (GA corporate income tax; FL corporate income tax for C-corps). File where you
   have nexus.
 - **SaaS sales tax (don't skip):** subscriptions can be taxable in many states via
   **economic nexus** (driven by sales volume, not just registration). Use **Stripe Tax**
   (billing already on Stripe) or Avalara/TaxJar to automate taxability + thresholds.
-- **Entity tax election (confirm with CPA):** if the **family-office entity** owns the
-  platform corp, an **S-corp election is likely unavailable** (S-corp shareholders must be
-  individuals/eligible trusts) → default **C-corp** (plan for double taxation/distributions).
+- **Entity tax election (confirm with CPA):** the research **LLC** is pass-through by default
+  (fine for a bootstrapped, no-investor firm); elect S-corp/C-corp treatment only if the CPA
+  advises. Note S-corp eligibility is restricted if an entity (e.g., the family office) is a
+  member.
 - Keep a **registered-agent + annual-report calendar** for all three states to stay in good
-  standing. The DBA ("JHI Research Analysis") rides under this corp (name only; no separate
-  liability shield).
+  standing.
 
 ## Bootstrapping & phased scale-up (feasibility)
 Self-funding is feasible because this is a high-margin, low-infra SaaS (see
