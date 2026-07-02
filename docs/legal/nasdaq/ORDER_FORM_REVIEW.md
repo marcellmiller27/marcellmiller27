@@ -101,6 +101,28 @@ office operating under a trade name) — the exact **opposite** of two separate 
 7. **30-day signing window** — price may be revised if not signed within 30 days of the
    Service Order date (06-Jul-26).
 
+## ⚠️ "Up to 1,000 clients" is ONLY in a July-1 sales email — get it INTO the contract
+Confirmed by founder: the **1,000-client scope is not in the Service Order** — it appears
+**only in a July 1, 2026 email** from the Nasdaq sales team. This is a real risk because the
+T&Cs have an **"Entire Agreement" / merger clause (§22)**: the signed **Order Form + T&Cs**
+are the deal, and *"in the event of any conflict … the order of preference shall be the Order
+Form and then this Agreement."* **A side email generally will NOT override or supplement the
+signed contract.**
+- **Action:** have Nasdaq **write the "up to 1,000 clients" scope (and the overage/next-tier
+  price) into the Order Form itself** — under **"Additional Terms"** or an addendum — before
+  signing. Don't rely on the email.
+- Keep the July-1 email on file regardless (`docs/legal/nasdaq/` or your records).
+
+## ✅ Consolidated pre-sign action list
+1. **Form JHI Research & Analytics Firm, LLC (Wyoming)** — the entity that will sign.
+2. **Nasdaq reissues the Order Form** to that **separate WY LLC** (drop the "dba"/family-office name).
+3. **Add in writing to the Order Form:** (a) **SaaS use + external distribution of Derived
+   Data** to clients; (b) **"up to 1,000 clients" scope + overage price.**
+4. **Confirm** all-in **$18,000/yr** and the **5-day $0-cancel trial** mechanics (written notice).
+5. **Fix the dba**, confirm online T&Cs match, note **third-party Sharadar terms**.
+6. **Counsel** quick pass; then sign within the **30-day** window.
+7. **Trial starts → Cy runs H5 within 5 days → cancel at $0 if it fails.**
+
 ## Verdict
 Commercially the deal is **solid and correctly shaped**: **$18,000/yr all-in**, **Internal &
 External** (distributor) use, and an explicit **5-day $0-cancellation trial**. **Two items
