@@ -37,6 +37,39 @@
 - ⚠️ **Renewal fee** = last month of prior term (subject to the T&C annual price-increase clause).
 - ⚠️ **30-day signing window** — price may change if not signed within 30 days.
 
+## 🔴 STOP — entity mismatch vs. the two-company plan (fix before signing)
+Founder's intent (2026-07-02): **JHI Research & Analytics Firm, LLC will be a SEPARATE
+company formed in Wyoming** — **two separate entities**, deliberately kept apart:
+- **John Henry Investments, LLC** — the family office (own funds; private).
+- **JHI Research & Analytics Firm, LLC** — the **separate Wyoming** research/SaaS company.
+
+**The Order Form contradicts this.** It names the client as **"John Henry Investments, LLC
+**dba** JHI Research & Analytics Firm, LLC."** A **"dba" means ONE legal entity** (the family
+office operating under a trade name) — the exact **opposite** of two separate companies.
+
+**Why this matters (do not sign as-is):**
+- If **John Henry Investments, LLC (the family office)** signs the data license, then the
+  **family office** holds the SF1 license, the **§11.1 indemnity**, the audit/delete
+  obligations, and the data-use liability — **commingling the two entities and destroying the
+  separation you want.**
+- The data license should sit with the entity that **actually uses and distributes the data**
+  = **JHI Research & Analytics Firm, LLC** (the WY research company that serves clients).
+
+**Required actions before DocuSign:**
+1. **Form JHI Research & Analytics Firm, LLC in Wyoming FIRST** (an entity must exist to
+   contract). *(Ties to `docs/TODO_NEXT_SESSION.md` §6, gated on H5 — but the entity must
+   exist to sign; sequence with counsel.)*
+2. **Ask Nasdaq (Michael Cornacchia) to REISSUE the Service Order** naming the Client/
+   Distributor as **"JHI Research & Analytics Firm, LLC" (a Wyoming limited liability
+   company)** — **remove the "dba" construction** and the family-office name.
+3. Do **not** sign the current envelope as "John Henry Investments, LLC dba …" if separation
+   is the goal.
+4. Keep **clean books / no commingling** between the two entities (intercompany only via
+   documented, arm's-length terms) — see `docs/COMPANY_POSTURE_AND_COMPLIANCE.md`.
+
+> Bonus: this is the **cleaner** structure anyway — the research entity carries the data
+> license + client contracts + platform liability; the family office stays firewalled.
+
 ## ✅ Good — the grants we needed are appearing
 1. **"System Details: Internal & External"** — this is the override of the T&C §1.1/§1.2
    *internal-only* default. **External use/distribution appears granted** — exactly what a
