@@ -56,3 +56,38 @@ rg -c "JHI-SIG: 69M2705M" | wc -l  # count
 > The signature is a provenance/authorship marker. It is **not** a security control and
 > does not replace license headers or copyright registration; pair it with a `LICENSE`
 > and formal IP records (see `docs/IP_INTANGIBLES_AMORTIZATION.md`).
+
+## Reconciliation status (updated 2026-07-03)
+
+This initial stamp was a **point-in-time** pass. Files created afterward (on separate,
+unmerged feature branches) were stamped individually and still need a final consolidated
+sweep once the feature PRs merge into the base.
+
+**Stamped since the initial pass (on their branches):**
+- `src/components/{live-reports,live-opportunities,live-valuations,live-assistant,live-account}.tsx` (PR #34)
+- `backend/app/integration_services.py` (PR #33)
+- `backend/app/fundamentals.py` (PR #30)
+- `backend/app/{webauthn,billing_webhook}.py` (PR #17)
+
+**Still to stamp in the consolidated sweep** (new since the initial pass):
+- `src/components/live-market.tsx` (predates the initial stamp)
+- New backend tests: `test_security_encryption.py`, `test_security_tokens.py`,
+  `test_billing_webhook.py`, `test_webauthn.py`, `test_fundamentals.py`, `test_reports_db.py`
+- Any file added on a branch not covered above.
+
+**Recommended:** after the feature PRs merge, re-run the stamping (idempotent — it skips
+files already containing `JHI-SIG: 69M2705M`) so the whole tree is covered in one pass.
+
+## Entity attribution — pending (JHI Research & Analytics Firm, Inc.)
+
+The founder mark `69M2705M` is **entity-agnostic** and stays on every file. The **copyright
+/ entity attribution** currently reads `John Henry Investments (proprietary)` in headers and
+`John Henry Investments, LLC` in `LICENSE`. Per the two-entity decision
+(`docs/COMPANY_POSTURE_AND_COMPLIANCE.md`), the **platform IP will belong to
+JHI Research & Analytics Firm, Inc.** — so the attribution should change to that entity, but
+**only after** (1) the Wyoming corporation is **formed** and (2) the **platform IP is
+assigned** to it. Renaming to a not-yet-formed entity would be premature/inaccurate.
+
+**Plan:** form entity → assign IP → then one consolidated pass updates the entity name in all
+`JHI-SIG` headers **and** the `LICENSE` from "John Henry Investments" to
+"JHI Research & Analytics Firm, Inc." (keeping the `69M2705M` mark unchanged).
