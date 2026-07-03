@@ -99,6 +99,7 @@ class DeviceCredentialDB(Base):
     credential_id: Mapped[str] = mapped_column(String(512), nullable=False, unique=True, index=True)
     public_key: Mapped[str | None] = mapped_column(Text, nullable=True)
     label: Mapped[str] = mapped_column(String(120), nullable=False, default="Mobile device")
+    sign_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
     last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 

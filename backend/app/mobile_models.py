@@ -77,7 +77,12 @@ class BiometricChallengeResponse(BaseModel):
 class BiometricAssertRequest(BaseModel):
     challenge_token: str
     credential_id: str
+    # Real WebAuthn assertion fields (base64url). When present, the signature is
+    # cryptographically verified; otherwise a presence-only fallback is allowed
+    # in development only.
     signature: str | None = None
+    authenticator_data: str | None = None
+    client_data_json: str | None = None
 
 
 class DeviceRead(BaseModel):

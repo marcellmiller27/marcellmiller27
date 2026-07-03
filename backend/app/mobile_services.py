@@ -34,6 +34,8 @@ from app.security import (
     create_access_token,
     create_scoped_token,
     decode_scoped_token,
+    decrypt_secret,
+    encrypt_secret,
     generate_totp_secret,
     token_bytes_urlsafe,
     totp_now,
@@ -41,6 +43,14 @@ from app.security import (
     verify_password,
     verify_totp,
 )
+from app.webauthn import verify_es256_assertion
+
+
+def _totp_plaintext(security: UserSecurityDB) -> str | None:
+    """Return the decrypted TOTP secret for a security row (None if unset)."""
+    if not security.totp_secret:
+        return None
+    return decrypt_secret(security.totp_secret)
 
 TOTP_ISSUER = "John Henry Investments"
 TOTP_PERIOD = 30
@@ -63,13 +73,14 @@ class MobileAuthService:
     def login_initiate(self, email: str, password: str) -> LoginInitiateResponse:
         user = self._authenticate(email, password)
         security = self._security_row(user.id)
-        if security.two_factor_enabled and security.totp_secret:
+        secret = _totp_plaintext(security)
+        if security.two_factor_enabled and secret:
             challenge = create_scoped_token({"sub": user.id}, scope="2fa")
             return LoginInitiateResponse(
                 status="two_factor_required",
                 challenge_token=challenge,
                 methods=["totp"],
-                dev_code=totp_now(security.totp_secret) if _is_dev() else None,
+                dev_code=totp_now(secret) if _is_dev() else None,
             )
         return LoginInitiateResponse(status="authenticated", auth=self._issue_auth(user))
 
@@ -79,8 +90,9 @@ class MobileAuthService:
         if user is None or not user.is_active:
             raise ValueError("Account is no longer available.")
         security = self._security_row(user.id)
+        secret = _totp_plaintext(security)
         # window=2 tolerates ~±60s of clock drift / manual entry latency.
-        if not security.totp_secret or not verify_totp(security.totp_secret, code, window=2):
+        if not secret or not verify_totp(secret, code, window=2):
             raise ValueError("Invalid verification code.")
         return self._issue_auth(user)
 
@@ -95,24 +107,26 @@ class MobileAuthService:
         if user is None:
             raise ValueError("Account is no longer available.")
         security = self._security_row(user.id)
-        if not security.totp_secret:
+        secret = _totp_plaintext(security)
+        if not secret:
             raise ValueError("Two-factor is not enabled.")
         return DevCodeResponse(
-            code=totp_now(security.totp_secret),
+            code=totp_now(secret),
             seconds_remaining=TOTP_PERIOD - int(time.time()) % TOTP_PERIOD,
         )
 
     def enable_two_factor(self, principal: Principal) -> Enable2FAResponse:
         security = self._security_row(principal.user_id)
-        security.totp_secret = generate_totp_secret()
+        secret = generate_totp_secret()
+        security.totp_secret = encrypt_secret(secret)
         security.two_factor_enabled = True
         security.updated_at = utc_now()
         self.db.commit()
         return Enable2FAResponse(
             enabled=True,
-            secret=security.totp_secret,
-            otpauth_url=totp_provisioning_uri(security.totp_secret, principal.email, TOTP_ISSUER),
-            current_code=totp_now(security.totp_secret) if _is_dev() else None,
+            secret=secret,
+            otpauth_url=totp_provisioning_uri(secret, principal.email, TOTP_ISSUER),
+            current_code=totp_now(secret) if _is_dev() else None,
         )
 
     def disable_two_factor(self, principal: Principal) -> None:
@@ -164,7 +178,15 @@ class MobileAuthService:
             credential_ids=[credential.credential_id for credential in credentials],
         )
 
-    def biometric_assert(self, challenge_token: str, credential_id: str) -> AuthResponse:
+    def biometric_assert(
+        self,
+        challenge_token: str,
+        credential_id: str,
+        *,
+        signature: str | None = None,
+        authenticator_data: str | None = None,
+        client_data_json: str | None = None,
+    ) -> AuthResponse:
         payload = decode_scoped_token(challenge_token, scope="biometric")
         user = self.db.get(UserDB, payload["sub"])
         if user is None or not user.is_active:
@@ -177,6 +199,24 @@ class MobileAuthService:
         )
         if credential is None:
             raise ValueError("Unrecognized device credential.")
+
+        has_assertion = bool(signature and authenticator_data and client_data_json)
+        if has_assertion:
+            if not credential.public_key:
+                raise ValueError("No public key registered for this credential.")
+            new_count = verify_es256_assertion(
+                credential.public_key,
+                authenticator_data,
+                client_data_json,
+                signature,
+                expected_challenge=payload["nonce"],
+                previous_sign_count=credential.sign_count,
+            )
+            credential.sign_count = new_count
+        elif not is_dev_mode():
+            # Production requires a cryptographically verified assertion.
+            raise ValueError("Biometric assertion signature is required.")
+
         credential.last_used_at = utc_now()
         self.db.commit()
         return self._issue_auth(user)
