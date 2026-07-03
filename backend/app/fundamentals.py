@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Research & Opportunity Score | John Henry Investments (proprietary)
 """Point-in-time (PIT) fundamental factor computation from Sharadar SF1 rows.
 
 Pure functions (no I/O) so they are deterministically unit-testable. The live SF1
