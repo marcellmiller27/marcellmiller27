@@ -11,7 +11,15 @@
 ## Formation status update (2026-07-03, later)
 - ✅ **JHI Research & Analytics Firm, Inc. has obtained its EIN from the IRS.**
 - 🔄 **Wyoming C-corp formation in progress** (Articles of Incorporation + registered agent).
-- **Confirm:** the EIN is issued in the exact legal name **"JHI Research & Analytics Firm, Inc."** (the C-corp), not a personal/sole-prop or the family office.
+- **Confirm (from EIN letter review):**
+  - **Name designator:** EIN legal name is "JHI RESEARCH & ANALYTICS FIRM" (no ", Inc.").
+    Ensure it matches the WY **Articles of Incorporation** (which require a corporate
+    designator); file an IRS name-correction letter if needed to align EIN ↔ Articles ↔ bank ↔ contracts.
+  - **Responsible Party** name must be consistent across EIN, Articles, NASDAQ, and bank
+    (confirm it is the founder's correct legal name).
+  - **~2-week IRS lag:** EIN works now for bank-account opening; e-file/e-pay/TIN-matching
+    (e.g., Stripe verification) may take up to two weeks.
+  - **Privacy:** EIN/SSN and the confirmation letter are **kept out of the repo**; store securely.
 - **Remaining formation sequence (order matters):** complete WY incorporation → adopt **bylaws** + issue **founder stock** (83(b) election if applicable) → **assign platform IP** (founder → corp, written IP-assignment agreement) → open **business bank account** (EIN enables this) + Stripe under the entity → **then** sign the NASDAQ Order Form as the corp → foreign-qualify in GA/FL as needed.
 
 ## 1. Corporate structure & posture (RESOLVED)
