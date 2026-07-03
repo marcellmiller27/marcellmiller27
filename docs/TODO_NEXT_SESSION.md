@@ -18,7 +18,7 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 - [x] **Accounting migrated to Postgres/SQLAlchemy** (chart of accounts, balanced journal entries, trial balance; durable; seeded). 2026‑06‑26.
 - [x] **Reports & dashboards migrated to Postgres** (financial/audit reports + executive dashboard now compute from the durable ledger & CRM deals; 98 tests pass). 2026‑06‑26.
 - [ ] Migrate remaining in‑memory module to Postgres: **integrations** (with tests).
-- [ ] Wire the static module pages to live data/actions: **opportunities, portfolio, reports, due‑diligence, assistant, account** (so every button returns a real result).
+- [x] **Wired the static module pages to live data**: opportunities (live Opportunity Score), reports (executive snapshot + income statement + live macro), portfolio (live holdings + modeled valuations), due‑diligence (live acquisition valuation), assistant (live agent chat), account (sign‑in → live user/org/role/subscription). 2026‑07‑03.
 - [ ] **Live Stripe**: real checkout session + webhook signature verification (replace the mock).
 
 ## 2. P0 — security hardening
