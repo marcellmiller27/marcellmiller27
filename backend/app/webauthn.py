@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Identity, Auth & Security | John Henry Investments (proprietary)
 """Minimal, real WebAuthn assertion verification (ES256 / ECDSA P-256).
 
 This verifies the cryptographic proof a real authenticator produces during

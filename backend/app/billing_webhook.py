@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Billing & Subscriptions | John Henry Investments (proprietary)
 """Stripe webhook verification + mapping to the internal billing event shape.
 
 Security: when ``STRIPE_WEBHOOK_SECRET`` is configured, incoming webhooks MUST
