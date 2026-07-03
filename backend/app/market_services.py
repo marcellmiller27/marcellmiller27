@@ -57,8 +57,18 @@ def twelvedata_api_key() -> str | None:
 
 
 def nasdaq_data_link_api_key() -> str | None:
-    """Point-in-time fundamentals key (Nasdaq Data Link / Sharadar SF1)."""
-    return os.getenv("NASDAQ_DATA_LINK_API_KEY") or os.getenv("FUNDAMENTALS_API_KEY")
+    """Point-in-time fundamentals key (Nasdaq Data Link / Sharadar SF1).
+
+    Accepts several env var names so a key saved under any of them works:
+    the canonical ``NASDAQ_DATA_LINK_API_KEY``/``FUNDAMENTALS_API_KEY`` and the
+    founder-provided ``NASDAQ_MY_API_KEY``/``NASDAQ_PYTHON``.
+    """
+    return (
+        os.getenv("NASDAQ_DATA_LINK_API_KEY")
+        or os.getenv("FUNDAMENTALS_API_KEY")
+        or os.getenv("NASDAQ_MY_API_KEY")
+        or os.getenv("NASDAQ_PYTHON")
+    )
 
 
 class ProviderError(RuntimeError):
@@ -298,7 +308,7 @@ def sharadar_sf1_fundamentals(ticker: str, dimension: str = "ARQ") -> dict[str, 
     if not key:
         raise ProviderError("NASDAQ_DATA_LINK_API_KEY is not configured.")
     url = (
-        "https://data.nasdaq.com/api/v3/datatables/SHARADAR/SF1"
+        "https://data.nasdaq.com/api/v3/datatables/SHARADAR/SF1.json"
         f"?ticker={urllib.parse.quote(ticker)}&dimension={urllib.parse.quote(dimension)}"
         f"&qopts.per_page=1&api_key={urllib.parse.quote(key)}"
     )
@@ -309,6 +319,32 @@ def sharadar_sf1_fundamentals(ticker: str, dimension: str = "ARQ") -> dict[str, 
         raise ProviderError(f"No Sharadar SF1 data for {ticker}.")
     columns = [c.get("name") for c in (table.get("columns") or [])]
     return dict(zip(columns, rows[0]))
+
+
+def sharadar_sf1_history(
+    ticker: str, dimension: str = "ARQ", per_page: int = 1000
+) -> list[dict[str, Any]]:
+    """All available Sharadar SF1 rows for a ticker, sorted ascending by ``datekey``.
+
+    Uses the As-Reported dimension by default (point-in-time). Returns a list of
+    column->value dicts. Requires a licensed key with SF1 access (the free sample
+    only exposes limited ``MRY`` rows).
+    """
+    key = nasdaq_data_link_api_key()
+    if not key:
+        raise ProviderError("NASDAQ_DATA_LINK_API_KEY is not configured.")
+    url = (
+        "https://data.nasdaq.com/api/v3/datatables/SHARADAR/SF1.json"
+        f"?ticker={urllib.parse.quote(ticker)}&dimension={urllib.parse.quote(dimension)}"
+        f"&qopts.per_page={int(per_page)}&api_key={urllib.parse.quote(key)}"
+    )
+    payload = _http_get_json(url)
+    table = payload.get("datatable") or {}
+    rows = table.get("data") or []
+    columns = [c.get("name") for c in (table.get("columns") or [])]
+    records = [dict(zip(columns, r)) for r in rows]
+    records.sort(key=lambda d: d.get("datekey") or "")
+    return records
 
 
 def bls_cpi_series() -> list[dict[str, Any]]:

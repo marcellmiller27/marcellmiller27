@@ -75,7 +75,15 @@ def test_equity_oos_backtest_handles_outage(monkeypatch) -> None:
     assert body["solution_if_failed"]
 
 
-def test_fundamentals_status_discloses_data_gap() -> None:
+def test_fundamentals_status_discloses_data_gap(monkeypatch) -> None:
+    # Deterministically test the no-key disclosure path (clear all recognized names).
+    for name in (
+        "NASDAQ_DATA_LINK_API_KEY",
+        "FUNDAMENTALS_API_KEY",
+        "NASDAQ_MY_API_KEY",
+        "NASDAQ_PYTHON",
+    ):
+        monkeypatch.delenv(name, raising=False)
     body = client.get("/api/v1/research/fundamentals-status").json()
     assert body["available"] is False
     assert len(body["required_solution"]) >= 3
