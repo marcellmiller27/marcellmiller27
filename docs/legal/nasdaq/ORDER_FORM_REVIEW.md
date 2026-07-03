@@ -138,6 +138,20 @@ Also: request the scope/limits be written **into the Order Form** (merger clause
 email-only promises weak); state the fee breakdown ($13,800 + $4,200 = $18,000); confirm the
 correct Nasdaq recipient.
 
+## User-limits line — make it airtight
+The "up to 1,000 clients + overage pricing" request is directionally correct. Tighten to
+avoid billing disputes:
+- **Define "client"** (e.g., an active paying end-subscriber with access to SF1-derived
+  outputs) — not just "clients," which Nasdaq could count differently.
+- **Specify the overage mechanism**, not just "pricing": per-additional-client rate **or**
+  next-tier; auto-bill vs. new order; and **how/when the count is measured** (point-in-time,
+  monthly peak, or average).
+
+Suggested line: *"Define the licensed scope as 'up to 1,000 clients' — including a clear
+definition of a 'client' (active paying end-subscriber with access to SF1-derived outputs) —
+and specify overage terms beyond 1,000 (per-additional-client rate or next-tier pricing, the
+billing mechanism, and how the client count is measured)."*
+
 ## Verdict
 Commercially the deal is **solid and correctly shaped**: **$18,000/yr all-in**, **Internal &
 External** (distributor) use, and an explicit **5-day $0-cancellation trial**. **Two items
