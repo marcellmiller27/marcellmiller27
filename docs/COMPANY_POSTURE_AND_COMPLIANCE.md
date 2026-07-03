@@ -82,7 +82,10 @@ Founder decision: the research platform is its **own separate company**, not a D
 - The family office may **own** the research corporation (parent/subsidiary) or hold it as a
   **sibling** — either preserves separation; confirm ownership + tax election with counsel/CPA.
 
-### Registration & multi-state footprint (as of 2026-06-30)
+### Registration & multi-state footprint (as of 2026-06-30; updated 2026-07-03)
+- **Formation status (2026-07-03):** ✅ **EIN obtained** for JHI Research & Analytics Firm,
+  Inc.; 🔄 **Wyoming C-corp formation in progress.** Next: bylaws + founder stock →
+  **IP assignment (founder → corp)** → business bank account/Stripe → sign NASDAQ as the corp.
 - **Domicile:** **JHI Research & Analytics Firm, Inc.** — a **Wyoming corporation** (no state
   corporate income tax, privacy, low cost, asset protection — good fit for a private firm).
 - **Operating states:** **Georgia** (current) and **Florida** (to add) → **foreign-qualify**
