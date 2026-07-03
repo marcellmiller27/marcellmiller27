@@ -17,7 +17,7 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 - [x] **CRM migrated to Postgres/SQLAlchemy** (durable; survives restart; seeded). 2026‑06‑26.
 - [x] **Accounting migrated to Postgres/SQLAlchemy** (chart of accounts, balanced journal entries, trial balance; durable; seeded). 2026‑06‑26.
 - [x] **Reports & dashboards migrated to Postgres** (financial/audit reports + executive dashboard now compute from the durable ledger & CRM deals; 98 tests pass). 2026‑06‑26.
-- [ ] Migrate remaining in‑memory module to Postgres: **integrations** (with tests).
+- [x] **Integrations migrated to Postgres/SQLAlchemy** (connections, sync jobs, banking transactions, vendor bills; durable; tests). 2026‑07‑03.
 - [ ] Wire the static module pages to live data/actions: **opportunities, portfolio, reports, due‑diligence, assistant, account** (so every button returns a real result).
 - [ ] **Live Stripe**: real checkout session + webhook signature verification (replace the mock).
 
