@@ -123,6 +123,21 @@ signed contract.**
 6. **Counsel** quick pass; then sign within the **30-day** window.
 7. **Trial starts → Cy runs H5 within 5 days → cancel at $0 if it fails.**
 
+## Amendment email — review (2026-07-03)
+Founder drafted an amendment request to Nasdaq. It captures scope, user limits,
+pricing/trial, and terms alignment well. **Two corrections:**
+1. **Don't say "update the DBA."** That keeps it a trade name of the family office (one
+   entity) — the opposite of separation. Ask to **name the Client/Distributor as the
+   SEPARATE entity "JHI Research & Analytics Firm, [Inc./LLC], a Wyoming
+   [corporation/LLC]"** and **remove the "John Henry Investments, LLC dba …"** designation.
+2. **Resolve Inc. vs. LLC.** The email/signature now says **"Inc."**; the prior plan said
+   **"LLC."** Pick one, form THAT entity in Wyoming (it must exist to sign), and use it
+   consistently. (LLC = simpler/pass-through, fine for bootstrapped/no-investors; Inc. =
+   more formalities — only worth it if investors were on the table, which they are not.)
+Also: request the scope/limits be written **into the Order Form** (merger clause makes
+email-only promises weak); state the fee breakdown ($13,800 + $4,200 = $18,000); confirm the
+correct Nasdaq recipient.
+
 ## Verdict
 Commercially the deal is **solid and correctly shaped**: **$18,000/yr all-in**, **Internal &
 External** (distributor) use, and an explicit **5-day $0-cancellation trial**. **Two items
