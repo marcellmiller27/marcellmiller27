@@ -8,6 +8,12 @@
 
 ---
 
+## Formation status update (2026-07-03, later)
+- ✅ **JHI Research & Analytics Firm, Inc. has obtained its EIN from the IRS.**
+- 🔄 **Wyoming C-corp formation in progress** (Articles of Incorporation + registered agent).
+- **Confirm:** the EIN is issued in the exact legal name **"JHI Research & Analytics Firm, Inc."** (the C-corp), not a personal/sole-prop or the family office.
+- **Remaining formation sequence (order matters):** complete WY incorporation → adopt **bylaws** + issue **founder stock** (83(b) election if applicable) → **assign platform IP** (founder → corp, written IP-assignment agreement) → open **business bank account** (EIN enables this) + Stripe under the entity → **then** sign the NASDAQ Order Form as the corp → foreign-qualify in GA/FL as needed.
+
 ## 1. Corporate structure & posture (RESOLVED)
 - **Two separate entities:** **John Henry Investments, LLC** (family office — invests own funds, private) and **JHI Research & Analytics Firm, Inc.** (a **Wyoming corporation** — the research/analytics SaaS holding the platform, IP, client contracts, and data licenses).
 - **Bootstrapped & private — no outside investors / no VC, ever.** Growth is revenue-paced; self-funded.
@@ -56,7 +62,7 @@
 | # | Action | Owner | Priority |
 | --- | --- | --- | --- |
 | 1 | Consolidate code: merge `unified-platform` → main, then feature PRs | Cy | 🔴 |
-| 2 | Form **JHI Research & Analytics Firm, Inc.** (WY) + assign IP | Founder + counsel | 🔴 |
+| 2 | Form **JHI Research & Analytics Firm, Inc.** (WY) + assign IP — **EIN obtained ✅; WY formation in progress 🔄; IP assignment pending** | Founder + counsel | 🔴 |
 | 3 | Amend + sign NASDAQ Order Form (correct entity, rights, cap); validate H5 in trial | Founder + Cy | 🔴 |
 | 4 | CI/CD + Alembic migrations + observability (Sentry/logs) | Cy | 🔴 |
 | 5 | Publish Terms/Privacy/disclaimers; confirm advice/broker positioning | Founder + counsel | 🔴 |
