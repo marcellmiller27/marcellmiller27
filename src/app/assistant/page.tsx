@@ -1,3 +1,4 @@
+import { LiveAssistant } from "@/components/live-assistant";
 import { PlatformShell } from "@/components/platform-shell";
 import { assistantWorkflows } from "@/lib/platform-data";
 
@@ -10,12 +11,20 @@ export default function AssistantPage() {
     >
       <section className="assistant-panel">
         <div className="assistant-panel__sidebar">
+          <p className="eyebrow">Live assistant</p>
+          <h2>Ask the AI research team</h2>
+          <p>
+            Questions are routed to the right specialist (product, market data, security,
+            billing) and technical issues escalate to the founder as a tracked ticket.
+          </p>
+        </div>
+        <LiveAssistant />
+      </section>
+
+      <section className="app-section">
+        <div className="app-section__heading">
           <p className="eyebrow">Sample prompts</p>
           <h2>Research workflows</h2>
-          <p>
-            These workflows show how the future AI layer can turn user prompts into structured
-            recommendations, charts, risk scores, and document requests.
-          </p>
         </div>
         <div className="chat-stack">
           {assistantWorkflows.map((workflow) => (

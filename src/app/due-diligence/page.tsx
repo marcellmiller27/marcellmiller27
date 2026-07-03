@@ -1,3 +1,4 @@
+import { LiveValuations } from "@/components/live-valuations";
 import { PlatformShell } from "@/components/platform-shell";
 import { dueDiligenceQueue } from "@/lib/platform-data";
 
@@ -27,6 +28,14 @@ export default function DueDiligencePage() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="app-section">
+        <div className="app-section__heading">
+          <p className="eyebrow">Live acquisition valuation</p>
+          <h2>Modeled target value from live market inputs</h2>
+        </div>
+        <LiveValuations ebitda={1500000} />
       </section>
 
       <section className="app-section">

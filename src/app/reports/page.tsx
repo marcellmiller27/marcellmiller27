@@ -1,5 +1,7 @@
+import { LiveMarket } from "@/components/live-market";
+import { LiveReports } from "@/components/live-reports";
 import { PlatformShell } from "@/components/platform-shell";
-import { intelligenceReports, marketSignals } from "@/lib/platform-data";
+import { intelligenceReports } from "@/lib/platform-data";
 
 export default function ReportsPage() {
   return (
@@ -8,6 +10,14 @@ export default function ReportsPage() {
       title="Generate branded investment intelligence reports"
       description="Package macro signals, crypto cycles, acquisition screens, and dividend opportunities into subscriber-ready newsletters and PDF reports."
     >
+      <section className="app-section">
+        <div className="app-section__heading">
+          <p className="eyebrow">Live financials</p>
+          <h2>Executive snapshot &amp; income statement</h2>
+        </div>
+        <LiveReports />
+      </section>
+
       <section className="app-grid app-grid--two">
         {intelligenceReports.map((report) => (
           <article className="report-card" key={report.title}>
@@ -29,17 +39,9 @@ export default function ReportsPage() {
       <section className="app-section">
         <div className="app-section__heading">
           <p className="eyebrow">Macro dashboard feed</p>
-          <h2>Signals available for report generation</h2>
+          <h2>Live signals available for report generation</h2>
         </div>
-        <div className="app-grid app-grid--three">
-          {marketSignals.map((signal) => (
-            <article className="app-card" key={signal.name}>
-              <span>{signal.name}</span>
-              <strong>{signal.value}</strong>
-              <p>{signal.insight}</p>
-            </article>
-          ))}
-        </div>
+        <LiveMarket symbols="SPX,UST10Y,GOLD,BTC,INFLATION" />
       </section>
     </PlatformShell>
   );

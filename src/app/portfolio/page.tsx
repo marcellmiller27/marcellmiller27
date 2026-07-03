@@ -1,3 +1,5 @@
+import { LiveMarket } from "@/components/live-market";
+import { LiveValuations } from "@/components/live-valuations";
 import { PlatformShell } from "@/components/platform-shell";
 import { portfolioHoldings } from "@/lib/platform-data";
 
@@ -14,6 +16,22 @@ export default function PortfolioPage() {
       title="Track assets, cash flow, and wealth projection scenarios"
       description="Combine brokerage, banking, crypto, real estate, and private equity holdings into one portfolio operating system."
     >
+      <section className="app-section">
+        <div className="app-section__heading">
+          <p className="eyebrow">Live holdings feed</p>
+          <h2>Real-time prices across your asset classes</h2>
+        </div>
+        <LiveMarket symbols="BTC,ETH,SPX,GOLD,UST10Y,VNQ" />
+      </section>
+
+      <section className="app-section">
+        <div className="app-section__heading">
+          <p className="eyebrow">Live modeled valuations</p>
+          <h2>Illiquid asset estimates from public inputs</h2>
+        </div>
+        <LiveValuations />
+      </section>
+
       <section className="app-grid app-grid--four">
         {portfolioHoldings.map((holding) => (
           <article className="app-card" key={holding.name}>
