@@ -11,15 +11,16 @@
 ## Formation status update (2026-07-03, later)
 - ✅ **JHI Research & Analytics Firm, Inc. has obtained its EIN from the IRS.**
 - 🔄 **Wyoming C-corp formation in progress** (Articles of Incorporation + registered agent).
-- **Confirm (from EIN letter review):**
-  - **Name designator:** EIN legal name is "JHI RESEARCH & ANALYTICS FIRM" (no ", Inc.").
-    Ensure it matches the WY **Articles of Incorporation** (which require a corporate
-    designator); file an IRS name-correction letter if needed to align EIN ↔ Articles ↔ bank ↔ contracts.
-  - **Responsible Party** name must be consistent across EIN, Articles, NASDAQ, and bank
-    (confirm it is the founder's correct legal name).
+- **EIN letter review (per founder clarification):**
+  - **Name:** the EIN filing establishes the entity as a **C-corporation**; both
+    **"JHI Research & Analytics Firm"** and **"JHI Research & Analytics Firm, Inc."** are
+    legally valid forms. No correction required — just **use the name consistently** on
+    signatures/contracts (match the WY Articles). ✅
+  - **Responsible Party** name kept consistent across EIN, Articles, NASDAQ, and bank.
   - **~2-week IRS lag:** EIN works now for bank-account opening; e-file/e-pay/TIN-matching
     (e.g., Stripe verification) may take up to two weeks.
-  - **Privacy:** EIN/SSN and the confirmation letter are **kept out of the repo**; store securely.
+  - **Privacy:** the **EIN number and SSN are REDACTED — never committed to the repo**
+    (verified 2026-07-03); the confirmation letter is stored securely, outside the codebase.
 - **Remaining formation sequence (order matters):** complete WY incorporation → adopt **bylaws** + issue **founder stock** (83(b) election if applicable) → **assign platform IP** (founder → corp, written IP-assignment agreement) → open **business bank account** (EIN enables this) + Stripe under the entity → **then** sign the NASDAQ Order Form as the corp → foreign-qualify in GA/FL as needed.
 
 ## 1. Corporate structure & posture (RESOLVED)
