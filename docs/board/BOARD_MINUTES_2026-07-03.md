@@ -16,7 +16,14 @@
     **"JHI Research & Analytics Firm"** and **"JHI Research & Analytics Firm, Inc."** are
     legally valid forms. No correction required — just **use the name consistently** on
     signatures/contracts (match the WY Articles). ✅
-  - **Responsible Party** name kept consistent across EIN, Articles, NASDAQ, and bank.
+  - **Responsible Party / founder identity (confirmed):** founder's **legal name is
+    Galen Marcellus Miller**, who commonly uses and signs as **"Marcellus Miller"**
+    (consistent with existing business and personal banking + credit-card accounts). This
+    confirms the EIN Responsible Party ("Galen M Miller") is the founder. **Guidance:** on
+    **legal/official documents** (WY Articles, tax filings, the NASDAQ MSA, IP-assignment
+    agreement, corp bank/Stripe) use the **legal name** — e.g., *"Galen Marcellus Miller
+    (a/k/a Marcellus Miller)"* — and **sign as an authorized officer with title** (e.g.,
+    President/CEO); confirm the exact convention with counsel.
   - **~2-week IRS lag:** EIN works now for bank-account opening; e-file/e-pay/TIN-matching
     (e.g., Stripe verification) may take up to two weeks.
   - **Privacy:** the **EIN number and SSN are REDACTED — never committed to the repo**
