@@ -1,4 +1,5 @@
 "use client";
+// JHI-SIG: 69M2705M | Accounting & Reporting | John Henry Investments (proprietary)
 
 import { useEffect, useState } from "react";
 
