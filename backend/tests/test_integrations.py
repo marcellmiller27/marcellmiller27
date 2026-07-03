@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | External Integrations | John Henry Investments (proprietary)
 from datetime import date
 from decimal import Decimal
 

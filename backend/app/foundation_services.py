@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Identity, Auth & Security | John Henry Investments (proprietary)
 import json
 import re
 from datetime import datetime, timezone

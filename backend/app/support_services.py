@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Support & AI Agents | John Henry Investments (proprietary)
 """AI-agent customer service for basic FAQs.
 
 A dependency-free retrieval assistant: it matches a free-text question against a

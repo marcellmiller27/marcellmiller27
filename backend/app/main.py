@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Platform spine | John Henry Investments (proprietary)
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text

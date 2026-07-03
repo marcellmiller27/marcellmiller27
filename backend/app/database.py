@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Platform spine | John Henry Investments (proprietary)
 import os
 from collections.abc import Generator
 

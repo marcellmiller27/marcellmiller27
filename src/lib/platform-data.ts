@@ -1,3 +1,4 @@
+// JHI-SIG: 69M2705M | Frontend shell | John Henry Investments (proprietary)
 export type PricingTier = {
   name: string;
   audience: string;

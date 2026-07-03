@@ -1,3 +1,4 @@
+// JHI-SIG: 69M2705M | Growth / Leads | John Henry Investments (proprietary)
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { WaitlistForm } from "@/components/waitlist-form";

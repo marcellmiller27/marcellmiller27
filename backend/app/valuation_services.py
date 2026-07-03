@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Valuations | John Henry Investments (proprietary)
 """Modeled real-time valuations for private / illiquid asset classes.
 
 OBJECTIVE: close the "not-yet-real-time" gap for classes that have no live market

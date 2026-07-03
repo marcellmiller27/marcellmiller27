@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Platform spine | John Henry Investments (proprietary)
 """Lightweight, dependency-free, per-IP rate limiting middleware.
 
 Disabled by default (RATE_LIMIT_PER_MINUTE=0). Set it to a positive number in

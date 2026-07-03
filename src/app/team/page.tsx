@@ -1,4 +1,5 @@
 "use client";
+// JHI-SIG: 69M2705M | Support & AI Agents | John Henry Investments (proprietary)
 
 import { useEffect, useState } from "react";
 import { PlatformShell } from "@/components/platform-shell";

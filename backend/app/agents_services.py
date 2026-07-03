@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Support & AI Agents | John Henry Investments (proprietary)
 """Five-agent AI customer-service team with routing and founder escalation.
 
 Each agent owns a domain. An incoming message is classified (reusing the support

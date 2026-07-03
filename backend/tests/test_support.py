@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Support & AI Agents | John Henry Investments (proprietary)
 from fastapi.testclient import TestClient
 
 from app.main import app

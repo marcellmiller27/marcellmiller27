@@ -1,3 +1,4 @@
+// JHI-SIG: 69M2705M | Market Data | John Henry Investments (proprietary)
 import { LiveMarket } from "@/components/live-market";
 import { PlatformShell } from "@/components/platform-shell";
 import { dashboardMetrics, dashboardWidgets, opportunities } from "@/lib/platform-data";

@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Platform spine | John Henry Investments (proprietary)
 """Centralized runtime settings + production safety validation."""
 
 from __future__ import annotations

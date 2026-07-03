@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Accounting & Reporting | John Henry Investments (proprietary)
 """Durable, SQLAlchemy/Postgres-backed accounting service.
 
 Migrated from the in-memory store: chart of accounts, balanced double-entry journal
