@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | External Integrations | John Henry Investments (proprietary)
 """Durable, Postgres/SQLAlchemy-backed integrations service.
 
 Migrated from the in-memory store so integration connections, sync jobs, banking
