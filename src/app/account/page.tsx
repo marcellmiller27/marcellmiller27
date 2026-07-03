@@ -1,3 +1,4 @@
+import { LiveAccount } from "@/components/live-account";
 import { PlatformShell } from "@/components/platform-shell";
 
 const accountFoundation = [
@@ -30,6 +31,14 @@ export default function AccountPage() {
       title="User, organization, subscription, and audit context"
       description="The backend now provides the account structure needed for protected dashboards, plan-based entitlements, billing status, and operational audit review."
     >
+      <section className="app-section">
+        <div className="app-section__heading">
+          <p className="eyebrow">Live account</p>
+          <h2>Your user, organization, role &amp; subscription</h2>
+        </div>
+        <LiveAccount />
+      </section>
+
       <section className="app-grid app-grid--four">
         {accountFoundation.map((item) => (
           <article className="app-card" key={item.label}>

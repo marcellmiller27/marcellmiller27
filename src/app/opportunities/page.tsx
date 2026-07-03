@@ -1,3 +1,4 @@
+import { LiveOpportunities } from "@/components/live-opportunities";
 import { PlatformShell } from "@/components/platform-shell";
 import { opportunities, scoreCategories } from "@/lib/platform-data";
 
@@ -8,6 +9,14 @@ export default function OpportunitiesPage() {
       title="Discover and score investable opportunities"
       description="Screen public securities, private companies, real estate, and digital assets with the John Henry Opportunity Score."
     >
+      <section className="app-section">
+        <div className="app-section__heading">
+          <p className="eyebrow">Live Opportunity Score</p>
+          <h2>Cross-asset ranking from live market data</h2>
+        </div>
+        <LiveOpportunities />
+      </section>
+
       <section className="app-grid app-grid--two">
         {opportunities.map((opportunity) => (
           <article className="opportunity-card" key={opportunity.name}>
