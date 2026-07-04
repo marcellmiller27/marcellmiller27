@@ -1,10 +1,6 @@
+import { LiveMarket } from "@/components/live-market";
 import { PlatformShell } from "@/components/platform-shell";
-import {
-  dashboardMetrics,
-  dashboardWidgets,
-  marketSignals,
-  opportunities
-} from "@/lib/platform-data";
+import { dashboardMetrics, dashboardWidgets, opportunities } from "@/lib/platform-data";
 
 export default function DashboardPage() {
   const topOpportunities = opportunities.slice(0, 3);
@@ -35,17 +31,33 @@ export default function DashboardPage() {
             ))}
           </div>
         </div>
-        <div className="signal-list">
-          {marketSignals.map((signal) => (
-            <article className="signal-card" key={signal.name}>
-              <div>
-                <span>{signal.name}</span>
-                <strong>{signal.value}</strong>
-              </div>
-              <p>{signal.insight}</p>
-            </article>
-          ))}
+        <LiveMarket symbols="BTC,ETH,GOLD,SPX,UST10Y,INFLATION" />
+      </section>
+
+      <section className="app-section app-section--split">
+        <div>
+          <p className="eyebrow">Currencies</p>
+          <h2>Live FX</h2>
+          <div className="widget-strip">
+            {["EUR/USD", "GBP/USD", "USD/JPY", "Dollar Index"].map((label) => (
+              <span key={label}>{label}</span>
+            ))}
+          </div>
         </div>
+        <LiveMarket symbols="EURUSD,GBPUSD,USDJPY,DXY" />
+      </section>
+
+      <section className="app-section app-section--split">
+        <div>
+          <p className="eyebrow">Fixed income</p>
+          <h2>Rates curve & bonds</h2>
+          <div className="widget-strip">
+            {["3M", "5Y", "10Y", "30Y", "Aggregate", "IG", "High yield"].map((label) => (
+              <span key={label}>{label}</span>
+            ))}
+          </div>
+        </div>
+        <LiveMarket symbols="UST3M,UST5Y,UST10Y,UST30Y,BOND_AGG,BOND_IG,BOND_HY" />
       </section>
 
       <section className="app-section">

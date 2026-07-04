@@ -1,0 +1,51 @@
+# John Henry Investments — full platform (Postgres + backend + frontend).
+# Usage:  docker compose up --build
+#   Frontend: http://localhost:3000   Backend API: http://localhost:8000/docs
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: jhi
+      POSTGRES_PASSWORD: jhi
+      POSTGRES_DB: jhi
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jhi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      # Durable Postgres persistence (parity with production).
+      DATABASE_URL: postgresql+psycopg://jhi:jhi@db:5432/jhi
+      WEB_CONCURRENCY: "2"
+      # For production, set these (config validation enforces them):
+      # APP_ENV: production
+      # AUTH_JWT_SECRET: <set-a-strong-secret>
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:8000/api/v1
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  pgdata:

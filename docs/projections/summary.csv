@@ -1,0 +1,4 @@
+scenario,m12_users,m12_mrr,cum_lean_12mo,cum_staffed_12mo,staffed_breakeven_month
+conservative,300,21000,110544,-124614,none<=12
+base,1010,70700,318660,89583,10
+optimistic,2876,201320,770423,549016,6
