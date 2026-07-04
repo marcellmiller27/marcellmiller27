@@ -118,3 +118,69 @@ def test_endpoint_analyze_returns_report() -> None:
 def test_endpoint_rejects_invalid_input() -> None:
     resp = client.post("/api/v1/deal-xray/analyze", json={"business_name": "X", "revenue": -5})
     assert resp.status_code == 422
+
+
+def _cdb_deal(**overrides) -> DealInput:
+    """The real Carrollton Design Build CIM — a peak-year, concentrated, volatile deal."""
+    base = dict(
+        business_name="Carrollton Design Build",
+        industry="construction_management",
+        year_founded=1984,
+        revenue=12_962_195,
+        revenue_prior=11_701_091,
+        reported_ebitda=2_381_009,
+        addbacks=58_745,
+        annual_depreciation=56_362,
+        earnings_history=[2_381_009, 1_612_599, 827_662, 866_690, 1_345_480],
+        employees=14,
+        owner_involvement="owner_operated",
+        customer_concentration_pct=64,
+        recurring_revenue_pct=15,
+        asking_price=6_200_000,
+        down_payment_pct=10,
+        seller_note_pct=0,
+    )
+    base.update(overrides)
+    return DealInput(**base)
+
+
+def test_valuation_basis_blends_recent_years_not_peak() -> None:
+    r = analyze(_cdb_deal())
+    # 2-yr average (2,381,009 & 1,612,599) = 1,996,804 — well below the 2025 peak.
+    assert 1_990_000 <= r.valuation.normalized_ebitda <= 2_000_000
+    assert "2-yr average" in r.valuation.basis_note
+    # Priced at ~3.1x the blended basis → fairly priced, NOT undervalued off the peak year.
+    assert r.valuation.verdict == "fairly priced"
+
+
+def test_concentration_and_volatility_dock_the_ethic_rating() -> None:
+    r = analyze(_cdb_deal())
+    assert r.ethic_rating < 75  # no longer a false "100 / looks credible"
+    note = r.ethic_note.lower()
+    assert "concentration" in note
+    assert "volatil" in note
+
+
+def test_dcf_is_curbed_not_a_fantasy() -> None:
+    r = analyze(_cdb_deal())
+    # DCF is bounded to the multiple range (<= high multiple value), never a runaway EV.
+    assert r.valuation.dcf_enterprise_value <= r.valuation.multiple_value_high
+    # Growth used in the DCF is curbed for concentration + non-recurring revenue.
+    assert r.valuation.dcf_assumptions["growth"] <= 0.04
+    assert r.valuation.dcf_assumptions["discount_rate_wacc"] >= 0.20
+
+
+def test_depreciation_used_as_capex_proxy_for_asset_light() -> None:
+    # No capex given, but depreciation is → engine uses it instead of a heavy industry estimate.
+    r = analyze(_cdb_deal())
+    assert r.valuation.dcf_assumptions["capex"] == 56_362
+    r_estimate = analyze(_cdb_deal(annual_depreciation=None))
+    # Industry estimate would be far larger than the depreciation proxy.
+    assert r_estimate.valuation.dcf_assumptions["capex"] > 56_362
+
+
+def test_construction_management_industry_is_recognized() -> None:
+    r = analyze(_cdb_deal())
+    # Resilience 50/100 for construction management surfaces in the market segment.
+    market = next(s for s in r.segments if s.segment == "Market & durability")
+    assert "50/100" in " ".join(market.findings)

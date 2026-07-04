@@ -31,6 +31,10 @@ _INDUSTRY: dict[str, tuple[float, float, float, float, float]] = {
     "professional_services": (2.5, 3.5, 4.5, 0.70, 0.02),
     "logistics": (2.5, 3.3, 4.2, 0.65, 0.05),
     "saas": (4.0, 6.0, 9.0, 0.70, 0.03),
+    # Construction is cyclical (lower recession-resilience). Construction *management*
+    # firms outsource the build → asset-light, so a low capex intensity.
+    "construction": (2.0, 2.8, 3.5, 0.45, 0.04),
+    "construction_management": (2.5, 3.2, 4.0, 0.50, 0.015),
     "general": (2.5, 3.2, 4.0, 0.60, 0.04),
 }
 
@@ -64,16 +68,57 @@ def analyze(deal: DealInput) -> DealXRayReport:
     mult_low, mult_base, mult_high, resilience, capex_intensity = _industry(deal.industry)
     revenue = deal.revenue
     reported = deal.reported_ebitda
-    capex = deal.annual_capex if deal.annual_capex is not None else revenue * capex_intensity
+
+    # --- Capex resolution: explicit > depreciation proxy (maintenance capex) > industry estimate.
+    # Fixes asset-light service firms (e.g. construction management) that would otherwise be
+    # crushed by a blanket industry capex-intensity assumption. ---
+    if deal.annual_capex is not None:
+        capex = deal.annual_capex
+        capex_source = "provided"
+    elif deal.annual_depreciation is not None:
+        capex = deal.annual_depreciation
+        capex_source = "depreciation proxy"
+    else:
+        capex = revenue * capex_intensity
+        capex_source = "industry estimate"
+
     ebitda_margin = (reported / revenue) if revenue else 0.0
     addback_ratio = (deal.addbacks / reported) if reported > 0 else 0.0
 
     # --- Honest normalization: discount aggressive add-backs (>25% of EBITDA) by half ---
     excess_addbacks = max(0.0, deal.addbacks - 0.25 * reported)
     normalized_ebitda = max(0.0, reported - 0.5 * excess_addbacks)
+    quality_haircut = (normalized_ebitda / reported) if reported > 0 else 1.0
 
-    fcf = normalized_ebitda - capex
-    fcf_conversion = (fcf / normalized_ebitda) if normalized_ebitda > 0 else 0.0
+    # --- Valuation basis: blend the two most-recent years so we never price on a peak year;
+    # gauge earnings volatility across all supplied years (a durability signal). ---
+    history = [e for e in (deal.earnings_history or []) if e and e > 0]
+    if len(history) >= 2:
+        blend_raw = sum(history[:2]) / 2.0
+        valuation_ebitda = max(0.0, blend_raw * quality_haircut)
+        basis_note = (
+            "2-yr average of "
+            + " & ".join(f"${e:,.0f}" for e in history[:2])
+            + f" = ${blend_raw:,.0f}"
+            + (f", add-back adjusted to ${valuation_ebitda:,.0f}." if quality_haircut < 1 else ".")
+        )
+    else:
+        valuation_ebitda = normalized_ebitda
+        basis_note = (
+            f"Single-year normalized EBITDA/SDE ${valuation_ebitda:,.0f} "
+            "(supply multi-year history to blend a durable basis)."
+        )
+
+    earnings_volatility = 0.0
+    if len(history) >= 2:
+        mean_e = sum(history) / len(history)
+        if mean_e > 0:
+            variance = sum((e - mean_e) ** 2 for e in history) / len(history)
+            earnings_volatility = (variance**0.5) / mean_e
+
+    # Cash flow available for debt service / DCF uses the durable (blended) basis.
+    fcf = valuation_ebitda - capex
+    fcf_conversion = (fcf / valuation_ebitda) if valuation_ebitda > 0 else 0.0
 
     segments: list[SegmentScore] = []
     questions: list[str] = []
@@ -99,6 +144,13 @@ def analyze(deal: DealInput) -> DealXRayReport:
         grow_findings = [f"Revenue YoY growth {yoy*100:.1f}%."]
         if yoy < 0:
             questions.append("Explain the revenue decline and the turnaround plan.")
+        if earnings_volatility >= 0.20:
+            grow -= _clamp((earnings_volatility - 0.20) * 100, 0, 25)
+            grow_findings.append(
+                f"Earnings volatility {earnings_volatility*100:.0f}% (CoV across supplied years) — "
+                "growth is uneven; discount a single peak year."
+            )
+            questions.append("Reconcile the year-over-year earnings swings — what drove each move?")
     else:
         yoy = None
         grow = 50.0
@@ -135,6 +187,10 @@ def analyze(deal: DealInput) -> DealXRayReport:
         questions.append("Review lease term, renewal options, and rent escalation.")
     if deal.real_estate_included:
         ast_findings.append("Real estate included — value separately from the business EV.")
+    if capex_source == "depreciation proxy":
+        ast_findings.append(f"Maintenance capex proxied from depreciation (${capex:,.0f}/yr).")
+    elif capex_source == "industry estimate":
+        ast_findings.append(f"Capex estimated at industry norm (${capex:,.0f}/yr) — confirm actual spend.")
     if not ast_findings:
         ast_findings.append("Limited asset detail provided.")
     segments.append(SegmentScore(segment="Assets", score=int(_clamp(ast)), weight=0.10, findings=ast_findings))
@@ -177,32 +233,65 @@ def analyze(deal: DealInput) -> DealXRayReport:
     if deal.owner_involvement == "owner_critical" and ebitda_margin > 0.25:
         ethic -= 10
         ethic_flags.append("owner-dependent yet high margin")
+    # Heavy customer concentration is a durability/credibility risk, not just a score input.
+    if deal.customer_concentration_pct >= 40:
+        ethic -= _clamp((deal.customer_concentration_pct - 40) * 1.0, 0, 25)
+        ethic_flags.append(f"customer concentration {deal.customer_concentration_pct:.0f}%")
+    # Volatile earnings undercut the reliability of the presented figures.
+    if earnings_volatility >= 0.20:
+        ethic -= _clamp((earnings_volatility - 0.20) * 80, 0, 20)
+        ethic_flags.append(f"volatile earnings history ({earnings_volatility*100:.0f}% CoV)")
+    # An owner-driven recent recovery that the buyer must inherit is unproven durability.
+    if earnings_volatility >= 0.25 and _OWNER_RISK.get(deal.owner_involvement, 0.55) >= 0.55:
+        ethic -= 5
+        ethic_flags.append("recent owner-driven turnaround — durability unproven")
     ethic = int(_clamp(ethic))
     ethic_note = (
         "CIM presentation looks credible and internally consistent."
         if ethic >= 75
-        else "Credibility concerns — " + ", ".join(ethic_flags) + ". Insist on a QoE before an offer."
+        else "Credibility & risk concerns — " + ", ".join(ethic_flags) + ". Insist on a QoE before an offer."
     )
 
-    # --- Valuation: multiple + DCF ---
-    v_low = round(normalized_ebitda * mult_low)
-    v_base = round(normalized_ebitda * mult_base)
-    v_high = round(normalized_ebitda * mult_high)
-    g = 0.03
+    # --- Valuation: multiple (on the durable/blended basis) + a curbed DCF cross-check ---
+    v_low = round(valuation_ebitda * mult_low)
+    v_base = round(valuation_ebitda * mult_base)
+    v_high = round(valuation_ebitda * mult_high)
+
+    # Growth used in the DCF is deliberately conservative: cap optimistic prints, halve for
+    # heavy concentration, and hold back when revenue isn't recurring.
     if yoy is not None:
-        g = max(-0.05, min(0.12, yoy))
-    wacc = 0.20  # small, illiquid, key-person risk
+        g = max(-0.05, min(0.08, yoy))
+    else:
+        g = 0.02
+    if deal.customer_concentration_pct >= 40:
+        g *= 0.5
+    if deal.recurring_revenue_pct < 20:
+        g = min(g, 0.04)
+
+    # Risk-adjusted discount rate: small/illiquid base + concentration + key-person + non-recurring.
+    wacc = 0.18
+    wacc += _clamp((deal.customer_concentration_pct - 30) * 0.0015, 0, 0.06)
+    wacc += _OWNER_RISK.get(deal.owner_involvement, 0.55) * 0.05
+    if deal.recurring_revenue_pct < 20:
+        wacc += 0.02
+    wacc = min(0.32, wacc)
+
     g_term = 0.02
     dcf_ev = 0.0
     fcf_t = fcf
     for t in range(1, 6):
-        fcf_t = fcf * ((1 + g) ** t)
+        # Fade growth linearly toward the terminal rate so one strong year can't compound away.
+        g_t = g + (g_term - g) * (t - 1) / 4
+        fcf_t = fcf_t * (1 + g_t)
         dcf_ev += fcf_t / ((1 + wacc) ** t)
     terminal = (fcf_t * (1 + g_term)) / (wacc - g_term)
     dcf_ev += terminal / ((1 + wacc) ** 5)
     dcf_ev = round(max(0.0, dcf_ev))
+    # Sanity cap: the DCF is a cross-check, not a fantasy — bound it to the multiple range.
+    dcf_ev = max(round(v_low * 0.75), min(dcf_ev, v_high))
 
-    fair = (v_base + dcf_ev) / 2 if dcf_ev > 0 else v_base
+    # Fair value leans on market multiples (75%) with the DCF as a light cross-check (25%).
+    fair = 0.75 * v_base + 0.25 * dcf_ev if dcf_ev > 0 else v_base
     if deal.asking_price < fair * 0.9:
         verdict = "undervalued"
     elif deal.asking_price > fair * 1.15:
@@ -211,12 +300,13 @@ def analyze(deal: DealInput) -> DealXRayReport:
         verdict = "fairly priced"
 
     valuation = ValuationView(
-        normalized_ebitda=round(normalized_ebitda),
+        normalized_ebitda=round(valuation_ebitda),
+        basis_note=basis_note,
         industry_multiple_low=mult_low, industry_multiple_base=mult_base, industry_multiple_high=mult_high,
         multiple_value_low=v_low, multiple_value_base=v_base, multiple_value_high=v_high,
         dcf_enterprise_value=dcf_ev,
-        dcf_assumptions={"growth": round(g, 3), "discount_rate_wacc": wacc, "terminal_growth": g_term,
-                         "years": 5, "capex": round(capex)},
+        dcf_assumptions={"growth": round(g, 3), "discount_rate_wacc": round(wacc, 3),
+                         "terminal_growth": g_term, "years": 5, "capex": round(capex)},
         asking_price=deal.asking_price, verdict=verdict,
     )
 
@@ -249,13 +339,15 @@ def analyze(deal: DealInput) -> DealXRayReport:
         recommendation = "Watch"  # credibility gate
 
     key_metrics = {
-        "Normalized EBITDA": f"${round(normalized_ebitda):,}",
+        "Valuation EBITDA (basis)": f"${round(valuation_ebitda):,}",
         "EBITDA margin": f"{ebitda_margin*100:.1f}%",
         "Add-back ratio": f"{addback_ratio*100:.0f}%",
         "Revenue/employee": f"${rev_per_emp:,.0f}",
-        "Asking multiple (reported)": f"{deal.asking_price/reported:.1f}x" if reported > 0 else "n/a",
+        "Asking multiple (on basis)": f"{deal.asking_price/valuation_ebitda:.1f}x" if valuation_ebitda > 0 else "n/a",
         "Best-case DSCR": f"{best_dscr:.2f}" if best_dscr is not None else "n/a",
     }
+    if len(history) >= 2:
+        key_metrics["Earnings volatility"] = f"{earnings_volatility*100:.0f}%"
 
     if not questions:
         questions.append("Request trailing-twelve-month financials and bank statements to reconcile.")

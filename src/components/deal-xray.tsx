@@ -27,6 +27,7 @@ type Report = {
   segments: Segment[];
   valuation: {
     normalized_ebitda: number;
+    basis_note: string;
     industry_multiple_base: number;
     multiple_value_low: number;
     multiple_value_base: number;
@@ -43,25 +44,29 @@ type Report = {
 
 const INDUSTRIES = [
   "hvac", "plumbing", "electrical", "landscaping", "restaurant", "ecommerce",
-  "manufacturing", "healthcare_services", "professional_services", "logistics", "saas", "general"
+  "manufacturing", "healthcare_services", "professional_services", "logistics", "saas",
+  "construction", "construction_management", "general"
 ];
 const OWNER = ["absentee", "semi_absentee", "owner_operated", "owner_critical"];
 
+// Pre-loaded with the real Carrollton Design Build CIM so a reviewer can run it in one click.
 const DEFAULTS = {
-  business_name: "Reliable HVAC Co.",
-  industry: "hvac",
-  revenue: 3000000,
-  revenue_prior: 2600000,
-  reported_ebitda: 600000,
-  addbacks: 60000,
-  employees: 12,
-  owner_involvement: "semi_absentee",
+  business_name: "Carrollton Design Build",
+  industry: "construction_management",
+  revenue: 12962195,
+  revenue_prior: 11701091,
+  reported_ebitda: 2381009,
+  addbacks: 58745,
+  annual_depreciation: 56362,
+  earnings_history: "2381009, 1612599, 827662, 866690, 1345480",
+  employees: 14,
+  owner_involvement: "owner_operated",
   equipment_age_years: 5,
-  customer_concentration_pct: 8,
-  recurring_revenue_pct: 30,
-  asking_price: 1800000,
+  customer_concentration_pct: 64,
+  recurring_revenue_pct: 15,
+  asking_price: 6200000,
   down_payment_pct: 10,
-  seller_note_pct: 10,
+  seller_note_pct: 0,
   loan_rate_pct: 11.5,
   loan_term_years: 10
 };
@@ -89,10 +94,15 @@ export function DealXRay() {
     setBusy(true);
     setError("");
     try {
+      const history = String(form.earnings_history ?? "")
+        .split(",")
+        .map((s) => Number(s.trim()))
+        .filter((n) => Number.isFinite(n) && n > 0);
+      const payload = { ...form, earnings_history: history.length ? history : null };
       const resp = await fetch(`${API_BASE}/deal-xray/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form)
+        body: JSON.stringify(payload)
       });
       if (!resp.ok) throw new Error(`Analysis failed (${resp.status}).`);
       setReport(await resp.json());
@@ -143,6 +153,16 @@ export function DealXRay() {
           {num("revenue_prior", "Prior-year revenue ($)")}
           {num("reported_ebitda", "Reported EBITDA/SDE ($)")}
           {num("addbacks", "Add-backs ($)")}
+          {num("annual_depreciation", "Depreciation ($, capex proxy)")}
+          <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "0.8rem" }}>
+            <span>Earnings history (recent first, comma-sep)</span>
+            <input
+              value={form.earnings_history as string}
+              onChange={(e) => set("earnings_history", e.target.value)}
+              placeholder="2381009, 1612599, 827662"
+              style={{ padding: "0.5rem", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "inherit" }}
+            />
+          </label>
           {num("employees", "Employees")}
           {num("equipment_age_years", "Equipment age (yrs)")}
           {num("customer_concentration_pct", "Top-customer %")}
@@ -183,6 +203,11 @@ export function DealXRay() {
                 Asking {money(report.valuation.asking_price)} vs. base {money(report.valuation.multiple_value_base)} ·
                 DCF {money(report.valuation.dcf_enterprise_value)}
               </p>
+              {report.valuation.basis_note ? (
+                <p style={{ fontSize: "0.75rem", opacity: 0.8, marginTop: "0.35rem" }}>
+                  Basis: {report.valuation.basis_note}
+                </p>
+              ) : null}
             </article>
           </section>
 

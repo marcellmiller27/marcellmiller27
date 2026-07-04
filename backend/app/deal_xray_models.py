@@ -21,9 +21,21 @@ class DealInput(BaseModel):
     # --- Financials (most recent full year) ---
     revenue: float = Field(gt=0)
     revenue_prior: float | None = Field(default=None, ge=0)
-    reported_ebitda: float = Field(description="Seller-presented EBITDA/SDE for the year.")
+    reported_ebitda: float = Field(description="Seller-presented EBITDA/SDE for the most recent year.")
     addbacks: float = Field(default=0.0, ge=0, description="Total add-backs included in EBITDA/SDE.")
     annual_capex: float | None = Field(default=None, ge=0)
+    annual_depreciation: float | None = Field(
+        default=None,
+        ge=0,
+        description="Book depreciation; used as a maintenance-capex proxy when capex is not provided.",
+    )
+    earnings_history: list[float] | None = Field(
+        default=None,
+        description=(
+            "Recent annual EBITDA/SDE, MOST RECENT YEAR FIRST (e.g. [2025, 2024, 2023]). "
+            "Used to blend a valuation basis (avoid pricing on a peak year) and gauge volatility."
+        ),
+    )
 
     # --- People / operations ---
     employees: int = Field(default=1, ge=0)
@@ -61,7 +73,8 @@ class SegmentScore(BaseModel):
 
 
 class ValuationView(BaseModel):
-    normalized_ebitda: float
+    normalized_ebitda: float  # the earnings basis actually used for valuation
+    basis_note: str = ""
     industry_multiple_low: float
     industry_multiple_base: float
     industry_multiple_high: float
