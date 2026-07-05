@@ -1,16 +1,21 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { Logo } from "@/components/logo";
 
 const navigation = [
   { href: "/", label: "Home" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/opportunities", label: "Opportunities" },
+  { href: "/deal-xray", label: "Deal X-Ray" },
+  { href: "/diligence-suite", label: "Diligence Suite" },
   { href: "/due-diligence", label: "Due Diligence" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/reports", label: "Reports" },
   { href: "/assistant", label: "AI Assistant" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/account", label: "Account" }
+  { href: "/account", label: "Account" },
+  { href: "/support", label: "Help" },
+  { href: "/team", label: "Team" }
 ];
 
 type PlatformShellProps = {
@@ -25,7 +30,7 @@ export function PlatformShell({ eyebrow, title, description, children }: Platfor
     <main className="app-shell">
       <header className="app-header">
         <Link className="app-header__brand" href="/">
-          <span>JH</span>
+          <Logo size={38} />
           John Henry Investments
         </Link>
         <nav className="app-nav" aria-label="Application navigation">
