@@ -39,7 +39,19 @@ type Screen =
   | "biometric"
   | "register"
   | "home"
-  | "security";
+  | "security"
+  | "diligence";
+
+type DiligenceResult = {
+  business_name: string;
+  financial_integrity_score: number;
+  adjusted_ebitda: number;
+  reported_ebitda: number;
+  recommended_tier: string;
+  recommended_action: string;
+  red_flags: string[];
+  add_on_pricing: { platform_low: number; platform_high: number; band: string };
+};
 
 async function api<T>(
   path: string,
@@ -131,6 +143,7 @@ export default function MobileApp() {
   const [security, setSecurity] = useState<SecurityStatus | null>(null);
   const [twoFactorSecret, setTwoFactorSecret] = useState("");
   const [simulatedBiometric, setSimulatedBiometric] = useState(false);
+  const [diligence, setDiligence] = useState<DiligenceResult | null>(null);
 
   const resetMessages = () => {
     setError("");
@@ -341,6 +354,35 @@ export default function MobileApp() {
           : "Biometric sign-in enabled with this device's Face ID / fingerprint."
       );
       await refreshSecurity(session.access_token);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const openDiligence = async () => {
+    resetMessages();
+    setScreen("diligence");
+    setBusy(true);
+    try {
+      // Runs the same Financial Diligence Suite endpoint the web app uses.
+      const result = await api<DiligenceResult>("/financial-diligence/analyze", {
+        method: "POST",
+        body: {
+          business_name: "Carrollton Design Build",
+          revenue: 12962195,
+          reported_ebitda: 2381009,
+          addbacks_claimed: 58745,
+          questionable_addbacks: 23517,
+          bank_deposits: 12800000,
+          recurring_revenue_pct: 15,
+          customer_concentration_pct: 64,
+          asking_price: 6200000,
+          post_loi: true
+        }
+      });
+      setDiligence(result);
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -645,10 +687,62 @@ export default function MobileApp() {
               </div>
               <div className="m-spacer" />
               <div className="m-stack">
+                <button className="m-btn m-btn--primary" onClick={openDiligence}>
+                  Run Financial Diligence
+                </button>
                 <button className="m-btn m-btn--trust" onClick={openSecurity}>
                   Security & sign-in options
                 </button>
               </div>
+            </>
+          )}
+
+          {screen === "diligence" && session && (
+            <>
+              <div className="m-topbar">
+                <button className="m-back" onClick={() => setScreen("home")}>
+                  ‹ Home
+                </button>
+                <Logo size={26} />
+              </div>
+              <p className="m-eyebrow">Financial Diligence Suite</p>
+              <h1 className="m-title">Quality of Earnings</h1>
+              {busy && <p className="m-sub">Running diligence procedures…</p>}
+              {error && <p className="m-error">{error}</p>}
+              {diligence && !busy && (
+                <>
+                  <p className="m-sub">{diligence.business_name}</p>
+                  <div className="m-grid-2">
+                    <div className="m-card">
+                      <span>Integrity score</span>
+                      <strong>{diligence.financial_integrity_score}</strong>
+                      <p>Tier {diligence.recommended_tier} recommended</p>
+                    </div>
+                    <div className="m-card">
+                      <span>Adjusted EBITDA</span>
+                      <strong>${Math.round(diligence.adjusted_ebitda / 1000).toLocaleString()}K</strong>
+                      <p>reported ${Math.round(diligence.reported_ebitda / 1000).toLocaleString()}K</p>
+                    </div>
+                    <div className="m-card">
+                      <span>QoE add-on</span>
+                      <strong>${Math.round(diligence.add_on_pricing.platform_low / 1000)}K+</strong>
+                      <p>CPA-signed</p>
+                    </div>
+                    <div className="m-card">
+                      <span>Red flags</span>
+                      <strong>{diligence.red_flags.length}</strong>
+                      <p>to resolve</p>
+                    </div>
+                  </div>
+                  {diligence.red_flags[0] && (
+                    <p className="m-note">{diligence.red_flags[0]}</p>
+                  )}
+                  <p className="m-sub" style={{ fontSize: "0.72rem" }}>
+                    Decision-support only — not an audit or CPA opinion. Formal opinions are
+                    issued by a licensed partner CPA.
+                  </p>
+                </>
+              )}
             </>
           )}
 

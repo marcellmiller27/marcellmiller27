@@ -13,6 +13,7 @@ from app.routers import (
     crm,
     dashboards,
     deal_xray,
+    financial_diligence,
     integrations,
     leads,
     market,
@@ -58,6 +59,7 @@ app.include_router(market.router, prefix="/api/v1")
 app.include_router(research.router, prefix="/api/v1")
 app.include_router(valuations.router, prefix="/api/v1")
 app.include_router(deal_xray.router, prefix="/api/v1")
+app.include_router(financial_diligence.router, prefix="/api/v1")
 app.include_router(support.router, prefix="/api/v1")
 app.include_router(agents.router, prefix="/api/v1")
 app.include_router(leads.router, prefix="/api/v1")

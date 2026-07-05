@@ -3,6 +3,17 @@
 Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 `docs/ROBUSTNESS_READINESS_GAP_ANALYSIS.md`.
 
+## Where we left off (2026‑07‑05)
+- **Financial Diligence Suite shipped** (branch `cursor/financial-diligence-suite-0d47`): software-accelerated Quality-of-Earnings — proof-of-cash, EBITDA normalization, NWC peg, revenue quality, debt-like items, Financial Integrity Score, tiered pricing, and partner-CPA engagement quotes. Backend `financial_diligence` (engine/models/router at `/api/v1/financial-diligence/*`), web `/diligence-suite` page + nav, and a mobile "Run Financial Diligence" screen (all hitting the same endpoint). **CPA function is outsourced to a partner network — not an owned firm.** Ref: `docs/FINANCIAL_DILIGENCE_SUITE_CONCEPT.md`.
+- **Deal X-Ray hardened** (PR #36): blended-earnings basis, curbed DCF, concentration/volatility ethics, asset-light capex — validated on the real Carrollton Design Build CIM.
+- Board minutes: `docs/board/BOARD_MINUTES_2026-07-04.md`.
+
+### Next up
+- [ ] **Founder:** engage counsel for the Financial Diligence Suite (fee structure vs. AICPA 1.520, partner agreements, engagement letters); recruit/vet the partner-CPA network; validate the pricing table.
+- [ ] Extend the Integrations module to feed QoE workpapers (accounting connectors / uploads / bank statements).
+- [ ] Decide the Deal X-Ray segment-section title (Business Quality Assessment vs. Six-Pillar Business Assessment) → Cy ships the one-line copy change.
+- [ ] Consider CIM PDF upload → auto-extract (Deal X-Ray v2) + printable one-page PDF reports.
+
 ## Where we left off (2026‑06‑26)
 - Unified, Docker‑ready platform on branch `cursor/unified-platform-0d47` (PR #13 → main).
 - Production hardening done: config/secret validation, `/ready` probe, env‑gated rate

@@ -35,13 +35,24 @@
 - **Structural note:** avoid repeating "scorecard" in both the eyebrow and the H2 — e.g., pair eyebrow *"Weighted across six segments"* with the chosen H2.
 - **Status:** awaiting founder's additional candidates → compare → lock a name → Cy ships the one-line copy change in `deal-xray.tsx`.
 
+## 3. Financial Diligence Suite — new product line (RESOLVED / BUILD STARTED)
+- **Approved** a QoE-support product for the search-fund/SMB niche, built and wired across the platform (web + mobile) this session.
+- **CPA function is OUTSOURCED to a vetted partner network — NOT an owned CPA firm** (founder decision): capital-light, no attest E&O/peer-review/ownership burden, instant multi-state coverage. JHI is the software + deal-flow layer; partner CPAs sign and carry liability.
+- **Three tiers:** (A) **Financial Integrity Screening** — included, automated, non-attest; (B) **Quality of Earnings (buy-side FDD)** — flagship add-on, partner-CPA-signed advisory; (C) **Formal attest (AUP/review/audit)** — partner firm engages the target; the four opinions live here only.
+- **Hard compliance guardrails:** structure economics as SaaS/software + workpaper fee (avoid prohibited attest commissions, AICPA 1.520); **never label the SaaS output an "audit opinion";** raise the data-security bar for ingesting bank statements/financials; counsel to draft partner agreements + engagement letters.
+- **Illustrative add-on pricing (to validate):** SBA/search-fund **$3,900–$6,500**; $1–3M EBITDA **$8–16K**; $3–10M **$18–35K**; $10–20M **$40–70K** — all well under the manual market. Marketing anchor: *"Deal QoE Report — from $4,900, CPA-signed, ~2 weeks."*
+- **Delivered code:** backend `financial_diligence` engine/models/router (`/api/v1/financial-diligence/{analyze,tiers,pricing,engagement}`), web `/diligence-suite` page + nav, mobile "Run Financial Diligence" screen, and unit tests. Full system audit (pytest/ruff/lint/build) run and green.
+- Ref: `docs/FINANCIAL_DILIGENCE_SUITE_CONCEPT.md`.
+
 ---
 
 ## Action items (owner · priority)
 | # | Action | Owner | Priority |
 | --- | --- | --- | --- |
 | 1 | Decide final segment-section title; Cy ships copy change in `deal-xray.tsx` | Founder → Cy | 🟡 |
-| 2 | Consider CIM PDF upload → auto-extract (Deal X-Ray v2) and a printable one-page PDF report | Cy | 🟢 |
+| 2 | Financial Diligence Suite: engage counsel (fee structure, partner agreements, engagement letters); recruit/vet partner-CPA network; validate pricing table | Founder + counsel | 🔴 |
+| 3 | Extend Integrations module to feed QoE workpapers (accounting connectors / uploads / bank statements) | Cy | 🟡 |
+| 4 | Consider CIM PDF upload → auto-extract (Deal X-Ray v2) and a printable one-page PDF report | Cy | 🟢 |
 | 3 | Carry forward 2026-07-03 action items (code consolidation, WY formation + IP, NASDAQ Order Form, CI/CD, Terms/Privacy, RBAC, Stripe, CPA/banking, GTM wedge, backups/DR) | Founder + Cy | 🔴 |
 
 **Next review:** next working session (finalize segment title) or upon WY incorporation.
