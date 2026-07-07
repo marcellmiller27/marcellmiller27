@@ -136,6 +136,29 @@ export function FinancialDiligence() {
     }
   };
 
+  const exportExcel = async () => {
+    setError("");
+    try {
+      const resp = await fetch(`${API_BASE}/financial-diligence/export.xlsx`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
+      });
+      if (!resp.ok) throw new Error(`Export failed (${resp.status}).`);
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `JHI_QoE_${String(form.business_name ?? "target").replace(/[^A-Za-z0-9]+/g, "_")}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export failed.");
+    }
+  };
+
   const num = (k: keyof typeof DEFAULTS, label: string) => (
     <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "0.8rem" }}>
       <span>{label}</span>
@@ -184,6 +207,11 @@ export function FinancialDiligence() {
 
       {report ? (
         <div>
+          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "0.8rem" }}>
+            <button type="button" className="button button--secondary" onClick={exportExcel}>
+              Export to Excel
+            </button>
+          </div>
           <section className="app-grid app-grid--three">
             <article className="app-card" style={{ borderTop: `3px solid ${scoreColor(report.financial_integrity_score)}` }}>
               <span>Financial Integrity Score</span>
