@@ -212,7 +212,7 @@ export function DealXRay() {
           </section>
 
           <section className="app-section">
-            <div className="app-section__heading"><p className="eyebrow">Segment scorecard</p><h2>Cradle-to-current breakdown</h2></div>
+            <div className="app-section__heading"><p className="eyebrow">Six-segment scorecard</p><h2>Business Quality Assessment</h2></div>
             <div className="table-card">
               {report.segments.map((s) => (
                 <article className="table-row" key={s.segment}>

@@ -50,7 +50,7 @@ Branch `cursor/phase-1-institutional-redesign-0d47`:
 | 3 | File WY C-corp docs on receipt; then assign platform IP to the corp | Founder + counsel | 🔴 |
 | 4 | Live-trial competitor teardown pass + 40–50 company matrix | Cy | 🟡 |
 | 5 | Build Deal Pipeline workflow layer | Cy | 🟡 |
-| 6 | Finalize Deal X-Ray section title (Business Quality Assessment vs Six-Pillar) | Founder → Cy | 🟢 |
+| 6 | ✅ RESOLVED — Deal X-Ray section title set to **"Business Quality Assessment" (BQA)** | Founder → Cy | ✅ |
 
 **Next review:** next working session or upon WY incorporation.
 **Recorded by:** Cy · signature of record `69M2705M`.
