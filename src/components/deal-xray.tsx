@@ -116,10 +116,15 @@ export function DealXRay() {
   const exportExcel = async () => {
     setError("");
     try {
+      const history = String(form.earnings_history ?? "")
+        .split(",")
+        .map((s) => Number(s.trim()))
+        .filter((n) => Number.isFinite(n) && n > 0);
+      const payload = { ...form, earnings_history: history.length ? history : null };
       const resp = await fetch(`${API_BASE}/deal-xray/export.xlsx`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form)
+        body: JSON.stringify(payload)
       });
       if (!resp.ok) throw new Error(`Export failed (${resp.status}).`);
       const blob = await resp.blob();
