@@ -8,7 +8,8 @@ dependencies = [
   "sqlalchemy",
   "uvicorn[standard]",
   "pydantic",
-  "psycopg[binary]"
+  "psycopg[binary]",
+  "openpyxl"
 ]
 
 [project.optional-dependencies]

@@ -1,6 +1,9 @@
 # JHI-SIG: 69M2705M | Financial Diligence Suite | John Henry Investments (proprietary)
-from fastapi import APIRouter
+import re
 
+from fastapi import APIRouter, Response
+
+from app.excel_export import diligence_workbook
 from app.financial_diligence import (
     TIERS,
     analyze,
@@ -17,6 +20,8 @@ from app.financial_diligence_models import (
 )
 
 router = APIRouter(prefix="/financial-diligence", tags=["financial-diligence"])
+
+_XLSX_MEDIA = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
 
 @router.post("/analyze", response_model=DiligenceReport)
@@ -41,3 +46,16 @@ def list_pricing() -> list[PricingBand]:
 def request_engagement(payload: EngagementRequest) -> EngagementQuote:
     """Request a partner-CPA engagement (QoE/AUP/review/audit) → quote + routing."""
     return quote_engagement(payload)
+
+
+@router.post("/export.xlsx")
+def export_diligence(payload: DiligenceInput) -> Response:
+    """Interactive Excel workbook: editable QoE inputs → live proof-of-cash / NWC formulas."""
+    report = analyze(payload)
+    data = diligence_workbook(payload, report)
+    safe = re.sub(r"[^A-Za-z0-9]+", "_", payload.business_name).strip("_") or "target"
+    return Response(
+        content=data,
+        media_type=_XLSX_MEDIA,
+        headers={"Content-Disposition": f'attachment; filename="JHI_QoE_{safe}.xlsx"'},
+    )
