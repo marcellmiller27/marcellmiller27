@@ -26,8 +26,8 @@ const accountFoundation = [
 export default function AccountPage() {
   return (
     <PlatformShell
-      eyebrow="Account foundation"
-      title="User, organization, subscription, and audit context"
+      eyebrow="Account"
+      title="Your account & organization"
       description="The backend now provides the account structure needed for protected dashboards, plan-based entitlements, billing status, and operational audit review."
     >
       <section className="app-grid app-grid--four">

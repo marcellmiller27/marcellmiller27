@@ -7,8 +7,8 @@ export default function DashboardPage() {
 
   return (
     <PlatformShell
-      eyebrow="Core platform"
-      title="Investor command center"
+      eyebrow="Overview"
+      title="Command center"
       description="Monitor portfolio value, market alerts, economic indicators, acquisition opportunities, and AI recommendations from one operating dashboard."
     >
       <section className="app-grid app-grid--four">

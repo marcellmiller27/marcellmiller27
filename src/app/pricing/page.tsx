@@ -4,8 +4,8 @@ import { pricingTiers } from "@/lib/platform-data";
 export default function PricingPage() {
   return (
     <PlatformShell
-      eyebrow="Subscription billing foundation"
-      title="Plan packaging for paid SaaS access"
+      eyebrow="Plans & pricing"
+      title="Simple, transparent plans"
       description="The backend exposes billing plans, checkout-session contracts, subscription status, and webhook update endpoints for a Stripe-based billing foundation."
     >
       <section className="pricing-grid">

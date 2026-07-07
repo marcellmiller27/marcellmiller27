@@ -4,7 +4,7 @@ import { assistantWorkflows } from "@/lib/platform-data";
 export default function AssistantPage() {
   return (
     <PlatformShell
-      eyebrow="AI research assistant"
+      eyebrow="Research"
       title="Private investment analyst for research and acquisition review"
       description="Ask questions about securities, SBA loans, business targets, Bitcoin cycles, dividend portfolios, and portfolio risk."
     >

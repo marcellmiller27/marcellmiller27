@@ -4,7 +4,7 @@ import { opportunities, scoreCategories } from "@/lib/platform-data";
 export default function OpportunitiesPage() {
   return (
     <PlatformShell
-      eyebrow="AI opportunity engine"
+      eyebrow="Research"
       title="Discover and score investable opportunities"
       description="Screen public securities, private companies, real estate, and digital assets with the John Henry Opportunity Score."
     >
