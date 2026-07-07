@@ -2,17 +2,19 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Logo } from "@/components/logo";
 
+// Ordered by logical cluster (Overview · Research · Acquisitions · Portfolio · Account)
+// so navigation reads with institutional "flow" without dropdown complexity.
 const navigation = [
   { href: "/", label: "Home" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/opportunities", label: "Opportunities" },
-  { href: "/deal-xray", label: "Deal X-Ray" },
-  { href: "/diligence-suite", label: "Diligence Suite" },
-  { href: "/due-diligence", label: "Due Diligence" },
-  { href: "/portfolio", label: "Portfolio" },
   { href: "/reports", label: "Reports" },
   { href: "/assistant", label: "AI Assistant" },
-  { href: "/pricing", label: "Pricing" },
+  { href: "/deal-xray", label: "Deal X-Ray" },
+  { href: "/diligence-suite", label: "Quality of Earnings" },
+  { href: "/due-diligence", label: "Document Review" },
+  { href: "/portfolio", label: "Portfolio" },
+  { href: "/pricing", label: "Plans" },
   { href: "/account", label: "Account" },
   { href: "/support", label: "Help" },
   { href: "/team", label: "Team" }

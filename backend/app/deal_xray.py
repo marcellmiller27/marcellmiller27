@@ -315,7 +315,7 @@ def analyze(deal: DealInput) -> DealXRayReport:
     financing = _financing_options(deal, cfads)
     best_dscr = max((f.dscr for f in financing if f.dscr is not None), default=None)
 
-    # --- Opportunity Score (weighted) + adjustments ---
+    # --- Deal Score (weighted) + adjustments ---
     weighted = sum(s.score * s.weight for s in segments)
     if verdict == "undervalued":
         weighted += 5
@@ -354,7 +354,7 @@ def analyze(deal: DealInput) -> DealXRayReport:
 
     return DealXRayReport(
         business_name=deal.business_name, industry=deal.industry,
-        opportunity_score=score, recommendation=recommendation,
+        deal_score=score, recommendation=recommendation,
         ethic_rating=ethic, ethic_note=ethic_note,
         segments=segments, valuation=valuation, financing_options=financing,
         key_metrics=key_metrics, diligence_questions=questions,

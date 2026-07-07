@@ -57,7 +57,7 @@ def _weak_deal(**overrides) -> DealInput:
 
 def test_strong_deal_scores_well_and_recommends_buy() -> None:
     r = analyze(_strong_deal())
-    assert r.opportunity_score >= 70
+    assert r.deal_score >= 70
     assert r.recommendation == "Buy"
     assert r.ethic_rating >= 80
     assert len(r.segments) == 6  # 6 scored segments + the separate ethic rating
@@ -109,7 +109,7 @@ def test_endpoint_analyze_returns_report() -> None:
     resp = client.post("/api/v1/deal-xray/analyze", json=payload)
     assert resp.status_code == 200, resp.text
     body = resp.json()
-    assert 0 <= body["opportunity_score"] <= 100
+    assert 0 <= body["deal_score"] <= 100
     assert body["recommendation"] in ("Buy", "Watch", "Pass")
     assert body["valuation"]["dcf_enterprise_value"] > 0
     assert len(body["diligence_questions"]) >= 1

@@ -6,8 +6,8 @@ const uploadTypes = ["Tax returns", "P&L statements", "Balance sheets", "Bank st
 export default function DueDiligencePage() {
   return (
     <PlatformShell
-      eyebrow="AI due diligence center"
-      title="Analyze acquisition documents before capital is at risk"
+      eyebrow="Acquisitions"
+      title="Document Review — analyze acquisition documents before capital is at risk"
       description="Upload financial records, normalize cash flow, detect risk indicators, and generate diligence questions for acquisition and lending decisions."
     >
       <section className="app-section app-section--split">

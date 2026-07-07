@@ -5,7 +5,7 @@ import { PlatformShell } from "@/components/platform-shell";
 export default function DealXRayPage() {
   return (
     <PlatformShell
-      eyebrow="Acquisition intelligence"
+      eyebrow="Acquisitions"
       title="Deal X-Ray — analyze a CIM in minutes"
       description="For search-fund & SMB buyers: enter the target's key figures for a 7-part scorecard, an honest ethic/credibility rating, a per-deal DCF + multiple valuation, DSCR/SBA fit, and realistic financing offers."
     >

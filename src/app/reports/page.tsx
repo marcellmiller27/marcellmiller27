@@ -4,7 +4,7 @@ import { intelligenceReports, marketSignals } from "@/lib/platform-data";
 export default function ReportsPage() {
   return (
     <PlatformShell
-      eyebrow="John Henry Intelligence Center"
+      eyebrow="Research"
       title="Generate branded investment intelligence reports"
       description="Package macro signals, crypto cycles, acquisition screens, and dividend opportunities into subscriber-ready newsletters and PDF reports."
     >

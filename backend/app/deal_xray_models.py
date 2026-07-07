@@ -101,7 +101,7 @@ class FinancingOption(BaseModel):
 class DealXRayReport(BaseModel):
     business_name: str
     industry: str
-    opportunity_score: int = Field(ge=0, le=100)
+    deal_score: int = Field(ge=0, le=100)
     recommendation: str  # "Buy" | "Watch" | "Pass"
     ethic_rating: int = Field(ge=0, le=100)
     ethic_note: str

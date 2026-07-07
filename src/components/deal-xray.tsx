@@ -20,7 +20,7 @@ type Financing = {
 type Report = {
   business_name: string;
   industry: string;
-  opportunity_score: number;
+  deal_score: number;
   recommendation: string;
   ethic_rating: number;
   ethic_note: string;
@@ -187,8 +187,8 @@ export function DealXRay() {
         <div>
           <section className="app-grid app-grid--three">
             <article className="app-card" style={{ borderTop: `3px solid ${recColor(report.recommendation)}` }}>
-              <span>Opportunity Score</span>
-              <strong style={{ fontSize: "2.4rem" }}>{report.opportunity_score}</strong>
+              <span>Deal Score</span>
+              <strong style={{ fontSize: "2.4rem" }}>{report.deal_score}</strong>
               <p style={{ color: recColor(report.recommendation), fontWeight: 800 }}>{report.recommendation}</p>
             </article>
             <article className="app-card">
@@ -212,7 +212,7 @@ export function DealXRay() {
           </section>
 
           <section className="app-section">
-            <div className="app-section__heading"><p className="eyebrow">Segment scorecard</p><h2>Cradle-to-current breakdown</h2></div>
+            <div className="app-section__heading"><p className="eyebrow">Six-segment scorecard</p><h2>Business Quality Assessment</h2></div>
             <div className="table-card">
               {report.segments.map((s) => (
                 <article className="table-row" key={s.segment}>
@@ -221,7 +221,7 @@ export function DealXRay() {
                     <strong>{s.segment}</strong>
                   </div>
                   <div style={{ flex: 1, margin: "0 1rem" }}>
-                    <div style={{ background: "rgba(255,255,255,0.08)", borderRadius: 6, height: 8 }}>
+                    <div style={{ background: "rgba(15,39,68,0.08)", borderRadius: 6, height: 8 }}>
                       <div style={{ width: `${s.score}%`, height: 8, borderRadius: 6, background: "var(--growth, #35c46b)" }} />
                     </div>
                     <p style={{ fontSize: "0.78rem", margin: "0.35rem 0 0", opacity: 0.85 }}>{s.findings.join(" ")}</p>
