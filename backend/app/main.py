@@ -18,6 +18,7 @@ from app.routers import (
     leads,
     market,
     mobile_auth,
+    pipeline,
     reports,
     research,
     support,
@@ -60,6 +61,7 @@ app.include_router(research.router, prefix="/api/v1")
 app.include_router(valuations.router, prefix="/api/v1")
 app.include_router(deal_xray.router, prefix="/api/v1")
 app.include_router(financial_diligence.router, prefix="/api/v1")
+app.include_router(pipeline.router, prefix="/api/v1")
 app.include_router(support.router, prefix="/api/v1")
 app.include_router(agents.router, prefix="/api/v1")
 app.include_router(leads.router, prefix="/api/v1")

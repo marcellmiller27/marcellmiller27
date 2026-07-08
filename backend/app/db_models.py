@@ -225,3 +225,28 @@ class AuditLogDB(Base):
     resource_id: Mapped[str | None] = mapped_column(String, nullable=True)
     event_json: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+
+class DealRecordDB(Base):
+    """A saved acquisition target in the Deal Pipeline (Deal X-Ray or QoE analysis).
+
+    Turns the stateless analyzers into a workflow: save a run, move it through stages,
+    revisit and compare. (Single-tenant for now; scope by organization when auth is
+    wired into these module endpoints.)
+    """
+
+    __tablename__ = "pipeline_deals"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    business_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    deal_type: Mapped[str] = mapped_column(String(40), nullable=False, default="deal_xray")
+    stage: Mapped[str] = mapped_column(String(40), nullable=False, default="screen", index=True)
+    score: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    recommendation: Mapped[str] = mapped_column(String(60), nullable=False, default="")
+    headline: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    inputs_json: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
+    notes: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now
+    )

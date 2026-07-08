@@ -18,6 +18,7 @@ from app.financial_diligence_models import (
     EngagementRequest,
     PricingBand,
 )
+from app.pdf_export import diligence_pdf
 
 router = APIRouter(prefix="/financial-diligence", tags=["financial-diligence"])
 
@@ -58,4 +59,17 @@ def export_diligence(payload: DiligenceInput) -> Response:
         content=data,
         media_type=_XLSX_MEDIA,
         headers={"Content-Disposition": f'attachment; filename="JHI_QoE_{safe}.xlsx"'},
+    )
+
+
+@router.post("/export.pdf")
+def export_diligence_pdf(payload: DiligenceInput) -> Response:
+    """Branded one-page PDF QoE memo (client-ready leave-behind)."""
+    report = analyze(payload)
+    data = diligence_pdf(payload, report)
+    safe = re.sub(r"[^A-Za-z0-9]+", "_", payload.business_name).strip("_") or "target"
+    return Response(
+        content=data,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="JHI_QoE_{safe}.pdf"'},
     )

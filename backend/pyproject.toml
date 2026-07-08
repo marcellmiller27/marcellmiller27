@@ -9,7 +9,8 @@ dependencies = [
   "uvicorn[standard]",
   "pydantic",
   "psycopg[binary]",
-  "openpyxl"
+  "openpyxl",
+  "reportlab"
 ]
 
 [project.optional-dependencies]

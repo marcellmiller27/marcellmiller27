@@ -54,6 +54,18 @@ _PCT = '0.0%'
 _MULT = '0.00"x"'
 _RATIO = '0.00'
 
+# "&" is the command char in Excel headers/footers, so it must be doubled.
+_ENTITY_HF = ENTITY.replace("&", "&&")
+
+
+def _watermark(ws: Worksheet, prepared_for: str = "Licensed subscriber") -> None:
+    """Provenance footer on every printed page (branding + IP + 'not for redistribution')."""
+    who = prepared_for.replace("&", "&&")
+    ws.oddFooter.left.text = f"&8© {_ENTITY_HF}  ·  {SIG}"
+    ws.oddFooter.center.text = "&8Confidential — not for redistribution"
+    ws.oddFooter.right.text = f"&8Prepared for {who}  ·  Page &P of &N"
+    ws.oddHeader.right.text = "&9JHI Research && Analytics Firm, Inc."
+
 
 def _title_block(ws: Worksheet, subtitle: str, business: str) -> None:
     ws.merge_cells("A1:D1")
@@ -197,6 +209,8 @@ def deal_xray_workbook(deal: DealInput, report: DealXRayReport) -> bytes:
     _bqa_sheet(wb, report)
     _deal_detail_sheet(wb, deal, report)
     _legal_sheet(wb)
+    for sheet in wb.worksheets:
+        _watermark(sheet)
     return _finalize(wb)
 
 
@@ -302,4 +316,6 @@ def diligence_workbook(deal: DiligenceInput, report: DiligenceReport) -> bytes:
             ws.cell(row=30 + i, column=1, value=f"• {flag}").alignment = Alignment(wrap_text=True)
 
     _legal_sheet(wb)
+    for sheet in wb.worksheets:
+        _watermark(sheet)
     return _finalize(wb)
