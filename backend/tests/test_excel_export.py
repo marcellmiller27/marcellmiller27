@@ -101,3 +101,35 @@ def test_diligence_export_is_interactive_workbook() -> None:
 def test_export_rejects_invalid_input() -> None:
     resp = client.post("/api/v1/deal-xray/export.xlsx", json={"business_name": "X", "revenue": -1})
     assert resp.status_code == 422
+
+
+def test_deal_xray_pdf_export() -> None:
+    resp = client.post("/api/v1/deal-xray/export.pdf", json={
+        "business_name": "Carrollton Design Build", "revenue": 12_962_195,
+        "reported_ebitda": 2_381_009, "asking_price": 6_200_000,
+    })
+    assert resp.status_code == 200, resp.text
+    assert resp.headers["content-type"] == "application/pdf"
+    assert resp.content[:5] == b"%PDF-"
+    assert "JHI_BQA_Carrollton_Design_Build.pdf" in resp.headers["content-disposition"]
+
+
+def test_diligence_pdf_export() -> None:
+    resp = client.post("/api/v1/financial-diligence/export.pdf", json={
+        "business_name": "Messy Co", "revenue": 2_000_000, "reported_ebitda": 600_000,
+        "bank_deposits": 1_700_000, "accounts_receivable": 500_000, "accounts_payable": 100_000,
+        "customer_concentration_pct": 70,
+    })
+    assert resp.status_code == 200, resp.text
+    assert resp.headers["content-type"] == "application/pdf"
+    assert resp.content[:5] == b"%PDF-"
+
+
+def test_excel_has_provenance_footer() -> None:
+    resp = client.post("/api/v1/deal-xray/export.xlsx", json={
+        "business_name": "Footer Co", "revenue": 1_000_000, "reported_ebitda": 200_000,
+        "asking_price": 800_000,
+    })
+    wb = load_workbook(BytesIO(resp.content))
+    footer = wb["Dashboard"].oddFooter.left.text or ""
+    assert "69M2705M" in footer

@@ -6,6 +6,7 @@ from fastapi import APIRouter, Response
 from app.deal_xray import analyze
 from app.deal_xray_models import DealInput, DealXRayReport
 from app.excel_export import deal_xray_workbook
+from app.pdf_export import deal_xray_pdf
 
 router = APIRouter(prefix="/deal-xray", tags=["deal-xray"])
 
@@ -28,4 +29,17 @@ def export_deal_xray(payload: DealInput) -> Response:
         content=data,
         media_type=_XLSX_MEDIA,
         headers={"Content-Disposition": f'attachment; filename="JHI_BQA_{safe}.xlsx"'},
+    )
+
+
+@router.post("/export.pdf")
+def export_deal_xray_pdf(payload: DealInput) -> Response:
+    """Branded one-page PDF deal memo (client-ready leave-behind)."""
+    report = analyze(payload)
+    data = deal_xray_pdf(payload, report)
+    safe = re.sub(r"[^A-Za-z0-9]+", "_", payload.business_name).strip("_") or "deal"
+    return Response(
+        content=data,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="JHI_BQA_{safe}.pdf"'},
     )

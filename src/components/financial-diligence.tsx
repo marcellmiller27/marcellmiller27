@@ -88,6 +88,7 @@ export function FinancialDiligence() {
   const [busy, setBusy] = useState(false);
   const [quoting, setQuoting] = useState(false);
   const [error, setError] = useState("");
+  const [saved, setSaved] = useState("");
 
   const set = (k: string, v: string | number | boolean) => setForm((p) => ({ ...p, [k]: v }));
 
@@ -96,6 +97,7 @@ export function FinancialDiligence() {
     setBusy(true);
     setError("");
     setQuote(null);
+    setSaved("");
     try {
       const resp = await fetch(`${API_BASE}/financial-diligence/analyze`, {
         method: "POST",
@@ -136,10 +138,10 @@ export function FinancialDiligence() {
     }
   };
 
-  const exportExcel = async () => {
+  const download = async (path: string, ext: string) => {
     setError("");
     try {
-      const resp = await fetch(`${API_BASE}/financial-diligence/export.xlsx`, {
+      const resp = await fetch(`${API_BASE}/financial-diligence/${path}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
@@ -149,13 +151,37 @@ export function FinancialDiligence() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `JHI_QoE_${String(form.business_name ?? "target").replace(/[^A-Za-z0-9]+/g, "_")}.xlsx`;
+      a.download = `JHI_QoE_${String(form.business_name ?? "target").replace(/[^A-Za-z0-9]+/g, "_")}.${ext}`;
       document.body.appendChild(a);
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Export failed.");
+    }
+  };
+
+  const saveToPipeline = async () => {
+    if (!report) return;
+    setError("");
+    try {
+      const resp = await fetch(`${API_BASE}/pipeline/deals`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          business_name: report.business_name,
+          deal_type: "qoe",
+          stage: "qoe",
+          score: report.financial_integrity_score,
+          recommendation: `Tier ${report.recommended_tier}`,
+          headline: report.recommended_action,
+          inputs: form
+        })
+      });
+      if (!resp.ok) throw new Error(`Save failed (${resp.status}).`);
+      setSaved("Saved to pipeline ✓");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Save failed.");
     }
   };
 
@@ -207,9 +233,16 @@ export function FinancialDiligence() {
 
       {report ? (
         <div>
-          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "0.8rem" }}>
-            <button type="button" className="button button--secondary" onClick={exportExcel}>
+          <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end", alignItems: "center", marginBottom: "0.8rem" }}>
+            {saved ? <span style={{ color: "var(--growth)", fontSize: "0.8rem", fontWeight: 700 }}>{saved}</span> : null}
+            <button type="button" className="button button--secondary" onClick={saveToPipeline}>
+              Save to Pipeline
+            </button>
+            <button type="button" className="button button--secondary" onClick={() => download("export.xlsx", "xlsx")}>
               Export to Excel
+            </button>
+            <button type="button" className="button button--secondary" onClick={() => download("export.pdf", "pdf")}>
+              Export to PDF
             </button>
           </div>
           <section className="app-grid app-grid--three">

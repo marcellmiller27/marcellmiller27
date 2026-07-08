@@ -12,6 +12,7 @@ const navigation = [
   { href: "/assistant", label: "AI Assistant" },
   { href: "/deal-xray", label: "Deal X-Ray" },
   { href: "/diligence-suite", label: "Quality of Earnings" },
+  { href: "/pipeline", label: "Pipeline" },
   { href: "/due-diligence", label: "Document Review" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/pricing", label: "Plans" },
