@@ -83,6 +83,27 @@ def build() -> Workbook:
     a.cell(row=13, column=1, value="Avg MRR / sub").font = _BOLD
     a.cell(row=13, column=2, value=f"=${p1[0]}${p1[1:]}*${mix[0]}${mix[1:]}/100+${p2[0]}${p2[1:]}*(1-${mix[0]}${mix[1:]}/100)").number_format = _MONEY
 
+    # Operating assumptions (editable) for the EBITDA view.
+    a.cell(row=15, column=1, value="OPERATING ASSUMPTIONS (editable)").font = _BOLD
+    a.cell(row=15, column=1).fill = _SUB_FILL
+    opex = [
+        ("Payment processing (% of revenue)", 3),
+        ("Infra / support (% of revenue)", 2),
+        ("Data license — SF1 ($/yr, fixed)", 18000),
+        ("Marketing ($/yr)", 36000),
+        ("Legal & accounting ($/yr)", 18000),
+        ("Software & AI tools ($/yr)", 12000),
+        ("Founder / ops comp ($/yr)", 60000),
+    ]
+    rr = 16
+    for label, val in opex:
+        a.cell(row=rr, column=1, value=label).font = _BOLD
+        cc = a.cell(row=rr, column=2, value=val)
+        cc.fill = _INPUT_FILL
+        cc.number_format = _MONEY if val >= 1000 else "0.0"
+        rr += 1
+    # Assumptions refs: proc=B16, infra=B17, dataSF1=B18, mktg=B19, legal=B20, sw=B21, founder=B22
+
     # --- Monthly Model (live 24-month schedule) ---
     m = wb.create_sheet("Monthly Model")
     for col, w in zip("ABCDEFG", (8, 12, 12, 12, 14, 14, 18)):
@@ -145,6 +166,41 @@ def build() -> Workbook:
         rr += 1
     x.cell(row=rr + 1, column=1,
            value="~All-Tier-2 Year-1 ≈ $233K (a light Tier-1 sprinkle → ~$236K).").font = _MUTED
+
+    # --- Year-1 EBITDA by Mix (live P&L parallel to the commission table) ---
+    e = wb.create_sheet("Year-1 EBITDA by Mix")
+    for col, w in zip("ABCD", (30, 16, 16, 16)):
+        e.column_dimensions[col].width = w
+    _title(e, "Year-1 EBITDA by Tier 1 / Tier 2 mix")
+    e.cell(row=5, column=1, value="Same 100/mo ramp (7,800 sub-months). Aggressive 'ceiling' scenario — see notes.").font = _MUTED
+    e.cell(row=6, column=1, value="Tier-1 mix %").font = _BOLD
+    for col, pct in zip("BCD", (0, 10, 20)):
+        e[f"{col}6"] = pct
+        e[f"{col}6"].font = _BOLD
+    lines = [
+        ("Avg MRR / sub", "=Assumptions!$B$5*{c}6/100+Assumptions!$B$6*(1-{c}6/100)", _MONEY),
+        ("Revenue (Year-1)", "={c}7*Assumptions!$B$8*78", _MONEY),
+        ("COGS (proc+infra % + SF1)", "={c}8*(Assumptions!$B$16+Assumptions!$B$17)/100+Assumptions!$B$18", _MONEY),
+        ("Gross profit", "={c}8-{c}9", _MONEY),
+        ("Sales commission (residual)", "={c}8*Assumptions!$B$9/100", _MONEY),
+        ("Marketing", "=Assumptions!$B$19", _MONEY),
+        ("Legal & accounting", "=Assumptions!$B$20", _MONEY),
+        ("Software & AI tools", "=Assumptions!$B$21", _MONEY),
+        ("Founder / ops comp", "=Assumptions!$B$22", _MONEY),
+        ("Total operating expenses", "=SUM({c}11:{c}15)", _MONEY),
+        ("EBITDA", "={c}10-{c}16", _MONEY),
+        ("EBITDA margin", "=IF({c}8=0,0,{c}17/{c}8)", _PCT),
+    ]
+    for i, (label, formula, fmt) in enumerate(lines):
+        row = 7 + i
+        lc = e.cell(row=row, column=1, value=label)
+        if label in ("Gross profit", "Total operating expenses", "EBITDA", "Revenue (Year-1)"):
+            lc.font = _BOLD
+        for ci, col in enumerate("BCD", start=2):
+            cell = e.cell(row=row, column=ci, value=formula.format(c=col))
+            cell.number_format = fmt
+            if label in ("EBITDA",):
+                cell.font = _BOLD
 
     # --- Legal ---
     lg = wb.create_sheet("Legal & Provenance")
