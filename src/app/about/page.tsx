@@ -62,10 +62,12 @@ export default function AboutPage() {
           <h2>Institutional research shouldn&rsquo;t be locked behind a $30,000 contract.</h2>
         </div>
         <p style={bodyStyle}>
-          Diligence data is fragmented and expensive, and the first-pass read of a CIM eats days
-          of senior time — most of it on deals that die. We built JHI to give independent investors
-          and acquirers institutional-grade research and diligence that&rsquo;s clear, transparent,
-          and grounded in real data — at a fraction of the price, with a real trial and no lock-in.
+          Diligence data is often fragmented and expensive, and the initial review of a CIM can
+          consume days of senior leadership&rsquo;s time — frequently on deals that do not move
+          forward. We built JHI to provide independent investors and acquirers with
+          institutional-grade research and diligence that is clear, transparent, and grounded in
+          real data. We offer this at a fraction of the traditional cost, with a genuine trial
+          period and no contract lock-in.
         </p>
       </section>
 
