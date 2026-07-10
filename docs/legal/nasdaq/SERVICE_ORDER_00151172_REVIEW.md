@@ -63,3 +63,25 @@
 - **Pre-register the pass/fail bar before day 1:** mean IC ≥ 0.03, |t| ≥ 2.0, hit rate ≥ 0.55 (already defined).
 - **Provision data on day 1**; our SF1 adapter + PIT fundamentals engine are pre-built to run immediately.
 - **Decide by day 4 and send any cancellation notice early that day** (confirm recipient + that notice must be *received* within the trial window). Ask Michael for the ~10–14 day extension to remove timing risk.
+
+## "Leave the Order as-is" debate & decision (2026-07-10)
+**Question raised:** could we leave the Service Order un-amended and rely on the *absence* of stated restrictions to use/distribute the data however we choose?
+
+**Decision: NO — pursue the express addendum** (email sent to Michael 2026-07-09). Reasoning, grounded in Nasdaq's own data-licensing language:
+- Data/IP licenses grant **only what is expressly stated; all other rights are reserved.** Silence favors the **licensor**, not us.
+- Nasdaq's standard terms: Derived Data **"is not distributed outside of Customer except to the extent expressly authorized in the applicable Order Form,"** and a customer **"may not … distribute, license, commercialize … any analytics product, valuation product … except to the extent expressly authorized."** **"All rights not granted hereunder are expressly reserved."** Our Opportunity/Deal Score + Deal X-Ray + QoE **are** derived analytics/valuation products distributed externally → require express authorization.
+- The "1,000 clients" email is likely **unenforceable** if the incorporated T&Cs contain an **integration/merger clause** (only the signed document counts) — the strongest reason to get it in writing.
+- Risk is **asymmetric**: cost to secure the grant ≈ $0; cost of exceeding scope = audit, breach, termination, delete-data, indemnity — an existential hit to the product's data layer.
+- (Analysis cited Nasdaq's closely-analogous standard terms; the exact `data.nasdaq.com/terms` page is JS-gated — **counsel to confirm against the incorporated version.**)
+
+## Movements (execution sequence)
+1. ✅ Addendum email sent to Michael (2026-07-09) — 4 points + email-signature acceptance + trial extension.
+2. ⏳ Await Michael: re-issued Order **or** written side letter granting the 4 points.
+3. 🔎 Review the response (counsel checks incorporated T&Cs).
+4. ✍️ Sign the **final amended** version by **~05-Aug-26** (do NOT sign the original as-is).
+5. ▶️ Signature → trial clock starts.
+6. 🧪 Trial: run SF1/H5 vs. pre-registered bar; **cancel by ~day 4 if fail.**
+7. 💵 Proceed → Net-30 payment; committed to Initial Term.
+8. 🗓️ Non-renewal notice deadline: **~11-Apr-27**.
+
+**Guardrails:** don't sign the un-amended Order; don't distribute derived data to real subscribers until scope is expressly granted (trial validation is internal R&D); keep `NASDAQ_DATA_LINK_API_KEY` ready for Secrets on day 1.
