@@ -145,9 +145,9 @@ export default function Home() {
       <section className="section contrast-strip">
         <p>
           Institutional-grade research — without the{" "}
-          <strong style={{ color: "#e05a5a" }}>$30,000 contract</strong>, the{" "}
-          <strong style={{ color: "#e05a5a" }}>fake trial</strong>, or the{" "}
-          <strong style={{ color: "#e05a5a" }}>renewal trap</strong>.
+          <strong style={{ color: "#c0392b" }}>$30,000 contract</strong>, the{" "}
+          <strong style={{ color: "#c0392b" }}>fake trial</strong>, or the{" "}
+          <strong style={{ color: "#c0392b" }}>renewal trap</strong>.
         </p>
       </section>
 
@@ -170,7 +170,7 @@ export default function Home() {
           <p className="eyebrow">How it works</p>
           <h2>
             From first look to closing — get to{" "}
-            <span style={{ color: "#e05a5a" }}>&ldquo;no&rdquo;</span> fast, and{" "}
+            <span style={{ color: "#c0392b" }}>&ldquo;no&rdquo;</span> fast, and{" "}
             <span style={{ color: "var(--growth)" }}>&ldquo;yes&rdquo;</span> with conviction.
           </h2>
         </div>
