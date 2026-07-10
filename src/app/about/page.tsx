@@ -90,9 +90,10 @@ export default function AboutPage() {
           ))}
         </div>
         <p style={{ ...bodyStyle, marginTop: "1rem" }}>
-          That cross-sector depth is why our diligence understands the businesses people actually
-          buy and run — not just tech startups. Formal Quality-of-Earnings and attest work is
-          delivered by our licensed partner CPA network.
+          Our cross-sector depth allows us to thoroughly understand the businesses that people
+          actually operate and acquire, rather than focusing solely on tech startups. Please note
+          that formal Quality-of-Earnings and attest work is delivered through our network of
+          licensed partner CPAs.
         </p>
       </section>
 
