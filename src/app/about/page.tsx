@@ -54,7 +54,7 @@ export default function AboutPage() {
     <PlatformShell
       eyebrow="About · JHI Research & Analytics Firm, Inc."
       title="We are a team of operators augmented by AI."
-      description="At John Henry Capital, we combine a lean team of skilled operators with advanced AI to deliver the capabilities and output of a much larger firm. Rather than competing with technology, we leverage it to maximize our efficiency and results."
+      description="At John Henry Investments, we combine a lean team of skilled operators with advanced AI to deliver the capabilities and output of a much larger firm. Rather than competing with technology, we leverage it to maximize our efficiency and results."
     >
       <section className="app-section">
         <div className="app-section__heading">
