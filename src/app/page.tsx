@@ -1,36 +1,105 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { WaitlistForm } from "@/components/waitlist-form";
-import {
-  dashboardWidgets,
-  platformModules,
-  pricingTiers,
-  scoreCategories,
-  techStack,
-  userTypes
-} from "@/lib/platform-data";
+import { dashboardWidgets, pricingTiers } from "@/lib/platform-data";
 
-const keyMetrics = [
-  { label: "Primary mission", value: "AI-powered opportunity discovery" },
-  { label: "Target ARR scenario", value: "$90M" },
-  { label: "Opportunity score", value: "0-100" },
-  { label: "Platform model", value: "B2C + B2B SaaS" }
+// Customer-facing homepage. Internal figures (ARR targets, per-tier revenue,
+// module blueprint, tech stack, enterprise valuation) live in the investor deck,
+// never here. Legal entity: JHI Research & Analytics Firm, Inc.
+
+const audiences = [
+  "Search-Fund & SMB Acquirers",
+  "Independent Sponsors",
+  "Family Offices",
+  "Investment Advisors (RIAs)",
+  "CPAs",
+  "Attorneys",
+  "Business Brokers",
+  "Executive Recruiters",
+  "Self-Directed Investors"
 ];
 
-const reportExamples = [
-  "John Henry Weekly Macro Report",
-  "Crypto Intelligence Report",
-  "Business Acquisition Report",
-  "Dividend Opportunities Report"
+const workflow = [
+  {
+    step: "01",
+    name: "Screen",
+    summary:
+      "Surface and rank opportunities with the Opportunity Score across public markets, crypto, real assets, and private businesses."
+  },
+  {
+    step: "02",
+    name: "Deal X-Ray",
+    summary:
+      "X-ray a CIM in minutes: a Business Quality Assessment, an honest ethic rating, a per-deal valuation, and DSCR / SBA financing fit."
+  },
+  {
+    step: "03",
+    name: "Quality of Earnings",
+    summary:
+      "Software-accelerated QoE — proof-of-cash, normalized EBITDA, working capital, red flags — reviewed and signed by a partner CPA."
+  },
+  {
+    step: "04",
+    name: "Pipeline & Close",
+    summary:
+      "Track every target from screen to close, with interactive Excel models and branded PDF memos you can hand to lenders and sellers."
+  }
 ];
 
-const missionPrinciples = [
-  "Stewardship over speculation",
-  "Capital preservation first",
-  "Discipline compounds",
-  "Evidence over noise",
-  "Aligned interests",
-  "A generational time horizon"
+const products = [
+  {
+    name: "Deal X-Ray (BQA)",
+    summary:
+      "A six-segment Business Quality Assessment, Deal Score, valuation, and financing options from a CIM's key figures."
+  },
+  {
+    name: "Quality of Earnings",
+    summary:
+      "CPA-signed QoE at software speed — a fraction of the cost and time of a manual engagement."
+  },
+  {
+    name: "Deal Pipeline",
+    summary:
+      "Save every analysis and move targets through Screen → Diligence → Financing → Offer → Close."
+  },
+  {
+    name: "Interactive Excel & PDF",
+    summary:
+      "Live, editable models (DSCR, valuation, scenarios) and branded memos — yours to keep, no download limits."
+  },
+  {
+    name: "Multi-Asset Research",
+    summary:
+      "Live data and macro signals across equities, ETFs, fixed income, crypto, commodities, and real assets."
+  },
+  {
+    name: "Opportunity & Deal Score",
+    summary:
+      "A transparent 0–100 decision-support score — with published methodology, not a black box."
+  }
+];
+
+const trust = [
+  {
+    name: "Research, not advice",
+    detail:
+      "We deliver research, analytics, and decision-support — not investment advice or brokerage."
+  },
+  {
+    name: "Transparent methodology",
+    detail:
+      "We publish how our scores work and their validation limits. You can see the work, not just the number."
+  },
+  {
+    name: "Licensed data",
+    detail:
+      "Point-in-time fundamentals and market data from licensed providers, with clear provenance."
+  },
+  {
+    name: "Partner CPA network",
+    detail:
+      "Formal Quality-of-Earnings and attest work is delivered by licensed partner CPA firms."
+  }
 ];
 
 export default function Home() {
@@ -42,26 +111,28 @@ export default function Home() {
             <Logo size={44} />
             John Henry Investments
           </Link>
-          <p className="eyebrow">John Henry Investments, LLC</p>
-          <h1>Investment intelligence for markets, acquisitions, and generational wealth.</h1>
+          <p className="eyebrow">JHI Research &amp; Analytics Firm, Inc.</p>
+          <h1>Institutional research and deal diligence — without the institutional price.</h1>
           <p className="hero__lead">
-            A subscription platform for investors, business owners, family offices, and acquisition
-            entrepreneurs to discover opportunities, analyze risk, value assets, and manage portfolios.
+            Screen opportunities, x-ray a CIM, run a CPA-signed Quality of Earnings, and track
+            every deal to close. Multi-asset research and acquisition intelligence, built for
+            independent investors and acquirers.
           </p>
           <div className="hero__actions">
             <a className="button button--primary" href="#waitlist">
-              Join the waitlist
+              Start free — no sales call
             </a>
             <a className="button button--secondary" href="/dashboard">
-              Open platform dashboard
+              Open the platform
             </a>
           </div>
+          <p className="hero__trust">No lock-in · Cancel anytime · No auto-renewal traps.</p>
         </div>
         <div className="hero__panel" aria-label="Platform summary">
           <div className="score-card">
             <span>John Henry Opportunity Score</span>
             <strong>87</strong>
-            <p>Buy signal based on valuation, growth, liquidity, and macro conditions.</p>
+            <p>Transparent 0–100 decision-support score with published methodology.</p>
           </div>
           <div className="mini-grid">
             {dashboardWidgets.map((widget) => (
@@ -71,83 +142,62 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section waitlist-section" id="waitlist">
-        <div className="waitlist-section__inner">
-          <p className="eyebrow">Early access</p>
-          <h2>Get on the John Henry Investments waitlist.</h2>
-          <p className="waitlist-section__lead">
-            Be first to access institutional-grade research, the Opportunity Score, and
-            live multi-asset intelligence. Tell us who you are and we&rsquo;ll invite you in.
-          </p>
-          <WaitlistForm source="landing" />
-        </div>
-      </section>
-
-      <section className="metrics section" aria-label="Platform metrics">
-        {keyMetrics.map((metric) => (
-          <article className="metric-card" key={metric.label}>
-            <span>{metric.label}</span>
-            <strong>{metric.value}</strong>
-          </article>
-        ))}
-      </section>
-
-      <section className="section split" id="mission">
-        <div>
-          <p className="eyebrow">Our mission</p>
-          <h2>Institutional intelligence in service of family legacy.</h2>
-        </div>
-        <div className="mission">
-          <p className="mission__statement">
-            To put institutional-grade research and modern technology in the hands of
-            everyday investors and the allocators who serve them — scrutinizing
-            opportunities across every asset class, from public markets to private
-            businesses, real assets, and digital assets, so people can invest their
-            time and capital with confidence and build durable, multi-generational
-            wealth.
-          </p>
-          <blockquote className="mission__creed">
-            We steward capital like family — preserving it first, compounding it
-            patiently, and measuring every decision against the generations who
-            inherit it.
-          </blockquote>
-          <p className="mission__story">
-            John Henry Investments carries the name of the steel-driving man — the
-            worker who met the machine of his age with nothing but resolve and
-            refused to let it decide his family&rsquo;s future. We bring that
-            temperament to capital: relentless, unglamorous, and built to endure.
-            We were founded to hand the family at the kitchen table the same
-            research, risk discipline, and access that quietly compound wealth
-            inside the great institutions.
-          </p>
-          <div className="tag-grid">
-            {missionPrinciples.map((principle) => (
-              <span className="tag" key={principle}>
-                {principle}
-              </span>
-            ))}
-          </div>
-        </div>
+      <section className="section contrast-strip">
+        <p>
+          Institutional-grade research — <strong>without the $30,000 contract, the fake trial,
+          or the renewal trap.</strong>
+        </p>
       </section>
 
       <section className="section split">
         <div>
-          <p className="eyebrow">Primary users</p>
-          <h2>Built for individual investors and professional capital allocators.</h2>
+          <p className="eyebrow">Who it&rsquo;s for</p>
+          <h2>Built for buyers and the professionals who advise them.</h2>
         </div>
         <div className="tag-grid">
-          {userTypes.map((type) => (
-            <span className="tag" key={type}>
-              {type}
+          {audiences.map((a) => (
+            <span className="tag" key={a}>
+              {a}
             </span>
+          ))}
+        </div>
+      </section>
+
+      <section className="section" id="workflow">
+        <div className="section-heading">
+          <p className="eyebrow">How it works</p>
+          <h2>From first look to closing — get to &ldquo;no&rdquo; fast, and &ldquo;yes&rdquo; with conviction.</h2>
+        </div>
+        <div className="module-grid">
+          {workflow.map((s) => (
+            <article className="module-card" key={s.name}>
+              <p className="module-card__phase">{s.step}</p>
+              <h3>{s.name}</h3>
+              <p>{s.summary}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section" id="product">
+        <div className="section-heading">
+          <p className="eyebrow">What you get</p>
+          <h2>One platform for research, diligence, and deal workflow.</h2>
+        </div>
+        <div className="module-grid">
+          {products.map((p) => (
+            <article className="module-card" key={p.name}>
+              <h3>{p.name}</h3>
+              <p>{p.summary}</p>
+            </article>
           ))}
         </div>
       </section>
 
       <section className="section" id="plans">
         <div className="section-heading">
-          <p className="eyebrow">Revenue model</p>
-          <h2>Subscription plans across consumer, professional, and enterprise markets.</h2>
+          <p className="eyebrow">Plans &amp; pricing</p>
+          <h2>Simple, transparent pricing. Start free.</h2>
         </div>
         <div className="pricing-grid">
           {pricingTiers.map((tier) => (
@@ -162,117 +212,56 @@ export default function Home() {
                   <li key={feature}>{feature}</li>
                 ))}
               </ul>
-              <footer>
-                <span>{tier.target}</span>
-                <span>{tier.revenue}</span>
-              </footer>
             </article>
           ))}
         </div>
+        <p className="pricing-note">
+          Month-to-month. Cancel anytime. No auto-renewal traps, no per-seat surprises.
+        </p>
       </section>
 
-      <section className="section" id="modules">
-        <div className="section-heading">
-          <p className="eyebrow">Application blueprint</p>
-          <h2>Thirteen modules from user management to proprietary scoring.</h2>
-        </div>
-        <div className="module-grid">
-          {platformModules.map((module) => (
-            <article className="module-card" key={module.name}>
-              <p className="module-card__phase">{module.phase}</p>
-              <h3>{module.name}</h3>
-              <p>{module.summary}</p>
-              <ul>
-                {module.features.map((feature) => (
-                  <li key={feature}>{feature}</li>
-                ))}
-              </ul>
-              {module.output ? <div className="module-card__output">{module.output}</div> : null}
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section intelligence">
-        <div className="section-heading">
-          <p className="eyebrow">John Henry Intelligence Center</p>
-          <h2>Macro signals, weekly reports, and private AI research assistance.</h2>
-        </div>
-        <div className="intelligence__grid">
-          <article>
-            <h3>Global macro dashboard</h3>
-            <p>
-              Tracks central banks, treasury markets, oil, gold, Bitcoin, money supply, CPI, PPI,
-              GDP, and unemployment to forecast recession probability and liquidity trends.
-            </p>
-          </article>
-          <article>
-            <h3>Automated reports</h3>
-            <div className="report-list">
-              {reportExamples.map((report) => (
-                <span key={report}>{report}</span>
-              ))}
-            </div>
-          </article>
-          <article>
-            <h3>Research assistant</h3>
-            <p>
-              Answers questions like Analyze Tesla, Evaluate this business, Compare SBA loans,
-              Build a dividend portfolio, and Analyze the Bitcoin cycle.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section className="section score-section">
+      <section className="section split">
         <div>
-          <p className="eyebrow">Proprietary IP</p>
-          <h2>John Henry Opportunity Score</h2>
-          <p>
-            The scoring system creates a repeatable decision-support layer across public securities,
-            private businesses, and digital assets.
+          <p className="eyebrow">Why trust us</p>
+          <h2>Institutional discipline, radical transparency.</h2>
+        </div>
+        <div className="trust-grid">
+          {trust.map((t) => (
+            <article className="trust-card" key={t.name}>
+              <h3>{t.name}</h3>
+              <p>{t.detail}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section split" id="mission">
+        <div>
+          <p className="eyebrow">Our mission</p>
+          <h2>Institutional research for independent investors and acquirers.</h2>
+        </div>
+        <div className="mission">
+          <p className="mission__statement">
+            To put institutional-grade research and diligence in the hands of the investors and
+            acquirers the big platforms overlook — so they can screen faster, buy smarter, and
+            build durable wealth.
+          </p>
+          <p className="mission__story">
+            <Link className="m-link" href="/team">
+              Read our story &rarr;
+            </Link>
           </p>
         </div>
-        <div className="score-grid">
-          {scoreCategories.map((category) => (
-            <article key={category.assetClass}>
-              <h3>{category.assetClass}</h3>
-              <ul>
-                {category.factors.map((factor) => (
-                  <li key={factor}>{factor}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
       </section>
 
-      <section className="section">
-        <div className="section-heading">
-          <p className="eyebrow">Technology stack</p>
-          <h2>Architecture selected for ownership, portability, and future enterprise value.</h2>
-        </div>
-        <div className="stack-grid">
-          {techStack.map((layer) => (
-            <article key={layer.layer}>
-              <h3>{layer.layer}</h3>
-              <p>{layer.tools.join(" / ")}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section vision">
-        <p className="eyebrow">Five-year vision</p>
-        <h2>From investment company to financial technology company.</h2>
-        <p>
-          The long-term platform can expand into an investment research platform, business
-          acquisition marketplace, AI due diligence platform, family office operating system, and
-          wealth intelligence network.
-        </p>
-        <div className="vision__valuation">
-          <strong>$720M - $1.3B+</strong>
-          <span>Potential enterprise value range at 8x-15x ARR if the platform reaches $90M ARR.</span>
+      <section className="section waitlist-section" id="waitlist">
+        <div className="waitlist-section__inner">
+          <p className="eyebrow">Get started</p>
+          <h2>Start free — no sales call, no lock-in.</h2>
+          <p className="waitlist-section__lead">
+            Tell us who you are and we&rsquo;ll get you into the platform. Cancel anytime.
+          </p>
+          <WaitlistForm source="landing" />
         </div>
       </section>
     </main>

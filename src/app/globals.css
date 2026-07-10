@@ -1606,3 +1606,62 @@ li::before {
     grid-template-columns: 1fr;
   }
 }
+
+/* --- Homepage rebuild (Phase A/B) --- */
+.hero__trust {
+  margin-top: 0.9rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.contrast-strip {
+  text-align: center;
+}
+
+.contrast-strip p {
+  margin: 0 auto;
+  max-width: 60rem;
+  font-size: 1.35rem;
+  line-height: 1.5;
+  color: var(--muted-strong);
+}
+
+.contrast-strip strong {
+  color: var(--text);
+}
+
+.pricing-note {
+  margin-top: 1.2rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.trust-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.trust-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--background-card);
+  padding: 1.2rem;
+  box-shadow: var(--shadow);
+}
+
+.trust-card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.02rem;
+  color: var(--text);
+}
+
+.trust-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
