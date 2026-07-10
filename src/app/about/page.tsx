@@ -77,10 +77,10 @@ export default function AboutPage() {
           <h2>Veteran-led. Combat-tested. Built to endure.</h2>
         </div>
         <p style={bodyStyle}>
-          JHI is led by operators with 20+ years building accounting systems, internal controls,
-          and financial reporting — plus hands-on experience running an accounting, tax, and audit
-          practice. Senior accounting &amp; finance leadership (CPA candidate), with a career spent
-          operating real businesses across:
+          JHI is led by operators with 20+ years of experience building accounting systems,
+          internal controls, and financial reporting — plus hands-on experience running an
+          accounting, tax, and audit practice. Our senior accounting and finance leadership
+          includes a CPA candidate, with a career spent operating businesses across:
         </p>
         <div className="tag-grid" style={{ marginTop: "1rem" }}>
           {sectors.map((s) => (

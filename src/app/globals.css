@@ -779,9 +779,9 @@ li::before {
 .app-hero h1 {
   max-width: 900px;
   margin: 0;
-  font-size: clamp(3rem, 8vw, 6rem);
-  letter-spacing: -0.055em;
-  line-height: 0.95;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  letter-spacing: -0.045em;
+  line-height: 1.05;
 }
 
 .app-hero p:not(.eyebrow) {
