@@ -144,8 +144,10 @@ export default function Home() {
 
       <section className="section contrast-strip">
         <p>
-          Institutional-grade research — <strong>without the $30,000 contract, the fake trial,
-          or the renewal trap.</strong>
+          Institutional-grade research — without the{" "}
+          <strong style={{ color: "#e05a5a" }}>$30,000 contract</strong>, the{" "}
+          <strong style={{ color: "#e05a5a" }}>fake trial</strong>, or the{" "}
+          <strong style={{ color: "#e05a5a" }}>renewal trap</strong>.
         </p>
       </section>
 
@@ -166,7 +168,11 @@ export default function Home() {
       <section className="section" id="workflow">
         <div className="section-heading">
           <p className="eyebrow">How it works</p>
-          <h2>From first look to closing — get to &ldquo;no&rdquo; fast, and &ldquo;yes&rdquo; with conviction.</h2>
+          <h2>
+            From first look to closing — get to{" "}
+            <span style={{ color: "#e05a5a" }}>&ldquo;no&rdquo;</span> fast, and{" "}
+            <span style={{ color: "var(--growth)" }}>&ldquo;yes&rdquo;</span> with conviction.
+          </h2>
         </div>
         <div className="module-grid">
           {workflow.map((s) => (

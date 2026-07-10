@@ -86,8 +86,8 @@ main {
 }
 
 .hero__content h1 {
-  max-width: 760px;
-  font-size: clamp(3.5rem, 9vw, 7.5rem);
+  max-width: 860px;
+  font-size: clamp(2.2rem, 5vw, 4.3rem);
 }
 
 .hero__lead {
@@ -503,13 +503,14 @@ main {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
+  align-items: start;
 }
 
 .pricing-card {
   display: flex;
-  min-height: 520px;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 0.75rem;
+  justify-content: flex-start;
   border-radius: 1.5rem;
   padding: 1.5rem;
 }
