@@ -550,6 +550,20 @@ main {
   border-top-color: var(--trust);
 }
 
+/* Price color matches each tier's accent border: Consumer=bronze/gold,
+   Professional=green, Enterprise=trust-blue. */
+.pricing-grid .pricing-card:nth-child(1) strong {
+  color: var(--gold);
+}
+
+.pricing-grid .pricing-card:nth-child(2) strong {
+  color: var(--growth);
+}
+
+.pricing-grid .pricing-card:nth-child(3) strong {
+  color: var(--trust);
+}
+
 ul {
   margin: 1.5rem 0;
   padding: 0;
