@@ -102,7 +102,7 @@ def test_office_export_package_for_excel_financial_report() -> None:
             source_report="financial_report",
             period_start=date(2026, 6, 1),
             period_end=date(2026, 6, 30),
-            requested_by="Marcellus Miller",
+            requested_by="Jordan Lee",
         )
     )
 

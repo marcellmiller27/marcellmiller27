@@ -31,7 +31,7 @@ No for a production financial SaaS platform with paying users, integrations, upl
 
 ## Minimum support needed if operated by one person
 
-If Marcellus Miller operates the platform initially as sole personnel, use contractors and vendors for narrow functions:
+If the Founder operates the platform initially as sole personnel, use contractors and vendors for narrow functions:
 
 | Function | Suggested support | Estimated cost |
 | --- | --- | ---: |

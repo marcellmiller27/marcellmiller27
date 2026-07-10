@@ -148,7 +148,7 @@ Expected result:
 | `docs/investor_package/` | Pitch deck, PowerPoint, Excel financial model, DCF, projections, charts, and generator scripts |
 | `docs/FIVE_STAGE_VALUATION_MODEL.md` | Five-stage valuation ranges, market-cap/equity-value scenarios, probabilities, and milestone valuation requirements |
 | `docs/PRODUCT_BLUEPRINT.md` | Full SaaS platform product blueprint and route map |
-| `docs/PROJECT_MANAGEMENT_CHECKLIST.md` | Completed work checklist, remaining launch tasks, MVP checklist, and Marcellus Miller action items |
+| `docs/PROJECT_MANAGEMENT_CHECKLIST.md` | Completed work checklist, remaining launch tasks, MVP checklist, and the Founder action items |
 | `docs/CLOUD_STORAGE_AND_CAPACITY_PLAN.md` | Cloud storage, database, network, processing, cache, and monitoring estimates |
 | `docs/ESTIMATED_PLATFORM_COSTS.md` | Estimated monthly, annual, provider, AI, integration, compliance, and operating costs |
 | `docs/PROJECTED_EBITDA_MODEL.md` | Projected EBITDA, margin, break-even, and sensitivity scenarios |

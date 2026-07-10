@@ -1,0 +1,26 @@
+# LOCAL SANDBOX HELPER — not for production, do not commit.
+# Works around the docker-in-docker embedded-DNS quirk in this sandbox (containers
+# can't resolve the 'db' service name). Pins Postgres to a static IP and points the
+# backend at it directly. On a normal Docker host you do NOT need this file.
+services:
+  db:
+    networks:
+      jhinet:
+        ipv4_address: 172.28.5.2
+
+  backend:
+    environment:
+      DATABASE_URL: postgresql+psycopg://jhi:jhi@172.28.5.2:5432/jhi
+    networks:
+      - jhinet
+
+  frontend:
+    networks:
+      - jhinet
+
+networks:
+  jhinet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

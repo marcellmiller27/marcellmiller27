@@ -253,7 +253,7 @@ export default function Home() {
             build durable wealth.
           </p>
           <p className="mission__story">
-            <Link className="m-link" href="/team">
+            <Link href="/about" style={{ color: "var(--trust)", fontWeight: 700 }}>
               Read our story &rarr;
             </Link>
           </p>

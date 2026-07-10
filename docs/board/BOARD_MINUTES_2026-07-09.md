@@ -1,7 +1,7 @@
 # Board Minutes — JHI Research & Analytics Firm, Inc.
 
 **Meeting date:** 2026-07-09 · **Type:** Founder working session · **Recorder:** Cy (VP, Software Engineering — AI teammate)
-**Present:** Marcellus Miller (Founder).
+**Present:** Founder.
 
 > NOT legal/tax/accounting/investment advice. Prior session: `docs/board/BOARD_MINUTES_2026-07-08.md`.
 

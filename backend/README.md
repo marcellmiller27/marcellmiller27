@@ -170,7 +170,7 @@ Production integration rule: API requests must pass `credential_reference` value
   "entry_date": "2026-06-23",
   "memo": "Professional subscription payment",
   "source_module": "billing",
-  "created_by": "marcellus.miller",
+  "created_by": "jordan.lee",
   "lines": [
     {
       "account_code": "1000",

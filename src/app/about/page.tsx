@@ -1,0 +1,113 @@
+import { PlatformShell } from "@/components/platform-shell";
+
+// About / "Our story" — deliberately anonymous. Credibility comes from problem
+// clarity, method, focus, and a real entity — no personal names, photos, or bios.
+
+const sectors = [
+  "Defense & government finance",
+  "Logistics & transportation",
+  "Healthcare",
+  "Restaurants & hospitality",
+  "Retail & automotive",
+  "Software",
+  "Public housing",
+  "Manufacturing"
+];
+
+const principles = [
+  {
+    name: "Research, not advice",
+    detail:
+      "We deliver research, analytics, and decision-support — never investment advice or brokerage."
+  },
+  {
+    name: "Radical transparency",
+    detail:
+      "We publish how our scores work and their limits. You see the work, not just the number."
+  },
+  {
+    name: "Intentional focus",
+    detail:
+      "We don't try to be Bloomberg. We do research and acquisition diligence for independent buyers — deeply."
+  },
+  {
+    name: "Licensed data",
+    detail:
+      "Point-in-time fundamentals and market data from licensed providers, with clear provenance."
+  },
+  {
+    name: "Discipline & security",
+    detail:
+      "A national-security discipline around the financial data our subscribers trust us with."
+  }
+];
+
+const bodyStyle = {
+  maxWidth: "62rem",
+  color: "var(--muted-strong)",
+  fontSize: "1.05rem",
+  lineHeight: 1.7
+} as const;
+
+export default function AboutPage() {
+  return (
+    <PlatformShell
+      eyebrow="About · JHI Research & Analytics Firm, Inc."
+      title="A team of operators — augmented by AI."
+      description="John Henry met the machine of his age with nothing but resolve. We don't race the machine — we run it: a lean team of operators working alongside AI, doing the work of a firm many times our size."
+    >
+      <section className="app-section">
+        <div className="app-section__heading">
+          <p className="eyebrow">Why we exist</p>
+          <h2>Institutional research shouldn&rsquo;t be locked behind a $30,000 contract.</h2>
+        </div>
+        <p style={bodyStyle}>
+          Diligence data is fragmented and expensive, and the first-pass read of a CIM eats days
+          of senior time — most of it on deals that die. We built JHI to give independent investors
+          and acquirers institutional-grade research and diligence that&rsquo;s clear, transparent,
+          and grounded in real data — at a fraction of the price, with a real trial and no lock-in.
+        </p>
+      </section>
+
+      <section className="app-section">
+        <div className="app-section__heading">
+          <p className="eyebrow">Who we are</p>
+          <h2>Veteran-led. Combat-tested. Built to endure.</h2>
+        </div>
+        <p style={bodyStyle}>
+          JHI is led by operators with 20+ years building accounting systems, internal controls,
+          and financial reporting — plus hands-on experience running an accounting, tax, and audit
+          practice. Senior accounting &amp; finance leadership (CPA candidate), with a career spent
+          operating real businesses across:
+        </p>
+        <div className="tag-grid" style={{ marginTop: "1rem" }}>
+          {sectors.map((s) => (
+            <span className="tag" key={s}>
+              {s}
+            </span>
+          ))}
+        </div>
+        <p style={{ ...bodyStyle, marginTop: "1rem" }}>
+          That cross-sector depth is why our diligence understands the businesses people actually
+          buy and run — not just tech startups. Formal Quality-of-Earnings and attest work is
+          delivered by our licensed partner CPA network.
+        </p>
+      </section>
+
+      <section className="app-section">
+        <div className="app-section__heading">
+          <p className="eyebrow">How we work</p>
+          <h2>Human judgment, machine speed.</h2>
+        </div>
+        <div className="trust-grid">
+          {principles.map((p) => (
+            <article className="trust-card" key={p.name}>
+              <h3>{p.name}</h3>
+              <p>{p.detail}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    </PlatformShell>
+  );
+}

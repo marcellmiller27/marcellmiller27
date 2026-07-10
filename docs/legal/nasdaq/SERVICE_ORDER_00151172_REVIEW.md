@@ -48,7 +48,7 @@
 > Once these are confirmed I'll sign and return promptly (well within the 30-day window). Payment terms noted as Net 30.
 >
 > Best,
-> Marcellus Miller — JHI Research & Analytics Firm, Inc.
+> Founder — JHI Research & Analytics Firm, Inc.
 
 ## Signing plan
 - **Adobe-sign + email is acceptable** IF (a) it is the **final** version incorporating the Additional Terms (ask Nasdaq to re-issue the Service Order or accept the side letter) and (b) Michael confirms he'll accept an emailed signed PDF in lieu of the DocuSign envelope; otherwise complete their DocuSign once re-issued. End state must be **one fully-executed document with both signatures**.

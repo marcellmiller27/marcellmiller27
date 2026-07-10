@@ -211,7 +211,7 @@ The first paid MVP should focus on a smaller production-ready surface:
 - [ ] User profile and billing management
 - [ ] Terms, privacy policy, and financial disclaimers
 
-## Immediate action items for Marcellus Miller
+## Immediate action items for the Founder
 
 - [ ] Review the current prototype routes and approve the overall platform direction
 - [ ] Decide which customer segment launches first

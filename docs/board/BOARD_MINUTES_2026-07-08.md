@@ -1,7 +1,7 @@
 # Board Minutes — John Henry Investments / JHI Research & Analytics Firm, Inc.
 
 **Meeting date:** 2026-07-08 · **Type:** Founder working session · **Recorder:** Cy (VP, Software Engineering — AI teammate)
-**Present:** Marcellus Miller (Founder).
+**Present:** Founder.
 
 > NOT legal/tax/accounting/investment advice. Prior sessions: `docs/board/BOARD_MINUTES_2026-07-07.md` and earlier.
 

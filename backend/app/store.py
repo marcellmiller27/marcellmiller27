@@ -104,7 +104,7 @@ class InMemoryStore:
                 phone="555-0100",
                 role="Managing Partner",
                 relationship_type="enterprise prospect",
-                owner="Marcellus Miller",
+                owner="Jordan Lee",
             )
         )
         deal = self.create_deal(

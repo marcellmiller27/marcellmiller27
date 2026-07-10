@@ -13,8 +13,8 @@ def register_user(plan: str = "consumer") -> dict:
         "/api/v1/auth/register",
         json={
             "organization_name": f"John Henry Test Org {unique}",
-            "full_name": "Marcellus Miller",
-            "email": f"marcellus-{unique}@example.com",
+            "full_name": "Jordan Lee",
+            "email": f"owner-{unique}@example.com",
             "password": "SecurePass123",
             "plan": plan,
         },
