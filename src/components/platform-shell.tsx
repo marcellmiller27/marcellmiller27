@@ -15,6 +15,7 @@ const navigation = [
   { href: "/pipeline", label: "Pipeline" },
   { href: "/due-diligence", label: "Document Review" },
   { href: "/portfolio", label: "Portfolio" },
+  { href: "/accounting", label: "Accounting" },
   { href: "/pricing", label: "Plans" },
   { href: "/account", label: "Account" },
   { href: "/support", label: "Help" },
