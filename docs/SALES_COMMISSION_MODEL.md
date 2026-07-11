@@ -44,5 +44,18 @@ Lean bootstrapped opex: payment processing 3% + infra/support 2% + SF1 $18k (COG
 
 **Reality check:** these EBITDA figures assume the *aggressive* 1,200-premium-sub Year-1 ramp — a ceiling, not a base case. At a conservative 20–40 closes/mo the picture is far smaller (and near the fixed-opex breakeven early on). The model's inputs let you dial the ramp down.
 
+## Ramp scenarios (conservative vs base vs aggressive)
+New **"Ramp Scenarios"** tab compares Year-1 outcomes by close rate, holding the mix, residual, and opex constant (all-Tier-2 default mix; no churn):
+
+| Line (Year-1) | Conservative (30/mo) | Base (60/mo) | Aggressive (100/mo) |
+|---|---|---|---|
+| Subscribers | 360 | 720 | 1,200 |
+| Revenue | $699,660 | $1,399,320 | $2,332,200 |
+| Sales commission | $69,966 | $139,932 | $233,220 |
+| **EBITDA** | **~$450,711** | **~$1,045,422** | **~$1,838,370** |
+| EBITDA margin | ~64% | ~75% | ~79% |
+
+**Reality note:** even "conservative" 30/mo = 360 *premium* subs in Year 1 — still optimistic for a brand-new product. The close-rate cells are editable, so dial them to 5–20/mo for a true early-stage view; the whole P&L recomputes live.
+
 ## Regenerate
 `python scripts/sales_commission_model.py [output.xlsx]` — editable inputs (tier prices, mix %, closes/mo, residual %, churn, gross margin) drive a live 24-month schedule + Year-1-by-mix table. Every sheet carries the legal/`69M2705M`/entity footer.

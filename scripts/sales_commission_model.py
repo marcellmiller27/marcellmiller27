@@ -202,6 +202,49 @@ def build() -> Workbook:
             if label in ("EBITDA",):
                 cell.font = _BOLD
 
+    # --- Ramp Scenarios (Conservative vs Base vs Aggressive close rate) ---
+    rs = wb.create_sheet("Ramp Scenarios")
+    for col, w in zip("ABCD", (34, 16, 16, 16)):
+        rs.column_dimensions[col].width = w
+    _title(rs, "Year-1 by ramp — Conservative vs Base vs Aggressive")
+    rs.cell(row=5, column=1, value="Same 10% residual + opex assumptions; only the close rate changes. No-churn ramp (closes × 78 sub-months).").font = _MUTED
+    rs.cell(row=6, column=1, value="Scenario").font = _WHITE
+    rs.cell(row=6, column=1).fill = _NAVY_FILL
+    for col, name in zip("BCD", ("Conservative", "Base", "Aggressive")):
+        c = rs.cell(row=6, column="ABCD".index(col) + 1, value=name)
+        c.font = _WHITE
+        c.fill = _NAVY_FILL
+    rs.cell(row=7, column=1, value="Closes per month").font = _BOLD
+    for col, val in zip("BCD", (30, 60, 100)):
+        cell = rs.cell(row=7, column="ABCD".index(col) + 1, value=val)
+        cell.fill = _INPUT_FILL
+    # Row map: 8=subs, 9=avgMRR, 10=revenue, 11=commission, 12=COGS, 13=gross,
+    # 14=fixed opex, 15=total opex, 16=EBITDA, 17=margin.
+    ramp_rows = [
+        ("Year-1 subscribers (× 12)", "={c}7*12", "#,##0"),
+        ("Avg MRR / sub", "=Assumptions!$B$13", _MONEY),
+        ("Year-1 revenue", "={c}7*78*Assumptions!$B$13", _MONEY),
+        ("Sales commission (residual)", "={c}10*Assumptions!$B$9/100", _MONEY),
+        ("COGS (proc+infra % + SF1)", "={c}10*(Assumptions!$B$16+Assumptions!$B$17)/100+Assumptions!$B$18", _MONEY),
+        ("Gross profit", "={c}10-{c}12", _MONEY),
+        ("Fixed opex (mktg+legal+sw+founder)", "=Assumptions!$B$19+Assumptions!$B$20+Assumptions!$B$21+Assumptions!$B$22", _MONEY),
+        ("Total operating expenses", "={c}11+{c}14", _MONEY),
+        ("EBITDA", "={c}13-{c}15", _MONEY),
+        ("EBITDA margin", "=IF({c}10=0,0,{c}16/{c}10)", _PCT),
+    ]
+    for i, (label, formula, fmt) in enumerate(ramp_rows):
+        row_i = 8 + i
+        lc = rs.cell(row=row_i, column=1, value=label)
+        if label in ("Year-1 revenue", "Gross profit", "Total operating expenses", "EBITDA"):
+            lc.font = _BOLD
+        for ci, col in enumerate("BCD", start=2):
+            cell = rs.cell(row=row_i, column=ci, value=formula.format(c=col))
+            cell.number_format = fmt
+            if label == "EBITDA":
+                cell.font = _BOLD
+    rs.cell(row=8 + len(ramp_rows) + 1, column=1,
+            value="Conservative (30/mo) is the base case for a new, unproven product; Aggressive (100/mo) is the ceiling.").font = _MUTED
+
     # --- Legal ---
     lg = wb.create_sheet("Legal & Provenance")
     lg.column_dimensions["A"].width = 100
