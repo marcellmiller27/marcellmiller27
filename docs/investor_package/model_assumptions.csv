@@ -1,0 +1,14 @@
+assumption,value
+consumer_price_monthly,50
+professional_price_monthly,299
+enterprise_price_monthly,1500
+consumer_mix,0.85
+professional_mix,0.13
+enterprise_mix,0.02
+blended_arpu_monthly,111.37
+payment_processing_rate,0.03
+discount_rate,0.18
+terminal_growth_rate,0.03
+terminal_value,233719066.11
+pv_terminal_value,102160757.81
+estimated_enterprise_value_dcf,133531711.58

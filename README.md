@@ -1,10 +1,171 @@
-- 👋 Hi, I’m @marcellmiller27
-- 👀 I’m interested in JavaScript Python Solidity...
-- 🌱 I’m currently learning diff coding languages...
-- 💞️ I’m looking to collaborate on blockchain any project...
-- 📫 How to reach me email ...
+# John Henry Investments Intelligence Platform
 
-<!---
-marcellmiller27/marcellmiller27 is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+John Henry Investments, LLC is a subscription-based investment intelligence platform concept for B2C and B2B customers.
+
+The prototype in this repository turns the SaaS application blueprint into a runnable Next.js and TypeScript application with a FastAPI backend. It presents subscription plans, platform modules, opportunity scoring, macro intelligence, due diligence workflows, portfolio management, AI assistant workflows, accounting workflows, reporting, dashboards, CRM, and the recommended technology stack.
+
+## Application focus
+
+- AI-powered opportunity discovery
+- Business acquisition analysis
+- AI due diligence center
+- Global macro dashboard
+- Weekly intelligence reports
+- Portfolio tracking
+- Wealth projection
+- Corporate governance and capital raising tools
+- John Henry Opportunity Score
+- General journal accounting entries
+- Audit and financial reports
+- Executive dashboards
+- CRM pipeline management
+- External banking, vendor, Microsoft Office, and CRM integrations
+- Authentication and organization accounts
+- Database persistence foundation
+- Subscription billing foundation
+
+## Tech stack
+
+- Next.js
+- React
+- TypeScript
+- Python
+- FastAPI
+- Future backend target: PostgreSQL, Supabase, OpenAI, Anthropic, AWS or private cloud
+
+## Application routes
+
+- `/` - Public platform overview and subscription positioning
+- `/dashboard` - Investor command center with portfolio metrics, market widgets, and AI recommendations
+- `/opportunities` - Investment and acquisition opportunity engine with John Henry Opportunity Scores
+- `/due-diligence` - AI due diligence center for document upload and risk review workflows
+- `/portfolio` - Portfolio management and wealth projection scenarios
+- `/reports` - John Henry Intelligence Center report generation workflow
+- `/assistant` - Private AI research assistant workflow examples
+- `/register` - Organization and admin registration foundation
+- `/login` - Authentication and session contract overview
+- `/pricing` - Subscription plan and checkout contract overview
+- `/account` - Account, organization, subscription, and audit context
+
+## Backend API
+
+The backend application is saved in:
+
+```text
+backend/
+```
+
+It includes API modules for:
+
+- Accounting journal entries
+- Chart of accounts
+- Trial balance
+- Audit reports
+- Financial reports
+- Executive dashboards
+- CRM contacts, deals, activities, and pipeline summary
+- External banking connectors such as Plaid and MX
+- Vendor/accounting connectors such as QuickBooks, NetSuite, and Bill.com
+- Microsoft 365 Excel and Word export package interfaces
+- Salesforce CRM sync interface
+- Organization and user registration
+- Login and bearer token authentication
+- Subscription plans, checkout sessions, webhooks, and audit logs
+
+Backend documentation:
+
+```text
+backend/README.md
+```
+
+## Getting started
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+Run static checks:
+
+```bash
+npm run lint
+npm run typecheck
+```
+
+Run backend checks:
+
+```bash
+cd backend
+python3 -m compileall app tests
+python3 -m pytest
+python3 -m ruff check .
+```
+
+## Deploy with Docker (sandbox)
+
+The whole platform (FastAPI backend + Next.js frontend) runs with one command:
+
+```bash
+docker compose up --build
+```
+
+- Frontend: `http://localhost:3000`
+- Backend API + interactive docs: `http://localhost:8000/docs`
+
+Notes:
+
+- Compose runs **Postgres + backend + frontend** with healthchecks; the backend
+  uses durable Postgres (`DATABASE_URL`) and runs multiple workers (`WEB_CONCURRENCY`).
+  Images run as **non-root** with container `HEALTHCHECK`s; readiness probe at
+  `GET /ready` (verifies the DB).
+- The frontend reads the backend via `NEXT_PUBLIC_API_BASE_URL`
+  (defaults to `http://localhost:8000/api/v1`).
+- Leave `APP_ENV` unset for sandbox testing (enables the 2FA demo code). For
+  production set `APP_ENV=production` **and** a strong `AUTH_JWT_SECRET` + Postgres
+  `DATABASE_URL` — startup config validation fails fast otherwise. Optionally set
+  `RATE_LIMIT_PER_MINUTE` to throttle the API (off by default).
+
+### What to exercise after `docker compose up`
+
+- `/` landing + mission, `/dashboard` (live market data + FX + bonds, auto-refresh),
+  `/mobile` (password / 2FA / biometric sign-in), `/support` (AI FAQ assistant),
+  `/pricing`, `/opportunities`, `/portfolio`, `/reports`, `/account`.
+- API: `/api/v1/market/quotes`, `/api/v1/research/*`, `/api/v1/valuations/estimate`,
+  `/api/v1/support/ask`, `/api/v1/auth/*`.
+
+## Product blueprint
+
+The full product specification, project management checklist, source-code audit, system flowcharts, investor package, five-stage valuation model, cloud capacity plan, estimated platform costs, projected EBITDA model, staffing/legal pro forma, compensation/professional-services projections, job descriptions/staffing requirements, next action items to define, auth/database/billing foundation, next programming milestone, failed programming codes log, and saved programming-script reference are available in:
+
+```text
+docs/PRODUCT_BLUEPRINT.md
+docs/PROJECT_MANAGEMENT_CHECKLIST.md
+docs/SRC_CODE_AUDIT.md
+docs/SYSTEM_FLOWCHARTS_AND_PROCESS_MAPS.md
+docs/investor_package/README.md
+docs/FIVE_STAGE_VALUATION_MODEL.md
+docs/CLOUD_STORAGE_AND_CAPACITY_PLAN.md
+docs/ESTIMATED_PLATFORM_COSTS.md
+docs/PROJECTED_EBITDA_MODEL.md
+docs/STAFFING_LEGAL_PRO_FORMA.md
+docs/COMPENSATION_AND_PRO_SERVICES_PROJECTIONS.md
+docs/JOB_DESCRIPTIONS_AND_STAFFING_REQUIREMENTS.md
+docs/NEXT_ACTION_ITEMS_TO_DEFINE.md
+docs/AUTH_DATABASE_BILLING_FOUNDATION.md
+docs/NEXT_PROGRAMMING_MILESTONE.md
+docs/FAILED_PROGRAMMING_CODES.md
+docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md
+```
