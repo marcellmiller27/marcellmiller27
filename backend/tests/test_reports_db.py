@@ -51,7 +51,7 @@ def test_new_journal_entry_flows_into_financials() -> None:
             "entry_date": "2026-06-20",
             "memo": "Cash receipt for report flow",
             "lines": [
-                {"account_code": "1000", "debit": "1234.00", "credit": "0.00"},
+                {"account_code": "1010", "debit": "1234.00", "credit": "0.00"},
                 {"account_code": "4000", "debit": "0.00", "credit": "1234.00"},
             ],
         },
