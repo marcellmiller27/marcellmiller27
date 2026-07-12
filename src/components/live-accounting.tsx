@@ -1,12 +1,35 @@
 "use client";
 // JHI-SIG: 69M2705M | Accounting UI | John Henry Investments (proprietary)
 
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v1";
 
-type Account = { code: string; name: string; account_type: string };
+type Account = { code: string; name: string; account_type: string; category?: string };
+
+// Non-GL operational metrics (8000 series) — tracked for management insight only,
+// deliberately NOT posted to the general ledger.
+const MANAGEMENT_METRICS: [string, string][] = [
+  ["8000", "Annual Recurring Revenue (ARR)"],
+  ["8010", "Monthly Recurring Revenue (MRR)"],
+  ["8020", "Churn"],
+  ["8030", "Customer Acquisition Cost (CAC)"],
+  ["8040", "Lifetime Value (LTV)"],
+  ["8050", "Gross Revenue Retention"],
+  ["8060", "Net Revenue Retention"],
+  ["8070", "Active Subscribers"],
+  ["8080", "Average Revenue Per User (ARPU)"]
+];
+
+const groupHeadStyle = {
+  padding: "0.5rem 0.75rem",
+  background: "var(--border)",
+  fontWeight: 800,
+  fontSize: "0.72rem",
+  textTransform: "uppercase" as const,
+  letterSpacing: "0.04em"
+};
 type TrialRow = {
   account_code: string;
   account_name: string;
@@ -101,6 +124,12 @@ export function LiveAccounting() {
     );
   }
 
+  const categories: string[] = [];
+  for (const a of accounts) {
+    const c = a.category || "Other";
+    if (!categories.includes(c)) categories.push(c);
+  }
+
   return (
     <div>
       <JournalEntryForm accounts={accounts} onPosted={load} />
@@ -120,12 +149,23 @@ export function LiveAccounting() {
               </tr>
             </thead>
             <tbody>
-              {accounts.map((a) => (
-                <tr key={a.code}>
-                  <td style={cellStyle}>{a.code}</td>
-                  <td style={cellStyle}>{a.name}</td>
-                  <td style={{ ...cellStyle, textTransform: "capitalize" }}>{a.account_type}</td>
-                </tr>
+              {categories.map((cat) => (
+                <Fragment key={cat}>
+                  <tr>
+                    <td colSpan={3} style={groupHeadStyle}>
+                      {cat}
+                    </td>
+                  </tr>
+                  {accounts
+                    .filter((a) => (a.category || "Other") === cat)
+                    .map((a) => (
+                      <tr key={a.code}>
+                        <td style={cellStyle}>{a.code}</td>
+                        <td style={cellStyle}>{a.name}</td>
+                        <td style={{ ...cellStyle, textTransform: "capitalize" }}>{a.account_type}</td>
+                      </tr>
+                    ))}
+                </Fragment>
               ))}
             </tbody>
           </table>
@@ -220,6 +260,36 @@ export function LiveAccounting() {
             </article>
           ))
         )}
+      </section>
+
+      <section className="app-section">
+        <div className="app-section__heading">
+          <p className="eyebrow">Management metrics · non-GL</p>
+          <h2>Operational metrics (8000 series)</h2>
+        </div>
+        <article className="app-card" style={{ overflowX: "auto" }}>
+          <p style={{ color: "var(--muted)", fontSize: "0.85rem", marginTop: 0 }}>
+            Tracked alongside the ledger for management insight — these are{" "}
+            <span style={{ fontWeight: 700 }}>not</span> general-ledger accounts and do not post to the
+            trial balance.
+          </p>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={headStyle}>Ref</th>
+                <th style={headStyle}>Metric</th>
+              </tr>
+            </thead>
+            <tbody>
+              {MANAGEMENT_METRICS.map(([code, name]) => (
+                <tr key={code}>
+                  <td style={cellStyle}>{code}</td>
+                  <td style={cellStyle}>{name}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </article>
       </section>
     </div>
   );
