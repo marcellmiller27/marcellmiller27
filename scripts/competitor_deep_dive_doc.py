@@ -189,11 +189,14 @@ def build() -> Document:
             "and searchers doing market mapping / comparable-deal research.",
             "**Plumbing (data \u2192 output):** aggregated from public sources (press releases, filings, "
             "news). Broad on announced deals; shallow on underlying financials. No proprietary score; "
-            "output is directory profiles and deal lists.",
+            "output is directory profiles, deal lists, and ~15 pre-built M&A workflows (Buyer Match, "
+            "Dossier, Roll-up tracker).",
             "**Moat:** modest \u2014 tidy UX, transparent low price, and clear positioning. Not a deep "
             "data or workflow moat; the most emulatable of the three.",
-            "**Pricing (public estimate; verify):** the accessible option \u2014 roughly $99\u2013$500/mo "
-            "by tier, published on-site, no enterprise gate.",
+            "**Pricing (verified, public):** Mergr Pro $150/mo (~$1,800/yr) + $100/user/mo for team "
+            "seats; 7-day free self-serve trial, month-to-month, cancel anytime; custom/annual plans "
+            "from 10 seats. Positions itself explicitly as a PitchBook alternative "
+            "($150/mo vs. $25k\u2013$50k+/yr).",
             "**Pain points / gaps:** not a diligence tool; thin financial depth; no CIM ingestion, "
             "no normalized earnings, no QoE, no close workflow.",
             "**JHI angle:** copy Mergr\u2019s transparency and \u201cWho it\u2019s for\u201d clarity; go "
@@ -215,8 +218,10 @@ def build() -> Document:
             "research-hour-class data operation.",
             "**Moat:** very high \u2014 data breadth + S&P brand/ratings + entrenched Excel workflow "
             "lock-in + enterprise integrations. Not displaceable on data.",
-            "**Pricing (public estimate; verify):** opaque, enterprise; roughly $13k\u2013$40k+/user/yr, "
-            "higher with multi-seat/enterprise agreements and annual lock-ins.",
+            "**Pricing (no public list; third-party estimates):** per-user tiers roughly Essentials "
+            "$12k / Standard $20k / Advanced $25k per year; Vendr procurement (55 buys) shows org "
+            "contracts ~$15k\u2013$215k/yr, median ~$53k; total cost of ownership often ~70% above list "
+            "(integrations, support). Annual, auto-renewing.",
             "**Pain points / gaps:** cost; steep learning curve; overkill for SMB buyers; per-seat "
             "gouging and opaque pricing; no Main-Street SMB deal-diligence layer.",
             "**JHI angle:** do not compete on breadth. Win on price, approachability, and the "
@@ -237,8 +242,10 @@ def build() -> Document:
             "AI query layer; a strong content flywheel (newsletter reach) drives top-of-funnel.",
             "**Moat:** proprietary scoring + analyst content brand + newsletter distribution + network "
             "effects. Content flywheel is the standout, emulatable mechanic.",
-            "**Pricing (public estimate; verify):** opaque, enterprise SaaS; commonly cited in the "
-            "~$60k+/yr range, with lower \u201cessentials\u201d tiers reported.",
+            "**Pricing (no public list; third-party estimates):** annual, custom-quoted; Vendr median "
+            "~$47k/yr, typical ~$60k/yr, enterprise/Insider $120k\u2013$265k+/yr, floor ~$50k. No free "
+            "self-serve tier or full-platform trial (free = research content + newsletter + a 10-day "
+            "trial on request).",
             "**Pain points / gaps:** expensive; tech/startup-centric (not SMB Main-Street "
             "acquisitions); cannot ingest your own CIM/documents; search-UX complaints; no QoE or "
             "close workflow; ROI questioned by some buyers.",
@@ -348,16 +355,61 @@ def build() -> Document:
     )
     rr.italic = True
 
-    # ---- 8. Appendix ----
-    _heading(doc, "8. Appendix \u2014 Sources, Ethics & Disclaimers", 1)
+    # ---- 8. Verified pricing & sources ----
+    _heading(doc, f"8. Verified Pricing & Sources (public, as of {date.today().isoformat()})", 1)
+    doc.add_paragraph(
+        "Pricing below is verified against current public pages and third-party procurement data "
+        "(Vendr, Capchase) rather than a paid trial. Mergr publishes a list price; S&P and CB Insights "
+        "do not, so their figures are sourced third-party estimates and procurement medians."
+    )
+    _table(
+        doc,
+        ["Platform", "Public list?", "Entry / typical", "Enterprise / high end", "Trial"],
+        [
+            ["Mergr", "Yes", "$150/mo (~$1,800/yr) + $100/seat", "Custom, 10+ seats", "7-day self-serve"],
+            ["S&P Capital IQ Pro", "No", "~$12k\u2013$25k/user/yr; org median ~$53k", "up to ~$215k+/yr; TCO ~+70%", "Sales demo"],
+            ["CB Insights", "No", "median ~$47k/yr; typical ~$60k", "$120k\u2013$265k+/yr", "10-day (on request); no self-serve"],
+        ],
+    )
+    doc.add_paragraph("Sources (accessed for this pass):")
+    _bullets(
+        doc,
+        [
+            "**Mergr:** mergr.com/pricing; docs.mergr.com (\u201cPitchBook alternative\u201d; seat add-ons); "
+            "Fintalent listing.",
+            "**S&P Capital IQ Pro:** CostBench (Vendr procurement, 55 buys); Wall Street Prep "
+            "(pricing overview); GeminIQ (per-tier estimates).",
+            "**CB Insights:** EasyVC and Elevated Signal (Vendr/Capchase medians & tiers); CostBench "
+            "calculator; Prospeo (CB Insights vs. Crunchbase).",
+        ],
+    )
+    _heading(doc, "What a true paid live-trial still adds (founder action)", 2)
+    _bullets(
+        doc,
+        [
+            "**Cheap & fast:** Mergr is self-serve at $150/mo with a 7-day free trial \u2014 a real "
+            "hands-on teardown is low-cost and immediate.",
+            "**Gated:** S&P Capital IQ Pro and CB Insights require sales demos (no self-serve); a paid "
+            "eval needs a business email, a sales conversation, and likely a signed order \u2014 founder "
+            "action.",
+            "**What it adds:** the pricing above is already well-sourced for board triage; a paid trial "
+            "firms up first-run funnel, workflow depth, and export/plumbing detail, plus first-hand "
+            "churn/pain mining \u2014 not the price, which is settled here.",
+        ],
+    )
+
+    # ---- 9. Appendix ----
+    _heading(doc, "9. Appendix \u2014 Sources, Ethics & Disclaimers", 1)
     _bullets(
         doc,
         [
             "**Sources:** public product/pricing pages, third-party pricing intelligence, and public "
             "user reviews (e.g., G2, TrustRadius, Reddit, search-fund forums). Competitive intelligence "
             "gathered from public sources only.",
-            "**Verification required:** all pricing and coverage figures are estimates; confirm via "
-            "live trial and written vendor quotes before any board decision or public claim.",
+            "**Verification status:** pricing is verified against current public pages and third-party "
+            "procurement data (see \u00a78); S&P and CB Insights do not publish list prices, so their "
+            "figures are sourced estimates/medians. Coverage, UX, and plumbing depth still benefit from "
+            "a paid hands-on trial before any public claim.",
             "**No affiliation:** JHI is not affiliated with, endorsed by, or partnered with Mergr, "
             "S&P Global, or CB Insights. Marks belong to their respective owners.",
             f"**Provenance:** founder signature of record {SIG}. \u00a9 {date.today().year} {ENTITY}. "

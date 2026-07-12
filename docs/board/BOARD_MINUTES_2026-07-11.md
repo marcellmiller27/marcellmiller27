@@ -25,7 +25,7 @@ Deliverable: `docs/JHI_Competitor_Deep_Dive_Mergr_SPGlobal_CBInsights.docx` (pro
 - **Cost / risk / reward:** incremental cost (SF1 ~$18k/yr, infra, CPA revenue-share); key risks are **data-rights** (NASDAQ derived-data addendum pending) and **score validation** (H5 currently FAIL); reward is a defensible end-to-end moat in an underserved niche.
 - **Recommendation:** **WATCH → GO** on a narrow beachhead, conditional on (a) score validation, (b) derived-data rights, (c) lean cost. **Do NOT** try to out-data S&P / CB Insights.
 - **Proposed resolution (RESOLVED):** pursue the SMB diligence wedge as the beachhead; make no predictive score claim until it clears the pre-registered bar; secure NASDAQ derived-data rights before client-facing score serving; hold run-rate lean pending validation; authorize a live-trial teardown pass to verify all pricing/coverage estimates.
-- **Caveat:** all competitor pricing/coverage figures are best-available **public estimates** — verify via live trial + written quotes before any decision or public claim.
+- **Pricing verified (2026-07-12 pass):** pricing figures were confirmed against current public pages + third-party procurement data (Vendr/Capchase), added to the doc as §8 with sources. **Mergr** publishes **$150/mo** (~$1,800/yr) + $100/seat, 7-day self-serve trial; **S&P Capital IQ Pro** is custom (~$12k–$25k/user/yr; Vendr org median ~$53k; up to ~$215k+; TCO ~+70%); **CB Insights** is custom (Vendr median ~$47k/yr; typical ~$60k; enterprise $120k–$265k+/yr; **no self-serve trial**). S&P/CBI publish no list price, so those are sourced estimates/medians. A *paid* hands-on trial (founder action, since S&P/CBI are sales-gated) still adds first-run UX/plumbing detail — not the price, which is now settled.
 
 ---
 
