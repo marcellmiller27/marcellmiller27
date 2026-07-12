@@ -1,0 +1,81 @@
+// JHI-SIG: 69M2705M | Firm Documents / Downloads | John Henry Investments (proprietary)
+import { PlatformShell } from "@/components/platform-shell";
+
+type DocItem = {
+  title: string;
+  description: string;
+  href: string;
+  kind: string;
+};
+
+const documents: DocItem[] = [
+  {
+    title: "Sales Commission & EBITDA Model",
+    description:
+      "Editable workbook: 24-month commission schedule, Year-1 by mix, a monthly EBITDA & operating-cost statement, and the prepaid-MSA salesperson-bonus sheet (bonus = 10% of EBITDA).",
+    href: "/downloads/JHI_Sales_Commission_EBITDA_Model.xlsx",
+    kind: "Excel workbook (.xlsx)"
+  },
+  {
+    title: "Competitor Deep-Dive & Reverse-Engineering Audit",
+    description:
+      "Mergr, S&P Global (Capital IQ Pro), and CB Insights: per-competitor teardown, synthesis matrix, the \u201cdiamond in the rough\u201d thesis, cost/risk/reward, verified pricing, and a board recommendation.",
+    href: "/downloads/JHI_Competitor_Deep_Dive_Mergr_SPGlobal_CBInsights.docx",
+    kind: "Word document (.docx)"
+  }
+];
+
+const cardStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "1rem",
+  flexWrap: "wrap" as const,
+  marginBottom: "0.9rem"
+};
+
+const btnStyle = {
+  display: "inline-block",
+  padding: "0.6rem 1.2rem",
+  borderRadius: "999px",
+  background: "var(--growth, #1f7a4d)",
+  color: "#fff",
+  fontWeight: 800,
+  fontSize: "0.9rem",
+  textDecoration: "none",
+  whiteSpace: "nowrap" as const
+};
+
+export default function DownloadsPage() {
+  return (
+    <PlatformShell
+      eyebrow="Firm operations"
+      title="Documents"
+      description="Download the firm's models and reports. Files open in Excel / Numbers / Google Sheets (.xlsx) or Word / Pages / Google Docs (.docx)."
+    >
+      <section className="app-section">
+        <div className="app-section__heading">
+          <p className="eyebrow">Downloads</p>
+          <h2>Models &amp; reports</h2>
+        </div>
+        {documents.map((doc) => (
+          <article className="app-card" key={doc.href} style={cardStyle}>
+            <div style={{ flex: 1, minWidth: "240px" }}>
+              <strong style={{ fontSize: "1.02rem" }}>{doc.title}</strong>
+              <p style={{ color: "var(--muted)", fontSize: "0.72rem", fontWeight: 800, textTransform: "uppercase", margin: "0.2rem 0" }}>
+                {doc.kind}
+              </p>
+              <p style={{ color: "var(--muted)", fontSize: "0.88rem", margin: 0 }}>{doc.description}</p>
+            </div>
+            <a href={doc.href} download style={btnStyle}>
+              Download
+            </a>
+          </article>
+        ))}
+        <p style={{ color: "var(--muted)", fontSize: "0.8rem", marginTop: "0.5rem" }}>
+          Confidential — for internal use. Provenance: JHI-SIG 69M2705M.
+        </p>
+      </section>
+    </PlatformShell>
+  );
+}
