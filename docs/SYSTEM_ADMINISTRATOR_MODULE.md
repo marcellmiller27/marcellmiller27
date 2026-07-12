@@ -19,6 +19,8 @@ Two distinct audiences (both belong in the module, at different tiers):
 
 The founder's immediate ask ("granting access, etc.") is primarily the **Platform Administration** super-admin surface. Org-admin is the natural second tier and is designed in here so we don't repaint later.
 
+**Both tiers can be staffed by humans *or* AI agents.** An administrator is a *principal with an admin permission set* — that principal may be a human user or an AI agent (service identity). AI-agent administrators are a first-class part of this design (see §5A), governed by the same RBAC engine plus stricter autonomy/approval controls.
+
 ---
 
 ## 2. Current state (as-built) — what exists vs. what's missing
@@ -71,6 +73,8 @@ Admin
 ├── Data Entitlements   licensed-data access by plan/org/user (SF1/NASDAQ guardrails)
 ├── Security            MFA enforcement, session lifetime, password policy, admin IP allow-list
 ├── API Keys            scoped keys / service accounts (create, scope, rotate, revoke)
+├── Agents & Automation non-human admins: identity, permission scope, autonomy tier,
+│                       pending approvals, activity, per-agent KILL SWITCH
 ├── Feature Flags       module on/off by org / plan / user
 ├── Audit Log           filterable, exportable event stream
 └── System Health       services, DB, jobs, data providers (read-only)
@@ -107,6 +111,32 @@ Move from **role-only** to **role → permission** (RBAC), org-scoped, least-pri
 
 ---
 
+## 5A. AI-agent administrators (human + machine admins)
+Administration must support **AI agents acting as system administrators**, alongside humans — JHI already runs AI service agents (Ava/Max/Sage/Quinn/Tess with founder escalation), and this extends that pattern into the admin control plane with tighter controls.
+
+**Identity — agents are first-class, non-human principals.**
+- Extend the principal with `principal_type` = `human | agent` and an `agent_id`. Agents are **service identities**, never a human's login/session.
+- Agents authenticate with **scoped, short-lived, rotatable credentials** (an agent variant of API keys), not passwords/human tokens.
+- Every agent has a **human owner/sponsor** and a written **charter** (what it may do, on whose authority).
+
+**Bounded autonomy — the core control.** Each agent-admin operates at a declared tier per capability:
+| Tier | Examples | Control |
+|---|---|---|
+| **Autonomous** (low-risk, reversible) | read/triage, detect anomalies, draft/route, generate reports, *propose* grants | agent acts, everything audited |
+| **Human-approved** (sensitive/irreversible) | grant/revoke access, change roles, change entitlements, deactivate users, billing changes | agent **proposes → human approves** (four-eyes); agent cannot self-approve |
+| **Forbidden** (never) | grant platform-super-admin, disable/alter audit, change security policy, read raw secrets, cross-tenant export beyond scope | hard-blocked in code, not policy |
+
+**Guardrails.**
+- **Least privilege + hard caps:** narrowly scoped permissions; per-agent rate/volume limits so a loop can't cascade.
+- **Kill switch:** any human super-admin can **instantly suspend** an agent (revoke its credentials/sessions).
+- **Non-repudiation:** every agent action is audited with the agent identity, its human sponsor, the trigger/source, and a machine-readable **reason/citation**.
+- **Confused-deputy protection:** when acting on someone's behalf, an agent's effective authority is **capped at the requester's own permissions** (an agent can't be used to exceed the human's rights).
+- **Prompt-injection containment:** untrusted input (support tickets, uploaded CIMs/docs, web content) can **never directly trigger a privileged action** — such actions route through the approve queue. Agents treat external text as data, not commands.
+- **Time-boxed elevation:** any elevated grant to an agent expires automatically.
+- **Data-license aware:** agents obey the same data entitlements as humans (no licensed-data leakage).
+
+**Where it lives:** the **Admin → Agents & Automation** area (identity, scope, autonomy tier per capability, pending approvals, activity feed, kill switch). Reuses the same role→permission engine — an "agent-admin" is a permission set assigned to an agent principal, plus its autonomy policy.
+
 ## 6. Data model additions (sketch)
 Additive to the existing schema; no rewrite of `UserDB`/`OrganizationDB`/`MembershipDB`.
 
@@ -117,6 +147,8 @@ Additive to the existing schema; no rewrite of `UserDB`/`OrganizationDB`/`Member
 - `invitations(id, email, org_id, role_id, token, status, invited_by, expires_at)`
 - `access_requests(id, user_id, requested_permission/role, status, reviewer, decided_at, reason)`
 - `api_keys(id, org_id, name, hashed_key, scopes, created_by, last_used_at, revoked_at)`
+- `agents(id, name, owner_user_id, charter, status, hashed_credential, created_at, suspended_at)` — non-human admin principals (kill switch = set `suspended_at` + revoke credential)
+- `agent_autonomy(agent_id, permission_code, tier)` — `autonomous | human_approved | forbidden` per capability
 - `feature_flags(key, scope_type, scope_id, enabled)`
 - `sessions` / token-revocation list (for "end session" and rotation)
 - Extend `AuditLogDB` usage to **all** admin mutations (already the right shape).
@@ -142,6 +174,7 @@ Ordered by severity.
 9. **🟡 PII & compliance.** Admin views expose user data — minimize fields, log access, support data-subject export/delete. Keep the software/data-publisher posture (NAICS 513210); admin tooling is not investment advice.
 10. **🟡 Lockout / recovery.** Don't build a system where losing the sole super-admin bricks administration — define recovery (a second break-glass admin, secured).
 11. **🟡 Rate-limit / brute force on admin.** Admin login + sensitive actions should be rate-limited and alerted.
+12. **🟠 AI-agent administrators (non-human admins).** Powerful and novel-risk (see §5A). Specific threats: **prompt injection** (an agent tricked by untrusted input into granting access — mitigate by routing all privileged actions through human approval and treating external text as data, never commands); **confused deputy** (agent exceeding the requester's rights — cap agent authority at the requester's permissions); **runaway/looping** actions (hard volume caps + kill switch); **over-permissioning** (least privilege, short-TTL scoped credentials); and **non-repudiation** (every agent action attributable to the agent + its human sponsor). Agents must never self-approve, grant super-admin, or disable audit.
 
 ---
 
@@ -151,6 +184,7 @@ Ordered by severity.
 - Super-admin (platform) strictly separate from org-admin (customer).
 - No self-escalation; four-eyes for the most sensitive grants.
 - Data entitlements enforced centrally, aligned to the data license.
+- **AI-agent admins:** propose-only for sensitive actions by default; never self-approve, grant super-admin, or disable audit; always attributable to a human sponsor; instantly suspendable (kill switch).
 
 ---
 
@@ -168,6 +202,7 @@ Ordered by severity.
 4. **Approvals (four-eyes):** required for entitlements/super-admin grants, or audit-only given you're currently a solo operator?
 5. **Session model:** add refresh tokens + revocation now (needed for real "end session"), or accept short-lived JWTs for v1?
 6. **Scope of P0 endpoint lockdown:** lock every module at once, or gate behind a feature flag to avoid disrupting the current open demo?
+7. **AI-agent admin autonomy:** which admin capabilities may agents perform **autonomously** vs. **propose-only (human-approved)** for v1? (Recommended v1: agents are *propose-only* for every grant/role/entitlement/deactivation; autonomous only for read/triage/report — then widen per proven track record.)
 
 ---
 

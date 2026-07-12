@@ -53,6 +53,14 @@
 - **Lightweight threat-model / pre-launch pen-test** once endpoints are locked down.
 - **Per-module kill switches** (feature flags) for safe, reversible rollout.
 
+## 5A. AI agents as system administrators (added this session)
+Founder requirement: the module must support **AI agents acting as system administrators**, in addition to humans (extends JHI's existing AI service agents into the admin control plane). Design added to `SYSTEM_ADMINISTRATOR_MODULE.md` §5A:
+- **Non-human principals:** `principal_type = human | agent`; agents use scoped, short-lived, rotatable service credentials (never a human session); each agent has a human owner + charter.
+- **Bounded autonomy per capability:** *autonomous* (read/triage/report, *propose* grants) · *human-approved* (grants, role/entitlement changes, deactivation, billing — agent proposes, human approves; no self-approval) · *forbidden* (grant super-admin, disable audit, read raw secrets, cross-tenant export).
+- **Guardrails:** least privilege + hard volume caps; **per-agent kill switch**; full non-repudiation (agent + human sponsor + trigger + reason); **prompt-injection containment** (untrusted input never triggers privileged actions); **confused-deputy** protection (agent authority capped at the requester's rights); time-boxed elevation; data-license aware.
+- **Recommended v1 posture:** agents are **propose-only** for every sensitive action; autonomous only for read/triage/report — widen per proven track record.
+- New open decision (#7 in the doc): which capabilities may agents perform autonomously vs. propose-only for v1.
+
 ## 6. Recommendation
 Proceed to **P0 (auth+permission enforcement, user management, audit, admin MFA)** as the next foundational workstream — ideally landed **behind an enforcement feature flag** so the open demo is undisturbed until you flip it. Defer org-admin self-serve, approvals, and feature-flag/impersonation tooling to just-in-time (private beta → public launch). Track the eight gates in §3 as the objective definition of "ready."
 
@@ -67,6 +75,7 @@ Proceed to **P0 (auth+permission enforcement, user management, audit, admin MFA)
 | 4 | Stand up transactional email + domain auth (SPF/DKIM/DMARC) to unblock invites/reset | Founder | 🟠 |
 | 5 | Create a living launch-readiness scorecard (the 8 gates) | Cy | 🟡 |
 | 6 | Confirm entitlement engine also drives plan gating + data-license enforcement | Founder + Cy | 🟡 |
+| 7 | Decide AI-agent admin autonomy for v1 (propose-only vs. autonomous per capability) | Founder + Cy | 🟠 |
 
 **Next review:** next working session.
 **Recorded by:** Cy · signature of record `69M2705M`.
