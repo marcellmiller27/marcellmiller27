@@ -56,7 +56,7 @@ export default function TeamPage() {
             </div>
             <div className="team-card__body">
               <span className="team-card__role">VP, Software Engineering · AI Teammate</span>
-              <h3 className="team-card__name">Cy</h3>
+              <h3 className="team-card__name">Cy Henry</h3>
               <p className="team-card__persona">
                 The founder&apos;s AI build partner — designs, ships, tests, and documents the platform.
               </p>
