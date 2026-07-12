@@ -40,7 +40,13 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_BASE_URL: http://localhost:8000/api/v1
+        # Same-origin: the browser hits the frontend's own /api/v1, which Next
+        # proxies to the backend server-side (see next.config.mjs rewrites).
+        NEXT_PUBLIC_API_BASE_URL: /api/v1
+        # Server-side proxy target. Baked at build (Next bakes rewrites at build
+        # time). Reaches the backend on the compose network; no browser
+        # dependency on :8000, no CORS.
+        API_PROXY_TARGET: http://backend:8000
     ports:
       - "3000:3000"
     depends_on:
