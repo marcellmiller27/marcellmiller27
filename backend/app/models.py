@@ -80,6 +80,7 @@ class Account(BaseModel):
     code: str
     name: str
     account_type: AccountType
+    category: str = ""
 
 
 class JournalLineCreate(BaseModel):

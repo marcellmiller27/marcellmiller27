@@ -153,6 +153,8 @@ class AccountDB(Base):
     code: Mapped[str] = mapped_column(String(20), primary_key=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     account_type: Mapped[str] = mapped_column(String(20), nullable=False)
+    # Sub-section for statement grouping (e.g. "Current Assets", "Cost of Revenue").
+    category: Mapped[str] = mapped_column(String(120), nullable=False, default="")
 
 
 class JournalEntryDB(Base):
