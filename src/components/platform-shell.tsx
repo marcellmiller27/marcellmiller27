@@ -19,6 +19,7 @@ const navigation = [
   { href: "/downloads", label: "Documents" },
   { href: "/pricing", label: "Plans" },
   { href: "/account", label: "Account" },
+  { href: "/admin", label: "Admin" },
   { href: "/support", label: "Help" },
   { href: "/team", label: "Team" }
 ];

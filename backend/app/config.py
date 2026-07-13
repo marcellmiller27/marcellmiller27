@@ -13,6 +13,9 @@ class Settings:
         self.auth_secret = os.getenv("AUTH_JWT_SECRET", DEFAULT_DEV_SECRET)
         self.database_url = os.getenv("DATABASE_URL", "sqlite:///./john_henry_platform.db")
         self.rate_limit_per_minute = int(os.getenv("RATE_LIMIT_PER_MINUTE", "0") or 0)
+        # Gatekeeper: when true, all /api/v1 endpoints require a valid token (except a
+        # small public allowlist). Default off so dev/demo stays open; flip on for prod.
+        self.enforce_auth = os.getenv("ENFORCE_AUTH", "false").strip().lower() in ("1", "true", "yes")
 
     @property
     def is_production(self) -> bool:

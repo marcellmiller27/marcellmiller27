@@ -2,11 +2,13 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
+from app.auth_enforcement import AuthEnforcementMiddleware
 from app.config import get_settings
 from app.database import engine, init_db
 from app.rate_limit import RateLimitMiddleware
 from app.routers import (
     accounting,
+    admin,
     agents,
     auth,
     billing,
@@ -48,8 +50,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.add_middleware(RateLimitMiddleware)
+app.add_middleware(AuthEnforcementMiddleware)
 
 app.include_router(accounting.router, prefix="/api/v1")
+app.include_router(admin.router, prefix="/api/v1")
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(mobile_auth.router, prefix="/api/v1")
 app.include_router(billing.router, prefix="/api/v1")
