@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | ORM models | John Henry Investments (proprietary)
 from datetime import date, datetime, timezone
 from uuid import uuid4
 
@@ -153,6 +154,8 @@ class AccountDB(Base):
     code: Mapped[str] = mapped_column(String(20), primary_key=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     account_type: Mapped[str] = mapped_column(String(20), nullable=False)
+    # Sub-section for statement grouping (e.g. "Current Assets", "Cost of Revenue").
+    category: Mapped[str] = mapped_column(String(120), nullable=False, default="")
 
 
 class JournalEntryDB(Base):
@@ -250,3 +253,66 @@ class DealRecordDB(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now
     )
+
+
+class IntegrationConnectionDB(Base):
+    """Durable external-integration connection (migrated from the in-memory store)."""
+
+    __tablename__ = "integration_connections"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    connector_key: Mapped[str] = mapped_column(String(80), nullable=False)
+    display_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    credential_reference: Mapped[str] = mapped_column(String(255), nullable=False)
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="connected")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    last_sync_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class SyncJobDB(Base):
+    __tablename__ = "integration_sync_jobs"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    connection_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    object_type: Mapped[str] = mapped_column(String(80), nullable=False)
+    direction: Mapped[str] = mapped_column(String(40), nullable=False)
+    requested_by: Mapped[str] = mapped_column(String(120), nullable=False, default="system")
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="queued")
+    records_processed: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    message: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class BankingTransactionDB(Base):
+    __tablename__ = "integration_banking_transactions"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    connection_id: Mapped[str | None] = mapped_column(String, nullable=True, index=True)
+    transaction_date: Mapped[date] = mapped_column(Date, nullable=False)
+    external_id: Mapped[str] = mapped_column(String(120), nullable=False)
+    account_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str] = mapped_column(String(500), nullable=False)
+    amount: Mapped[str] = mapped_column(String(40), nullable=False, default="0.00")
+    currency: Mapped[str] = mapped_column(String(10), nullable=False, default="USD")
+    counterparty: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    category: Mapped[str] = mapped_column(String(120), nullable=False, default="")
+    imported_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    suggested_account_code: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    suggested_journal_memo: Mapped[str | None] = mapped_column(String(500), nullable=True)
+
+
+class VendorBillDB(Base):
+    __tablename__ = "integration_vendor_bills"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    connection_id: Mapped[str | None] = mapped_column(String, nullable=True, index=True)
+    vendor_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    external_id: Mapped[str] = mapped_column(String(120), nullable=False)
+    bill_date: Mapped[date] = mapped_column(Date, nullable=False)
+    due_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    currency: Mapped[str] = mapped_column(String(10), nullable=False, default="USD")
+    lines_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    total_amount: Mapped[str] = mapped_column(String(40), nullable=False, default="0.00")
+    imported_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)

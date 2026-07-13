@@ -10,6 +10,9 @@ COPY . .
 # Client-side API base; the browser reaches the backend on the host's :8000.
 ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/v1
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+# Next bakes rewrites() at build time, so the API proxy target must be set here.
+ARG API_PROXY_TARGET=http://localhost:8000
+ENV API_PROXY_TARGET=$API_PROXY_TARGET
 RUN npm run build
 
 ENV NODE_ENV=production

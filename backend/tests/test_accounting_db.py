@@ -8,34 +8,38 @@ client = TestClient(app)
 def test_chart_of_accounts_seeded() -> None:
     rows = client.get("/api/v1/accounting/chart-of-accounts").json()
     codes = {a["code"] for a in rows}
-    assert {"1000", "4000", "5000"}.issubset(codes)
-    # IP capitalization + amortization accounts present.
-    assert {"1500", "1510", "1600", "5300", "5400"}.issubset(codes)
+    assert {"1010", "4000", "5000"}.issubset(codes)
+    # Intangible-asset capitalization + accumulated amortization accounts present.
+    assert {"1700", "1710", "1790", "6610"}.issubset(codes)
+    # Category grouping is populated for statement sub-sections.
+    by_code = {a["code"]: a for a in rows}
+    assert by_code["1010"]["category"] == "Current Assets"
+    assert by_code["5000"]["category"] == "Cost of Revenue"
 
 
 def test_capitalize_and_amortize_ip_entries() -> None:
-    # Capitalize dev cost.
+    # Capitalize dev cost into internally developed platform IP.
     cap = client.post(
         "/api/v1/accounting/journal-entries",
         json={
             "entry_date": "2026-07-01",
             "memo": "Capitalize platform development (IP)",
             "lines": [
-                {"account_code": "1500", "debit": "180000.00", "credit": "0.00"},
-                {"account_code": "1000", "debit": "0.00", "credit": "180000.00"},
+                {"account_code": "1710", "debit": "180000.00", "credit": "0.00"},
+                {"account_code": "1010", "debit": "0.00", "credit": "180000.00"},
             ],
         },
     )
     assert cap.status_code == 201
-    # Record one month of amortization.
+    # Record one month of amortization (expense vs. accumulated amortization contra-asset).
     amort = client.post(
         "/api/v1/accounting/journal-entries",
         json={
             "entry_date": "2026-07-31",
             "memo": "Monthly IP amortization",
             "lines": [
-                {"account_code": "5300", "debit": "5000.00", "credit": "0.00"},
-                {"account_code": "1510", "debit": "0.00", "credit": "5000.00"},
+                {"account_code": "6610", "debit": "5000.00", "credit": "0.00"},
+                {"account_code": "1790", "debit": "0.00", "credit": "5000.00"},
             ],
         },
     )
@@ -61,8 +65,8 @@ def test_create_balanced_journal_entry() -> None:
             "source_module": "billing",
             "created_by": "api-test",
             "lines": [
-                {"account_code": "1000", "debit": "299.00", "credit": "0.00"},
-                {"account_code": "4000", "debit": "0.00", "credit": "299.00"},
+                {"account_code": "1010", "debit": "299.00", "credit": "0.00"},
+                {"account_code": "4010", "debit": "0.00", "credit": "299.00"},
             ],
         },
     )
@@ -70,7 +74,7 @@ def test_create_balanced_journal_entry() -> None:
     body = resp.json()
     assert body["memo"] == "Professional subscription payment"
     assert len(body["lines"]) == 2
-    assert body["lines"][0]["account_name"] == "Cash and Cash Equivalents"
+    assert body["lines"][0]["account_name"] == "Cash - Operating"
 
 
 def test_unknown_account_code_rejected() -> None:
@@ -95,7 +99,7 @@ def test_unbalanced_entry_rejected_by_validation() -> None:
             "entry_date": "2026-06-24",
             "memo": "Unbalanced",
             "lines": [
-                {"account_code": "1000", "debit": "10.00", "credit": "0.00"},
+                {"account_code": "1010", "debit": "10.00", "credit": "0.00"},
                 {"account_code": "4000", "debit": "0.00", "credit": "5.00"},
             ],
         },
@@ -110,7 +114,7 @@ def test_journal_entry_persists_and_filters_by_period() -> None:
             "entry_date": "2026-07-15",
             "memo": "July entry",
             "lines": [
-                {"account_code": "1000", "debit": "100.00", "credit": "0.00"},
+                {"account_code": "1010", "debit": "100.00", "credit": "0.00"},
                 {"account_code": "4000", "debit": "0.00", "credit": "100.00"},
             ],
         },

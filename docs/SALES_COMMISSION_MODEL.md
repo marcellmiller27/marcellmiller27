@@ -44,5 +44,11 @@ Lean bootstrapped opex: payment processing 3% + infra/support 2% + SF1 $18k (COG
 
 **Reality check:** these EBITDA figures assume the *aggressive* 1,200-premium-sub Year-1 ramp — a ceiling, not a base case. At a conservative 20–40 closes/mo the picture is far smaller (and near the fixed-opex breakeven early on). The model's inputs let you dial the ramp down.
 
+## Monthly EBITDA & Opex (new sheet)
+A Year-1 **month-by-month** P&L with **months as columns**: revenue → COGS (payment processing, infra, SF1) → gross profit → operating expenses (residual commission, marketing, legal, software/AI, founder/ops) → **EBITDA** and margin, plus a Year-1 total column. Fixed annual costs are spread /12; variable costs scale with monthly revenue. Same ramp/churn as the Assumptions sheet.
+
+## Salesperson bonus — prepaid annual MSA (new sheet)
+Models a **prepaid annual** Tier 1 & 2 book: the MSA is paid up front for 12 months at a **10% prepay discount**, and the salesperson earns a profit-share **bonus = 10% of EBITDA** (after gross margins & opex), floored at $0. Editable inputs (contract counts, prepay discount %, bonus rate %) drive the P&L, with a volume sensitivity table (100 / 300 / 600 contracts). Default (50 T1 + 500 T2): prepaid revenue ≈ **$2,424,600**, EBITDA ≈ **$2,159,370**, **bonus ≈ $215,937**. Book-level EBITDA charges the full fixed annual opex to this book (conservative at low volume). Confirm prepay accounting + bonus mechanics with counsel/CPA.
+
 ## Regenerate
-`python scripts/sales_commission_model.py [output.xlsx]` — editable inputs (tier prices, mix %, closes/mo, residual %, churn, gross margin) drive a live 24-month schedule + Year-1-by-mix table. Every sheet carries the legal/`69M2705M`/entity footer.
+`python scripts/sales_commission_model.py [output.xlsx]` — editable inputs (tier prices, mix %, closes/mo, residual %, churn, gross margin, opex) drive a live 24-month schedule, Year-1-by-mix table, monthly EBITDA statement, and the prepaid-MSA salesperson-bonus sheet. Every sheet carries the legal/`69M2705M`/entity footer.
