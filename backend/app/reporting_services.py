@@ -25,7 +25,8 @@ from app.models import (
     RiskLevel,
 )
 
-CASH_ACCOUNT = "1000"
+# Cash & cash-equivalent accounts summed for the "cash position" KPI.
+CASH_ACCOUNTS = ("1010", "1020", "1030")
 _CLOSED_STAGES = {"closed_won", "closed_lost"}
 
 
@@ -120,7 +121,7 @@ class ReportingService:
 
     def cash_balance(self, db: Session) -> Decimal:
         lines = db.scalars(
-            select(JournalLineDB).where(JournalLineDB.account_code == CASH_ACCOUNT)
+            select(JournalLineDB).where(JournalLineDB.account_code.in_(CASH_ACCOUNTS))
         ).all()
         return sum(
             (Decimal(line.debit) - Decimal(line.credit) for line in lines), Decimal("0.00")

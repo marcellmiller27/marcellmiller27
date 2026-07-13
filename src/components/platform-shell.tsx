@@ -16,6 +16,7 @@ const navigation = [
   { href: "/due-diligence", label: "Document Review" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/accounting", label: "Accounting" },
+  { href: "/downloads", label: "Documents" },
   { href: "/pricing", label: "Plans" },
   { href: "/account", label: "Account" },
   { href: "/support", label: "Help" },
