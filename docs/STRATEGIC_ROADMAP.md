@@ -25,6 +25,7 @@ investors by default, optionality retained). Product = research / analytics / de
 | Item | Status | Pri | Notes |
 |---|---|---|---|
 | Market data (crypto, indices, commodities, treasuries, FX, bond/PE/SMB proxies) | ✅ | — | Yahoo/CoinGecko |
+| **Licensed market-data vendor** (redistribution rights for subscribers) | ⬜ | 🔴 | Launch-gate. Primary pick: **Twelve Data Enterprise ($1,099/mo, external distribution)** — already wired (`TWELVEDATA_API_KEY`). See `docs/MARKET_DATA_VENDOR_COMPARISON.md`. Alternates: Polygon/Massive, Finnhub, EODHD. Don't buy until revenue-justified. |
 | Macro (CPI, GDP, unemployment, M2, treasury yields) | ✅ | — | BLS + FRED + Yahoo |
 | **Federal macro expansion** (Fed Funds, consumer credit, revolving credit, household debt/GDP, credit-card & loan & mortgage delinquency, retail sales, consumer sentiment, industrial production) | ✅ | 🟠 | Added via FRED (this pass). **Needs free `FRED_API_KEY` in Secrets** to poll live. Public data — no license constraints. |
 | Treasury Fiscal Data (federal debt/deficit) | ⬜ | 🟡 | `fiscaldata.treasury.gov` API (public, free) |
