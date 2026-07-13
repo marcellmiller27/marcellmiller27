@@ -58,4 +58,4 @@ New **"Ramp Scenarios"** tab compares Year-1 outcomes by close rate, holding the
 **Reality note:** even "conservative" 30/mo = 360 *premium* subs in Year 1 — still optimistic for a brand-new product. The close-rate cells are editable, so dial them to 5–20/mo for a true early-stage view; the whole P&L recomputes live.
 
 ## Regenerate
-`python scripts/sales_commission_model.py [output.xlsx]` — editable inputs (tier prices, mix %, closes/mo, residual %, churn, gross margin) drive a live 24-month schedule + Year-1-by-mix table. Every sheet carries the legal/`69M2705M`/entity footer.
+`python scripts/sales_commission_model.py [output.xlsx]` — editable inputs (tier prices, mix %, closes/mo, residual %, churn, gross margin, opex) drive a live 24-month schedule, Year-1-by-mix table, monthly EBITDA statement, and the prepaid-MSA salesperson-bonus sheet. Every sheet carries the legal/`69M2705M`/entity footer.

@@ -33,7 +33,7 @@ def test_create_journal_entry_endpoint() -> None:
             "source_module": "billing",
             "created_by": "api-test",
             "lines": [
-                {"account_code": "1000", "debit": "50.00", "credit": "0.00"},
+                {"account_code": "1010", "debit": "50.00", "credit": "0.00"},
                 {"account_code": "4000", "debit": "0.00", "credit": "50.00"},
             ],
         },
