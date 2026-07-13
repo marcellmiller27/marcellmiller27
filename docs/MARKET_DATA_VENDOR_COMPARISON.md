@@ -10,6 +10,17 @@ and which vendor best serves JHI's objectives. Companion to
 > **Twelve Data sales team** re: **Enterprise base usage / external-distribution
 > terms**. **AWAITING TWELVE DATA RESPONSE.** See §4a for the questions to nail down
 > in writing before committing.
+>
+> **Decision (2026-07-13): DEFER — do not commit to the $1,099 Enterprise plan yet.**
+> Rationale: no paying subscribers, H5 unvalidated, and terms not yet confirmed in
+> writing — committing now is ~$11–13k/yr of burn for a right JHI can't yet exercise.
+> **Flip to "commit" only when ALL are true:** (1) Twelve Data confirms in writing
+> that external distribution covers the derived Opportunity Score to subscribers
+> (+ end-user cap + exchange fees clear); (2) H5 is validated / data features are
+> ready to ship; (3) subscriber revenue covers it (~4 Professional or 1 Enterprise
+> seat); (4) trial/eval confirms data quality. Meanwhile: keep free sources, run the
+> free eval, and at first commit prefer **month-to-month** before switching to
+> annual (17% off) once retention proves out. Activation is instant (key → Secrets).
 
 > **One-line takeaway.** For JHI's SaaS, the headline "retail" price of every vendor
 > is a trap: those tiers are **personal / internal-use only**. The right of a SaaS
