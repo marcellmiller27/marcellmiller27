@@ -6,6 +6,11 @@ and which vendor best serves JHI's objectives. Companion to
 `docs/FUNDAMENTALS_DATA_VENDORS.md` (point-in-time fundamentals / SF1) and
 `docs/STRATEGIC_ROADMAP.md` (data-sourcing life cycle).
 
+> **Procurement status (updated 2026-07-13).** Founder submitted a request to the
+> **Twelve Data sales team** re: **Enterprise base usage / external-distribution
+> terms**. **AWAITING TWELVE DATA RESPONSE.** See §4a for the questions to nail down
+> in writing before committing.
+
 > **One-line takeaway.** For JHI's SaaS, the headline "retail" price of every vendor
 > is a trap: those tiers are **personal / internal-use only**. The right of a SaaS
 > to *show data to paying subscribers* (external display) or *feed it to them*
@@ -125,6 +130,36 @@ already built the integration.
 - [ ] **Cost maps to revenue** — a data plan should be covered by a small number of
       retained Professional/Enterprise seats before committing.
 - [ ] Counsel review for any custom/enterprise contract.
+
+### 4a. Twelve Data Enterprise — questions for the sales/compliance team (in writing)
+
+Nail these down before signing (mirror the NASDAQ addendum discipline):
+
+1. **Distribution vs display.** Confirm that serving JHI's **Opportunity Score
+   (a derived work) to logged-in subscribers** falls under Enterprise's **external
+   distribution** grant — and whether Venture's external *display* would ever
+   suffice for our exact usage. Get the classification in writing.
+2. **Derived / non-display use.** Confirm we may **compute, store, and serve
+   analytics/scores derived from** the data (indexes/scores can be treated as
+   "non-display use" in some licenses). Enterprise lists "Analysis data" — confirm
+   that covers a derived score product.
+3. **End-user / subscriber cap.** Is Enterprise **unlimited end-users**, or capped?
+   (NASDAQ's was "up to 1,000 clients" — get the number, if any.)
+4. **Exchange fees & pro/non-pro reporting.** Any **per-subscriber exchange fees**
+   on top of $1,099, and must JHI **report subscribers** as professional/
+   non-professional to exchanges? Which markets trigger extra approval?
+5. **Real-time entitlements.** Which markets are **real-time vs delayed** at
+   Enterprise; is **real-time US equities** included at no add-on?
+6. **Caching / storage rights.** JHI caches ~60s and stores history for scoring —
+   confirm permitted, and any retention/redisplay limits.
+7. **Attribution.** Exact attribution text/placement required in the UI.
+8. **Credits / rate limits.** Confirm Enterprise credit allotment covers JHI's
+   polling cadence (UI 15s → backend 60s cache) across the symbols we serve.
+9. **Commercials.** Confirm **17% annual-billing discount** (~$916/mo), term,
+   renewal, **price-escalation** cap, and **termination / delete-on-termination**
+   obligations.
+10. **Evaluation.** Ask for a short **paid trial or eval** to validate data quality
+    end-to-end against the (already-built) integration before committing.
 
 ---
 
