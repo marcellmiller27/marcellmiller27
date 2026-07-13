@@ -1,5 +1,9 @@
 # John Henry Investments Financial Model and DCF
 
+> JHI-SIG: 69M2705M · **INTERNAL** valuation & planning model (software publisher valuing its own
+> platform). For internal planning, IP/software-asset valuation, and lending — **not** an offer or
+> solicitation of investment.
+
 ## Purpose
 
 This model converts the John Henry Investments platform assumptions into a five-year base-case financial model, including revenue projections, expenditure projections, marketing projections, staffing projections, EBITDA, free cash flow, and discounted cash flow valuation.

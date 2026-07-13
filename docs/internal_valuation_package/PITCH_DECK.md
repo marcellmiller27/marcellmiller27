@@ -1,8 +1,14 @@
-# John Henry Investments Platform Pitch Deck
+# John Henry Investments — Company & Platform Overview (Internal)
 
-## Deck purpose
+> JHI-SIG: 69M2705M · **INTERNAL by default.** Company & platform overview for JHI Research &
+> Analytics Firm, Inc. (a **software publisher** building research platforms). Used for internal
+> planning, valuation, and lending. **Not** a current offer or solicitation of investment. Materials
+> retained so the Board keeps the *option* to present them for an outside opportunity if it ever elects.
 
-Investor-facing pitch deck for John Henry Investments, LLC investment intelligence SaaS platform.
+## Overview purpose
+
+Internal, slide-by-slide overview of the John Henry Investments research & analytics SaaS platform
+(company, product, model, and valuation) — retained for internal use and optional external presentation.
 
 Companion files:
 

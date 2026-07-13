@@ -15,7 +15,8 @@
 - **Positioning:** JHI sells **research, analytics, decision-support, and education — NOT investment advice, and NOT brokerage.** Beachhead: search-fund / SMB acquisition buyers and their advisors.
 
 ## IP & capitalization
-- Platform/mobile **IP contributed to the corp** in exchange for **10,000,000 founder shares** (par $0.04 → $400,000 stated capital basis; supported by an IP Valuation Schedule of completed + projected engineering/professional hours). Typically a **§351 tax-free exchange** — confirm with CPA; paper with IP-assignment agreement + board resolution + stock ledger.
+- Platform/mobile **IP contributed to the corp** in a **§351 exchange for 10,000,000 founder shares** at **$0.0001 par** → **$1,000 Common Stock + $399,000 APIC** (~$400,000 IP contribution value; supported by `docs/IP_VALUATION_SCHEDULE.md`). Par value does **not** change as company value grows (GAAP: internally generated value increases not recognized). Confirm with CPA; paper with IP-assignment agreement + board resolution + stock ledger.
+- **Founder compensation:** **$1.00/yr** nominal salary; any additional payouts are **discretionary performance bonuses tied to benchmarks achieved**, at the founder's sole discretion (board minutes `docs/board/BOARD_MINUTES_2026-07-13.md`).
 - Founder provenance signature **`69M2705M`** stamped across the codebase.
 
 ## Compliance guardrails

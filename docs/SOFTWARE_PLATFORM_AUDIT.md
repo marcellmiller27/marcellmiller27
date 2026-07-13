@@ -104,7 +104,7 @@ Evidence names refer to files in this repo (on `main` unless noted).
 - 🔴 **IP Assignment to the corp, trademark & copyright *registration*, and domain-ownership record are pending** (founder + counsel). Customer-list/trade-secret controls informal. *(High — the corp should formally own the IP before financing/valuation/sale.)*
 
 ### Phase XVIII — Software Asset Valuation Support — ✅/🟡 Good
-- ✅ IP/intangibles amortization (`IP_INTANGIBLES_AMORTIZATION.md`), valuation models (`FIVE_STAGE_VALUATION_MODEL.md`, `COMPANY_VALUATION_ANALYSIS.md`, `investor_package/FINANCIAL_MODEL_DCF.md`), projected EBITDA, coding-effort/value analysis, ASC 350-40 referenced.
+- ✅ IP/intangibles amortization (`IP_INTANGIBLES_AMORTIZATION.md`), valuation models (`FIVE_STAGE_VALUATION_MODEL.md`, `COMPANY_VALUATION_ANALYSIS.md`, `internal_valuation_package/FINANCIAL_MODEL_DCF.md`), projected EBITDA, coding-effort/value analysis, ASC 350-40 referenced.
 - 🟡 **Independent third-party valuation** and formal **capitalized-software cost audit** (payroll/contractor invoices tie-out, impairment test) not yet performed; source-code inventory to be formalized. *(Medium — needed for a defensible capitalization/valuation.)*
 
 ### Phase XIX — Business Continuity — 🔴 Missing
