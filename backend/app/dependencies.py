@@ -40,3 +40,18 @@ def require_admin(principal: Annotated[Principal, Depends(get_current_principal)
     if principal.role != UserRole.ADMIN:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required.")
     return principal
+
+
+def require_permission(permission: str):
+    """Dependency factory: allow only principals whose role grants `permission`."""
+    from app.rbac import role_has_permission
+
+    def _checker(principal: Annotated[Principal, Depends(get_current_principal)]) -> Principal:
+        if not role_has_permission(principal.role, permission):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Missing required permission: {permission}.",
+            )
+        return principal
+
+    return _checker
