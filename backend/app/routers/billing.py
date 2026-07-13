@@ -1,14 +1,14 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
+from app.billing_webhook import verify_and_parse
 from app.database import get_db
 from app.dependencies import get_current_principal, require_admin
 from app.foundation_models import (
     AuditLogRead,
     BillingPlan,
-    BillingWebhookEvent,
     CheckoutSessionRequest,
     CheckoutSessionResponse,
     MeResponse,
@@ -43,12 +43,15 @@ def create_checkout_session(
 
 
 @router.post("/webhook", response_model=SubscriptionRead)
-def billing_webhook(
-    payload: BillingWebhookEvent,
+async def billing_webhook(
+    request: Request,
     db: Annotated[Session, Depends(get_db)],
 ) -> SubscriptionRead:
+    raw_body = await request.body()
+    signature = request.headers.get("stripe-signature")
     try:
-        return FoundationService(db).apply_billing_webhook(payload)
+        event = verify_and_parse(raw_body, signature)
+        return FoundationService(db).apply_billing_webhook(event)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 

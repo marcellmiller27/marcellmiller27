@@ -103,7 +103,13 @@ def biometric_assert(
     db: Annotated[Session, Depends(get_db)],
 ) -> AuthResponse:
     try:
-        return MobileAuthService(db).biometric_assert(payload.challenge_token, payload.credential_id)
+        return MobileAuthService(db).biometric_assert(
+            payload.challenge_token,
+            payload.credential_id,
+            signature=payload.signature,
+            authenticator_data=payload.authenticator_data,
+            client_data_json=payload.client_data_json,
+        )
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(exc)) from exc
 

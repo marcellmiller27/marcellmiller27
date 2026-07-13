@@ -10,7 +10,10 @@ dependencies = [
   "pydantic",
   "psycopg[binary]",
   "openpyxl",
-  "reportlab"
+  "reportlab",
+  "cryptography",
+  "PyJWT",
+  "stripe"
 ]
 
 [project.optional-dependencies]
@@ -23,3 +26,10 @@ dev = [
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+
+[tool.pytest.ini_options]
+# The dev-default AUTH_JWT_SECRET is intentionally short in tests; production is
+# gated to a >= 32-byte secret by Settings.validate(). Silence PyJWT's dev nudge.
+filterwarnings = [
+  "ignore::jwt.warnings.InsecureKeyLengthWarning",
+]
