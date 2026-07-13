@@ -132,6 +132,40 @@ SYMBOLS: list[SymbolSpec] = [
     SymbolSpec("M2", "US M2 Money Supply", "fred", "M2SL", "macro", "USD bn", ("MONEYSUPPLY",)),
     SymbolSpec("GDP", "US GDP", "fred", "GDP", "macro", "USD bn", ()),
     SymbolSpec("UNEMPLOYMENT", "US Unemployment Rate", "fred", "UNRATE", "macro", "%", ("UNRATE",)),
+    SymbolSpec("FED_FUNDS", "US Fed Funds Rate", "fred", "FEDFUNDS", "macro", "%", ("FEDFUNDS",)),
+    SymbolSpec(
+        "CONSUMER_CREDIT", "US Consumer Credit (total)", "fred", "TOTALSL", "macro", "USD bn",
+        ("CONSUMERDEBT", "CONSUMERCREDIT"),
+    ),
+    SymbolSpec(
+        "REVOLVING_CREDIT", "US Revolving Consumer Credit", "fred", "REVOLSL", "macro", "USD bn",
+        ("REVOLVINGCREDIT", "CREDITCARDDEBT"),
+    ),
+    SymbolSpec(
+        "HOUSEHOLD_DEBT_GDP", "US Household Debt to GDP", "fred", "HDTGPDUSQ163N", "macro", "%",
+        ("HOUSEHOLDDEBT",),
+    ),
+    SymbolSpec(
+        "CC_DELINQUENCY", "Credit Card Delinquency Rate", "fred", "DRCCLACBS", "macro", "%",
+        ("CREDITCARDDELINQUENCY", "CCDELINQUENCY"),
+    ),
+    SymbolSpec(
+        "LOAN_DELINQUENCY", "All Bank Loans Delinquency Rate", "fred", "DRALACBN", "macro", "%",
+        ("LOANDELINQUENCY", "DELINQUENCY"),
+    ),
+    SymbolSpec(
+        "MORTGAGE_DELINQUENCY", "Mortgage Delinquency Rate", "fred", "DRSFRMACBS", "macro", "%",
+        ("MORTGAGEDELINQUENCY",),
+    ),
+    SymbolSpec("RETAIL_SALES", "US Retail Sales", "fred", "RSAFS", "macro", "USD mn", ("RETAIL",)),
+    SymbolSpec(
+        "CONSUMER_SENTIMENT", "US Consumer Sentiment (UMich)", "fred", "UMCSENT", "macro", "index",
+        ("SENTIMENT",),
+    ),
+    SymbolSpec(
+        "INDUSTRIAL_PRODUCTION", "US Industrial Production", "fred", "INDPRO", "macro", "index",
+        ("INDPRO",),
+    ),
 ]
 
 DEFAULT_SYMBOLS = ["BTC", "ETH", "GOLD", "SPX", "UST10Y", "INFLATION"]
