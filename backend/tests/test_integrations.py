@@ -1,3 +1,4 @@
+# JHI-SIG: 69M2705M | Integrations tests | John Henry Investments (proprietary)
 """Tests for the durable, Postgres/SQLAlchemy-backed integrations endpoints."""
 
 from fastapi.testclient import TestClient
