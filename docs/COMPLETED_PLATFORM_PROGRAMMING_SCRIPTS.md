@@ -145,7 +145,7 @@ Expected result:
 | `README.md` | Project overview, route map, setup commands, and documentation links |
 | `docs/SRC_CODE_AUDIT.md` | Front-end source-code audit, automated check results, findings, and remediation plan |
 | `docs/SYSTEM_FLOWCHARTS_AND_PROCESS_MAPS.md` | End-to-end flowcharts, module process flows, feedback loops, interface protocols, and dependency maps |
-| `docs/investor_package/` | Pitch deck, PowerPoint, Excel financial model, DCF, projections, charts, and generator scripts |
+| `docs/internal_valuation_package/` | Company/platform overview, PowerPoint, Excel financial model, DCF, projections, charts, and generator scripts (internal) |
 | `docs/FIVE_STAGE_VALUATION_MODEL.md` | Five-stage valuation ranges, market-cap/equity-value scenarios, probabilities, and milestone valuation requirements |
 | `docs/PRODUCT_BLUEPRINT.md` | Full SaaS platform product blueprint and route map |
 | `docs/PROJECT_MANAGEMENT_CHECKLIST.md` | Completed work checklist, remaining launch tasks, MVP checklist, and the Founder action items |

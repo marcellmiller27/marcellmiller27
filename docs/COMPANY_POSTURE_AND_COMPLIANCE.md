@@ -166,7 +166,7 @@ zero-risk.** What remains:
   register; never imply JHI manages money or guarantees outcomes.
 - Subscriptions sell **access to research and tools**, not money management.
 - **Internal financial models** (`docs/COMPANY_VALUATION_ANALYSIS.md`,
-  `docs/investor_package/`, EBITDA/DCF) are for **internal planning, IP valuation,
+  `docs/internal_valuation_package/`, EBITDA/DCF) are for **internal planning, IP valuation,
   estate/insurance, and lending** only — **not** fundraising (no outside investors).
 - The platform **"Capital Raising Center"** (Module 12) is a **client-facing feature** for
   *users'* own ventures — unrelated to JHI's own funding (JHI raises nothing).

@@ -30,7 +30,7 @@ Current repository status: Front-end application prototype completed as a routed
 | Product documentation | [x] | Product blueprint, route map, setup instructions, and AI work summary |
 | Source-code audit | [x] | Front-end `src` audit with automated verification results, findings, risks, and remediation plan in `docs/SRC_CODE_AUDIT.md` |
 | System flowcharts/process maps | [x] | End-to-end system map, module process flows, procedures, feedback loops, interface protocols, and dependency maps in `docs/SYSTEM_FLOWCHARTS_AND_PROCESS_MAPS.md` |
-| Investor package | [x] | Pitch deck, PowerPoint, Excel financial model, DCF, projections, charts, and hierarchy materials in `docs/investor_package/` |
+| Internal valuation package | [x] | Company/platform overview, PowerPoint, Excel financial model, DCF, projections, charts, and hierarchy materials in `docs/internal_valuation_package/` (internal; retained for optional external use) |
 | Five-stage valuation model | [x] | Market-cap/equity-value ranges, stage probabilities, probability-weighted outcomes, and milestone valuation requirements in `docs/FIVE_STAGE_VALUATION_MODEL.md` |
 | Programming scripts reference | [x] | Saved programming setup, commands, source file map, and verification commands in `docs/COMPLETED_PLATFORM_PROGRAMMING_SCRIPTS.md` |
 | Cloud capacity plan | [x] | Storage, database, network, compute, cache, AI, and monitoring estimates in `docs/CLOUD_STORAGE_AND_CAPACITY_PLAN.md` |
