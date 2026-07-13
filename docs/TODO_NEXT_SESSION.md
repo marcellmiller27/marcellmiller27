@@ -3,6 +3,33 @@
 Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 `docs/ROBUSTNESS_READINESS_GAP_ANALYSIS.md`.
 
+## Where we left off (2026-07-13) — CLEAN START
+**Merged to `main` today:** #48 (NAICS/posture), #49 (IP valuation — corrected: $0.0001 par → Common Stock $1,000 + APIC $399,000), #50 (commission ramp), #55 (System Admin design + 07-12 minutes), #56 (Cy Henry on Team), #57 (software audit + due-diligence binder), #58 (glossary/acronyms). Earlier: #51 (accounting), #52 (finance model + competitor), #59 (full Chart of Accounts + Documents page).
+
+**Decisions locked:** IP-for-stock §351 (10M shares → Common Stock $1,000 + APIC $399,000); founder comp **$1/yr + discretionary benchmark bonuses** (founder discretion); software-publisher posture (never manages outside money; private/bootstrapped; no outside investors by default, optionality retained); NASDAQ addendum drafted (SaaS + external Derived-Data + Sharadar consent); `investor_package` → `internal_valuation_package`.
+
+### 🔴 1. Merge the 3 still-open PRs first
+- [ ] **#60** — LICENSE + governance docs (posture/security/org charts/copyright) + **durable Postgres integrations (#33)** + **authoritative NASDAQ T&Cs + review**.
+- [ ] **#61** — `investor_package` → `internal_valuation_package` (internal relabel; optionality retained).
+- [ ] **#62** — 2026-07-13 board minutes (founder comp + resolutions).
+
+### 🔴 2. Security rescue → close stale stack → Gatekeeper P0
+1. [ ] **Rescue #17 security hardening** onto `main` (encrypted TOTP at rest, PyJWT, **Stripe webhook verification**, **real WebAuthn**) — confirmed NOT on `main`; do this **before** P0 so the gatekeeper sits on hardened auth.
+2. [ ] Rescue remaining not-on-`main` code: **#34** (module live-data wiring), **#30/#27** (SF1 fundamentals + R&D validation); verify #20, #25, #29, #31.
+3. [ ] **Close the entire stale #9–#41 stack** — only after the rescues above (content preserved).
+4. [ ] **Build Gatekeeper P0** (System Admin): `require_permission` + RBAC seed (8 roles → permission sets) + enforce auth across all endpoints **behind an `ENFORCE_AUTH` flag** + user management (invite/deactivate/role/reset-MFA) + admin-MFA + full audit + `/admin` UI. Spec: `docs/SYSTEM_ADMINISTRATOR_MODULE.md`.
+5. [ ] **P1 right after:** data-entitlement + purge (NASDAQ compliance), org-admin tier, refresh tokens + revocation.
+
+### 🟠 3. Founder action items (external)
+- [ ] **CPA:** confirm $1 salary/bonus payroll mechanics; execute §351 **IP assignment + stock ledger** + opening-cash JE at bank-account opening.
+- [ ] **NASDAQ:** get the **addendum counter-signed** (SaaS + external Derived-Data + Sharadar consent) by an authorized signatory — email isn't binding (§22).
+- [ ] Confirm debt clarification (equity: none ever; **debt/lending: allowed?**) so the posture doc is exact.
+
+### 🟡 4. Launch-readiness gates (go/no-go — `docs/SOFTWARE_PLATFORM_AUDIT.md`)
+authZ + admin · score validation (H5) · NASDAQ derived-data rights · prod security hardening · backups/DR · observability · legal (ToS/Privacy/DPA) · billing↔access coupling.
+
+---
+
 ## Where we left off (2026‑07‑05)
 - **Financial Diligence Suite shipped** (branch `cursor/financial-diligence-suite-0d47`): software-accelerated Quality-of-Earnings — proof-of-cash, EBITDA normalization, NWC peg, revenue quality, debt-like items, Financial Integrity Score, tiered pricing, and partner-CPA engagement quotes. Backend `financial_diligence` (engine/models/router at `/api/v1/financial-diligence/*`), web `/diligence-suite` page + nav, and a mobile "Run Financial Diligence" screen (all hitting the same endpoint). **CPA function is outsourced to a partner network — not an owned firm.** Ref: `docs/FINANCIAL_DILIGENCE_SUITE_CONCEPT.md`.
 - **Deal X-Ray hardened** (PR #36): blended-earnings basis, curbed DCF, concentration/volatility ethics, asset-light capex — validated on the real Carrollton Design Build CIM.
