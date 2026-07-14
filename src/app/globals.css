@@ -964,7 +964,7 @@ li::before {
 .market-ticker__track {
   display: inline-flex;
   align-items: baseline;
-  animation: market-ticker-scroll 90s linear infinite;
+  animation: market-ticker-scroll 42s linear infinite;
   will-change: transform;
 }
 
