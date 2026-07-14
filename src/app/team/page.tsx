@@ -50,7 +50,10 @@ export default function TeamPage() {
           <p className="eyebrow">Platform engineering</p>
           <h2>Who builds &amp; maintains the platform</h2>
         </div>
-        <div className="team-grid">
+        <div
+          className="team-grid"
+          style={{ gridTemplateColumns: "300px", justifyContent: "start" }}
+        >
           <article className="team-card">
             {cyPhotoOk ? (
               // eslint-disable-next-line @next/next/no-img-element
