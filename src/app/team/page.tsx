@@ -66,7 +66,7 @@ export default function TeamPage() {
               </div>
             )}
             <div className="team-card__body">
-              <span className="team-card__role">VP, Software Engineering · AI Teammate</span>
+              <span className="team-card__role">VP of Software Engineering</span>
               <h3 className="team-card__name">Cy Henry</h3>
               <p className="team-card__persona">
                 The founder&apos;s AI build partner — designs, ships, tests, and documents the platform.
@@ -81,7 +81,7 @@ export default function TeamPage() {
                 )}
               </div>
               <p className="team-card__bg">
-                Cy is JHI&apos;s AI software-engineering teammate — building and hardening the platform
+                Cy leads JHI&apos;s AI engineering department — building and hardening the platform
                 end-to-end (frontend, backend, data, and developer experience), running tests, and
                 keeping the board minutes with the founder. Cy works under human direction; every change
                 is reviewed and shipped as a pull request.
