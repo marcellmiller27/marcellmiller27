@@ -73,6 +73,14 @@ marcellus.miller@johnhenrycapital.com
 **Objective:** get the approved SaaS + external Derived-Data rights **written into the
 Order Form** (or confirmed as already granted by the Global Data Agreement), then execute.
 
+**⚠️ TOP PRIORITY (per signed envelope 3A86…, reviewed 2026-07-14):** the Additional Terms
+are now IN the Order Form and the entity is corrected — **but Nasdaq's signature (Garrick,
+7/8) predates the Additional Terms; your signature (7/14) added them; the envelope is
+"Delivered," not "Completed."** ⇒ **Nasdaq must counter-sign/execute the version that
+CONTAINS the Additional Terms** so both signatures sit on the same text (Completed
+envelope). Also **fill the "[rate/next tier]" overage placeholder** with a real figure
+before final execution.
+
 **Must-get outcomes (in writing / in the document):**
 1. SaaS/hosted use permitted (overrides T&C **§1.4(e)** SaaS ban).
 2. External distribution of Derived Data to clients permitted (overrides T&C **§1.2**

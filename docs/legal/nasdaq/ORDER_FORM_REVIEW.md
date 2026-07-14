@@ -171,6 +171,34 @@ Global Data Agreement clauses that already grant them via "Internal & External" 
 
 → Draft email + Monday call-prep: `docs/legal/nasdaq/EMAIL_TO_NASDAQ_ORDER_FORM_ADDITIONAL_TERMS.md`.
 
+## Signed Order Form review — envelope 3A86…A7D4 (reviewed 2026-07-14)
+Reviewed the DocuSigned Service Order **00151172.0** (`uploads/2AA_07092026_…pdf`).
+
+**✅ Wins now in the document:**
+- **Entity corrected:** Client/Distributor = **"JHI Research & Analytics Firm, Inc."**,
+  **5830 E 2nd St. Ste. 7000 #37182, Casper, WY 82609** (the separate WY entity — the
+  "dba/family-office" construction is gone).
+- **Additional Terms present (page 2), ~verbatim to our draft:** SaaS/hosted use +
+  external distribution of Derived Data to **up to 1,000** paying subscribers + **Sharadar
+  consent** + **"Additional Terms control per Section 22."** Overrides §1.2 / §1.4(e).
+
+**🔴 Critical gap — Nasdaq has not signed THIS version:**
+- Certificate of Completion: envelope **Status "Delivered," Signatures: 1.**
+- **Garrick Stavrovich (Nasdaq) signed 7/8/26 2:59 EDT** — *before* the Additional Terms.
+- **Marcellus Miller signed 7/14/26 16:46 EDT** — *with* the Additional Terms (title shown
+  as "CTO"). Certificate shows Marcellus only **Viewed 7/9**; the envelope is **not
+  "Completed."**
+- ⇒ Nasdaq's signature **predates** the Additional Terms; those terms are **not yet bound
+  by Nasdaq.** **Monday must-get:** Nasdaq **counter-signs/executes the version containing
+  the Additional Terms** → "Completed" envelope, both signatures on the same text.
+
+**🟠 Fill placeholder:** overage still reads **"[rate/next tier]"** — insert a real
+rate/next-tier before final execution (bracket = unenforceable/ambiguous overage).
+
+**🟡 Minor:** consider signing as **President/CEO/Authorized Officer** (not "CTO") to
+evidence authority to bind the corporation; DocuSign **envelope subject** still shows the
+old "…dba JHI Rese…" title (cosmetic — body entity is correct).
+
 ## Verdict
 Commercially the deal is **solid and correctly shaped**: **$18,000/yr all-in**, **Internal &
 External** (distributor) use, and an explicit **5-day $0-cancellation trial**. **Two items
