@@ -43,7 +43,7 @@ export default function TeamPage() {
     <PlatformShell
       eyebrow="Our team"
       title="Meet the John Henry Investments team"
-      description="An AI engineering teammate builds and maintains the platform, and five specialized AI agents support every member 24/7 — onboarding, subscriptions, account security, product guidance, and technical triage that escalates to the founder."
+      description="Our platform is built and maintained by a dedicated AI engineering department, supported 24/7 by five specialized AI agents. These agents assist our members with onboarding, subscriptions, account security, product guidance, and technical triage—which escalates directly to the founder when necessary."
     >
       <section className="app-section">
         <div className="app-section__heading">
