@@ -195,9 +195,12 @@ Reviewed the DocuSigned Service Order **00151172.0** (`uploads/2AA_07092026_…p
 **🟠 Fill placeholder:** overage still reads **"[rate/next tier]"** — insert a real
 rate/next-tier before final execution (bracket = unenforceable/ambiguous overage).
 
-**🟡 Minor:** consider signing as **President/CEO/Authorized Officer** (not "CTO") to
-evidence authority to bind the corporation; DocuSign **envelope subject** still shows the
-old "…dba JHI Rese…" title (cosmetic — body entity is correct).
+**🟡 Minor (title):** the 7/14 signature shows title **"CTO."** Signature by an authorized
+officer binds the corporation regardless of the label, so it is **legally binding either
+way.** Founder confirmed his title is **CEO** — since the form must be **re-executed** for
+Nasdaq's counter-signature anyway, sign that final version as **CEO** for a clean,
+consistent record. (Also: DocuSign **envelope subject** still shows the old "…dba JHI
+Rese…" title — cosmetic; body entity is correct.)
 
 ## Verdict
 Commercially the deal is **solid and correctly shaped**: **$18,000/yr all-in**, **Internal &
