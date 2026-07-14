@@ -30,6 +30,7 @@ const monogramStyle = {
 
 export default function TeamPage() {
   const [agents, setAgents] = useState<Agent[]>([]);
+  const [cyPhotoOk, setCyPhotoOk] = useState(true);
 
   useEffect(() => {
     fetch(`${API_BASE}/agents`)
@@ -51,9 +52,19 @@ export default function TeamPage() {
         </div>
         <div className="team-grid">
           <article className="team-card">
-            <div className="team-card__photo" style={monogramStyle}>
-              CY
-            </div>
+            {cyPhotoOk ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className="team-card__photo"
+                src="/team/cy-henry.png"
+                alt="Cy Henry, VP of Software Engineering"
+                onError={() => setCyPhotoOk(false)}
+              />
+            ) : (
+              <div className="team-card__photo" style={monogramStyle}>
+                CY
+              </div>
+            )}
             <div className="team-card__body">
               <span className="team-card__role">VP, Software Engineering · AI Teammate</span>
               <h3 className="team-card__name">Cy Henry</h3>
