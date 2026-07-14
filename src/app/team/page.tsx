@@ -56,7 +56,7 @@ export default function TeamPage() {
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 className="team-card__photo"
-                src="/team/cy-henry.png"
+                src="/team/vp-software-engineer.png"
                 alt="Cy Henry, VP of Software Engineering"
                 onError={() => setCyPhotoOk(false)}
               />
