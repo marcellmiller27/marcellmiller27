@@ -152,6 +152,25 @@ definition of a 'client' (active paying end-subscriber with access to SF1-derive
 and specify overage terms beyond 1,000 (per-additional-client rate or next-tier pricing, the
 billing mechanism, and how the client count is measured)."*
 
+## Development 2026-07-14 — Nasdaq approves terms, declines standalone addendum
+Trey Anderson (Sr. Managing Director) confirmed the **addendum items are APPROVED**, but
+Nasdaq **will not sign a standalone addendum** — the **Order Form + Global Data Agreement
+are their only contracting/execution vehicles.** A call is set for **Monday, 09:00 EDT**.
+
+**Path forward (agreed direction):** incorporate the approved items **into the Order Form
+as "Additional Terms"** (not a separate addendum), re-sign the Order Form, and obtain
+Nasdaq's acknowledgement/counter-signature. This is actually the **strongest** placement —
+the §22 order of preference is **"Order Form, then Agreement,"** so Additional Terms on the
+Order Form override the restrictive T&C defaults (§1.2 external-distribution ban, §1.4(e)
+SaaS ban).
+
+**Critical risk to neutralize:** email approval is **not binding** under the §22 merger
+clause — the rights must be **in the signed Order Form** (or Nasdaq must point to the
+Global Data Agreement clauses that already grant them via "Internal & External" +
+"Distributor"). Do not sign on the strength of email alone.
+
+→ Draft email + Monday call-prep: `docs/legal/nasdaq/EMAIL_TO_NASDAQ_ORDER_FORM_ADDITIONAL_TERMS.md`.
+
 ## Verdict
 Commercially the deal is **solid and correctly shaped**: **$18,000/yr all-in**, **Internal &
 External** (distributor) use, and an explicit **5-day $0-cancellation trial**. **Two items
