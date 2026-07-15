@@ -22,6 +22,13 @@ const documents: DocItem[] = [
       "Mergr, S&P Global (Capital IQ Pro), and CB Insights: per-competitor teardown, synthesis matrix, the \u201cdiamond in the rough\u201d thesis, cost/risk/reward, verified pricing, and a board recommendation.",
     href: "/downloads/JHI_Competitor_Deep_Dive_Mergr_SPGlobal_CBInsights.docx",
     kind: "Word document (.docx)"
+  },
+  {
+    title: "Data-Sources Comparison",
+    description:
+      "Breakdown of 11 market & economic data sources (Nasdaq Data Link, Twelve Data, FRED, SEC EDGAR, BLS, BEA, Treasury, Federal Reserve, IMF, OECD, World Bank) by coverage, cost, and \u2014 critically \u2014 redistribution rights to subscribers. Includes a FRED datasets sheet and a redistribution-rights matrix.",
+    href: "/downloads/JHI_Data_Sources_Comparison.xlsx",
+    kind: "Excel workbook (.xlsx)"
   }
 ];
 
