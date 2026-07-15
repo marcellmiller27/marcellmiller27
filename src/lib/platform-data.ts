@@ -2,6 +2,7 @@ export type PricingTier = {
   name: string;
   audience: string;
   price: string;
+  seats: string;
   target: string;
   revenue: string;
   features: string[];
@@ -80,6 +81,7 @@ export const pricingTiers: PricingTier[] = [
     name: "Consumer Plan",
     audience: "Retail investors and wealth builders",
     price: "$50 / month",
+    seats: "1 user seat",
     target: "50,000 subscribers",
     revenue: "$2.5M monthly recurring revenue",
     features: [
@@ -93,6 +95,7 @@ export const pricingTiers: PricingTier[] = [
     name: "Professional Plan",
     audience: "Acquisition entrepreneurs and advisors",
     price: "$299 / month",
+    seats: "1 user seat",
     target: "5,000 subscribers",
     revenue: "$1.495M monthly recurring revenue",
     features: [
@@ -105,11 +108,13 @@ export const pricingTiers: PricingTier[] = [
   {
     name: "Enterprise / Family Office",
     audience: "Family offices, investment firms, CPAs, attorneys, and bankers",
-    price: "$1,500+ / month",
+    price: "$1,500 / month",
+    seats: "5 seats included · +$99 / additional seat",
     target: "500 subscribers",
     revenue: "$750K+ monthly recurring revenue",
     features: [
       "Team accounts and role permissions",
+      "5 user seats included; additional seats $99 / month",
       "Branded intelligence reports",
       "Portfolio and entity oversight",
       "Custom research workflows"

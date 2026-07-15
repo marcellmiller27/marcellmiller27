@@ -15,6 +15,7 @@ export default function PricingPage() {
               <p className="pricing-card__audience">{tier.audience}</p>
               <h3>{tier.name}</h3>
               <strong>{tier.price}</strong>
+              <p className="pricing-card__seats">{tier.seats}</p>
             </div>
             <ul>
               {tier.features.map((feature) => (

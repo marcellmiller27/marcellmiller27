@@ -212,6 +212,7 @@ export default function Home() {
                 <p className="pricing-card__audience">{tier.audience}</p>
                 <h3>{tier.name}</h3>
                 <strong>{tier.price}</strong>
+                <p className="pricing-card__seats">{tier.seats}</p>
               </div>
               <ul>
                 {tier.features.map((feature) => (
@@ -222,7 +223,8 @@ export default function Home() {
           ))}
         </div>
         <p className="pricing-note">
-          Month-to-month. Cancel anytime. No auto-renewal traps, no per-seat surprises.
+          Month-to-month or annual. Cancel anytime. No auto-renewal traps — transparent
+          per-seat pricing, no surprise fees.
         </p>
       </section>
 

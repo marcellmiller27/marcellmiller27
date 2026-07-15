@@ -531,6 +531,13 @@ main {
   font-size: 2.1rem;
 }
 
+.pricing-card__seats {
+  margin: 0.35rem 0 0;
+  color: var(--muted-strong);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
 /* Segment-tuned accents: each tier leads with the color that converts its
    audience best. Consumer (B2C) -> gold aspiration, Professional -> growth/ROI,
    Enterprise (B2B) -> trust-blue credibility. */

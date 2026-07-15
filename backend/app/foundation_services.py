@@ -155,6 +155,7 @@ class FoundationService:
                 price_label="$50/month",
                 stripe_price_env="STRIPE_CONSUMER_PRICE_ID",
                 features=["Dashboard", "Market intelligence", "AI assistant", "Opportunity scanner"],
+                seats="1 user seat",
             ),
             BillingPlan(
                 plan=SubscriptionPlan.PROFESSIONAL,
@@ -162,13 +163,20 @@ class FoundationService:
                 price_label="$299/month",
                 stripe_price_env="STRIPE_PROFESSIONAL_PRICE_ID",
                 features=["Acquisition engine", "Due diligence", "Financial reports", "CRM pipeline"],
+                seats="1 user seat",
             ),
             BillingPlan(
                 plan=SubscriptionPlan.ENTERPRISE,
                 name="Enterprise / Family Office Plan",
-                price_label="Custom or $1,500+/month",
+                price_label="$1,500/month (5 seats) + $99/additional seat",
                 stripe_price_env="STRIPE_ENTERPRISE_PRICE_ID",
-                features=["Team accounts", "Integrations", "Branded reports", "Advanced controls"],
+                features=[
+                    "Team accounts & role permissions",
+                    "5 user seats included",
+                    "Additional seats — $99 / seat / month",
+                    "Integrations, branded reports & advanced controls",
+                ],
+                seats="5 seats included · +$99 / additional seat",
             ),
         ]
 

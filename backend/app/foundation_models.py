@@ -99,6 +99,8 @@ class BillingPlan(BaseModel):
     price_label: str
     stripe_price_env: str
     features: list[str]
+    # Seat entitlement, mirroring NASDAQ's per-external-end-user licensing unit.
+    seats: str = ""
 
 
 class CheckoutSessionRequest(BaseModel):
