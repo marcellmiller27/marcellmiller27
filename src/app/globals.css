@@ -954,6 +954,45 @@ li::before {
   font-weight: 800;
 }
 
+/* --- Macro Dashboard indicator panels ----------------------------------- */
+.macro-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+
+.macro-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.35rem;
+}
+
+.macro-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.macro-row__label {
+  color: var(--muted-strong);
+  font-size: 0.85rem;
+}
+
+.macro-row__value {
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.macro-row__period {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 0.72rem;
+}
+
 /* --- Live cross-asset market ticker (top of every module) ---------------- */
 .market-ticker {
   overflow: hidden;
