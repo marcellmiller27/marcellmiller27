@@ -30,6 +30,7 @@ const monogramStyle = {
 
 export default function TeamPage() {
   const [agents, setAgents] = useState<Agent[]>([]);
+  const [cyPhotoOk, setCyPhotoOk] = useState(true);
 
   useEffect(() => {
     fetch(`${API_BASE}/agents`)
@@ -42,20 +43,33 @@ export default function TeamPage() {
     <PlatformShell
       eyebrow="Our team"
       title="Meet the John Henry Investments team"
-      description="An AI engineering teammate builds and maintains the platform, and five specialized AI agents support every member 24/7 — onboarding, subscriptions, account security, product guidance, and technical triage that escalates to the founder."
+      description="Our platform is built and maintained by a dedicated AI engineering department, supported 24/7 by five specialized AI agents. These agents assist our members with onboarding, subscriptions, account security, product guidance, and technical triage—which escalates directly to the founder when necessary."
     >
       <section className="app-section">
         <div className="app-section__heading">
           <p className="eyebrow">Platform engineering</p>
           <h2>Who builds &amp; maintains the platform</h2>
         </div>
-        <div className="team-grid">
+        <div
+          className="team-grid"
+          style={{ gridTemplateColumns: "300px", justifyContent: "start" }}
+        >
           <article className="team-card">
-            <div className="team-card__photo" style={monogramStyle}>
-              CY
-            </div>
+            {cyPhotoOk ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className="team-card__photo"
+                src="/team/vp-software-engineer.png"
+                alt="Cy Henry, VP of Software Engineering"
+                onError={() => setCyPhotoOk(false)}
+              />
+            ) : (
+              <div className="team-card__photo" style={monogramStyle}>
+                CY
+              </div>
+            )}
             <div className="team-card__body">
-              <span className="team-card__role">VP, Software Engineering · AI Teammate</span>
+              <span className="team-card__role">VP of Software Engineering</span>
               <h3 className="team-card__name">Cy Henry</h3>
               <p className="team-card__persona">
                 The founder&apos;s AI build partner — designs, ships, tests, and documents the platform.
@@ -70,7 +84,7 @@ export default function TeamPage() {
                 )}
               </div>
               <p className="team-card__bg">
-                Cy is JHI&apos;s AI software-engineering teammate — building and hardening the platform
+                Cy leads JHI&apos;s AI engineering department — building and hardening the platform
                 end-to-end (frontend, backend, data, and developer experience), running tests, and
                 keeping the board minutes with the founder. Cy works under human direction; every change
                 is reviewed and shipped as a pull request.
