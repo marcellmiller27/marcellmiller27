@@ -27,9 +27,20 @@ services:
       # Durable Postgres persistence (parity with production).
       DATABASE_URL: postgresql+psycopg://jhi:jhi@db:5432/jhi
       WEB_CONCURRENCY: "2"
+      # Forward API keys / secrets from the host (or Cursor Secrets, which inject
+      # into the VM env) into the container. ${VAR:-} = empty when unset, so no
+      # secret value is ever hardcoded here and the file is safe to commit.
+      FRED_API_KEY: ${FRED_API_KEY:-}
+      BLS_API_KEY: ${BLS_API_KEY:-}
+      BEA_API_KEY: ${BEA_API_KEY:-}
+      TWELVEDATA_API_KEY: ${TWELVEDATA_API_KEY:-}
+      NASDAQ_DATA_LINK_API_KEY: ${NASDAQ_DATA_LINK_API_KEY:-}
+      FUNDAMENTALS_API_KEY: ${FUNDAMENTALS_API_KEY:-}
+      APP_ENCRYPTION_KEY: ${APP_ENCRYPTION_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
       # For production, set these (config validation enforces them):
       # APP_ENV: production
-      # AUTH_JWT_SECRET: <set-a-strong-secret>
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:-}
     depends_on:
       db:
         condition: service_healthy
