@@ -4,9 +4,9 @@ type LogoProps = {
 };
 
 /**
- * John Henry Investments emblem: a trust-navy badge with ascending growth bars
- * shaded emerald (growth) into gold (premium), topped by a gold upward arrow.
- * Drawn as inline SVG so it stays crisp and inherits the brand palette.
+ * John Henry Investments emblem: the "Jh" monogram in brand gold on a trust-navy
+ * badge (matching the firm mark). Inline SVG so it stays crisp at any size and
+ * inherits the brand palette. (A tech-forward mark is planned to follow.)
  */
 export function Logo({ size = 40, title = "John Henry Investments" }: LogoProps) {
   return (
@@ -23,9 +23,9 @@ export function Logo({ size = 40, title = "John Henry Investments" }: LogoProps)
           <stop offset="0" stopColor="#0c2438" />
           <stop offset="1" stopColor="#06121f" />
         </linearGradient>
-        <linearGradient id="jhGrowth" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#e9c877" />
-          <stop offset="1" stopColor="#1fc585" />
+        <linearGradient id="jhGold" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#f2d68c" />
+          <stop offset="1" stopColor="#c1913f" />
         </linearGradient>
       </defs>
       <rect
@@ -39,13 +39,19 @@ export function Logo({ size = 40, title = "John Henry Investments" }: LogoProps)
         strokeWidth="1.5"
         strokeOpacity="0.85"
       />
-      <g fill="url(#jhGrowth)">
-        <rect x="11" y="29" width="5" height="8" rx="1.5" />
-        <rect x="18" y="24" width="5" height="13" rx="1.5" />
-        <rect x="25" y="19" width="5" height="18" rx="1.5" />
-        <rect x="32" y="15" width="5" height="22" rx="1.5" />
-      </g>
-      <path d="M34.5 7 L39 13.5 L30 13.5 Z" fill="#e3b765" />
+      <text
+        x="24"
+        y="25"
+        textAnchor="middle"
+        dominantBaseline="central"
+        fontFamily="Georgia, 'Times New Roman', serif"
+        fontSize="25"
+        fontWeight="500"
+        letterSpacing="0.5"
+        fill="url(#jhGold)"
+      >
+        Jh
+      </text>
     </svg>
   );
 }
