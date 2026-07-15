@@ -152,6 +152,56 @@ definition of a 'client' (active paying end-subscriber with access to SF1-derive
 and specify overage terms beyond 1,000 (per-additional-client rate or next-tier pricing, the
 billing mechanism, and how the client count is measured)."*
 
+## Development 2026-07-14 — Nasdaq approves terms, declines standalone addendum
+Trey Anderson (Sr. Managing Director) confirmed the **addendum items are APPROVED**, but
+Nasdaq **will not sign a standalone addendum** — the **Order Form + Global Data Agreement
+are their only contracting/execution vehicles.** A call is set for **Monday, 09:00 EDT**.
+
+**Path forward (agreed direction):** incorporate the approved items **into the Order Form
+as "Additional Terms"** (not a separate addendum), re-sign the Order Form, and obtain
+Nasdaq's acknowledgement/counter-signature. This is actually the **strongest** placement —
+the §22 order of preference is **"Order Form, then Agreement,"** so Additional Terms on the
+Order Form override the restrictive T&C defaults (§1.2 external-distribution ban, §1.4(e)
+SaaS ban).
+
+**Critical risk to neutralize:** email approval is **not binding** under the §22 merger
+clause — the rights must be **in the signed Order Form** (or Nasdaq must point to the
+Global Data Agreement clauses that already grant them via "Internal & External" +
+"Distributor"). Do not sign on the strength of email alone.
+
+→ Draft email + Monday call-prep: `docs/legal/nasdaq/EMAIL_TO_NASDAQ_ORDER_FORM_ADDITIONAL_TERMS.md`.
+
+## Signed Order Form review — envelope 3A86…A7D4 (reviewed 2026-07-14)
+Reviewed the DocuSigned Service Order **00151172.0** (`uploads/2AA_07092026_…pdf`).
+
+**✅ Wins now in the document:**
+- **Entity corrected:** Client/Distributor = **"JHI Research & Analytics Firm, Inc."**,
+  **5830 E 2nd St. Ste. 7000 #37182, Casper, WY 82609** (the separate WY entity — the
+  "dba/family-office" construction is gone).
+- **Additional Terms present (page 2), ~verbatim to our draft:** SaaS/hosted use +
+  external distribution of Derived Data to **up to 1,000** paying subscribers + **Sharadar
+  consent** + **"Additional Terms control per Section 22."** Overrides §1.2 / §1.4(e).
+
+**🔴 Critical gap — Nasdaq has not signed THIS version:**
+- Certificate of Completion: envelope **Status "Delivered," Signatures: 1.**
+- **Garrick Stavrovich (Nasdaq) signed 7/8/26 2:59 EDT** — *before* the Additional Terms.
+- **Marcellus Miller signed 7/14/26 16:46 EDT** — *with* the Additional Terms (title shown
+  as "CTO"). Certificate shows Marcellus only **Viewed 7/9**; the envelope is **not
+  "Completed."**
+- ⇒ Nasdaq's signature **predates** the Additional Terms; those terms are **not yet bound
+  by Nasdaq.** **Monday must-get:** Nasdaq **counter-signs/executes the version containing
+  the Additional Terms** → "Completed" envelope, both signatures on the same text.
+
+**🟠 Fill placeholder:** overage still reads **"[rate/next tier]"** — insert a real
+rate/next-tier before final execution (bracket = unenforceable/ambiguous overage).
+
+**🟡 Minor (title):** the 7/14 signature shows title **"CTO."** Signature by an authorized
+officer binds the corporation regardless of the label, so it is **legally binding either
+way.** Founder confirmed his title is **CEO** — since the form must be **re-executed** for
+Nasdaq's counter-signature anyway, sign that final version as **CEO** for a clean,
+consistent record. (Also: DocuSign **envelope subject** still shows the old "…dba JHI
+Rese…" title — cosmetic; body entity is correct.)
+
 ## Verdict
 Commercially the deal is **solid and correctly shaped**: **$18,000/yr all-in**, **Internal &
 External** (distributor) use, and an explicit **5-day $0-cancellation trial**. **Two items
