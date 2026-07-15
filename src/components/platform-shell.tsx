@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Logo } from "@/components/logo";
+import { MarketTicker } from "@/components/market-ticker";
 
 // Ordered by logical cluster (Overview · Research · Acquisitions · Portfolio · Account)
 // so navigation reads with institutional "flow" without dropdown complexity.
@@ -33,6 +34,7 @@ type PlatformShellProps = {
 export function PlatformShell({ eyebrow, title, description, children }: PlatformShellProps) {
   return (
     <main className="app-shell">
+      <MarketTicker />
       <header className="app-header">
         <Link className="app-header__brand" href="/">
           <Logo size={38} />
