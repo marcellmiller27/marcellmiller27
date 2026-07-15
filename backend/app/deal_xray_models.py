@@ -64,6 +64,33 @@ class DealInput(BaseModel):
     loan_rate_pct: float = Field(default=11.5, gt=0, le=40, description="SBA/acquisition loan APR.")
     loan_term_years: int = Field(default=10, ge=1, le=30)
 
+    # --- Public-comp benchmark (optional): SEC EDGAR tickers to benchmark margins against ---
+    comp_tickers: list[str] | None = Field(
+        default=None,
+        description="Optional public comparable tickers (e.g. ['HD','LOW']) — margins pulled from SEC EDGAR.",
+    )
+
+
+class CompanyComp(BaseModel):
+    ticker: str
+    entity_name: str
+    fiscal_year: int | None = None
+    revenue: float | None = None
+    gross_margin: float | None = None
+    operating_margin: float | None = None
+    net_margin: float | None = None
+
+
+class CompBenchmark(BaseModel):
+    comps: list[CompanyComp] = Field(default_factory=list)
+    median_gross_margin: float | None = None
+    median_operating_margin: float | None = None
+    median_net_margin: float | None = None
+    deal_ebitda_margin: float | None = None
+    comparison: str = ""
+    unavailable: list[str] = Field(default_factory=list)
+    source: str = "SEC EDGAR (public comps)"
+
 
 class SegmentScore(BaseModel):
     segment: str
@@ -110,4 +137,5 @@ class DealXRayReport(BaseModel):
     financing_options: list[FinancingOption]
     key_metrics: dict[str, str]
     diligence_questions: list[str]
+    comp_benchmark: CompBenchmark | None = None
     disclaimer: str
