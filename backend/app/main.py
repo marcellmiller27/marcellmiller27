@@ -14,6 +14,7 @@ from app.routers import (
     crm,
     dashboards,
     deal_xray,
+    edgar,
     financial_diligence,
     integrations,
     leads,
@@ -64,6 +65,7 @@ app.include_router(public_macro.router, prefix="/api/v1")
 app.include_router(research.router, prefix="/api/v1")
 app.include_router(valuations.router, prefix="/api/v1")
 app.include_router(deal_xray.router, prefix="/api/v1")
+app.include_router(edgar.router, prefix="/api/v1")
 app.include_router(financial_diligence.router, prefix="/api/v1")
 app.include_router(pipeline.router, prefix="/api/v1")
 app.include_router(support.router, prefix="/api/v1")

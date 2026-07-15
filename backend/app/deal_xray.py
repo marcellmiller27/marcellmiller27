@@ -11,12 +11,57 @@ Decision-support only — NOT investment advice, appraisal, or a brokerage servi
 from __future__ import annotations
 
 from app.deal_xray_models import (
+    CompanyComp,
+    CompBenchmark,
     DealInput,
     DealXRayReport,
     FinancingOption,
     SegmentScore,
     ValuationView,
 )
+
+
+def _median(values: list[float]) -> float | None:
+    vals = sorted(v for v in values if v is not None)
+    if not vals:
+        return None
+    n = len(vals)
+    mid = n // 2
+    return vals[mid] if n % 2 else (vals[mid - 1] + vals[mid]) / 2.0
+
+
+def build_comp_benchmark(
+    deal_ebitda_margin: float | None,
+    comps: list[CompanyComp],
+    unavailable: list[str] | None = None,
+) -> CompBenchmark:
+    """Pure: assemble a public-comp benchmark (median margins) + a comparison note."""
+    med_gross = _median([c.gross_margin for c in comps if c.gross_margin is not None])
+    med_op = _median([c.operating_margin for c in comps if c.operating_margin is not None])
+    med_net = _median([c.net_margin for c in comps if c.net_margin is not None])
+    if not comps:
+        comparison = "No public comps resolved."
+    elif deal_ebitda_margin is None or med_op is None:
+        comparison = f"{len(comps)} public comp(s) attached for context."
+    elif deal_ebitda_margin > med_op * 1.5 and deal_ebitda_margin > 0.15:
+        comparison = (
+            f"This deal's {deal_ebitda_margin*100:.1f}% EBITDA margin is well above the "
+            f"{med_op*100:.1f}% median operating margin of {len(comps)} public peer(s) — verify."
+        )
+    else:
+        comparison = (
+            f"This deal's {deal_ebitda_margin*100:.1f}% EBITDA margin is in line with the "
+            f"{med_op*100:.1f}% median operating margin of {len(comps)} public peer(s)."
+        )
+    return CompBenchmark(
+        comps=comps,
+        median_gross_margin=med_gross,
+        median_operating_margin=med_op,
+        median_net_margin=med_net,
+        deal_ebitda_margin=deal_ebitda_margin,
+        comparison=comparison,
+        unavailable=list(unavailable or []),
+    )
 
 # industry -> (mult_low, mult_base, mult_high, recession_resilience[0-1], capex_intensity)
 _INDUSTRY: dict[str, tuple[float, float, float, float, float]] = {
@@ -64,7 +109,7 @@ def _industry(key: str) -> tuple[float, float, float, float, float]:
     return _INDUSTRY.get(key.strip().lower().replace(" ", "_"), _INDUSTRY["general"])
 
 
-def analyze(deal: DealInput) -> DealXRayReport:
+def analyze(deal: DealInput, comp_benchmark: CompBenchmark | None = None) -> DealXRayReport:
     mult_low, mult_base, mult_high, resilience, capex_intensity = _industry(deal.industry)
     revenue = deal.revenue
     reported = deal.reported_ebitda
@@ -245,6 +290,25 @@ def analyze(deal: DealInput) -> DealXRayReport:
     if earnings_volatility >= 0.25 and _OWNER_RISK.get(deal.owner_involvement, 0.55) >= 0.55:
         ethic -= 5
         ethic_flags.append("recent owner-driven turnaround — durability unproven")
+    # --- Public-comp benchmark (SEC EDGAR) — data-grounded plausibility cross-check ---
+    if comp_benchmark and comp_benchmark.comps:
+        med_op = comp_benchmark.median_operating_margin
+        if med_op is not None:
+            segments[0].findings.append(
+                f"Public comps ({len(comp_benchmark.comps)}): median operating margin "
+                f"{med_op*100:.1f}% vs this deal's {ebitda_margin*100:.1f}% EBITDA margin."
+            )
+            if ebitda_margin > med_op * 1.5 and ebitda_margin > 0.15:
+                ethic -= 10
+                ethic_flags.append("margin far above public peers")
+                questions.append(
+                    "Reconcile margins against public peers — why materially higher than comparable companies?"
+                )
+        else:
+            segments[0].findings.append(
+                f"Public comps ({len(comp_benchmark.comps)}) attached for context."
+            )
+
     ethic = int(_clamp(ethic))
     ethic_note = (
         "CIM presentation looks credible and internally consistent."
@@ -358,6 +422,7 @@ def analyze(deal: DealInput) -> DealXRayReport:
         ethic_rating=ethic, ethic_note=ethic_note,
         segments=segments, valuation=valuation, financing_options=financing,
         key_metrics=key_metrics, diligence_questions=questions,
+        comp_benchmark=comp_benchmark,
         disclaimer=(
             "Decision-support analysis from user-supplied figures — NOT investment advice, a "
             "valuation/appraisal, or brokerage. Verify all figures with a quality-of-earnings "
