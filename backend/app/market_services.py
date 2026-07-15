@@ -140,11 +140,11 @@ SYMBOLS: list[SymbolSpec] = [
     SymbolSpec("UNEMPLOYMENT", "US Unemployment Rate", "fred", "UNRATE", "macro", "%", ("UNRATE",)),
     SymbolSpec("FED_FUNDS", "US Fed Funds Rate", "fred", "FEDFUNDS", "macro", "%", ("FEDFUNDS",)),
     SymbolSpec(
-        "CONSUMER_CREDIT", "US Consumer Credit (total)", "fred", "TOTALSL", "macro", "USD bn",
+        "CONSUMER_CREDIT", "US Consumer Credit (total)", "fred", "TOTALSL", "macro", "USD mn",
         ("CONSUMERDEBT", "CONSUMERCREDIT"),
     ),
     SymbolSpec(
-        "REVOLVING_CREDIT", "US Revolving Consumer Credit", "fred", "REVOLSL", "macro", "USD bn",
+        "REVOLVING_CREDIT", "US Revolving Consumer Credit", "fred", "REVOLSL", "macro", "USD mn",
         ("REVOLVINGCREDIT", "CREDITCARDDEBT"),
     ),
     SymbolSpec(
