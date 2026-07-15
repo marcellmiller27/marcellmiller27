@@ -61,6 +61,12 @@ def nasdaq_data_link_api_key() -> str | None:
     return os.getenv("NASDAQ_DATA_LINK_API_KEY") or os.getenv("FUNDAMENTALS_API_KEY")
 
 
+def bls_api_key() -> str | None:
+    """BLS registration key. When set, unlocks the v2 API (higher daily limits,
+    more series per request, longer history). Keyless falls back to v1."""
+    return os.getenv("BLS_API_KEY") or os.getenv("BLS_REGISTRATION_KEY")
+
+
 class ProviderError(RuntimeError):
     """A market-data provider call failed."""
 
@@ -346,7 +352,15 @@ def sharadar_sf1_fundamentals(ticker: str, dimension: str = "ARQ") -> dict[str, 
 
 
 def bls_cpi_series() -> list[dict[str, Any]]:
-    url = f"https://api.bls.gov/publicAPI/v1/timeseries/data/{CPI_SERIES_ID}"
+    # Registered key -> v2 (500 req/day, 20yr, net/pct changes); keyless -> v1.
+    key = bls_api_key()
+    if key:
+        url = (
+            f"https://api.bls.gov/publicAPI/v2/timeseries/data/{CPI_SERIES_ID}"
+            f"?registrationkey={urllib.parse.quote(key)}"
+        )
+    else:
+        url = f"https://api.bls.gov/publicAPI/v1/timeseries/data/{CPI_SERIES_ID}"
     payload = _http_get_json(url)
     series = (payload.get("Results") or {}).get("series") or []
     if not series:
@@ -436,7 +450,11 @@ class MarketDataService:
                     asset_classes=["macro"],
                     status="live",
                     requires_key=False,
-                    notes="CPI series for inflation (no key required for low volume).",
+                    notes=(
+                        "Registered v2 API (higher limits, 20yr history)."
+                        if bls_api_key()
+                        else "CPI via keyless v1 (low-volume). Set BLS_API_KEY for the registered v2 API."
+                    ),
                 ),
                 ProviderInfo(
                     key="fred",
