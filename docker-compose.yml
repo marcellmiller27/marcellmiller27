@@ -32,6 +32,7 @@ services:
       # secret value is ever hardcoded here and the file is safe to commit.
       FRED_API_KEY: ${FRED_API_KEY:-}
       BLS_API_KEY: ${BLS_API_KEY:-}
+      BEA_API_KEY: ${BEA_API_KEY:-}
       TWELVEDATA_API_KEY: ${TWELVEDATA_API_KEY:-}
       NASDAQ_DATA_LINK_API_KEY: ${NASDAQ_DATA_LINK_API_KEY:-}
       FUNDAMENTALS_API_KEY: ${FUNDAMENTALS_API_KEY:-}

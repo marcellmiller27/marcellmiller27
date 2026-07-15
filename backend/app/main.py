@@ -9,6 +9,7 @@ from app.routers import (
     accounting,
     agents,
     auth,
+    bea,
     billing,
     crm,
     dashboards,
@@ -57,6 +58,7 @@ app.include_router(reports.router, prefix="/api/v1")
 app.include_router(dashboards.router, prefix="/api/v1")
 app.include_router(crm.router, prefix="/api/v1")
 app.include_router(market.router, prefix="/api/v1")
+app.include_router(bea.router, prefix="/api/v1")
 app.include_router(research.router, prefix="/api/v1")
 app.include_router(valuations.router, prefix="/api/v1")
 app.include_router(deal_xray.router, prefix="/api/v1")
