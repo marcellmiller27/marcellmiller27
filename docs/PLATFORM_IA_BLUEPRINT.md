@@ -1,0 +1,160 @@
+# JHI Platform — Information Architecture & Navigation Blueprint
+
+**Status:** v0.1 — DRAFT FOR DISCUSSION (Day 1 of the Mergr dissection). Nothing here
+is built or final; this is the working artifact we edit as we decide together.
+**Date:** 2026-07-16. **Owner:** Founder/CEO. **Steward:** Cy (VP Eng).
+**Governed by:** `docs/ENGINEERING_POLICY.md` (foundation-first; you review & merge).
+
+> Goal of Day 1: reverse-engineer Mergr's IA, diagnose our current structure, and
+> draft JHI's table-of-contents / navigation model + function-first language.
+
+---
+
+## Part A — Mergr, reverse-engineered (our case study)
+
+### A.1 Two clearly separated zones
+Mergr keeps **marketing/storefront** and **product** distinct:
+
+- **Storefront (public):** positioning + conversion.
+- **Product (authenticated):** the actual working tool (browse/search/analyze/export).
+
+### A.2 Storefront IA (from the menu snapshots)
+- **Solution for [segment]** (primary framing — market/function, not job title):
+  Acquirers/Investors · M&A Advisors · Private Equity (Fund/Suite) · Lenders ·
+  Corporate · Recruiters · Service Providers · Wealth Advisors
+- **Product:** Pricing · Free Trial · Log In · Custom Exports/API · AI Connection ·
+  Browse · Support Docs · Search Guides · Search Examples · *PitchBook Alternative*
+- **Company:** About · Contact · LinkedIn
+- **Legal:** Terms · Privacy
+- **Persistent CTA:** "Search Free" / "Free for 7 days — cancel anytime"
+
+### A.3 Credibility pattern
+Dataset scale shown as trust signal, with **facets that double as filters**:
+- 4,867 PE firms · 223,608 companies (middle-market / large / private / acquired /
+  PE-backed) · 3,914 advisors (law firms / investment banks / middle-market / multi-sector)
+
+### A.4 Positioning pillars
+Updated Daily (in-house research) · Fast to Use (no onboarding) · Built for PE & M&A (focus)
+
+### A.5 Product model (inferred)
+- **Entities:** PE Firms · Companies · Advisors · Transactions/Deals
+- **Core interactions:** Search + Browse → filterable results grid → record profile →
+  related records via the **ownership graph** (buyer ↔ target ↔ advisor ↔ timeline)
+- **AI Connection:** natural-language questions over the graph
+  (e.g. *"Who has 3M bought from and divested to, and which advisors did they use?"*)
+- **Exports/API:** custom data out
+
+### A.6 The real lesson
+Mergr's moat is **normalization + relationship modeling** of *public* data into a
+searchable graph — not proprietary raw feeds. **JHI's data model must therefore be an
+entity + relationship graph, not just tables of filings.**
+
+---
+
+## Part B — JHI today (honest diagnosis)
+
+- **App navigation is a flat 16-link bar** (`src/components/platform-shell.tsx`):
+  Home, Dashboard, Opportunities, Reports, AI Assistant, Deal X-Ray, Quality of
+  Earnings, Pipeline, Document Review, Portfolio, Accounting, Documents, Plans,
+  Account, Help, Team. → **No hierarchy, no table-of-contents, mixes marketing +
+  app + account.** This is "website," not "product."
+- **No separation** between storefront and application shells.
+- **Job-title language** used as audience segments (`src/app/page.tsx`): "CPAs",
+  "Attorneys", "Business Brokers", "Executive Recruiters", etc.
+  (The "CPA-signed QoE" *feature* wording is legitimate and stays.)
+- **Dashboard is a static page**, not a filter/grid/detail workspace.
+
+---
+
+## Part C — Proposed JHI IA (draft for discussion)
+
+### C.1 Two zones (recommend a hard split)
+1. **Storefront shell** (public): Home · Solutions (by segment) · Pricing · About ·
+   Team · Log in · Start free.
+2. **Application shell** (authenticated): the **Table of Contents** navigation +
+   module workspaces.
+
+### C.2 Segment language — "JHI for [segment]" (replaces job titles)
+| Old (job-title / mixed) | New (function/market segment) |
+|---|---|
+| Search-Fund & SMB Acquirers, Independent Sponsors, Self-Directed | **Acquirers & Investors** |
+| (new) | **Private Equity** |
+| Business Brokers | **M&A Advisors & Brokers** |
+| (new) | **Corporate Development** |
+| (new) | **Lenders & Credit** |
+| Investment Advisors (RIAs), Family Offices | **Wealth & Asset Managers** |
+| CPAs, Attorneys | **Service Providers** (accountants, attorneys, consultants) |
+| (new) | **Research & Analysts** |
+| Executive Recruiters | **Recruiters** *(keep? — see open questions)* |
+
+### C.3 Application Table of Contents (module map, grouped by function)
+The left-sidebar TOC — pick a group, land in that module's workspace:
+
+1. **Intelligence Home** — the workspace dashboard (filter rail + results grid + detail)
+2. **Macro & Industry** — Macro Dashboard · Industry/Sector Outlook
+3. **Screening & Discovery** — Opportunity Screener · Company Search/Browse
+4. **Company Intelligence** — Company Profile hub: Financials & Ratios (EDGAR) ·
+   Ownership & Relationship Graph · Acquisition History · Comparable Transactions ·
+   Market Data / Securities
+5. **Diligence & Deal Analysis** — Deal X-Ray (CIM) · Quality of Earnings ·
+   Valuation Models (DCF / LBO / Search-Fund) · Document Review · Risk Score
+6. **Deal Workflow** — Pipeline · Portfolio
+7. **Research & Outputs** — Reports & Excel Workbooks · Newsletter
+8. **Ask JHI (AI)** — natural-language query over the entity graph
+9. **Firm Operations** *(internal/role-gated)* — Accounting · Admin Console/Agents · CRM/Leads
+10. **Account & Support** — Account · Billing & Seats · Help
+
+### C.4 Navigation model (the "table of contents → module" flow you described)
+- **App shell:** persistent **left sidebar = TOC** (collapsible groups) + top bar with
+  **global search + Ask JHI + account menu**. Selecting a TOC item routes to that
+  module workspace in the content area.
+- **Rationale:** Mergr uses a top-right menu, but institutional analytics tools
+  (Capital IQ, PitchBook, Preqin) use a **left TOC sidebar** for dense module sets —
+  better for a platform this broad. (Open question C.7.)
+
+### C.5 Dashboard = workspace (the "pivot table" idea)
+Standard three-region analytical layout: **filter rail (left) · results grid (center) ·
+record detail (right/drawer)**, plus **saved views**. Facets = the data model's
+categories (mirrors Mergr A.3).
+
+### C.6 Signature workflow (our differentiator vs Mergr)
+`Macro dashboard → industry outlook → company screening → company profile →
+{ratios · ownership graph · acquisition history · comps · DCF · LBO · search-fund ·
+QoE · risk · ESG/governance · exec bios · litigation · patents · credit · news}`.
+Mergr can't do the macro→company drill-down; we can, on data adapters we already have.
+
+### C.7 Open questions to decide (Day 1 discussion)
+1. **App nav:** left-sidebar TOC (my rec) vs top menu like Mergr?
+2. **Segment list:** confirm the 8 segments in C.2 (keep "Recruiters"? add others?).
+3. **Naming:** "Ask JHI" vs "AI Assistant"? "Intelligence Home" vs "Dashboard"?
+4. **Shell split:** fully separate storefront vs app shells (my rec: yes)?
+5. **Module consolidation:** `deal-xray` vs `diligence-suite` vs `due-diligence`
+   overlap — confirm the canonical module set.
+6. **Firm Operations** (accounting/admin/CRM): in the same app TOC (role-gated) or a
+   separate internal console?
+
+---
+
+## Part D — Mapping current pages → target IA (so nothing is lost)
+| Current page/route | Target TOC home |
+|---|---|
+| `/dashboard` | Intelligence Home (rebuilt as workspace) |
+| `/macro` *(stranded, to recover)* | Macro & Industry |
+| `/opportunities` | Screening & Discovery |
+| `/deal-xray` | Diligence & Deal Analysis |
+| `/diligence-suite` (QoE) | Diligence & Deal Analysis |
+| `/due-diligence` (Document Review) | Diligence & Deal Analysis |
+| `/pipeline` | Deal Workflow |
+| `/portfolio` | Deal Workflow |
+| `/reports`, `/downloads` | Research & Outputs |
+| `/assistant` | Ask JHI (AI) |
+| `/accounting` | Firm Operations |
+| `/account`, `/support` | Account & Support |
+| `/`, `/pricing`, `/about`, `/team` | Storefront shell |
+
+---
+
+## Next (Day 2 preview, not started)
+Dissect the **authenticated** Mergr product (once subscribed): dashboard workspace,
+filter rails, a company/firm/advisor profile, the ownership graph view, and search/AI
+results — to define JHI's concrete dashboard interaction model.
