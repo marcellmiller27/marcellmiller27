@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.dependencies import require_premium
-from app.edgar_models import EdgarFinancials
+from app.edgar_models import EdgarFinancials, EdgarHistory
 from app.edgar_services import EdgarService, ProviderError
 from app.edgar_workbook import company_workbook
 from app.foundation_models import Principal, SubscriptionPlan
@@ -26,6 +26,15 @@ def edgar_financials(ticker: str) -> EdgarFinancials:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
+@router.get("/{ticker}/history", response_model=EdgarHistory)
+def edgar_history(ticker: str) -> EdgarHistory:
+    """Multi-year annual financials (for trend charts / detail views)."""
+    try:
+        return EdgarService().history(ticker)
+    except ProviderError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
 @router.get("/{ticker}/export.xlsx")
 def export_edgar_workbook(
     ticker: str,
@@ -34,14 +43,15 @@ def export_edgar_workbook(
 ) -> Response:
     """Premium (T1/T2) client-ready Excel workbook of a company's SEC financials.
 
-    Gated to Professional/Enterprise; Enterprise (T1) receives a branded workbook.
+    Multi-year table + charts. Gated to Professional/Enterprise; Enterprise (T1)
+    receives a branded workbook.
     """
     try:
-        fin = EdgarService().financials(ticker)
+        hist = EdgarService().history(ticker)
     except ProviderError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     plan = FoundationService(db).me(principal).subscription.plan
-    data = company_workbook(fin, branded=(plan == SubscriptionPlan.ENTERPRISE))
+    data = company_workbook(hist, branded=(plan == SubscriptionPlan.ENTERPRISE))
     safe = re.sub(r"[^A-Za-z0-9]+", "_", ticker).strip("_").upper() or "COMPANY"
     return Response(
         content=data,

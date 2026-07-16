@@ -1,7 +1,8 @@
-"""Build a client-ready Excel workbook of a company's SEC EDGAR financials.
+"""Client-ready multi-year Excel workbook of a company's SEC EDGAR financials.
 
-Premium (T1 Enterprise / T2 Professional) deliverable. Data is public-domain SEC
-XBRL (freely redistributable). Pure function -> xlsx bytes (unit-testable).
+Premium (T1 Enterprise / T2 Professional) deliverable: a multi-year financials
+table plus native Excel charts (revenue & net income; margins). Data is public-
+domain SEC XBRL (freely redistributable). Pure function -> xlsx bytes.
 """
 
 from __future__ import annotations
@@ -9,10 +10,11 @@ from __future__ import annotations
 import io
 
 from openpyxl import Workbook
+from openpyxl.chart import LineChart, Reference
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
-from app.edgar_models import EdgarFinancials
+from app.edgar_models import EdgarHistory
 
 NAVY = "0C1F33"
 GOLD = "9A6B12"
@@ -22,97 +24,124 @@ WHITE = "FFFFFF"
 _thin = Side(style="thin", color="C9D3DF")
 _BORDER = Border(left=_thin, right=_thin, top=_thin, bottom=_thin)
 
+_DOLLAR_ROWS = [
+    ("Revenue", "revenue"),
+    ("Gross profit", "gross_profit"),
+    ("Operating income", "operating_income"),
+    ("Net income", "net_income"),
+    ("Total assets", "total_assets"),
+    ("Stockholders' equity", "stockholders_equity"),
+]
+_MARGIN_ROWS = [
+    ("Gross margin %", "gross_margin"),
+    ("Operating margin %", "operating_margin"),
+    ("Net margin %", "net_margin"),
+]
 
-def _pct(value: float | None) -> str:
-    return f"{value * 100:.1f}%" if value is not None else "—"
 
-
-def company_workbook(fin: EdgarFinancials, branded: bool = False) -> bytes:
-    """Return xlsx bytes for one company's headline annual financials.
-
-    branded=True adds the JHI mark line (Enterprise/T1 client-ready output).
-    """
+def company_workbook(hist: EdgarHistory, branded: bool = False) -> bytes:
+    """Return xlsx bytes: multi-year financials table + revenue/margin charts."""
     wb = Workbook()
     ws = wb.active
-    ws.title = "Company Financials"
+    ws.title = "Financials"
 
-    # --- Title block ---
-    ws.merge_cells("A1:C1")
-    ws["A1"] = f"{fin.entity_name} ({fin.ticker})"
+    ws.merge_cells("A1:H1")
+    ws["A1"] = f"{hist.entity_name} ({hist.ticker})"
     ws["A1"].font = Font(bold=True, size=15, color=NAVY)
-    ws.merge_cells("A2:C2")
-    ws["A2"] = (
-        f"CIK {fin.cik} · FY{fin.fiscal_year or '—'} "
-        f"(period ended {fin.period_end or '—'}) · {fin.currency}"
-    )
+    ws.merge_cells("A2:H2")
+    ws["A2"] = f"CIK {hist.cik} · annual (SEC EDGAR) · {hist.currency} · values in $B unless %"
     ws["A2"].font = Font(italic=True, size=9, color="5A6B7D")
     if branded:
-        ws.merge_cells("A3:C3")
+        ws.merge_cells("A3:H3")
         ws["A3"] = "John Henry Investments — prepared for client review"
         ws["A3"].font = Font(bold=True, size=9, color=GOLD)
 
-    header_row = 5
+    years = hist.years
+    if not years:
+        ws["A5"] = "No annual XBRL data available for this filer."
+        ws["A5"].font = Font(italic=True, color="5A6B7D")
+        buf = io.BytesIO()
+        wb.save(buf)
+        return buf.getvalue()
 
-    def header(row: int) -> None:
-        for col, label in enumerate(["Line item", "Value", "Notes"], start=1):
-            c = ws.cell(row=row, column=col, value=label)
-            c.font = Font(bold=True, color=WHITE, size=11)
-            c.fill = PatternFill("solid", fgColor=NAVY)
-            c.alignment = Alignment(horizontal="left", vertical="center")
-            c.border = _BORDER
+    n = len(years)
+    hdr = 5
 
-    header(header_row)
+    def style_header_cell(cell) -> None:
+        cell.font = Font(bold=True, color=WHITE, size=11)
+        cell.fill = PatternFill("solid", fgColor=NAVY)
+        cell.alignment = Alignment(horizontal="center", vertical="center")
+        cell.border = _BORDER
 
-    def money(v: float | None) -> str:
-        if v is None:
-            return "—"
-        a = abs(v)
-        if a >= 1e12:
-            return f"${v / 1e12:.2f}T"
-        if a >= 1e9:
-            return f"${v / 1e9:.2f}B"
-        if a >= 1e6:
-            return f"${v / 1e6:.1f}M"
-        return f"${v:,.0f}"
+    # Header row: Metric | FY.. 
+    style_header_cell(ws.cell(hdr, 1, "Metric"))
+    ws.cell(hdr, 1).alignment = Alignment(horizontal="left", vertical="center")
+    for i, yr in enumerate(years):
+        style_header_cell(ws.cell(hdr, 2 + i, f"FY{yr.fiscal_year}"))
 
-    rows = [
-        ("Revenue", money(fin.revenue), ""),
-        ("Cost of revenue", money(fin.cost_of_revenue), ""),
-        ("Gross profit", money(fin.gross_profit), f"Gross margin {_pct(fin.gross_margin)}"),
-        ("Operating income", money(fin.operating_income), f"Operating margin {_pct(fin.operating_margin)}"),
-        ("Net income", money(fin.net_income), f"Net margin {_pct(fin.net_margin)}"),
-        ("Total assets", money(fin.total_assets), ""),
-        ("Total liabilities", money(fin.total_liabilities), ""),
-        ("Stockholders' equity", money(fin.stockholders_equity), ""),
-        ("Cash & equivalents", money(fin.cash_and_equivalents), ""),
-    ]
-    for i, (label, value, note) in enumerate(rows):
-        r = header_row + 1 + i
-        ws.cell(row=r, column=1, value=label).font = Font(bold=True, size=10, color=NAVY)
-        ws.cell(row=r, column=2, value=value).font = Font(size=10)
-        ws.cell(row=r, column=3, value=note).font = Font(size=9, color="5A6B7D")
-        fill = PatternFill("solid", fgColor=LIGHT) if i % 2 else PatternFill()
-        for col in range(1, 4):
-            cell = ws.cell(row=r, column=col)
-            cell.border = _BORDER
-            if i % 2:
-                cell.fill = fill
-            cell.alignment = Alignment(vertical="top", wrap_text=True)
+    def write_rows(start: int, rows, transform, alt_base: int) -> None:
+        for ri, (label, attr) in enumerate(rows):
+            r = start + ri
+            lc = ws.cell(r, 1, label)
+            lc.font = Font(bold=True, size=10, color=NAVY)
+            lc.border = _BORDER
+            for i, yr in enumerate(years):
+                v = getattr(yr, attr)
+                cell = ws.cell(r, 2 + i, transform(v) if v is not None else None)
+                cell.font = Font(size=10)
+                cell.alignment = Alignment(horizontal="right")
+                cell.border = _BORDER
+            if (ri + alt_base) % 2:
+                for c in range(1, n + 2):
+                    ws.cell(r, c).fill = PatternFill("solid", fgColor=LIGHT)
 
-    footer = header_row + 1 + len(rows) + 1
-    ws.merge_cells(start_row=footer, start_column=1, end_row=footer, end_column=3)
-    ws.cell(
-        row=footer, column=1,
-        value=(
-            f"Source: {fin.source}. {fin.disclaimer} "
-            "Public SEC data; verify against the original filing."
-        ),
-    ).font = Font(italic=True, size=8, color="5A6B7D")
+    dollar_start = hdr + 1
+    write_rows(dollar_start, _DOLLAR_ROWS, lambda v: round(v / 1e9, 2), 0)
+    margin_start = dollar_start + len(_DOLLAR_ROWS) + 1
+    style_header_cell(ws.cell(margin_start - 1, 1, "Margins (%)"))
+    ws.cell(margin_start - 1, 1).alignment = Alignment(horizontal="left", vertical="center")
+    for i in range(n):
+        style_header_cell(ws.cell(margin_start - 1, 2 + i, f"FY{years[i].fiscal_year}"))
+    write_rows(margin_start, _MARGIN_ROWS, lambda v: round(v * 100, 1), 0)
 
-    ws.column_dimensions[get_column_letter(1)].width = 24
-    ws.column_dimensions[get_column_letter(2)].width = 16
-    ws.column_dimensions[get_column_letter(3)].width = 30
-    ws.freeze_panes = ws.cell(row=header_row + 1, column=1)
+    # --- Charts ---
+    cats = Reference(ws, min_col=2, max_col=1 + n, min_row=hdr, max_row=hdr)
+    chart_row = margin_start + len(_MARGIN_ROWS) + 2
+
+    c1 = LineChart()
+    c1.title = "Revenue & Net Income ($B)"
+    c1.y_axis.title = "$B"
+    c1.x_axis.title = "Fiscal Year"
+    c1.height, c1.width = 8, 16
+    for offset, (_label, _attr) in enumerate(_DOLLAR_ROWS):
+        if _attr in ("revenue", "net_income"):
+            ref = Reference(ws, min_col=1, max_col=1 + n, min_row=dollar_start + offset,
+                            max_row=dollar_start + offset)
+            c1.add_data(ref, titles_from_data=True, from_rows=True)
+    c1.set_categories(cats)
+    ws.add_chart(c1, f"A{chart_row}")
+
+    c2 = LineChart()
+    c2.title = "Margins (%)"
+    c2.y_axis.title = "%"
+    c2.x_axis.title = "Fiscal Year"
+    c2.height, c2.width = 8, 16
+    mref = Reference(ws, min_col=1, max_col=1 + n, min_row=margin_start,
+                     max_row=margin_start + len(_MARGIN_ROWS) - 1)
+    c2.add_data(mref, titles_from_data=True, from_rows=True)
+    c2.set_categories(cats)
+    ws.add_chart(c2, f"A{chart_row + 17}")
+
+    footer = chart_row + 34
+    ws.merge_cells(start_row=footer, start_column=1, end_row=footer, end_column=1 + n)
+    ws.cell(row=footer, column=1, value=(
+        f"Source: {hist.source}. {hist.disclaimer} Public SEC data; verify against filings."
+    )).font = Font(italic=True, size=8, color="5A6B7D")
+
+    ws.column_dimensions[get_column_letter(1)].width = 22
+    for i in range(n):
+        ws.column_dimensions[get_column_letter(2 + i)].width = 12
+    ws.freeze_panes = ws.cell(row=hdr + 1, column=2)
 
     buffer = io.BytesIO()
     wb.save(buffer)
