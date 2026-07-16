@@ -737,7 +737,7 @@ export default function MobileApp() {
                   {diligence.red_flags[0] && (
                     <p className="m-note">{diligence.red_flags[0]}</p>
                   )}
-                  <p className="m-sub" style={{ fontSize: "0.72rem" }}>
+                  <p className="m-sub" style={{ fontSize: "var(--fs-xs)" }}>
                     Decision-support only — not an audit or CPA opinion. Formal opinions are
                     issued by a licensed partner CPA.
                   </p>

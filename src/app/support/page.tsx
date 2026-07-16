@@ -103,7 +103,7 @@ export default function SupportPage() {
       <section className="assistant-panel" aria-label="Support assistant">
         <div className="assistant-panel__sidebar">
           <p className="eyebrow">Assistant</p>
-          <h2 style={{ fontSize: "1.4rem", margin: "0.4rem 0 0.6rem" }}>Ask us anything</h2>
+          <h2 style={{ fontSize: "var(--fs-2xl)", margin: "0.4rem 0 0.6rem" }}>Ask us anything</h2>
           <p>
             Answers are drawn from our help knowledge base. For anything else, the
             assistant will point you to a human.

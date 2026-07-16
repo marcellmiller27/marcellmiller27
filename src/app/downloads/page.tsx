@@ -48,7 +48,7 @@ const btnStyle = {
   background: "var(--growth, #1f7a4d)",
   color: "#fff",
   fontWeight: 800,
-  fontSize: "0.9rem",
+  fontSize: "var(--fs-base)",
   textDecoration: "none",
   whiteSpace: "nowrap" as const
 };
@@ -68,18 +68,18 @@ export default function DownloadsPage() {
         {documents.map((doc) => (
           <article className="app-card" key={doc.href} style={cardStyle}>
             <div style={{ flex: 1, minWidth: "240px" }}>
-              <strong style={{ fontSize: "1.02rem" }}>{doc.title}</strong>
-              <p style={{ color: "var(--muted)", fontSize: "0.72rem", fontWeight: 800, textTransform: "uppercase", margin: "0.2rem 0" }}>
+              <strong style={{ fontSize: "var(--fs-lg)" }}>{doc.title}</strong>
+              <p style={{ color: "var(--muted)", fontSize: "var(--fs-xs)", fontWeight: 800, textTransform: "uppercase", margin: "0.2rem 0" }}>
                 {doc.kind}
               </p>
-              <p style={{ color: "var(--muted)", fontSize: "0.88rem", margin: 0 }}>{doc.description}</p>
+              <p style={{ color: "var(--muted)", fontSize: "var(--fs-base)", margin: 0 }}>{doc.description}</p>
             </div>
             <a href={doc.href} download style={btnStyle}>
               Download
             </a>
           </article>
         ))}
-        <p style={{ color: "var(--muted)", fontSize: "0.8rem", marginTop: "0.5rem" }}>
+        <p style={{ color: "var(--muted)", fontSize: "var(--fs-sm)", marginTop: "0.5rem" }}>
           Confidential — for internal use. Provenance: JHI-SIG 69M2705M.
         </p>
       </section>

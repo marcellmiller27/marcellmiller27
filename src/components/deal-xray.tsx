@@ -166,7 +166,7 @@ export function DealXRay() {
   };
 
   const num = (k: keyof typeof DEFAULTS, label: string, step = "1") => (
-    <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "0.8rem" }}>
+    <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "var(--fs-sm)" }}>
       <span>{label}</span>
       <input
         type="number"
@@ -182,19 +182,19 @@ export function DealXRay() {
     <div>
       <form onSubmit={run} className="app-card" style={{ marginBottom: "1.5rem" }}>
         <div className="app-grid app-grid--three" style={{ gap: "0.8rem" }}>
-          <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "0.8rem" }}>
+          <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "var(--fs-sm)" }}>
             <span>Business name</span>
             <input value={form.business_name as string} onChange={(e) => set("business_name", e.target.value)}
               style={{ padding: "0.5rem", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "inherit" }} />
           </label>
-          <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "0.8rem" }}>
+          <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "var(--fs-sm)" }}>
             <span>Industry</span>
             <select value={form.industry as string} onChange={(e) => set("industry", e.target.value)}
               style={{ padding: "0.5rem", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "inherit" }}>
               {INDUSTRIES.map((i) => <option key={i} value={i}>{i.replace(/_/g, " ")}</option>)}
             </select>
           </label>
-          <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "0.8rem" }}>
+          <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "var(--fs-sm)" }}>
             <span>Owner involvement</span>
             <select value={form.owner_involvement as string} onChange={(e) => set("owner_involvement", e.target.value)}
               style={{ padding: "0.5rem", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "inherit" }}>
@@ -206,7 +206,7 @@ export function DealXRay() {
           {num("reported_ebitda", "Reported EBITDA/SDE ($)")}
           {num("addbacks", "Add-backs ($)")}
           {num("annual_depreciation", "Depreciation ($, capex proxy)")}
-          <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "0.8rem" }}>
+          <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "var(--fs-sm)" }}>
             <span>Earnings history (recent first, comma-sep)</span>
             <input
               value={form.earnings_history as string}
@@ -238,7 +238,7 @@ export function DealXRay() {
       {report ? (
         <div>
           <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end", alignItems: "center", marginBottom: "0.8rem" }}>
-            {saved ? <span style={{ color: "var(--growth)", fontSize: "0.8rem", fontWeight: 700 }}>{saved}</span> : null}
+            {saved ? <span style={{ color: "var(--growth)", fontSize: "var(--fs-sm)", fontWeight: 700 }}>{saved}</span> : null}
             <button type="button" className="button button--secondary" onClick={saveToPipeline}>
               Save to Pipeline
             </button>
@@ -252,12 +252,12 @@ export function DealXRay() {
           <section className="app-grid app-grid--three">
             <article className="app-card" style={{ borderTop: `3px solid ${recColor(report.recommendation)}` }}>
               <span>Deal Score</span>
-              <strong style={{ fontSize: "2.4rem" }}>{report.deal_score}</strong>
+              <strong style={{ fontSize: "var(--fs-5xl)" }}>{report.deal_score}</strong>
               <p style={{ color: recColor(report.recommendation), fontWeight: 800 }}>{report.recommendation}</p>
             </article>
             <article className="app-card">
               <span>Honest Ethic Rating</span>
-              <strong style={{ fontSize: "2.4rem" }}>{report.ethic_rating}</strong>
+              <strong style={{ fontSize: "var(--fs-5xl)" }}>{report.ethic_rating}</strong>
               <p>{report.ethic_note}</p>
             </article>
             <article className="app-card">
@@ -268,7 +268,7 @@ export function DealXRay() {
                 DCF {money(report.valuation.dcf_enterprise_value)}
               </p>
               {report.valuation.basis_note ? (
-                <p style={{ fontSize: "0.75rem", opacity: 0.8, marginTop: "0.35rem" }}>
+                <p style={{ fontSize: "var(--fs-xs)", opacity: 0.8, marginTop: "0.35rem" }}>
                   Basis: {report.valuation.basis_note}
                 </p>
               ) : null}
@@ -288,7 +288,7 @@ export function DealXRay() {
                     <div style={{ background: "rgba(15,39,68,0.08)", borderRadius: 6, height: 8 }}>
                       <div style={{ width: `${s.score}%`, height: 8, borderRadius: 6, background: "var(--growth, #35c46b)" }} />
                     </div>
-                    <p style={{ fontSize: "0.78rem", margin: "0.35rem 0 0", opacity: 0.85 }}>{s.findings.join(" ")}</p>
+                    <p style={{ fontSize: "var(--fs-sm)", margin: "0.35rem 0 0", opacity: 0.85 }}>{s.findings.join(" ")}</p>
                   </div>
                   <div className="score-badge"><strong>{s.score}</strong><span>/100</span></div>
                 </article>
@@ -304,9 +304,9 @@ export function DealXRay() {
                   <div style={{ minWidth: 220 }}>
                     <span>{f.sba_fit ? "SBA-eligible" : "Review"}</span>
                     <strong>{f.label}</strong>
-                    <p style={{ fontSize: "0.78rem", opacity: 0.85, margin: "0.25rem 0 0" }}>{f.note}</p>
+                    <p style={{ fontSize: "var(--fs-sm)", opacity: 0.85, margin: "0.25rem 0 0" }}>{f.note}</p>
                   </div>
-                  <p style={{ fontSize: "0.82rem" }}>
+                  <p style={{ fontSize: "var(--fs-sm)" }}>
                     Equity {money(f.equity_required)} · Loan {money(f.loan_amount)} · Seller note {money(f.seller_note)}<br />
                     Debt service {money(f.annual_debt_service)}/yr
                   </p>
@@ -337,7 +337,7 @@ export function DealXRay() {
             </ul>
           </section>
 
-          <p className="live-market__muted" style={{ fontSize: "0.78rem" }}>{report.disclaimer}</p>
+          <p className="live-market__muted" style={{ fontSize: "var(--fs-sm)" }}>{report.disclaimer}</p>
         </div>
       ) : null}
     </div>

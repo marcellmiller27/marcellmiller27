@@ -45,7 +45,7 @@ const principles = [
 const bodyStyle = {
   maxWidth: "62rem",
   color: "var(--muted-strong)",
-  fontSize: "1.05rem",
+  fontSize: "var(--fs-lg)",
   lineHeight: 1.7
 } as const;
 
