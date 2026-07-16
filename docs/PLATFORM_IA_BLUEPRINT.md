@@ -87,6 +87,45 @@ entity + relationship graph, not just tables of filings.**
 | (new) | **Research & Analysts** |
 | Executive Recruiters | **Recruiters** *(keep? — see open questions)* |
 
+### C.2a Segment-framing language pattern (Mergr's strategic copy) — FOUNDATIONAL
+**Principle (Founder directive): language is strategic, intentional, and with purpose —
+never generic.** Each segment is framed with a repeatable formula:
+
+> **[Segment]** = a **range/spectrum descriptor** → then a **facet list written in that
+> segment's own insider vocabulary**.
+
+Observed on Mergr:
+- **M&A Advisors** → *"Legal & Financial, Boutique to Multinational"* →
+  M&A Analytics · M&A Client Lists · Advisory Connections · Sector Coverage · M&A Contacts
+- **Private Equity** → *"Small to Mega, Generalist & Specialist"* →
+  Investment Criteria · M&A History · Portfolio Breakdown · M&A Analytics ·
+  Professionals w/ Contact Info · Office Locations · M&A Connections
+
+Why it works (the three intentional moves):
+1. **Range descriptor = inclusion.** "Boutique to Multinational," "Small to Mega,"
+   "Generalist & Specialist" signal total coverage with both/and framing, so **no reader
+   in the segment self-excludes** — everyone thinks "that's me."
+2. **Facets in native vocabulary = credibility.** Each audience sees the terms *it* uses,
+   proving the platform was built for them.
+3. **Facets recur across segments** ("M&A Analytics," "M&A Connections") → they are
+   **views of one shared entity/relationship graph, re-labeled per segment lens.**
+   → **Language and data model are the same coin: one graph, many segment lenses.**
+
+**JHI action (to fill in together):** every JHI segment gets (a) a range descriptor and
+(b) a facet list in that audience's vocabulary, each facet mapping to a view of the
+underlying intelligence graph. Starter template (DRAFT — for discussion):
+
+| Segment | Range descriptor (draft) | Facet list (draft, native vocabulary) |
+|---|---|---|
+| Acquirers & Investors | Search fund to family office | Deal Screening · Target Financials · Valuation & LBO · Ownership Graph · Comparable Transactions |
+| Private Equity | Lower-middle-market to mega; generalist & specialist | Investment Criteria · Portfolio Breakdown · Acquisition History · Sector Analytics · Firm Contacts |
+| M&A Advisors & Brokers | Boutique to multinational | Buyer/Seller Lists · Advisory Connections · Sector Coverage · Comparable Deals · Contacts |
+| Corporate Development | Single-acquirer to serial acquirer | Target Screening · Strategic Fit · Deal History · Comps · Ownership Graph |
+| Lenders & Credit | Community to institutional | Credit Profile · Cash-Flow & DSCR · Collateral/CRE · Risk Score · Filings |
+| Wealth & Asset Managers | Independent RIA to family office | Macro Outlook · Security Fundamentals · Portfolio Analytics · Research · Newsletter |
+| Service Providers | Solo practice to national firm | QoE / Diligence · Financial Analytics · Document Review · Client Intelligence |
+| Research & Analysts | Independent to institutional | Macro Dashboard · Industry Outlook · Company Profiles · Data Export/API |
+
 ### C.3 Application Table of Contents (module map, grouped by function)
 The left-sidebar TOC — pick a group, land in that module's workspace:
 
