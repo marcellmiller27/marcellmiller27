@@ -595,7 +595,26 @@ terms (the reference bar). Right column = JHI candidate (DRAFT — to vet/approv
 > written to the same institutional standard. Capture Mergr's definitions verbatim as the
 > reference; write JHI's definitions during vetting.
 
-### L.1 Storefront — "Solution for [segment]" (name + disclosed definition + facets)
+### L.0 The two-sector product model (MASTER FRAMEWORK — disclosure is hierarchical)
+The application's core nomenclature is organized into **two sectors**, each disclosing its
+own definition. Disclosure is **hierarchical: Sector → Group → Item**, every level with its
+own definition. This is the template for JHI's TOC.
+
+| Sector | Mergr disclosed definition (verbatim) | Contents |
+|---|---|---|
+| **(A) Search the Database** | "Pick a data type to open its dedicated search interface — each is built for that record type." | record-type entities → see L.3 |
+| **(B) Tools & Insights** | "Pre-built tools that turn the database into focused answers." | tools grouped by job-to-be-done → see L.4 |
+
+- **Group-level disclosure (inside B), verbatim:** Working a Live Deal — "You have a mandate
+  — find the right counterparties." · Find New Opportunities — "Surface candidates you don't
+  know about yet." · Research a Firm or Company — "Build context on a known entity." ·
+  Market Intelligence — "Macro view across the database."
+- **JHI build target:** two parallel sectors, each with a disclosed sector definition; then
+  groups (with taglines) and items (with definitions), all written to the institutional bar.
+- **NOTE:** the storefront "Solution for [segment]" pages (L.1) are a **separate marketing
+  layer**, NOT the product TOC. Core product nomenclature = Sectors A + B above.
+
+### L.1 Storefront — "Solution for [segment]" (marketing layer; name + disclosed definition + facets)
 Each Mergr segment page discloses a **range descriptor** + a **facet list** (its
 definition). Capture all 8 verbatim, then build JHI parallels. Confirmed so far:
 - **M&A Advisors** — *"Legal & Financial, Boutique to Multinational"* → M&A Analytics ·
