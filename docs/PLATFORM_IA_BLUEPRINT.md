@@ -459,6 +459,20 @@ Where JHI deliberately goes beyond the case study:
 4. **Derived-intelligence layer** — hold period, maturity, exit signals, opportunity/risk
    scores computed over the graph (G.7), aligned with JHI's published-methodology ethos.
 
+### I.1 SMB deal-flow input for Deal X-Ray (capability note — no confidential data here)
+- The firm has **active business-broker access to live CIMs** (e.g., via Benjamin Ross
+  Group), i.e. real SMB offering memoranda for sale.
+- A CIM's structure maps 1:1 to **Deal X-Ray inputs**: SDE/add-back schedule, terms &
+  financing (SBA/DSCR), franchise economics, business background, org, facilities,
+  marketing, reason for sale.
+- **Pipeline:** CIM → Deal X-Ray (score financial quality, add-back legitimacy, valuation
+  multiple, SBA/DSCR fit) → Buyer Match (find likely buyers). Bridges franchisor-level
+  institutional ownership data with franchise-territory SMB deal flow — a connection Mergr
+  does not make.
+- **COMPLIANCE:** CIMs are confidential/NDA material. Never commit CIM specifics
+  (financials, price, seller identity) to the repo or any artifact. Handle only in secure,
+  access-controlled contexts.
+
 ## Next (Day 4 preview, not started)
 Synthesis: consolidate IA (nav + segments + language) + dashboard model + entity graph +
 record templates + tool patterns + differentiation (Part I) into one restructure
