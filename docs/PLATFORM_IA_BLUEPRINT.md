@@ -605,6 +605,12 @@ terms (the reference bar). Right column = JHI candidate (DRAFT — to vet/approv
 > context). **No new inventions.** The only exceptions are **legitimate outliers** —
 > capabilities JHI has that Mergr does not (integrated financials/valuation/macro/SMB) —
 > which are flagged and **discussed together as a team**, not invented unilaterally.
+>
+> **RATIONALE (why we mirror — Founder, 2026-07-17):** the target audience (institutional
+> PE/M&A practitioners, advisors, search funders) **already speaks this jargon.** Standard
+> terminology = zero learning curve, instant credibility, and **no confusion**. Invented
+> terms create hesitation, and hesitation = **missed opportunities / lost conversions.**
+> Familiar language is a conversion and trust decision, not just a style choice.
 
 ### L.0 The two-sector product model (MASTER FRAMEWORK — disclosure is hierarchical)
 The application's core nomenclature is organized into **two sectors**, each disclosing its
