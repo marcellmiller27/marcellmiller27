@@ -297,6 +297,63 @@ buyer↔seller edges, dossiers, compare) → confirms JHI must be built on an
 - **Search results row** columns/metadata.
 - **AI Connection** query + answer presentation.
 
-## Next (Day 3 preview, not started)
-Data & entity graph: define JHI's entity/relationship model and map each module to its
-data sources + licensing constraints (from F.1–F.3 record templates).
+## Part G — Day 3: Entity graph & record templates (in progress)
+*Source: authenticated Company record (Berkshire Hathaway), read straight-on.*
+
+### G.1 Company record template (observed on Mergr)
+- **Header (identity):** name · legal name · address · phone · website.
+- **Tabbed facet bar with live counts** + Analytics + print/export:
+  - **Profile**
+  - **M&A Activity (N)** — transactions: `Date · Target (name, sector, location,
+    website, description, Revenue, EBITDA, Advisors) · Value + multiples (EBITDA x,
+    Revenue x) · Transaction Type · Acquirer · Seller · Source`;
+    filters: Sector · Type · Country · Year · ALL/BUY/SELL.
+  - **M&A Connections (N)** — "Invested With": `Name · Total · Most Recent · Date`;
+    filters: ALL / INVESTORS / CORPORATES.
+  - **M&A Advisors (N)** — `Name · Type (Legal/Financial) · # Transactions · Vol`;
+    sub-tabs Advisors vs **Opposing Advisors**; filters ALL/FINANCIAL/LEGAL.
+- **Consistent interaction pattern per tab:** filter chips + sortable columns + counts.
+
+### G.2 Entity–relationship model (decoded — JHI foundation)
+Each Company tab = an edge type. The graph:
+- **Nodes:** Company · Firm/Investor · Advisor (Legal|Financial) · Person/Professional ·
+  **Transaction/Deal** (atomic connector). *JHI adds:* Security(ticker) · Filing(SEC) ·
+  Industry/Sector · MacroSeries.
+- **Edges:** Company —acquired/divested→ Company (via Transaction) · Firm —invested-in→
+  Company · Company —advised-by→ Advisor (buy/sell side) · Advisor —opposed→ Advisor ·
+  Person —employed-by→ Firm (Lineage) · Company —connected-to→ Investor/Corporate.
+  *JHI adds:* Company —has→ Filing · Company —has→ Security · Company —in→ Industry ·
+  Industry —tracked-by→ MacroSeries.
+- **Transaction attributes:** date · value · EBITDA multiple · Revenue multiple · type
+  (Add-on / Buyout / Divestiture / Investment) · target · acquirer · seller · advisors ·
+  source. **Transaction is the keystone entity.**
+
+### G.3 JHI Company record template (SUPERSET — our differentiation)
+Keeps Mergr's M&A/relationship tabs AND adds integrated financial/macro intelligence
+(from EDGAR + market + macro adapters we already have):
+1. Overview (identity, description, key facts, ticker, sector/NAICS)
+2. **Financials & Ratios** (EDGAR: IS/BS/CF + ratios) ← *not in Mergr*
+3. **Valuation** (DCF / LBO / comps multiples) ← *not in Mergr*
+4. M&A Activity / Transactions (with multiples)
+5. Ownership & Relationships (connections graph)
+6. Advisors (incl. opposing)
+7. Comparables (Compare)
+8. **Filings** (SEC) ← *not in Mergr*
+9. News / Press
+10. **Risk & Governance** (risk score, ESG) ← *not in Mergr*
+11. Analytics
+- Same interaction pattern: filter chips + sortable tables + counts.
+
+**Moat note:** Mergr's Company record is deal/relationship-centric (hand-curated, no deep
+financials). JHI's superset = relationship graph **+** financials + valuation + filings +
+risk = integrated intelligence, not a deal database.
+
+### G.4 Still to capture (to finish Day 3)
+- A **PE-firm record** (its tab set — likely Investment Criteria · Portfolio · Activity ·
+  Professionals · Offices · Connections) to finalize the Firm node schema.
+- A **Search interface** (filter rail + results columns) for one entity.
+- The **Ownership Graph** tool view (how edges/timeline are visualized).
+
+## Next (Day 4 preview, not started)
+Synthesis: consolidate IA (nav + segments + language) + dashboard model + entity graph +
+record templates into one restructure blueprint, then scope into reviewed, phased PRs.
