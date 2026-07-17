@@ -255,6 +255,42 @@ faceted breakdowns) · Insight widget (Top PE Firms by acquisitions, '25 vs '26)
 - *Right rail:* Saved Screens/Watchlist · Live Coverage Stats · Insight widget
   (market movers · macro highlights · most-active acquirers)
 
+### F.5 Complete Tools taxonomy + embedded dashboard widgets (from full scroll)
+**Tools & Insights = 15 tools in 4 job-to-be-done groups** (the "answers" layer):
+1. **Working a Live Deal** — Buyer Match · Investor Match · Advisor Match
+2. **Find New Opportunities** — Prospector · Roll-Up Tracker · Shed · Investor Lookalikes
+3. **Research a Firm or Company** ("build context on a known entity") — Dossier
+   (full M&A profile) · Lineage (PE alumni/talent network) · Ownership Graph (ownership
+   eras, holds & exit signals) · Trading Partners (recurring buyer-seller pairings +
+   timeline) · Compare (side-by-side firms)
+4. **Market Intelligence** ("macro view across the database") — Rankings (sortable
+   leaderboards) · Analytics (market activity & sector trends) · Deal Flow Map
+   (cross-border flows by country/time/keyword)
+
+**KEY VALIDATION:** Group 3 is entirely **graph views** (ownership, people lineage,
+buyer↔seller edges, dossiers, compare) → confirms JHI must be built on an
+**entity + relationship graph**; downstream tools are queries over that graph.
+
+**Dashboard also embeds live insight widgets (not just a launchpad):**
+- **Largest Acquisitions** table with time-window toggle (Last 30 Days / YTD):
+  row = `Date · Target (name+geo) · Value · Acquirer (name+logo+geo, PE badge) · Deal
+  Article / Deal Link`.
+- **Right-rail leaderboard stack**: "TOP PE Firms / Corporates / Law Firms / Investment
+  Banks," segmented by **Acquisitions vs Exits vs M&A Engagements**, with year-over-year
+  columns ('25 | '26).
+
+**Reusable templates extracted:**
+- *Transaction row:* date · target (name+geo) · value · counterparty (name+logo+geo+type badge) · source links.
+- *Leaderboard widget:* "Top [entity]" × [activity dimension] × [time comparison].
+- *Tool card:* icon · name-for-the-job · one-line value prop · open affordance.
+
+**JHI Tools draft — refined to 4 JTBD groups (for discussion):**
+1. *Analyze a Target* — Deal X-Ray · Quality of Earnings · Valuation (DCF/LBO/Search-Fund) · Risk Score
+2. *Find Opportunities* — Opportunity Screener · Prospector · Roll-Up/Consolidation finder · Lookalikes
+3. *Research a Company* — Company Dossier · Ownership/Relationship Graph · Comparables (Compare) · Filings/Trading relationships
+4. *Market Intelligence* — Macro Dashboard · Sector Rankings · Analytics/Trends · (geographic) Deal/Market Flow
+- *Embedded widgets:* Market Movers · Macro Highlights · Most-Active Acquirers · Top Movers (time-window toggle + YoY).
+
 ### F.3 Still to capture for precise modeling (need clearer/straight-on shots)
 - Company & PE-firm profile **section order** (their facet taxonomy = our record template).
 - **Ownership/relationship graph** presentation (visual graph vs linked records vs table).
