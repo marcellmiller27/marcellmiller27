@@ -20,7 +20,9 @@ is built or final; this is the working artifact we edit as we decide together.
 | 2026-07-17 | **Nomenclature CORE RULE** | Every term = **name + disclosed definition** (Functional Output); disclosure is hierarchical (Sector → Group → Item) |
 | 2026-07-17 | **MIRROR PRINCIPLE** | Adopt peers' (Mergr) terms + definitions **verbatim**; **no inventions**; rationale = audience already speaks this jargon → no confusion, no lost conversions |
 | 2026-07-17 | **Two-sector product model (L.0)** | Core TOC = (A) Search the Database + (B) Tools & Insights; storefront segments are a separate marketing layer |
-| 2026-07-17 | **Outliers = team decision** | JHI-only capabilities (Securities & Markets, Macro Series, SEC Filings; Deal X-Ray/QoE/Valuation/Risk Score; Research & Analysts segment) discussed together — OPEN |
+| 2026-07-17 | **Outliers = team decision** | JHI-only capabilities (Securities & Markets, Macro Series, SEC Filings; LSR/QoE/Valuation/Risk Score; Research & Analysts segment) discussed together — partially resolved below |
+| 2026-07-17 | **Rename "Deal X-Ray" → "Limited Scope Review (LSR)"** | APPROVED — audit-authentic, institutional; indicative/unverified with full disclosure; not a CPA engagement |
+| 2026-07-17 | **Quality of Earnings acronym** | APPROVED — keep **"QoE"** (NOT "QE" = Quantitative Easing; avoids Macro collision) |
 
 ## Part A — Mergr, reverse-engineered (our case study)
 
@@ -712,10 +714,21 @@ JHI adopts Mergr's tool names AND definitions verbatim:
 | Analytics | "Market activity & sector trends." |
 | Deal Flow Map | "Cross-border M&A flows by country, time window & keyword." |
 
-**OUTLIERS (JHI-added tools — DISCUSS AS A TEAM):** Deal X-Ray · Quality of Earnings ·
-Valuation (DCF/LBO/Search-Fund) · Risk Score. Rationale: JHI's integrated financials/SMB
-diligence engine has no Mergr equivalent. Placement (which group) + Mergr-style
-definitions to be decided together.
+**OUTLIERS (JHI-added tools):**
+- ✅ **Limited Scope Review (LSR)** *(APPROVED — renamed from "Deal X-Ray" 2026-07-17)* —
+  *"Rapid, limited-scope read of a target's CIM: business-quality score, valuation, red
+  flags, and SBA/DSCR fit. Indicative and unverified — not a CPA review or audit (see
+  Quality of Earnings for verified confirmation)."* Audit-authentic term the audience
+  knows; full-disclosure built in; no CPA required for a clearly-disclaimed automated tool.
+- ✅ **Quality of Earnings (QoE)** *(APPROVED — keep "QoE", NOT "QE" which = Quantitative
+  Easing and collides with Macro)* — the **verified** deep-dive (proof of cash, EBITDA
+  normalization, working capital, red flags); CPA-grade.
+- **Valuation (DCF/LBO/Search-Fund)** · **Risk Score** — definitions still to write.
+
+**Assurance ladder (funnel):** Limited Scope Review (indicative, unverified) → Quality of
+Earnings (verified). **Recommended (pending confirm):** one shared Business Quality Score
+engine feeds both Screening and LSR; QoE stays a separate deeper module (avoids duplicate
+scoring logic).
 
 ### L.5 Dashboard right rail (Mergr) → JHI
 | Mergr | JHI candidate |
@@ -746,7 +759,7 @@ The authoritative navigation. JHI mirrors this exactly; outliers slot into their
   Buyer Match · Investor Match · Advisor Match · Prospector · Roll-Up Tracker · Shed ·
   Investor Lookalikes · Dossier · Lineage · Ownership Graph · Trading Partners · Compare ·
   Rankings · Analytics · Deal Flow Map
-  *(JHI outliers to slot in: Deal X-Ray · Quality of Earnings · Valuation · Risk Score)*
+  *(JHI outliers to slot in: Limited Scope Review · Quality of Earnings (QoE) · Valuation · Risk Score)*
 - **Utility:** Saved Lists · Saved Searches · AI Connector · Support · Account · Sign Out
 
 **Refinements captured:** (1) TOC entity label is **"Private Equity Firms"** (fuller than
