@@ -10,6 +10,13 @@ is built or final; this is the working artifact we edit as we decide together.
 
 ---
 
+## Decisions Log (Founder-approved)
+| Date | Item | Decision |
+|---|---|---|
+| 2026-07-16 | F.1 — Application entry point name | **Dashboard** (matches Mergr convention) |
+| 2026-07-17 | K.3 — Nomenclature process & bar | prepare → vet → select → approve; institutional-grade, parallel to Mergr, not elementary |
+| 2026-07-17 | **C.1 — Two-zone shell split** | **APPROVED** — separate public Storefront vs authenticated Application shells |
+
 ## Part A — Mergr, reverse-engineered (our case study)
 
 ### A.1 Two clearly separated zones
@@ -68,7 +75,7 @@ entity + relationship graph, not just tables of filings.**
 
 ## Part C — Proposed JHI IA (draft for discussion)
 
-### C.1 Two zones (recommend a hard split)
+### C.1 Two zones (recommend a hard split) — ✅ APPROVED (Founder, 2026-07-17)
 1. **Storefront shell** (public): Home · Solutions (by segment) · Pricing · About ·
    Team · Log in · Start free.
 2. **Application shell** (authenticated): the **Table of Contents** navigation +
@@ -576,6 +583,81 @@ nomenclature list by going through Mergr's platform **screenshot by screenshot**
 extracting each canonical name verbatim as the institutional-grade reference, then map to
 JHI equivalents. Ground the vocabulary in observed terminology — do not invent from
 scratch. (This K.3 candidate slate is the starting draft to refine against those screens.)
+
+## Part L — Mergr Nomenclature Master List (verbatim) → JHI candidate mapping
+*Extracted from captured Mergr screenshots. Left column = Mergr's exact institutional
+terms (the reference bar). Right column = JHI candidate (DRAFT — to vet/approve per K.3).*
+
+### L.1 Storefront — "Solution for [segment]" (Mergr) → JHI segments
+| Mergr | JHI candidate |
+|---|---|
+| Mergr for Acquirers / Investors | JHI for Acquirers & Investors |
+| Mergr for M&A Advisors | JHI for M&A Advisors & Brokers |
+| Mergr for Private Equity (Fund/Suite) | JHI for Private Equity |
+| Mergr for Lenders | JHI for Lenders & Credit |
+| Mergr for Corporate | JHI for Corporate Development |
+| Mergr for Recruiters | JHI for Recruiters *(keep? — vet)* |
+| Mergr for Service Providers | JHI for Service Providers |
+| Mergr for Wealth Advisors | JHI for Wealth & Asset Managers |
+| (n/a) | JHI for Research & Analysts *(JHI-added)* |
+
+### L.2 Storefront — Product menu (Mergr) → JHI
+| Mergr | JHI candidate |
+|---|---|
+| Pricing · Free Trial · Log In | Pricing · Free Trial · Log In |
+| Custom Exports / API | Data Exports & API |
+| AI Connection | Ask JHI / Intelligence Query |
+| Browse | Browse |
+| Support Docs · Search Guides · Search Examples | Support Docs · Guides · Examples |
+| PitchBook Alternative | (positioning line — TBD) |
+
+### L.3 Dashboard Tier 1 — "Search the Database" record types (Mergr) → JHI entities
+| Mergr | JHI candidate |
+|---|---|
+| Private Equity | Investors & Firms (PE + strategic) |
+| Companies | Companies |
+| Transactions | Transactions |
+| M&A Advisors | Advisors |
+| M&A Professionals | Executives / Professionals |
+| M&A Press Releases | News & Filings |
+| (n/a) | Securities & Markets *(JHI-added)* |
+| (n/a) | Macro Series *(JHI-added)* |
+
+### L.4 Dashboard Tier 2 — "Tools & Insights" (Mergr, verbatim) → JHI
+| Mergr group / tool | JHI candidate |
+|---|---|
+| **Working a Live Deal** | **Analyze a Target** |
+| — Buyer Match · Investor Match · Advisor Match | Buyer Match · Investor Match · Advisor Match *(keep — institutional)* |
+| **Find New Opportunities** | **Find Opportunities** |
+| — Prospector · Roll-Up Tracker · Shed · Investor Lookalikes | Prospector · Roll-Up Tracker · (rename "Shed"?) · Lookalikes |
+| **Research a Firm or Company** | **Research a Company** |
+| — Dossier · Lineage · Ownership Graph · Trading Partners · Compare | Dossier · Lineage · Ownership Graph · Trading Partners · Compare |
+| **Market Intelligence** | **Market Intelligence** |
+| — Rankings · Analytics · Deal Flow Map | Rankings · Analytics · Deal Flow Map |
+| (n/a) | Deal X-Ray · Quality of Earnings · Valuation (DCF/LBO/Search-Fund) · Risk Score *(JHI-added)* |
+
+### L.5 Dashboard right rail (Mergr) → JHI
+| Mergr | JHI candidate |
+|---|---|
+| Saved Searches | Saved Screens / Watchlist |
+| Stats | Coverage Stats |
+| Acquisitions — Top PE Firms; Exits — Top Corporates; M&A Engagements — Top Law Firms / Investment Banks | Insight widgets (Top Acquirers / Movers / Macro) |
+
+### L.6 Record tabs (Mergr, verbatim) → JHI facets
+| Record | Mergr tabs | JHI candidate facets |
+|---|---|---|
+| Company | Profile · M&A Activity · M&A Connections · M&A Advisors · Analytics | Overview · Financials & Ratios* · Valuation* · Transactions · Relationships · Advisors · Filings* · News · Risk* · Analytics (*JHI-added) |
+| Firm/Investor | Profile · M&A Activity · Portfolio · Team · Offices · M&A Connections · Analytics | Profile · Investment Criteria · Activity · Portfolio · Team · Offices · Connections · Analytics |
+| Advisor | Profile · M&A Team · Offices · M&A Advisory · M&A Clients · M&A Advisory Connections · Analytics | Profile · Team · Offices · Advisory · Clients · Connections · Analytics |
+| Ownership Graph | Deal Topology · Maturity · Exit Signals · Advisor Relationships | Deal Topology · Maturity · Exit Signals · Advisor Relationships |
+
+### L.7 Cross-entity pivot tabs (Mergr) → JHI
+Company results pivot: Company M&A · PE Investors · Company Investors · Advisors →
+JHI: Transactions · Investors · Advisors · (Filings/Comps). *(Preserve the pivot mechanic.)*
+
+**TO VET:** the JHI candidates above (per K.3 process). Flag any "elementary" terms for
+upgrade; confirm which Mergr terms to keep verbatim (Buyer Match, Prospector, Ownership
+Graph, Lineage, Dossier read institutional and may carry over).
 
 ## Next (Day 4 preview, not started)
 Synthesis: consolidate IA (nav + segments + language) + dashboard model + entity graph +
