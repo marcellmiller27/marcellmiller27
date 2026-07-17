@@ -401,8 +401,26 @@ M&A Connections (N) · Analytics.
 attribute that powers Buyer Match (Part H). *Investor* = role held by PE firms AND
 companies (confirmed).
 
-### G.7 Still to capture (to finish Day 3)
-- The **Ownership Graph** tool view (how edges/timeline are visualized).
+### G.7 Ownership Graph tool — captured (Day 3 COMPLETE)
+"Ownership history, acquisition activity, sponsor patterns, exit signals for a company."
+An **era/timeline model with a derived-intelligence layer** (not a visual node-web):
+- **Summary card:** Ownership Eras · Acquisitions · Divestitures · **Current Status**
+  (Core Holding / Independent / PE-owned).
+- **Tabs:** *Deal Topology* (ownership eras + **hold period** + add-on/divestiture per era) ·
+  *Maturity* (scoring, "designed for PE-owned platforms") · *Exit Signals* (exit-likelihood;
+  gracefully N/A for independents) · *Advisor Relationships* (advisors per era, buy/sell side).
+- **Lesson:** the value is the **derived layer** (hold period, status classification,
+  maturity, exit signals) computed over raw edges — where JHI analytics can differentiate.
+
+### G.8 Advisor node schema (Boxwood Partners) — bonus
+Parallels the Firm node: identity + **Advisor Summary** (Size · Established · Ownership ·
+Type) + **Advisor Criteria** (Sector/Geo coverage · Services) + Team · Offices · M&A
+Advisory (transactions) · Clients · Advisory Connections · Analytics (Buyside vs Sellside).
+
+### G.9 Records scale by data availability
+Same record template gracefully degrades: a small private company (Monster Tree Service)
+shows only Profile + Investors(1) + ownership timeline, vs a 74-deal Berkshire record.
+Design principle for JHI: one template, render only the facets with data.
 
 ## Part H — Tool anatomy: Buyer Match (the flagship AI/matching engine)
 "Rank likely buyers for a target — by sector, specialty, deal size, geography, activity
@@ -425,7 +443,23 @@ fit. Financial and Strategic." Flow:
   Opportunity Score** ethos.
 - Powered by the **Firm buy box (G.6) + transaction graph (G.2)** — both now modeled.
 
+## Part I — JHI differentiation vs Mergr (synthesis input for Day 4)
+Where JHI deliberately goes beyond the case study:
+1. **Integrated financials/macro on every record** — Mergr records are deal/relationship
+   only; JHI adds Financials & Ratios, Valuation (DCF/LBO), Filings, Risk (EDGAR + market
+   + macro adapters we already have). See G.3.
+2. **Two-sided intelligence loop** — Deal X-Ray (analyze a target's CIM) ↔ Buyer Match
+   (find its buyers). See Part H.
+3. **SMB / search-fund bridge (unserved by Mergr).** Mergr stops at mid-market+ PE/M&A.
+   The real SMB deal world (broker teasers, **SDE = EBITDA + owner comp**, **SBA**
+   pre-approval, **DSCR** financing fit) is JHI's home turf via Deal X-Ray. JHI can bridge
+   the institutional ownership graph *down* to SMB deal flow — a connection nobody else
+   makes. (Illustration: Monster Tree franchise broker teaser ↔ Mergr's Authority Brands
+   ownership record.)
+4. **Derived-intelligence layer** — hold period, maturity, exit signals, opportunity/risk
+   scores computed over the graph (G.7), aligned with JHI's published-methodology ethos.
+
 ## Next (Day 4 preview, not started)
 Synthesis: consolidate IA (nav + segments + language) + dashboard model + entity graph +
-record templates + tool patterns into one restructure blueprint; scope into reviewed,
-phased PRs.
+record templates + tool patterns + differentiation (Part I) into one restructure
+blueprint; scope into reviewed, phased PRs.
