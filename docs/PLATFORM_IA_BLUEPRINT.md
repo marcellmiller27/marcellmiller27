@@ -732,13 +732,26 @@ definitions to be decided together.
 | Advisor | Profile · M&A Team · Offices · M&A Advisory · M&A Clients · M&A Advisory Connections · Analytics | Profile · Team · Offices · Advisory · Clients · Connections · Analytics |
 | Ownership Graph | Deal Topology · Maturity · Exit Signals · Advisor Relationships | Deal Topology · Maturity · Exit Signals · Advisor Relationships |
 
-### L.7 Cross-entity pivot tabs (Mergr) → JHI
-Company results pivot: Company M&A · PE Investors · Company Investors · Advisors →
-JHI: Transactions · Investors · Advisors · (Filings/Comps). *(Preserve the pivot mechanic.)*
+### L.7 Cross-entity pivot tabs (mirrored verbatim)
+Company results pivot tabs: **Company M&A · PE Investors · Company Investors · Advisors**
+(adopt verbatim). Preserve the pivot mechanic (graph traversal, see G.5).
 
-**TO VET:** the JHI candidates above (per K.3 process). Flag any "elementary" terms for
-upgrade; confirm which Mergr terms to keep verbatim (Buyer Match, Prospector, Ownership
-Graph, Lineage, Dossier read institutional and may carry over).
+### L.8 Application TOC menu (the ☰ MENU panel) — DEFINITIVE, mirrored verbatim
+The authoritative navigation. JHI mirrors this exactly; outliers slot into their sector.
+- **Dashboard** (home)
+- **SEARCH:** Private Equity Firms · Companies · Transactions · M&A Advisors ·
+  M&A Professionals · M&A Press Releases
+  *(JHI outliers to slot in: Securities & Markets · Macro Series · SEC Filings)*
+- **TOOLS & INSIGHTS** (flat list of 15; grouped by JTBD only on the dashboard body):
+  Buyer Match · Investor Match · Advisor Match · Prospector · Roll-Up Tracker · Shed ·
+  Investor Lookalikes · Dossier · Lineage · Ownership Graph · Trading Partners · Compare ·
+  Rankings · Analytics · Deal Flow Map
+  *(JHI outliers to slot in: Deal X-Ray · Quality of Earnings · Valuation · Risk Score)*
+- **Utility:** Saved Lists · Saved Searches · AI Connector · Support · Account · Sign Out
+
+**Refinements captured:** (1) TOC entity label is **"Private Equity Firms"** (fuller than
+the dashboard card "Private Equity"); (2) TOC tools are **flat**, dashboard body groups
+them; (3) in-app AI nav label = **"AI Connector"**.
 
 ## Next (Day 4 preview, not started)
 Synthesis: consolidate IA (nav + segments + language) + dashboard model + entity graph +
