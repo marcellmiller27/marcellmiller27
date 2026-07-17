@@ -571,6 +571,12 @@ terms (e.g. *Dashboard*) ARE the institutional convention — Mergr uses them �
 *Still to prepare (same process): candidate names for search entities, dashboard tools,
 record facets, and the 8 segments.*
 
+**NEXT SESSION METHOD (Founder-directed 2026-07-17, tabled to tomorrow):** Build the
+nomenclature list by going through Mergr's platform **screenshot by screenshot**,
+extracting each canonical name verbatim as the institutional-grade reference, then map to
+JHI equivalents. Ground the vocabulary in observed terminology — do not invent from
+scratch. (This K.3 candidate slate is the starting draft to refine against those screens.)
+
 ## Next (Day 4 preview, not started)
 Synthesis: consolidate IA (nav + segments + language) + dashboard model + entity graph +
 record templates + tool patterns + differentiation (Part I) + data sourcing (Part J) +
