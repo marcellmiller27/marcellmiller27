@@ -348,10 +348,40 @@ Keeps Mergr's M&A/relationship tabs AND adds integrated financial/macro intellig
 financials). JHI's superset = relationship graph **+** financials + valuation + filings +
 risk = integrated intelligence, not a deal database.
 
-### G.4 Still to capture (to finish Day 3)
-- A **PE-firm record** (its tab set — likely Investment Criteria · Portfolio · Activity ·
+### G.5 Entity search interfaces (all record types) + cross-entity pivot — FOUNDATIONAL
+Consistent skeleton for every entity: **search form (entity criteria) → cross-entity
+result tabs → toolbar (Sort · Save to List · Save Search · Download) → results table
+(entity columns + badges + sparklines) → faceted filter rail.**
+
+Per entity (totals observed):
+- **M&A Announcements (121,887):** full-text scoped by Titles/Bodies/Acquirers/Advisors;
+  filter rail Acquirer Category (Company/Investor), Value bands, Year counts; results =
+  announcement cards + Target sidebar.
+- **Transactions (222,791):** Invest/Exit Situation, date range, Deal Value + Target
+  criteria (Sector/Geo/Revenue). Columns: Date · Target · Type+Value · Acquirer · Seller.
+- **Companies (224,043):** Names/Tickers · Descriptions · Sector · Revenue · Geo. Rows:
+  badges (PE Backed, ticker e.g. NYSE:AJG, Acquired) · Sector · Revenue · M&A Activity
+  (Total/Buy/Sell) · 5-yr sparkline.
+- **Advisors (3,308):** Financial/Legal · Size · Geo · Main Office. Rows: type · founded ·
+  team-member avatars ("See all N") · Investor/Corporate client counts · deal-count sparkline.
+- **Professionals/People (85,936):** Bio · Title · Works-for · Email · Geo. Rows: photo ·
+  title · firm · office · email · joined year · full bio.
+
+**BIG MECHANIC — cross-entity result tabs = graph traversal.** Every search pivots from
+the primary entity to connected entity result-sets (Company → Company M&A / PE Investors /
+Company Investors / Advisors; Advisor → Team Members / Transactions / PE Clients / Company
+Clients). No dead ends — every entity is a launch point into its relationships. **JHI must
+replicate this pivot** (it's the UI expression of the entity graph in G.2).
+
+**Node nuance:** "Investor" is a role held by both **PE firms** and **companies**
+(PE Investors vs Company Investors) — model Investor as a role/edge, not a rigid type.
+
+**Reusable patterns:** Save to List · Save Search · Download/Export (monetization);
+sparkline micro-viz in rows (JHI adds revenue/price trends from EDGAR + market data).
+
+### G.6 Still to capture (to finish Day 3)
+- A **PE-firm record** tab set (likely Investment Criteria · Portfolio · Activity ·
   Professionals · Offices · Connections) to finalize the Firm node schema.
-- A **Search interface** (filter rail + results columns) for one entity.
 - The **Ownership Graph** tool view (how edges/timeline are visualized).
 
 ## Next (Day 4 preview, not started)
