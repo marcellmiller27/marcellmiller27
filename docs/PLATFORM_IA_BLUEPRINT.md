@@ -216,6 +216,45 @@ fine text pending clearer captures).*
   as rows × periods).
 - **Restrained green/gold accenting**; **data density over whitespace** throughout.
 
+### F.4 Dashboard anatomy (from a clear straight-on capture) — FOUNDATIONAL
+The Dashboard = **two-tier action launchpad (left) + live at-a-glance rail (right)**,
+inside the persistent shell (top: Search · logo · user · ☰ MENU/TOC).
+
+**Left, Tier 1 — SEARCH THE DATABASE** ("Pick a data type… each built for that record
+type"): the raw **entities**, each with a **facet descriptor** = its filter dimensions:
+- Private Equity — "By AUM, sector focus, geography & activity"
+- Companies — "By ownership, size & sector"
+- Transactions — "By date, value, deal type & sector"
+- M&A Advisors — "Banks & law firms by deal experience"
+- M&A Professionals — "Deal-team members by firm & role"
+- M&A Press Releases — "Full announcement archive…"
+
+**Left, Tier 2 — TOOLS & INSIGHTS** ("Pre-built tools that turn the database into
+**focused answers**"), grouped by **job-to-be-done**, second person:
+- *Working a Live Deal* → Buyer Match · Investor Match · Advisor Match
+- *Find New Opportunities* → Prospector · Roll-Up Tracker · Shed · Investor Lookalikes
+
+**Right rail — at-a-glance:** SAVED SEARCHES (persistence) · STATS (live coverage with
+faceted breakdowns) · Insight widget (Top PE Firms by acquisitions, '25 vs '26).
+
+**Three lessons locked into JHI's foundation:**
+1. **Data vs. Answers is a designed split** — Tier 1 = raw entities; Tier 2 = pre-built
+   answers. This is what makes it an intelligence platform, not a database. JHI's
+   macro→company integration lets Tier 2 go further than Mergr.
+2. **Consistent taxonomy end-to-end** — STATS facets == Search facets == data-model
+   categories == "one graph, many lenses."
+3. **Name for the job, not the feature** — Buyer Match, Prospector, Roll-Up Tracker, Shed.
+
+**JHI Dashboard (DRAFT for discussion):**
+- *Tier 1 — Search/Research entities:* Companies · Securities & Markets · Transactions/
+  Deals · Investors & PE · Advisors · SEC Filings · Macro Series · Executives
+- *Tier 2 — Tools & Insights (by JTBD):*
+  - Analyze a Target → Deal X-Ray · Quality of Earnings · Valuation (DCF/LBO/Search-Fund) · Risk Score
+  - Find Opportunities → Opportunity Screener · Prospector · Roll-Up/Consolidation finder
+  - Understand the Market → Macro Dashboard · Industry Outlook · Newsletter
+- *Right rail:* Saved Screens/Watchlist · Live Coverage Stats · Insight widget
+  (market movers · macro highlights · most-active acquirers)
+
 ### F.3 Still to capture for precise modeling (need clearer/straight-on shots)
 - Company & PE-firm profile **section order** (their facet taxonomy = our record template).
 - **Ownership/relationship graph** presentation (visual graph vs linked records vs table).
