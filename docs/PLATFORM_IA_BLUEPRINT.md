@@ -129,7 +129,9 @@ underlying intelligence graph. Starter template (DRAFT — for discussion):
 ### C.3 Application Table of Contents (module map, grouped by function)
 The left-sidebar TOC — pick a group, land in that module's workspace:
 
-1. **Intelligence Home** — the workspace dashboard (filter rail + results grid + detail)
+1. **Dashboard** — the application entry point after login (DECIDED, see F.1): a hybrid
+   **launchpad + at-a-glance workspace** (quick-access groups + summary/metrics rail),
+   and the "home base" anchoring the product
 2. **Macro & Industry** — Macro Dashboard · Industry/Sector Outlook
 3. **Screening & Discovery** — Opportunity Screener · Company Search/Browse
 4. **Company Intelligence** — Company Profile hub: Financials & Ratios (EDGAR) ·
@@ -165,7 +167,8 @@ Mergr can't do the macro→company drill-down; we can, on data adapters we alrea
 ### C.7 Open questions to decide (Day 1 discussion)
 1. **App nav:** left-sidebar TOC (my rec) vs top menu like Mergr?
 2. **Segment list:** confirm the 8 segments in C.2 (keep "Recruiters"? add others?).
-3. **Naming:** "Ask JHI" vs "AI Assistant"? "Intelligence Home" vs "Dashboard"?
+3. **Naming:** "Ask JHI" vs "AI Assistant"? ~~"Intelligence Home" vs "Dashboard"~~
+   → **DECIDED: "Dashboard"** (see F.1 — matches Mergr; clarity over cleverness)
 4. **Shell split:** fully separate storefront vs app shells (my rec: yes)?
 5. **Module consolidation:** `deal-xray` vs `diligence-suite` vs `due-diligence`
    overlap — confirm the canonical module set.
@@ -177,7 +180,7 @@ Mergr can't do the macro→company drill-down; we can, on data adapters we alrea
 ## Part D — Mapping current pages → target IA (so nothing is lost)
 | Current page/route | Target TOC home |
 |---|---|
-| `/dashboard` | Intelligence Home (rebuilt as workspace) |
+| `/dashboard` | Dashboard (rebuilt as launchpad + workspace) |
 | `/macro` *(stranded, to recover)* | Macro & Industry |
 | `/opportunities` | Screening & Discovery |
 | `/deal-xray` | Diligence & Deal Analysis |
@@ -193,7 +196,32 @@ Mergr can't do the macro→company drill-down; we can, on data adapters we alrea
 
 ---
 
-## Next (Day 2 preview, not started)
-Dissect the **authenticated** Mergr product (once subscribed): dashboard workspace,
-filter rails, a company/firm/advisor profile, the ownership graph view, and search/AI
-results — to define JHI's concrete dashboard interaction model.
+## Part F — Day 2: Authenticated-product observations (in progress)
+*Source: Founder's logged-in Mergr session (photos of screen — layout read reliably,
+fine text pending clearer captures).*
+
+### F.1 Entry point = "Dashboard" (DECIDED)
+- After login, Mergr's entry point **is a dashboard, labeled "Dashboard" in the TOC.**
+- It is a **hybrid launchpad + at-a-glance workspace**: quick-access groups (entities/
+  segments/recent) on the left + a **summary/metrics rail** on the right.
+- It lives inside the **persistent product shell** (top search + nav on every screen).
+- **JHI decision:** application entry point after login = **"Dashboard"**, first item in
+  the TOC, built as launchpad + at-a-glance workspace. (Supersedes the earlier
+  "Intelligence Home" idea — keep the proven, clear convention.)
+
+### F.2 Patterns confirmed from authenticated views
+- **Search = filter controls + dense results *list*** (right-aligned metadata per row),
+  not cards.
+- **Record/profile pages = header + sectioned facets + data tables** (financials shown
+  as rows × periods).
+- **Restrained green/gold accenting**; **data density over whitespace** throughout.
+
+### F.3 Still to capture for precise modeling (need clearer/straight-on shots)
+- Company & PE-firm profile **section order** (their facet taxonomy = our record template).
+- **Ownership/relationship graph** presentation (visual graph vs linked records vs table).
+- **Search results row** columns/metadata.
+- **AI Connection** query + answer presentation.
+
+## Next (Day 3 preview, not started)
+Data & entity graph: define JHI's entity/relationship model and map each module to its
+data sources + licensing constraints (from F.1–F.3 record templates).
