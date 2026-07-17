@@ -379,11 +379,53 @@ replicate this pivot** (it's the UI expression of the entity graph in G.2).
 **Reusable patterns:** Save to List · Save Search · Download/Export (monetization);
 sparkline micro-viz in rows (JHI adds revenue/price trends from EDGAR + market data).
 
-### G.6 Still to capture (to finish Day 3)
-- A **PE-firm record** tab set (likely Investment Criteria · Portfolio · Activity ·
-  Professionals · Offices · Connections) to finalize the Firm node schema.
+### G.6 PE-Firm record (Petra Capital Partners) — Firm node schema COMPLETE
+**Tabs:** Profile · M&A Activity (N) · Portfolio (N) · Team (N) · Offices (N) ·
+M&A Connections (N) · Analytics.
+
+**Firm node attributes:**
+- **Identity:** name · legal name · address · phone · website · email · LinkedIn.
+- **Investor Summary:** Investor Type · Ownership · Size · **AUM/PE Assets** · Established ·
+  Specialist/Generalist.
+- **Investment Criteria ("buy box"):** Sectors of Interest · Target Transaction Types ·
+  Geographic Preferences · **Transaction Criteria (MIN/MAX: Target Revenue, Target EBITDA,
+  Investment Size, Enterprise Value)**.
+- **Team/Leadership** (people + roles + photos → Person node).
+- **Portfolio** (holdings; active vs exited; "Sold to X").
+- **M&A Connections:** Acquired-from / Exited-to, split Investors vs Strategics.
+- **Team lineage:** "current team worked at" / "past team now works at" (Lineage edges).
+- **Analytics:** Buy-vs-Sell over time · Deal Values by band · by Deal Type · by Sector ·
+  by Geo (Current # vs All-Time #).
+
+**Key:** the firm's **buy box** is a structured statement of *what it wants* — this is the
+attribute that powers Buyer Match (Part H). *Investor* = role held by PE firms AND
+companies (confirmed).
+
+### G.7 Still to capture (to finish Day 3)
 - The **Ownership Graph** tool view (how edges/timeline are visualized).
+
+## Part H — Tool anatomy: Buyer Match (the flagship AI/matching engine)
+"Rank likely buyers for a target — by sector, specialty, deal size, geography, activity
+fit. Financial and Strategic." Flow:
+1. **Describe target in plain English** (or pick an existing company) → **PARSE**.
+2. **NLP → structured criteria WITH shown reasoning** (e.g. "EBITDA $1M banded to
+   $0.8–1.2M; stage null → mature default") — explainability = trust.
+3. **Editable criteria chips** (Sector · Specialty · Size EV/Revenue/EBITDA · Geography ·
+   Stage; Financial Buyer Pool: HQ Region · Buyer Size) — "click X / + Add; re-runs auto."
+4. **Find Matches → ranked, scored results** (PE Firms / Strategic tabs), **match score
+   /100** + **evidence badges** ("2 specialty deals · active 3 in last 24m · 1 active
+   platform") + plain-English rationale + CSV export.
+
+**JHI implications (high priority):**
+- This is the concrete form of "Ask JHI / AI Connection": **NLP parse → editable chips →
+  explainable scored ranking → export.**
+- **Pairs with Deal X-Ray** as a two-sided loop: X-Ray analyzes a target's CIM; Buyer
+  Match finds who would buy it.
+- Explainable parse + evidence-badge scoring aligns with JHI's **published-methodology /
+  Opportunity Score** ethos.
+- Powered by the **Firm buy box (G.6) + transaction graph (G.2)** — both now modeled.
 
 ## Next (Day 4 preview, not started)
 Synthesis: consolidate IA (nav + segments + language) + dashboard model + entity graph +
-record templates into one restructure blueprint, then scope into reviewed, phased PRs.
+record templates + tool patterns into one restructure blueprint; scope into reviewed,
+phased PRs.
