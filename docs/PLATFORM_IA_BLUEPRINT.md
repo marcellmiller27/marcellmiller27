@@ -10,6 +10,34 @@ is built or final; this is the working artifact we edit as we decide together.
 
 ---
 
+## ▶ NEXT SESSION — STARTING POINT (awaiting Founder acknowledgement)
+**Status:** Four-session Mergr dissection COMPLETE (Parts A–L). Core nomenclature mirrored
+& captured verbatim. Draft **PR #78** — nothing merged (Founder review pending).
+
+**Resume here, in order:**
+1. **Finish the outlier decisions (as a team):**
+   - **Sector A data entities** — Securities & Markets · Macro Series · SEC Filings:
+     include? + peer-style names + disclosed definitions.
+   - **Sector B tool definitions** — write peer-style definitions for **Valuation** and
+     **Risk Score** (Limited Scope Review & QoE already done).
+   - **Segment** — Research & Analysts: add or not?
+   - **Architecture confirm** — one shared **Business Quality Score** engine feeding both
+     Screening and Limited Scope Review; **QoE** stays a separate deeper module.
+2. **Complete the nomenclature** — write JHI's disclosed **Functional-Output definition**
+   for every mirrored item (entities + tools) to the institutional bar (Core Rule).
+3. **Day 4 — Synthesis** — consolidate IA + dashboard + entity graph + record templates +
+   tools + nomenclature + differentiation + data sourcing into ONE restructure blueprint;
+   scope into **phased, reviewed (draft) PRs** for Founder approval. *(No building before this
+   plan is approved.)*
+
+**Governing principles to honor every step:** Context Principle · Mirror Principle ·
+Core Rule (name + definition) · Foundation-first (draft PRs; Founder reviews, approves,
+merges).
+
+**Founder acknowledgement:** ⬜ _(to sign at start of next session)_
+
+---
+
 ## Decisions Log (Founder-approved)
 | Date | Item | Decision |
 |---|---|---|
