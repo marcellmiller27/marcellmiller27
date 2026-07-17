@@ -504,7 +504,47 @@ ethos).
 encryption in transit/at rest, per-org isolation, RBAC (leverages prior P0 hardening).
 Never commingle or expose.
 
+## Part K — Nomenclature & Functional-Output Disclosures (NOTATION + draft)
+**NOTATION / STANDING TASK (Founder directive 2026-07-17):** Create and maintain a
+**single controlled nomenclature list** for the TOC, and write a **Functional-Output
+disclosure paragraph for every segment** (what it performs). This vocabulary is the
+source of truth for nav labels, UI copy, docs, and code identifiers.
+
+**K.0 Nomenclature standard (rules):**
+- One **canonical name** per TOC entry — function-first, institutional, name-for-the-job.
+- **No job-title language** (no CPA/Attorney as labels); clarity over cleverness.
+- Each entry carries: canonical label · route id · one-line · full functional-output
+  paragraph.
+- Applies at every level: **segments, TOC groups, modules, dashboard tools, search
+  entities, and record facets.**
+
+**K.1 Top-level application TOC — nomenclature + functional output (DRAFT):**
+| Canonical name | Route id | Functional output (what it performs) |
+|---|---|---|
+| **Dashboard** | `/app` | Command center on login: launchpad (entity search + tools) + live at-a-glance intelligence (coverage stats, saved screens/watchlists, market movers, macro highlights, most-active acquirers); routes into any module. |
+| **Macro & Industry** | `/app/macro` | Top-down view: live macro indicators (GDP, inflation, rates, employment, credit) from federal/global sources + sector/industry outlooks that frame company-level work. |
+| **Screening & Discovery** | `/app/screen` | Surfaces and ranks opportunities by criteria and Opportunity Score; finds targets resembling a reference company (Prospector) and consolidation candidates. |
+| **Company Intelligence** | `/app/company` | Company record hub: identity, financials & ratios (EDGAR), valuation, filings, ownership/relationship graph, acquisition history, comparables, news — one profile, drill-down facets. |
+| **Diligence & Deal Analysis** | `/app/diligence` | Analyzes a specific target: Deal X-Ray (CIM), Quality of Earnings, valuation (DCF/LBO/Search-Fund), document review, risk scoring → decision-grade assessment. |
+| **Deal Workflow** | `/app/deals` | Manages deals across the lifecycle: pipeline (sourcing→close) and portfolio monitoring of held positions. |
+| **Research & Outputs** | `/app/research` | Produces client-ready deliverables: institutional Excel workbooks, PDF reports, data-driven newsletters/market outlooks. |
+| **Ask JHI** | `/app/ask` | Natural-language intelligence over the entity graph + integrated data: explainable, sourced answers and target→buyer matching (Buyer Match). |
+| **Firm Operations** *(role-gated)* | `/app/ops` | Internal firm operations: accounting/GL, CRM/leads, system administration, AI-agent oversight. |
+| **Account & Support** | `/app/account` | Subscriber account: profile, roles & seats, billing, security settings, help/support. |
+
+**K.2 Lower-level nomenclature (TO COMPLETE — functional output per item):**
+- **Search entities (Tier 1):** Companies · Securities & Markets · Transactions ·
+  Investors & Firms · Advisors · Executives · Filings · Macro Series. *(each needs a
+  functional-output line — see F.5/G for source patterns.)*
+- **Dashboard tools (Tier 2):** the 4 JTBD groups + tools drafted in F.5 — finalize
+  canonical names + functional-output lines.
+- **Record facets:** Company/Firm/Advisor tabs (Parts G) — each facet gets a one-line
+  functional output.
+- **Segments (C.2):** each "JHI for [segment]" gets range descriptor + facets (C.2a) —
+  functional-output framing already drafted; finalize.
+
 ## Next (Day 4 preview, not started)
 Synthesis: consolidate IA (nav + segments + language) + dashboard model + entity graph +
-record templates + tool patterns + differentiation (Part I) into one restructure
-blueprint; scope into reviewed, phased PRs.
+record templates + tool patterns + differentiation (Part I) + data sourcing (Part J) +
+nomenclature & functional-output disclosures (Part K) into one restructure blueprint;
+scope into reviewed, phased PRs.
