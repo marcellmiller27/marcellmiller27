@@ -618,6 +618,13 @@ terms (the reference bar). Right column = JHI candidate (DRAFT — to vet/approv
 > terminology = zero learning curve, instant credibility, and **no confusion**. Invented
 > terms create hesitation, and hesitation = **missed opportunities / lost conversions.**
 > Familiar language is a conversion and trust decision, not just a style choice.
+>
+> **CONTEXT PRINCIPLE (Founder-directed 2026-07-17):** **Context matters in this arena.**
+> Professional context/precision is the difference between being **quickly ignored** and
+> being the subscriber's **first selection to act.** Judge every term, definition, and
+> screen **from the subscriber's (professional's) point of view** — does it signal
+> credibility and prompt action, or invite dismissal? Same tool, different context = adopted
+> vs. ignored (e.g., "Deal X-Ray" → "Limited Scope Review").
 
 ### L.0 The two-sector product model (MASTER FRAMEWORK — disclosure is hierarchical)
 The application's core nomenclature is organized into **two sectors**, each disclosing its
