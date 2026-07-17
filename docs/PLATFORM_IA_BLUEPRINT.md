@@ -543,6 +543,34 @@ source of truth for nav labels, UI copy, docs, and code identifiers.
 - **Segments (C.2):** each "JHI for [segment]" gets range descriptor + facets (C.2a) —
   functional-output framing already drafted; finalize.
 
+### K.3 Nomenclature process + candidate slate (for vetting)
+**Process (Founder-approved 2026-07-17):** (1) Prepare candidate list → (2) vet + open
+discussion → (3) final selection → (4) submit for Founder approval.
+
+**The institutional-grade bar:** every name must read as precise trade terminology a PE MD
+or M&A advisor recognizes instantly (like Mergr's *Private Equity / Transactions /
+M&A Advisors* for sections; *Buyer Match / Prospector / Ownership Graph / Lineage* for
+tools). Reject anything that reads as a consumer app ("elementary"). Note: some standard
+terms (e.g. *Dashboard*) ARE the institutional convention — Mergr uses them — so "standard"
+≠ "elementary" when it's the industry norm.
+
+**Top-level TOC candidate slate (DRAFT — to vet):**
+| Function | Candidates | Cy's lean |
+|---|---|---|
+| Entry point | Dashboard · Command Center · Terminal | Dashboard (matches Mergr; keeps F.1) |
+| Top-down macro | Macro Intelligence · Market & Macro · Economic Intelligence | Macro Intelligence |
+| Finding targets | Origination · Deal Origination · Opportunity Screener · Sourcing | Origination |
+| Company hub | Company Intelligence · Entity Intelligence · Company Dossier | Company Intelligence |
+| Target analysis | Diligence Suite · Due Diligence · Deal Analysis | Diligence Suite |
+| Lifecycle mgmt | Pipeline & Portfolio · Deal Management · Execution | Pipeline & Portfolio |
+| Deliverables | Research & Reporting · Publications · Research Desk | Research & Reporting |
+| NL query / AI | Intelligence Query · Ask JHI · JHI Copilot | Ask JHI / Intelligence Query |
+| Internal ops | Firm Operations · Back Office · Operations Console | Firm Operations |
+| Account | Account · Account & Access · Settings & Support | Account |
+
+*Still to prepare (same process): candidate names for search entities, dashboard tools,
+record facets, and the 8 segments.*
+
 ## Next (Day 4 preview, not started)
 Synthesis: consolidate IA (nav + segments + language) + dashboard model + entity graph +
 record templates + tool patterns + differentiation (Part I) + data sourcing (Part J) +
