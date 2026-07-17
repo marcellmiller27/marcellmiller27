@@ -473,6 +473,37 @@ Where JHI deliberately goes beyond the case study:
   (financials, price, seller identity) to the repo or any artifact. Handle only in secure,
   access-controlled contexts.
 
+## Part J — Data-sourcing strategy for detailed financials (draft for discussion)
+**Problem:** CIMs don't scale — a single regional broker (BRG, East-Coast only) is a
+sample, not a supply chain. How to get detailed financials for a "detailed outlook"?
+
+**Principle:** for a specific company, detailed financials come from either (a) the
+subject's own data, or (b) a modeled estimate from benchmarks/comps. No third option.
+CIMs are just one (limited) form of (a) — do not build the strategy around them.
+
+**Tiered model:**
+1. **Public companies → SEC EDGAR (built).** Full statements/ratios/history; no upload.
+2. **Private deep-dive → client-provided data (PRIMARY).** Manual upload (P&L, BS, tax
+   returns, trial balance, CIM) **and accounting-system integrations (QuickBooks Online,
+   Xero, NetSuite, Sage)** for direct, recurring, scalable linkage. Client authorizes
+   their own data → **sidesteps third-party licensing** (the moat). Powers QoE/Deal X-Ray.
+3. **Private screening/outlook (no direct data) → modeled estimates.** Industry benchmarks
+   (NAICS margins/ratios via Census, BLS, BEA, IRS SOI), public comparables + multiples
+   (Deal X-Ray comp benchmark already does this), registry/alt data (Secretary of State,
+   UCC, bankruptcy, CRE, FDIC/FFIEC). Output = clearly-labeled **estimate**, not audited.
+4. **CIMs → opportunistic supplement**, not the backbone.
+
+**Moat:** client-uploaded/integrated data + JHI institutional analytics on top —
+recurring, defensible, licensing-clean.
+
+**Honest limit:** a private company that won't share and isn't public can only get a
+benchmarked estimate, never exact statements. Set client expectations (fits transparency
+ethos).
+
+**Security (non-negotiable):** client financials are the most sensitive data held —
+encryption in transit/at rest, per-org isolation, RBAC (leverages prior P0 hardening).
+Never commingle or expose.
+
 ## Next (Day 4 preview, not started)
 Synthesis: consolidate IA (nav + segments + language) + dashboard model + entity graph +
 record templates + tool patterns + differentiation (Part I) into one restructure
