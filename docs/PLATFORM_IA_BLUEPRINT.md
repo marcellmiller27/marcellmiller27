@@ -16,6 +16,11 @@ is built or final; this is the working artifact we edit as we decide together.
 | 2026-07-16 | F.1 — Application entry point name | **Dashboard** (matches Mergr convention) |
 | 2026-07-17 | K.3 — Nomenclature process & bar | prepare → vet → select → approve; institutional-grade, parallel to Mergr, not elementary |
 | 2026-07-17 | **C.1 — Two-zone shell split** | **APPROVED** — separate public Storefront vs authenticated Application shells |
+| 2026-07-17 | **Strategic objective** | Audience-first: follow institutional-grade peer standards; goal = conversion into long-term subscriptions by solving subscribers' decision-lag pain-points (Board Minutes §1) |
+| 2026-07-17 | **Nomenclature CORE RULE** | Every term = **name + disclosed definition** (Functional Output); disclosure is hierarchical (Sector → Group → Item) |
+| 2026-07-17 | **MIRROR PRINCIPLE** | Adopt peers' (Mergr) terms + definitions **verbatim**; **no inventions**; rationale = audience already speaks this jargon → no confusion, no lost conversions |
+| 2026-07-17 | **Two-sector product model (L.0)** | Core TOC = (A) Search the Database + (B) Tools & Insights; storefront segments are a separate marketing layer |
+| 2026-07-17 | **Outliers = team decision** | JHI-only capabilities (Securities & Markets, Macro Series, SEC Filings; Deal X-Ray/QoE/Valuation/Risk Score; Research & Analysts segment) discussed together — OPEN |
 
 ## Part A — Mergr, reverse-engineered (our case study)
 
