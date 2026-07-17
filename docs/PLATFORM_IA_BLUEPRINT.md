@@ -561,7 +561,12 @@ tools). Reject anything that reads as a consumer app ("elementary"). Note: some 
 terms (e.g. *Dashboard*) ARE the institutional convention — Mergr uses them — so "standard"
 ≠ "elementary" when it's the industry norm.
 
-**Top-level TOC candidate slate (DRAFT — to vet):**
+**⚠️ SUPERSEDED by the MIRROR PRINCIPLE + two-sector model (L.0).** The invented names
+below (Origination, Diligence Suite, etc.) are retracted. JHI's TOC mirrors Mergr's
+structure — (A) Search the Database + (B) Tools & Insights (see L.0/L.3/L.4) — plus
+account/support chrome. Kept here only as a record of the corrected approach.
+
+**Top-level TOC candidate slate (DRAFT — RETRACTED, do not use):**
 | Function | Candidates | Cy's lean |
 |---|---|---|
 | Entry point | Dashboard · Command Center · Terminal | Dashboard (matches Mergr; keeps F.1) |
@@ -594,6 +599,12 @@ terms (the reference bar). Right column = JHI candidate (DRAFT — to vet/approv
 > does. JHI must do the same: every canonical name ships with its own disclosed definition
 > written to the same institutional standard. Capture Mergr's definitions verbatim as the
 > reference; write JHI's definitions during vetting.
+>
+> **MIRROR PRINCIPLE (Founder-directed 2026-07-17):** Do NOT reinvent the wheel. JHI
+> **adopts Mergr's institutional terms and definition style verbatim** (parallel language
+> context). **No new inventions.** The only exceptions are **legitimate outliers** —
+> capabilities JHI has that Mergr does not (integrated financials/valuation/macro/SMB) —
+> which are flagged and **discussed together as a team**, not invented unilaterally.
 
 ### L.0 The two-sector product model (MASTER FRAMEWORK — disclosure is hierarchical)
 The application's core nomenclature is organized into **two sectors**, each disclosing its
@@ -625,17 +636,20 @@ definition). Capture all 8 verbatim, then build JHI parallels. Confirmed so far:
 - **NEEDED (capture segment pages):** Acquirers/Investors · Lenders · Corporate ·
   Recruiters · Service Providers · Wealth Advisors (range descriptor + facet list each).
 
-| Mergr segment | JHI candidate name | JHI range descriptor + facets (to write) |
-|---|---|---|
-| Acquirers / Investors | Acquirers & Investors | _TBD (pending Mergr disclosure)_ |
-| M&A Advisors | M&A Advisors & Brokers | _TBD_ |
-| Private Equity | Private Equity | _TBD_ |
-| Lenders | Lenders & Credit | _TBD_ |
-| Corporate | Corporate Development | _TBD_ |
-| Recruiters | Recruiters _(keep? — vet)_ | _TBD_ |
-| Service Providers | Service Providers | _TBD_ |
-| Wealth Advisors | Wealth & Asset Managers | _TBD_ |
-| (JHI-added) | Research & Analysts | _TBD_ |
+JHI mirrors Mergr's segment names verbatim (only the brand prefix changes: "JHI for [X]"):
+| JHI segment (= Mergr, "JHI for …") | Range descriptor + facets (adopt from Mergr segment page) |
+|---|---|
+| Acquirers / Investors | _capture from Mergr page_ |
+| M&A Advisors | "Legal & Financial, Boutique to Multinational" → M&A Analytics · Client Lists · Advisory Connections · Sector Coverage · Contacts |
+| Private Equity | "Small to Mega, Generalist & Specialist" → Investment Criteria · M&A History · Portfolio Breakdown · M&A Analytics · Professionals w/ Contacts · Office Locations · M&A Connections |
+| Lenders | _capture from Mergr page_ |
+| Corporate | _capture from Mergr page_ |
+| Recruiters | _capture from Mergr page_ |
+| Service Providers | _capture from Mergr page_ |
+| Wealth Advisors | _capture from Mergr page_ |
+
+**OUTLIER (JHI-added segment — DISCUSS AS A TEAM):** Research & Analysts (JHI's research
+identity has no direct Mergr segment). To decide together whether to add + how to frame.
 
 ### L.2 Storefront — Product menu (Mergr) → JHI
 | Mergr | JHI candidate |
@@ -647,17 +661,20 @@ definition). Capture all 8 verbatim, then build JHI parallels. Confirmed so far:
 | Support Docs · Search Guides · Search Examples | Support Docs · Guides · Examples |
 | PitchBook Alternative | (positioning line — TBD) |
 
-### L.3 Dashboard Tier 1 — "Search the Database" entities (name + disclosed definition)
-| Mergr term | Mergr disclosed definition (verbatim) | JHI candidate name | JHI definition (to write) |
-|---|---|---|---|
-| Private Equity | "By AUM, sector focus, geography & activity." | Investors & Firms | _TBD_ |
-| Companies | "By ownership, size & sector." | Companies | _TBD_ |
-| Transactions | "By date, value, deal type & sector." | Transactions | _TBD_ |
-| M&A Advisors | "Banks & law firms by deal experience." | Advisors | _TBD_ |
-| M&A Professionals | "Deal-team members by firm & role." | Executives | _TBD_ |
-| M&A Press Releases | "Full announcement archive across PE and strategic M&A." | News & Filings | _TBD_ |
-| (JHI-added) | — | Securities & Markets | _TBD_ |
-| (JHI-added) | — | Macro Series | _TBD_ |
+### L.3 Dashboard Tier 1 — "Search the Database" entities (MIRRORED verbatim)
+JHI adopts Mergr's names AND definitions verbatim:
+| JHI term (= Mergr) | Definition (adopted verbatim) |
+|---|---|
+| Private Equity | "By AUM, sector focus, geography & activity." |
+| Companies | "By ownership, size & sector." |
+| Transactions | "By date, value, deal type & sector." |
+| M&A Advisors | "Banks & law firms by deal experience." |
+| M&A Professionals | "Deal-team members by firm & role." |
+| M&A Press Releases | "Full announcement archive across PE and strategic M&A." |
+
+**OUTLIERS (JHI-added — DISCUSS AS A TEAM, not yet adopted):** Securities & Markets ·
+Macro Series · SEC Filings (EDGAR). Rationale: JHI integrates market/macro/filing data
+Mergr lacks. Names/definitions to be decided together, in Mergr's style.
 
 ### L.4 Dashboard Tier 2 — "Tools & Insights" (name + disclosed definition, verbatim)
 **Group taglines (disclosed):** Working a Live Deal — "You have a mandate — find the right
@@ -665,24 +682,29 @@ counterparties." · Find New Opportunities — "Surface candidates you don't kno
 Research a Firm or Company — "Build context on a known entity." · Market Intelligence —
 "Macro view across the database."
 
-| Mergr tool | Mergr disclosed definition (verbatim) | JHI candidate name | JHI definition (to write) |
-|---|---|---|---|
-| Buyer Match | "Rank likely PE & strategic buyers for a target." | Buyer Match | _TBD_ |
-| Investor Match | "Score growth equity & PE investors that fit a company's profile." | Investor Match | _TBD_ |
-| Advisor Match | "Banks & law firms that fit a deal mandate." | Advisor Match | _TBD_ |
-| Prospector | "Find targets or clients that look like a reference company." | Prospector | _TBD_ |
-| Roll-Up Tracker | "Active roll-ups ranked by add-on cadence, with full lifecycle history." | Roll-Up Tracker | _TBD_ |
-| Shed | "Inherited add-ons least likely to fit the new owner's thesis." | _(rename? — vet)_ | _TBD_ |
-| Investor Lookalikes | "Find PE firms similar to a reference — bigger, smaller, or same tier." | Lookalikes | _TBD_ |
-| Dossier | "Full M&A profile: history, advisors, key people." | Dossier | _TBD_ |
-| Lineage | "PE alumni network — where talent came from and went." | Lineage | _TBD_ |
-| Ownership Graph | "Ownership eras, holds & exit signals." | Ownership Graph | _TBD_ |
-| Trading Partners | "Recurring buyer-seller pairings with activity timeline & sector mix." | Trading Partners | _TBD_ |
-| Compare | "Side-by-side comparison of firms." | Compare | _TBD_ |
-| Rankings | "Sortable M&A leaderboards." | Rankings | _TBD_ |
-| Analytics | "Market activity & sector trends." | Analytics | _TBD_ |
-| Deal Flow Map | "Cross-border M&A flows by country, time window & keyword." | Deal Flow Map | _TBD_ |
-| (JHI-added) | — | Deal X-Ray · Quality of Earnings · Valuation · Risk Score | _TBD_ |
+JHI adopts Mergr's tool names AND definitions verbatim:
+| JHI tool (= Mergr) | Definition (adopted verbatim) |
+|---|---|
+| Buyer Match | "Rank likely PE & strategic buyers for a target." |
+| Investor Match | "Score growth equity & PE investors that fit a company's profile." |
+| Advisor Match | "Banks & law firms that fit a deal mandate." |
+| Prospector | "Find targets or clients that look like a reference company." |
+| Roll-Up Tracker | "Active roll-ups ranked by add-on cadence, with full lifecycle history." |
+| Shed | "Inherited add-ons least likely to fit the new owner's thesis." |
+| Investor Lookalikes | "Find PE firms similar to a reference — bigger, smaller, or same tier." |
+| Dossier | "Full M&A profile: history, advisors, key people." |
+| Lineage | "PE alumni network — where talent came from and went." |
+| Ownership Graph | "Ownership eras, holds & exit signals." |
+| Trading Partners | "Recurring buyer-seller pairings with activity timeline & sector mix." |
+| Compare | "Side-by-side comparison of firms." |
+| Rankings | "Sortable M&A leaderboards." |
+| Analytics | "Market activity & sector trends." |
+| Deal Flow Map | "Cross-border M&A flows by country, time window & keyword." |
+
+**OUTLIERS (JHI-added tools — DISCUSS AS A TEAM):** Deal X-Ray · Quality of Earnings ·
+Valuation (DCF/LBO/Search-Fund) · Risk Score. Rationale: JHI's integrated financials/SMB
+diligence engine has no Mergr equivalent. Placement (which group) + Mergr-style
+definitions to be decided together.
 
 ### L.5 Dashboard right rail (Mergr) → JHI
 | Mergr | JHI candidate |
