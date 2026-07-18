@@ -17,6 +17,13 @@ const documents: DocItem[] = [
     kind: "Excel workbook (.xlsx)"
   },
   {
+    title: "Sales Commission — Prepaid MSA (15% Upfront + Year-End Bonus)",
+    description:
+      "Editable forecast for full-paid (prepaid annual, 12-month MSA) subscriptions: a 15% upfront commission on net contract value, a year-end MSA-completion bonus, and a full P&L with ALL expenditures at 100 closes/mo \u2192 1,200 subs/yr, plus a Tier-1 mix sensitivity.",
+    href: "/downloads/JHI_Sales_Commission_Prepaid_MSA.xlsx",
+    kind: "Excel workbook (.xlsx)"
+  },
+  {
     title: "Competitor Deep-Dive & Reverse-Engineering Audit",
     description:
       "Mergr, S&P Global (Capital IQ Pro), and CB Insights: per-competitor teardown, synthesis matrix, the \u201cdiamond in the rough\u201d thesis, cost/risk/reward, verified pricing, and a board recommendation.",
