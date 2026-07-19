@@ -55,9 +55,18 @@ a draft the Founder reviews/approves/merges; DoD = pytest + lint + build green +
 *(Each phase = one or more draft PRs; Founder reviews/approves/merges. Sequential unless noted.)*
 
 ### Phase 0 — Foundation base (merges only; Founder action)
-Merge, in order, to form the clean base: **#81** (entity-name) → **#77** (design tokens) →
-**#80** (Tier-3 pricing) → **#75** (Macro Dashboard UI) → **#76** (Company workbook).
-*DoD: base branch builds green with tokens + macro UI + correct pricing/naming.*
+**Dependency-correct order** (#77/#80/#81 are stacked on #76's branch; #74/#75/#76 target main):
+1. **#76** — Company workbook *(base of the stack — merge FIRST; auto-retargets #77/#80/#81 to main)*
+2. **#81** — entity-name rename
+3. **#77** — design tokens
+4. **#80** — Tier-3 pricing
+5. **#75** — Macro Dashboard UI
+6. **#74** — JH monogram logo *(optional/brand)*
+
+*Conflict note:* #77/#80/#81 are siblings off #76 and touch some overlapping files
+(`src/app/downloads/page.tsx`, header comments) — minor conflicts possible. Cy can pre-rebase
+#81/#77/#80 onto main after #76 so each is a clean one-click merge (Founder still merges).
+*DoD: main builds green with tokens + macro UI + correct pricing/naming.*
 
 ### Phase 1 — Structural spine ("product, not website")
 - **1.1** Split **Storefront** vs **Application** shells/layouts.
