@@ -8,9 +8,9 @@ on every source file in the John Henry Investments (JHI) codebase, labeled by su
 Each file carries a single header comment (language-appropriate):
 
 ```
-# JHI-SIG: 69M2705M | <Subsystem> | John Henry Investments (proprietary)     (Python)
-// JHI-SIG: 69M2705M | <Subsystem> | John Henry Investments (proprietary)    (TS/TSX/JS)
-/* JHI-SIG: 69M2705M | <Subsystem> | John Henry Investments (proprietary) */ (CSS)
+# JHI-SIG: 69M2705M | <Subsystem> | JHI Research & Analytics Firm, Inc. (proprietary)     (Python)
+// JHI-SIG: 69M2705M | <Subsystem> | JHI Research & Analytics Firm, Inc. (proprietary)    (TS/TSX/JS)
+/* JHI-SIG: 69M2705M | <Subsystem> | JHI Research & Analytics Firm, Inc. (proprietary) */ (CSS)
 ```
 
 Placement rules:
@@ -81,7 +81,7 @@ files already containing `JHI-SIG: 69M2705M`) so the whole tree is covered in on
 ## Entity attribution — pending (JHI Research & Analytics Firm, Inc.)
 
 The founder mark `69M2705M` is **entity-agnostic** and stays on every file. The **copyright
-/ entity attribution** currently reads `John Henry Investments (proprietary)` in headers and
+/ entity attribution** currently reads `JHI Research & Analytics Firm, Inc. (proprietary)` in headers and
 `John Henry Investments, LLC` in `LICENSE`. Per the two-entity decision
 (`docs/COMPANY_POSTURE_AND_COMPLIANCE.md`), the **platform IP will belong to
 JHI Research & Analytics Firm, Inc.** — so the attribution should change to that entity, but

@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | Competitor Deep-Dive (Word) | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | Competitor Deep-Dive (Word) | JHI Research & Analytics Firm, Inc. (proprietary)
 """Generate the professional Word (.docx) competitor deep-dive / reverse-engineering audit.
 
 Targets: Mergr, S&P Global Market Intelligence (Capital IQ Pro), and CB Insights.

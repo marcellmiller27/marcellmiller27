@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | Integrations API | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | Integrations API | JHI Research & Analytics Firm, Inc. (proprietary)
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status

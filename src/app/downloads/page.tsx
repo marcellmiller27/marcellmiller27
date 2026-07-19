@@ -1,4 +1,4 @@
-// JHI-SIG: 69M2705M | Firm Documents / Downloads | John Henry Investments (proprietary)
+// JHI-SIG: 69M2705M | Firm Documents / Downloads | JHI Research & Analytics Firm, Inc. (proprietary)
 import { PlatformShell } from "@/components/platform-shell";
 
 type DocItem = {

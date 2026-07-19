@@ -1,5 +1,5 @@
 "use client";
-// JHI-SIG: 69M2705M | Deal Pipeline | John Henry Investments (proprietary)
+// JHI-SIG: 69M2705M | Deal Pipeline | JHI Research & Analytics Firm, Inc. (proprietary)
 
 import { useEffect, useState } from "react";
 

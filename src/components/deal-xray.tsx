@@ -1,5 +1,5 @@
 "use client";
-// JHI-SIG: 69M2705M | Acquisition / Deal X-Ray | John Henry Investments (proprietary)
+// JHI-SIG: 69M2705M | Acquisition / Deal X-Ray | JHI Research & Analytics Firm, Inc. (proprietary)
 
 import { useState } from "react";
 

@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | Deal Pipeline | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | Deal Pipeline | JHI Research & Analytics Firm, Inc. (proprietary)
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException

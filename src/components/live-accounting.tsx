@@ -1,5 +1,5 @@
 "use client";
-// JHI-SIG: 69M2705M | Accounting UI | John Henry Investments (proprietary)
+// JHI-SIG: 69M2705M | Accounting UI | JHI Research & Analytics Firm, Inc. (proprietary)
 
 import { Fragment, useCallback, useEffect, useState } from "react";
 

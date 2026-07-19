@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | Acquisition / Deal X-Ray | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | Acquisition / Deal X-Ray | JHI Research & Analytics Firm, Inc. (proprietary)
 """Deal X-Ray engine — analyzes a CIM's key figures for search-fund/SMB buyers.
 
 Pure, deterministic computation (unit-testable). Produces a 7-segment scorecard, an
