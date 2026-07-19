@@ -488,6 +488,15 @@ fit. Financial and Strategic." Flow:
 - Powered by the **Firm buy box (G.6) + transaction graph (G.2)** — both now modeled.
 
 ## Part I — JHI differentiation vs Mergr (synthesis input for Day 4)
+
+> **DEPTH PRINCIPLE (Founder-directed 2026-07-19) — FOUNDATIONAL.** Mergr's analytics are
+> **aggregate-shallow**: counts, leaderboards, and geographic heatmaps that *drill down to a
+> list of company names with nothing under the hood* (Founder verified — "a nothing burger").
+> **JHI wins on DEPTH, not breadth.** Every drill-down must reach **true bedrock** — actual
+> financials, ratios, valuation, filings, risk, and macro overlay — not just another count.
+> Where Mergr says "62,056 US deals," JHI says "here is this company's financials, valuation,
+> risk, and how the macro cycle moves it." Depth is the moat; a shallow view is a fail.
+
 Where JHI deliberately goes beyond the case study:
 1. **Integrated financials/macro on every record** — Mergr records are deal/relationship
    only; JHI adds Financials & Ratios, Valuation (DCF/LBO), Filings, Risk (EDGAR + market
