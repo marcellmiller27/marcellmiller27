@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | ORM models | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | ORM models | JHI Research & Analytics Firm, Inc. (proprietary)
 from datetime import date, datetime, timezone
 from uuid import uuid4
 

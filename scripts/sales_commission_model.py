@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | Sales Commission Model | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | Sales Commission Model | JHI Research & Analytics Firm, Inc. (proprietary)
 """Generate the interactive Sales Commission + EBITDA Excel model.
 
 A 100%-commission ground-floor rep on Tier 1 ($1,500) + Tier 2 ($299), paid a

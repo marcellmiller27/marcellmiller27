@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | Acquisition / Deal X-Ray | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | Acquisition / Deal X-Ray | JHI Research & Analytics Firm, Inc. (proprietary)
 """Tests for the Deal X-Ray CIM analyzer engine + endpoint."""
 
 from fastapi.testclient import TestClient

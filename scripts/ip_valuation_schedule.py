@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | IP Valuation Schedule | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | IP Valuation Schedule | JHI Research & Analytics Firm, Inc. (proprietary)
 """Generate the interactive IP Valuation Schedule (Excel).
 
 Supports the value of the platform/mobile IP contributed to JHI Research &

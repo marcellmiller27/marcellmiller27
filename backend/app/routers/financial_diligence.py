@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | Financial Diligence Suite | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | Financial Diligence Suite | JHI Research & Analytics Firm, Inc. (proprietary)
 import re
 
 from fastapi import APIRouter, Response

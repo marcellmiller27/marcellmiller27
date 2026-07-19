@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | At-rest encryption tests | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | At-rest encryption tests | JHI Research & Analytics Firm, Inc. (proprietary)
 """Tests for at-rest encryption of sensitive fields (TOTP secret)."""
 
 from uuid import uuid4

@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | WebAuthn tests | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | WebAuthn tests | JHI Research & Analytics Firm, Inc. (proprietary)
 """Tests for real WebAuthn (ES256) biometric assertion verification."""
 
 import base64

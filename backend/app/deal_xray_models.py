@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | Acquisition / Deal X-Ray | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | Acquisition / Deal X-Ray | JHI Research & Analytics Firm, Inc. (proprietary)
 """Pydantic models for the Deal X-Ray CIM analyzer (search-fund / SMB acquisition).
 
 Structured-input v1: the user supplies key figures from a CIM; a future v2 will
