@@ -51,6 +51,8 @@ merges).
 | 2026-07-17 | **Outliers = team decision** | JHI-only capabilities (Securities & Markets, Macro Series, SEC Filings; LSR/QoE/Valuation/Risk Score; Research & Analysts segment) discussed together — partially resolved below |
 | 2026-07-17 | **Rename "Deal X-Ray" → "Limited Scope Review (LSR)"** | APPROVED — audit-authentic, institutional; indicative/unverified with full disclosure; not a CPA engagement |
 | 2026-07-17 | **Quality of Earnings acronym** | APPROVED — keep **"QoE"** (NOT "QE" = Quantitative Easing; avoids Macro collision) |
+| 2026-07-19 | **B3 — Valuation · B4 — Risk Score · B5 — Group Placement** | APPROVED — titles + peer-style definitions; B5 creates the JTBD group **"Diligence a Target"** (LSR/QoE/Valuation/Risk Score) |
+| 2026-07-19 | **Anti-duplication architecture** | APPROVED — ONE engine per capability (BQS · Valuation · Risk) consumed at different depths; QoE separate module; no duplicate processes |
 
 ## Part A — Mergr, reverse-engineered (our case study)
 
@@ -749,7 +751,7 @@ JHI adopts Mergr's tool names AND definitions verbatim:
 | Analytics | "Market activity & sector trends." |
 | Deal Flow Map | "Cross-border M&A flows by country, time window & keyword." |
 
-**OUTLIERS (JHI-added tools) — new JTBD group "Diligence a Target" (B5, APPROVED 2026-07-19):**
+**OUTLIERS (JHI-added tools) — new JTBD group "Diligence a Target" (B5 — Group Placement, APPROVED 2026-07-19):**
 Group tagline (peer style): *"Underwrite a specific target — quality, earnings, value, and risk."*
 - ✅ **Limited Scope Review (LSR)** *(APPROVED — renamed from "Deal X-Ray" 2026-07-17)* —
   *"Rapid, limited-scope read of a target's CIM: business-quality score, valuation, red
@@ -771,9 +773,18 @@ Group tagline (peer style): *"Underwrite a specific target — quality, earnings
 
 **Assurance ladder (funnel):** Limited Scope Review (indicative, unverified) → Quality of
 Earnings (verified). **Two-sided loop:** Find (Buyer Match/Prospector) → **Diligence a
-Target** (LSR/QoE/Valuation/Risk Score) → Value/Decide. **Recommended (pending confirm):**
-one shared Business Quality Score engine feeds both Screening and LSR; QoE stays a separate
-deeper module (avoids duplicate scoring logic).
+Target** (LSR/QoE/Valuation/Risk Score) → Value/Decide.
+
+**Anti-duplication architecture (APPROVED 2026-07-19 — ONE engine per capability):** each
+capability has exactly one source of truth, surfaced at different depths — so there are
+**no duplicate processes**:
+- **Business Quality Score engine** → feeds Screening + LSR.
+- **Valuation engine** → LSR runs it in *light/indicative* mode; standalone **Valuation (B3)**
+  is *full* mode (DCF/LBO/search-fund). One engine, two depths.
+- **Risk engine** → **Risk Score (B4)** is the engine; LSR "red flags" + the Opportunity
+  Score **consume** it (never recompute).
+- **QoE** stays a separate, deeper (verified) module.
+No capability is computed in two places.
 
 ### L.5 Dashboard right rail (Mergr) → JHI
 | Mergr | JHI candidate |
