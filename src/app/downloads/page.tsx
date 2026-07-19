@@ -19,7 +19,7 @@ const documents: DocItem[] = [
   {
     title: "Sales Commission — Prepaid MSA (15% Upfront + Year-End Bonus)",
     description:
-      "Editable forecast for full-paid (prepaid annual, 12-month MSA) subscriptions: a 15% upfront commission on net contract value, a year-end MSA-completion bonus, and a full P&L with ALL expenditures at 100 closes/mo \u2192 1,200 subs/yr, plus a Tier-1 mix sensitivity.",
+      "Editable forecast for full-paid (prepaid annual, 12-month MSA) subscriptions: a 15% upfront commission on net contract value, a year-end MSA-completion bonus, a full P&L with ALL expenditures at 100 closes/mo \u2192 1,200 subs/yr, month-by-month breakdowns (bookings/cash and accrual/ASC 606), plus a Tier-1 mix sensitivity.",
     href: "/downloads/JHI_Sales_Commission_Prepaid_MSA.xlsx",
     kind: "Excel workbook (.xlsx)"
   },

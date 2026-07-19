@@ -341,12 +341,152 @@ def _legal(wb: Workbook) -> None:
         cell.alignment = Alignment(wrap_text=True, vertical="top")
 
 
+_COLS = "BCDEFGHIJKLM"  # months 1..12
+
+
+def _month_header(ws: Worksheet, subtitle: str, note: str) -> None:
+    ws.column_dimensions["A"].width = 30
+    for col in _COLS:
+        ws.column_dimensions[col].width = 10
+    ws.column_dimensions["N"].width = 13
+    _title(ws, subtitle, "N")
+    ws.cell(row=4, column=1, value=note).font = _MUTED
+    hdr = 5
+    c = ws.cell(row=hdr, column=1, value="$ per month")
+    c.font = _WHITE
+    c.fill = _NAVY_FILL
+    for i in range(12):
+        cell = ws.cell(row=hdr, column=2 + i, value=f"Mo {i + 1}")
+        cell.font = _WHITE
+        cell.fill = _NAVY_FILL
+        cell.alignment = Alignment(horizontal="right")
+    tot = ws.cell(row=hdr, column=14, value="Year 1")
+    tot.font = _WHITE
+    tot.fill = _NAVY_FILL
+    tot.alignment = Alignment(horizontal="right")
+
+
+def _monthly_bookings(wb: Workbook) -> None:
+    """Bookings/cash view: each month books `closes` prepaid annual contracts; the full
+    annual value is collected and the 15% commission paid up front that month. Year-end
+    MSA bonus lands in Mo 12. Sums to the Full Forecast P&L."""
+    ws = wb.create_sheet("Monthly (Bookings)")
+    _month_header(
+        ws, "Monthly breakdown — bookings / cash basis",
+        "Each month books `closes` prepaid annual contracts: full annual value collected + "
+        "15% commission paid UP FRONT that month. Year-end MSA bonus in Mo 12. Sums to the P&L.",
+    )
+    R = {"new": 6, "rev": 7, "proc": 8, "infra": 9, "sf1": 10, "cogs": 11, "gp": 12,
+         "comm": 13, "bonus": 14, "fixed": 15, "opex": 16, "ebitda": 17, "margin": 18}
+    labels = {"new": "New subscriptions", "rev": "Revenue (booked)", "proc": "  Payment processing",
+              "infra": "  Infrastructure & support", "sf1": "  Data license (SF1)", "cogs": "Total COGS",
+              "gp": "Gross profit", "comm": "  Upfront commission (15%)", "bonus": "  Year-end MSA bonus",
+              "fixed": "  Fixed opex (mktg/legal/sw/founder)", "opex": "Total operating expenses",
+              "ebitda": "EBITDA", "margin": "EBITDA margin"}
+    bold = {"rev", "gp", "opex", "ebitda"}
+    for key, r in R.items():
+        lc = ws.cell(row=r, column=1, value=labels[key])
+        if key in bold:
+            lc.font = _BOLD
+    for i, col in enumerate(_COLS):
+        ws[f"{col}{R['new']}"] = "=Assumptions!$B$8"
+        ws[f"{col}{R['rev']}"] = "=Assumptions!$B$8*Assumptions!$B$16"
+        ws[f"{col}{R['proc']}"] = f"={col}{R['rev']}*Assumptions!$B$20/100"
+        ws[f"{col}{R['infra']}"] = f"={col}{R['rev']}*Assumptions!$B$21/100"
+        ws[f"{col}{R['sf1']}"] = "=Assumptions!$B$22/12"
+        ws[f"{col}{R['cogs']}"] = f"=SUM({col}{R['proc']}:{col}{R['sf1']})"
+        ws[f"{col}{R['gp']}"] = f"={col}{R['rev']}-{col}{R['cogs']}"
+        ws[f"{col}{R['comm']}"] = f"={col}{R['rev']}*Assumptions!$B$10/100"
+        # full year-end bonus lands in Mo 12 (last column) only
+        ws[f"{col}{R['bonus']}"] = (
+            "=Assumptions!$B$17*Assumptions!$B$11/100*Assumptions!$B$12/100" if col == "M" else 0
+        )
+        ws[f"{col}{R['fixed']}"] = "=(Assumptions!$B$23+Assumptions!$B$24+Assumptions!$B$25+Assumptions!$B$26)/12"
+        ws[f"{col}{R['opex']}"] = f"={col}{R['comm']}+{col}{R['bonus']}+{col}{R['fixed']}"
+        ws[f"{col}{R['ebitda']}"] = f"={col}{R['gp']}-{col}{R['opex']}"
+        ws[f"{col}{R['margin']}"] = f"=IF({col}{R['rev']}=0,0,{col}{R['ebitda']}/{col}{R['rev']})"
+        for key, r in R.items():
+            cell = ws[f"{col}{r}"]
+            cell.number_format = "#,##0" if key == "new" else (_PCT if key == "margin" else _MONEY)
+            if key in bold:
+                cell.font = _BOLD
+    for key, r in R.items():
+        if key == "margin":
+            ws[f"N{r}"] = f"=IF(N{R['rev']}=0,0,N{R['ebitda']}/N{R['rev']})"
+            ws[f"N{r}"].number_format = _PCT
+        else:
+            ws[f"N{r}"] = f"=SUM(B{r}:M{r})"
+            ws[f"N{r}"].number_format = "#,##0" if key == "new" else _MONEY
+        if key in bold:
+            ws[f"N{r}"].font = _BOLD
+        if key == "ebitda":
+            ws[f"N{r}"].fill = _SUB_FILL
+
+
+def _monthly_accrual(wb: Workbook) -> None:
+    """Accrual view (GAAP): prepaid revenue recognized ratably as cohorts stack; commission
+    amortized (ASC 606). Revenue builds monthly; the un-recognized balance is deferred to Yr 2."""
+    ws = wb.create_sheet("Monthly (Accrual)")
+    _month_header(
+        ws, "Monthly breakdown — accrual basis (ASC 606)",
+        "Revenue recognized ratably as cohorts stack; commission amortized over 12 mo. "
+        "Builds monthly; the balance is deferred revenue carried to Yr 2 (see note).",
+    )
+    R = {"rev": 6, "cogs": 7, "gp": 8, "comm": 9, "fixed": 10, "bonus": 11, "ebitda": 12, "margin": 13}
+    labels = {"rev": "Recognized revenue", "cogs": "Total COGS", "gp": "Gross profit",
+              "comm": "  Commission (amortized)", "fixed": "  Fixed opex", "bonus": "  Year-end MSA bonus",
+              "ebitda": "EBITDA", "margin": "EBITDA margin"}
+    bold = {"rev", "gp", "ebitda"}
+    for key, r in R.items():
+        lc = ws.cell(row=r, column=1, value=labels[key])
+        if key in bold:
+            lc.font = _BOLD
+    for i, col in enumerate(_COLS):
+        m = i + 1  # month number (cohorts 1..m active)
+        ws[f"{col}{R['rev']}"] = f"={m}*Assumptions!$B$8*Assumptions!$B$16/12"
+        ws[f"{col}{R['cogs']}"] = f"={col}{R['rev']}*(Assumptions!$B$20+Assumptions!$B$21)/100+Assumptions!$B$22/12"
+        ws[f"{col}{R['gp']}"] = f"={col}{R['rev']}-{col}{R['cogs']}"
+        ws[f"{col}{R['comm']}"] = f"={m}*(Assumptions!$B$8*Assumptions!$B$16*Assumptions!$B$10/100)/12"
+        ws[f"{col}{R['fixed']}"] = "=(Assumptions!$B$23+Assumptions!$B$24+Assumptions!$B$25+Assumptions!$B$26)/12"
+        # accrual bonus: only the Mo-1 cohort completes its 12-mo MSA within Year 1 (lands Mo 12)
+        ws[f"{col}{R['bonus']}"] = (
+            "=Assumptions!$B$8*Assumptions!$B$11/100*Assumptions!$B$16*Assumptions!$B$12/100"
+            if col == "M" else 0
+        )
+        ws[f"{col}{R['ebitda']}"] = f"={col}{R['gp']}-{col}{R['comm']}-{col}{R['fixed']}-{col}{R['bonus']}"
+        ws[f"{col}{R['margin']}"] = f"=IF({col}{R['rev']}=0,0,{col}{R['ebitda']}/{col}{R['rev']})"
+        for key, r in R.items():
+            cell = ws[f"{col}{r}"]
+            cell.number_format = _PCT if key == "margin" else _MONEY
+            if key in bold:
+                cell.font = _BOLD
+    for key, r in R.items():
+        if key == "margin":
+            ws[f"N{r}"] = f"=IF(N{R['rev']}=0,0,N{R['ebitda']}/N{R['rev']})"
+            ws[f"N{r}"].number_format = _PCT
+        else:
+            ws[f"N{r}"] = f"=SUM(B{r}:M{r})"
+            ws[f"N{r}"].number_format = _MONEY
+        if key in bold:
+            ws[f"N{r}"].font = _BOLD
+    nr = R["margin"] + 2
+    ws.cell(row=nr, column=1,
+            value="Deferred to Yr 2 (booked − recognized):").font = _BOLD
+    ws.cell(row=nr, column=14,
+            value=f"=Assumptions!$B$17-N{R['rev']}").number_format = _MONEY
+    ws.cell(row=nr + 1, column=1,
+            value="Note: booked cash = full annual up front (see Bookings tab); accrual "
+            "recognizes ratably, so Yr-1 EBITDA is lower but Yr 2 opens with revenue in hand.").font = _MUTED
+
+
 def build() -> Workbook:
     wb = Workbook()
     _assumptions(wb)
     _upfront(wb)
     _bonus(wb)
     _pnl(wb)
+    _monthly_bookings(wb)
+    _monthly_accrual(wb)
     _total_comp(wb)
     _legal(wb)
     for ws in wb.worksheets:
