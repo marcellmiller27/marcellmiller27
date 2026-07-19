@@ -17,6 +17,13 @@ const documents: DocItem[] = [
     kind: "Excel workbook (.xlsx)"
   },
   {
+    title: "Company Book — Policy, Procedures & Processes",
+    description:
+      "The firm's single source of truth for how we operate: guiding philosophy, the meta-procedure (Policy \u2192 Procedure \u2192 Process \u2192 Job Aid), and an index to every governing doc (engineering, product, pricing, sales, data/compliance, people, finance, job aids).",
+    href: "/downloads/JHI_Company_Book_Policy_Procedures_Processes.docx",
+    kind: "Word document (.docx)"
+  },
+  {
     title: "Competitor Deep-Dive & Reverse-Engineering Audit",
     description:
       "Mergr, S&P Global (Capital IQ Pro), and CB Insights: per-competitor teardown, synthesis matrix, the \u201cdiamond in the rough\u201d thesis, cost/risk/reward, verified pricing, and a board recommendation.",
