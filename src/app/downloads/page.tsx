@@ -10,6 +10,13 @@ type DocItem = {
 
 const documents: DocItem[] = [
   {
+    title: "5-Year Consolidated Projections (Audited-Realistic)",
+    description:
+      "The master evaluation model: sales scaling 1\u219230 reps toward 100/mo (1,200/yr), prepaid-MSA commissions (15% upfront + year-end bonus), a cloud/system cost curve, and EBITDA-gated staged staffing \u2014 5-year detail, monthly, one sheet per year, with an exec dashboard.",
+    href: "/downloads/JHI_5yr_Consolidated_Projections.xlsx",
+    kind: "Excel workbook (.xlsx)"
+  },
+  {
     title: "Sales Commission & EBITDA Model",
     description:
       "Editable workbook: 24-month commission schedule, Year-1 by mix, a monthly EBITDA & operating-cost statement, and the prepaid-MSA salesperson-bonus sheet (bonus = 10% of EBITDA).",
