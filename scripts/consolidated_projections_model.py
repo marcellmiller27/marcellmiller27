@@ -72,47 +72,60 @@ STAFF = [
 
 def compute(a=A):
     avg_annual = ((a["t1_price"] * a["t1_mix"]) + (a["t2_price"] * (1 - a["t1_mix"]))) * 12 * (1 - a["prepay_disc"])
-    rec_per_sub_mo = avg_annual / 12
-    monthly_ret = a["annual_renewal"] ** (1 / 12)
-    m_churn = 1 - monthly_ret
+    r = a["annual_renewal"]
     M = a["months"]
-    new = [0.0] * M; active = [0.0] * M; rec = [0.0] * M; cash = [0.0] * M
+    # 1) New acquisitions (rep-driven, with new-product ramp)
+    new = [a["reps"] * a["closes_per_rep_mo"] * (a["ramp"][m] if m < len(a["ramp"]) else 1.0) for m in range(M)]
+    # 2) Cohort survival (annual renewal) → active base; renewal payments (annual re-billing)
+    active = [0.0] * M; renew_cnt = [0.0] * M
+    for m in range(M):
+        tot = 0.0; rc = 0.0
+        for k in range(m + 1):
+            yrs = (m - k) // 12
+            tot += new[k] * (r ** yrs)                       # survivors still active
+            if (m - k) > 0 and (m - k) % 12 == 0:
+                rc += new[k] * (r ** yrs)                    # this cohort re-bills this month
+        active[m] = tot; renew_cnt[m] = rc
+    rec = [active[m] * avg_annual / 12 for m in range(M)]     # recognized ratably (accrual)
+    cash = [(new[m] + renew_cnt[m]) * avg_annual for m in range(M)]  # prepaid cash: new + renewals
+    # 3) Cost / EBITDA / cash-flow / balance-sheet loop
     cogs = [0.0] * M; gp = [0.0] * M; comm = [0.0] * M; bonus = [0.0] * M
     mktg = [0.0] * M; fixed = [0.0] * M; staff = [0.0] * M; ebitda = [0.0] * M
     headcount = [0] * M
-    hired = []           # roles hired so far
-    hire_month = {}      # role -> month index (0-based)
+    cash_out = [0.0] * M; net_cash = [0.0] * M; cum_cash = [0.0] * M
+    deferred = [0.0] * M; retained = [0.0] * M
+    hired = []; hire_month = {}
     for m in range(M):
-        rampf = a["ramp"][m] if m < len(a["ramp"]) else 1.0
-        new[m] = a["reps"] * a["closes_per_rep_mo"] * rampf
-        prev = active[m - 1] if m > 0 else 0.0
-        active[m] = prev * (1 - m_churn) + new[m]
-        rec[m] = active[m] * rec_per_sub_mo
-        cash[m] = new[m] * avg_annual
         proc = rec[m] * a["processing"]
         cloud = active[m] * a["cloud_per_user_mo"]
         data = a["data_annual"] / 12 + max(0.0, active[m] - a["data_cap_users"]) * a["data_overage_user_mo"]
         cogs[m] = proc + cloud + data
         gp[m] = rec[m] - cogs[m]
-        comm[m] = cash[m] * a["commission"]  # 15% upfront on new bookings
-        bonus[m] = (new[m - 12] * a["annual_renewal"] * avg_annual * a["msa_bonus"]) if m >= 12 else 0.0
+        comm[m] = new[m] * avg_annual * a["commission"]  # 15% upfront on NEW acquisition bookings
+        bonus[m] = (new[m - 12] * r * avg_annual * a["msa_bonus"]) if m >= 12 else 0.0
         mktg[m] = a["marketing_mo"]
         fixed[m] = a["legal_mo"] + a["software_mo"] + a["founder_annual"] / 12
         staff[m] = sum(s[1] for s in hired) / 12
         headcount[m] = len(hired)
         ebitda[m] = gp[m] - comm[m] - bonus[m] - mktg[m] - fixed[m] - staff[m]
-        # EBITDA-gated staged hiring: trigger next role (priority order) when gate crossed
+        cash_out[m] = comm[m] + cogs[m] + mktg[m] + fixed[m] + staff[m] + bonus[m]
+        net_cash[m] = cash[m] - cash_out[m]              # cash[m] = prepaid bookings + renewals
+        cum_cash[m] = (cum_cash[m - 1] if m > 0 else 0.0) + net_cash[m]
+        deferred[m] = (deferred[m - 1] if m > 0 else 0.0) + cash[m] - rec[m]  # unearned/accrued
+        retained[m] = (retained[m - 1] if m > 0 else 0.0) + ebitda[m]         # net income proxy
         for role in STAFF:
             if role in hired:
                 continue
             if ebitda[m] >= role[2]:
                 hired.append(role)
-                hire_month[role[0]] = m + 1  # starts next month
-            break  # one role at a time, in order
+                hire_month[role[0]] = m + 1
+            break
     return {
         "avg_annual": avg_annual, "new": new, "active": active, "rec": rec, "cash": cash,
         "cogs": cogs, "gp": gp, "comm": comm, "bonus": bonus, "mktg": mktg, "fixed": fixed,
         "staff": staff, "ebitda": ebitda, "headcount": headcount, "hire_month": hire_month,
+        "cash_out": cash_out, "net_cash": net_cash, "cum_cash": cum_cash,
+        "deferred": deferred, "retained": retained,
     }
 
 
@@ -170,11 +183,11 @@ def _assumptions(wb, R):
 
 def _year_sheet(wb, R, year):
     ws = wb.create_sheet(f"Year {year} (monthly)")
-    ws.column_dimensions["A"].width = 30
+    ws.column_dimensions["A"].width = 34
     for col in "BCDEFGHIJKLM":
         ws.column_dimensions[col].width = 11
     ws.column_dimensions["N"].width = 14
-    _title(ws, f"Year {year} — monthly consolidated P&L")
+    _title(ws, f"Year {year} — monthly P&L, Cash Flow & Balance Sheet")
     hdr = 5
     ws.cell(row=hdr, column=1, value="$ / month").font = _WHITE
     ws.cell(row=hdr, column=1).fill = _NAVY_FILL
@@ -184,56 +197,78 @@ def _year_sheet(wb, R, year):
         c.font = _WHITE; c.fill = _NAVY_FILL; c.alignment = Alignment(horizontal="right")
     tc = ws.cell(row=hdr, column=14, value=f"Year {year}")
     tc.font = _WHITE; tc.fill = _NAVY_FILL; tc.alignment = Alignment(horizontal="right")
-    lines = [
-        ("New subscriptions", "new", "#,##0", False),
-        ("Active subscriptions", "active", "#,##0", False),
-        ("Recognized revenue", "rec", _MONEY, True),
-        ("Total COGS", "cogs", _MONEY, False),
-        ("Gross profit", "gp", _MONEY, True),
-        ("Upfront commission (15%)", "comm", _MONEY, False),
-        ("Year-end MSA bonus", "bonus", _MONEY, False),
-        ("Marketing", "mktg", _MONEY, False),
-        ("Staffing (staged)", "staff", _MONEY, False),
-        ("Legal/software/founder", "fixed", _MONEY, False),
-        ("EBITDA", "ebitda", _MONEY, True),
-    ]
-    for ri, (label, key, fmt, bold) in enumerate(lines):
-        row = 6 + ri
-        lc = ws.cell(row=row, column=1, value=label)
+
+    def band(r, title):
+        c = ws.cell(row=r, column=1, value=title); c.font = _WHITE; c.fill = _NAVY_FILL
+        for i in range(13):
+            ws.cell(row=r, column=2 + i).fill = _NAVY_FILL
+        return r + 1
+
+    def row(r, label, key, fmt, bold=False, mode="sum", hilite=False):
+        lc = ws.cell(row=r, column=1, value=label)
         if bold:
             lc.font = _BOLD
-        ytot = 0.0
         for i in range(12):
             v = R[key][base_m + i]
-            cell = ws.cell(row=row, column=2 + i, value=round(v))
-            cell.number_format = fmt
+            cell = ws.cell(row=r, column=2 + i, value=round(v)); cell.number_format = fmt
             if bold:
                 cell.font = _BOLD
-            if key == "active":
-                pass
-            else:
-                ytot += v
-        # Year total: sum flows; active = ending balance
-        if key == "active":
-            tot = R[key][base_m + 11]
-        elif key == "ebitda":
-            tot = sum(R[key][base_m:base_m + 12])
-        else:
-            tot = ytot
-        tcell = ws.cell(row=row, column=14, value=round(tot))
-        tcell.number_format = fmt
+            if hilite:
+                cell.fill = _HILITE
+        tot = R[key][base_m + 11] if mode == "end" else sum(R[key][base_m:base_m + 12])
+        tcell = ws.cell(row=r, column=14, value=round(tot)); tcell.number_format = fmt
         if bold:
             tcell.font = _BOLD
-        if key == "ebitda":
+        if hilite:
             tcell.fill = _HILITE
-    # margin row
-    mr = 6 + len(lines)
-    ws.cell(row=mr, column=1, value="EBITDA margin").font = _BOLD
+        return r + 1
+
+    def margin_row(r):
+        ws.cell(row=r, column=1, value="EBITDA margin").font = _BOLD
+        for i in range(12):
+            rv = R["rec"][base_m + i]; eb = R["ebitda"][base_m + i]
+            ws.cell(row=r, column=2 + i, value=(eb / rv if rv else 0)).number_format = _PCT
+        yrv = sum(R["rec"][base_m:base_m + 12]); yeb = sum(R["ebitda"][base_m:base_m + 12])
+        ws.cell(row=r, column=14, value=(yeb / yrv if yrv else 0)).number_format = _PCT
+        return r + 1
+
+    # ── P&L (accrual) ──
+    r = 6
+    r = row(r, "New subscriptions", "new", "#,##0")
+    r = row(r, "Active subscriptions", "active", "#,##0", mode="end")
+    r = row(r, "Recognized revenue (accrual)", "rec", _MONEY, bold=True)
+    r = row(r, "Total COGS", "cogs", _MONEY)
+    r = row(r, "Gross profit", "gp", _MONEY, bold=True)
+    r = row(r, "Upfront commission (15%)", "comm", _MONEY)
+    r = row(r, "Year-end MSA bonus", "bonus", _MONEY)
+    r = row(r, "Marketing", "mktg", _MONEY)
+    r = row(r, "Staffing (staged)", "staff", _MONEY)
+    r = row(r, "Legal/software/founder", "fixed", _MONEY)
+    r = row(r, "EBITDA", "ebitda", _MONEY, bold=True, hilite=True)
+    r = margin_row(r)
+
+    # ── Cash Flow (based on prepaid / unrealized revenue) ──
+    r += 1
+    r = band(r, "CASH FLOW — based on prepaid (unrealized) revenue")
+    r = row(r, "Bookings — prepaid cash in", "cash", _MONEY, bold=True)
+    r = row(r, "Total cash outflows", "cash_out", _MONEY)
+    r = row(r, "Net operating cash", "net_cash", _MONEY, bold=True)
+    r = row(r, "Cumulative cash (end)", "cum_cash", _MONEY, bold=True, mode="end", hilite=True)
+
+    # ── Balance Sheet (period end) ──
+    r += 1
+    r = band(r, "BALANCE SHEET — period end (Cash = Deferred Rev + Retained Earnings)")
+    r = row(r, "Assets: Cash", "cum_cash", _MONEY, bold=True, mode="end")
+    r = row(r, "Liabilities: Deferred (unearned/accrued) revenue", "deferred", _MONEY, mode="end")
+    r = row(r, "Equity: Retained earnings", "retained", _MONEY, mode="end")
+    # balance check = Cash - Deferred - Retained (should be ~0)
+    lc = ws.cell(row=r, column=1, value="Balance check (Assets − Liab − Equity)"); lc.font = _MUTED
     for i in range(12):
-        rv = R["rec"][base_m + i]; eb = R["ebitda"][base_m + i]
-        c = ws.cell(row=mr, column=2 + i, value=(eb / rv if rv else 0)); c.number_format = _PCT
-    yrv = sum(R["rec"][base_m:base_m + 12]); yeb = sum(R["ebitda"][base_m:base_m + 12])
-    ws.cell(row=mr, column=14, value=(yeb / yrv if yrv else 0)).number_format = _PCT
+        chk = R["cum_cash"][base_m + i] - R["deferred"][base_m + i] - R["retained"][base_m + i]
+        ws.cell(row=r, column=2 + i, value=round(chk)).number_format = _MONEY
+    ws.cell(row=r, column=14,
+            value=round(R["cum_cash"][base_m + 11] - R["deferred"][base_m + 11] - R["retained"][base_m + 11])
+            ).number_format = _MONEY
 
 
 def _sales_scaling(wb, R):
@@ -319,6 +354,8 @@ def _summary(wb, R):
         ("Upfront commission", "comm", _MONEY, "sum"),
         ("Staffing", "staff", _MONEY, "sum"),
         ("EBITDA", "ebitda", _MONEY, "sum"),
+        ("Deferred (unearned) revenue (end)", "deferred", _MONEY, "end"),
+        ("Cumulative cash (end)", "cum_cash", _MONEY, "end"),
     ]
     r = 6
     for label, key, fmt, mode in metrics:
@@ -362,6 +399,8 @@ def _dashboard(wb, R):
         ("5-yr recognized revenue", f"${tot_rev:,.0f}"),
         ("5-yr EBITDA", f"${tot_eb:,.0f}"),
         ("5-yr cash collected (prepaid)", f"${tot_cash:,.0f}"),
+        ("Ending cash (Yr 5)", f"${R['cum_cash'][-1]:,.0f}"),
+        ("Ending deferred (unearned) revenue", f"${R['deferred'][-1]:,.0f}"),
         ("Headcount at Yr 5", f"{R['headcount'][-1]} staged hires"),
     ]
     r = 5
