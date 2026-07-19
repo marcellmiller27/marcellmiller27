@@ -19,10 +19,10 @@ To avoid ambiguity, JHI numbers tiers **top-down** (T1 = highest/premium):
 |---|---|---|---|---|
 | **T1** | **Enterprise** | $1,500/mo | ✅ Premium | ✅ Yes (richest: branded / portfolio / batch) |
 | **T2** | **Professional** | $299/mo | ✅ Premium | ✅ Yes (company/comps workbook) |
-| **T3** | **Consumer / Individual** | $50/mo | — Individual | ❌ No access |
+| **T3** | **Consumer / Individual** | $110/mo · $1,188/yr prepaid ($99/mo) | — Individual | ❌ No access |
 
-**Premium features are gated to T1 (Enterprise) + T2 (Professional). T3 (the $50
-individual package) does not receive them** — which also makes them an upgrade
+**Premium features are gated to T1 (Enterprise) + T2 (Professional). T3 (the $110
+individual package; $1,188/yr prepaid = $99/mo effective) does not receive them** — which also makes them an upgrade
 lever (T3 → T2/T1). Backend gate: `dependencies.require_premium` (allows plans
 `ENTERPRISE`/`PROFESSIONAL`).
 
@@ -40,7 +40,7 @@ mirrors their overage. Grow past the base → the client pays **us** more and we
 ## 2. Seat schema (the anchor)
 | Tier | Price | Seats | Additional seats |
 |---|---|---|---|
-| **Consumer** | $50/mo | 1 | — (single seat) |
+| **Consumer** | $110/mo ($1,188/yr prepaid, $99/mo) | 1 | — (single seat) |
 | **Professional** | $299/mo | 1 | — (single seat) |
 | **Enterprise** | $1,500/mo | **5 included** | **$99 / seat / mo** |
 
@@ -54,7 +54,7 @@ Fully-loaded marginal cost per seat ≈ **NASDAQ ~$1.50 + cloud ~$1.50 + 3% proc
 
 | Unit | Seat price | Cost/seat | Gross margin |
 |---|---|---|---|
-| Consumer seat | $50 | $4.50 | **91%** |
+| Consumer seat | $110 | $6.30 | **94%** |
 | Professional seat | $299 | $11.97 | **96%** |
 | Enterprise (per-seat-equiv) | $300 | $12.00 | **96%** |
 | Enterprise add'l seat | $99 | $5.97 | **94%** |
@@ -62,21 +62,21 @@ Fully-loaded marginal cost per seat ≈ **NASDAQ ~$1.50 + cloud ~$1.50 + 3% proc
 **Overage stress (Consumer seat) — margin holds even if NASDAQ's per-user rate rises:**
 | NASDAQ $/user/mo | Consumer gross margin |
 |---|---|
-| $1.50 (at cap) | 91% |
-| $3.00 (2×, placeholder) | 88% |
-| $6.00 (4×) | 82% |
-| $10.00 | 74% |
-| $15.00 (10×) | 64% |
+| $1.50 (at cap) | 94% |
+| $3.00 (2×, placeholder) | 93% |
+| $6.00 (4×) | 90% |
+| $10.00 | 87% |
+| $15.00 (10×) | 82% |
 
-Even a **10× punitive overage** leaves a 64% margin on the *cheapest* tier. The
+Even a **10× punitive overage** leaves an 82% margin on the *cheapest* tier. The
 surcharge is a rounding error against the revenue it rides on.
 
 ## 4. Scale scenarios (illustrative mix; margins are robust to mix)
 | Scenario | End users | Revenue/yr | NASDAQ/mo | Gross margin |
 |---|---|---|---|---|
-| Near-term | ~1,200 | ~$1.87M | $2,100 | **94.5%** |
-| Mid | ~5,000 | ~$7.27M | $13,560 | **93.5%** |
-| Full-scale target | ~59,500 | ~$59.3M | $177,000 | **91.6%** |
+| Near-term | ~1,200 | ~$2.44M | $2,100 | **95.1%** |
+| Mid | ~5,000 | ~$9.79M | $13,560 | **94.4%** |
+| Full-scale target | ~59,500 | ~$95.3M | $177,000 | **93.6%** |
 
 *(Gross margin = revenue − data − cloud − processing. "EBITDA" in the model adds only
 lean fixed opex; it **excludes sales & marketing / 1099 commissions**, which are a
@@ -99,7 +99,7 @@ separately; not yet applied.)
 ## 7. Proposed board resolution
 > *Resolved,* that JHI adopts a **per-external-end-user (per-seat) billing schema that
 > mirrors the NASDAQ licensing mechanism** — Consumer and Professional single-seat at
-> $50 and $299/mo; Enterprise at $1,500/mo including 5 seats with additional seats at
+> $110/mo ($1,188/yr prepaid, $99/mo effective) and $299/mo; Enterprise at $1,500/mo including 5 seats with additional seats at
 > $99/seat/mo — so that data cost and subscription revenue are denominated in the same
 > unit and move in lockstep; and that JHI accept NASDAQ's per-user counting provided the
 > overage rate is fixed in the signed Service Description.
