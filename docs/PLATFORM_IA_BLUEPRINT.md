@@ -56,6 +56,8 @@ reviews, approves, merges).
 | 2026-07-19 | **Anti-duplication architecture** | APPROVED — ONE engine per capability (BQS · Valuation · Risk) consumed at different depths; QoE separate module; no duplicate processes |
 | 2026-07-19 | **A1–A3 SEARCH additions · C1 Research & Analysts · D1–D4 Fundamentals facets** | APPROVED — A & C individual; **D = 4 FLAT tabs (option C)** (Financials & Ratios · Valuation · Filings · Risk & Governance) |
 | 2026-07-19 | **DEPTH PRINCIPLE** | APPROVED — JHI wins on true deep-dive (bedrock financials/valuation/risk/macro), not aggregate-shallow counts like Mergr |
+| 2026-07-19 | **Day 4 foundational decisions** | APPROVED — (1) left-sidebar TOC; (2) Postgres relational entity graph; (3) incremental refactor of current stack; (4) Phase 1 = structural spine; (5) merge foundational PRs as base; (6) consolidate overlapping modules |
+| 2026-07-19 | **Day 4 Synthesis EXECUTED** | Phased restructure plan produced → `docs/PLATFORM_RESTRUCTURE_PLAN.md`. Awaiting Founder approval of Phase 0 merges + Phase 1 scope before any build. |
 
 ## Part A — Mergr, reverse-engineered (our case study)
 
@@ -846,8 +848,8 @@ The authoritative navigation. JHI mirrors this exactly; outliers slot into their
 the dashboard card "Private Equity"); (2) TOC tools are **flat**, dashboard body groups
 them; (3) in-app AI nav label = **"AI Connector"**.
 
-## Next (Day 4 preview, not started)
-Synthesis: consolidate IA (nav + segments + language) + dashboard model + entity graph +
-record templates + tool patterns + differentiation (Part I) + data sourcing (Part J) +
-nomenclature & functional-output disclosures (Part K) into one restructure blueprint;
-scope into reviewed, phased PRs.
+## Day 4 — Synthesis (DONE 2026-07-19)
+Executed. Consolidated into the executable **`docs/PLATFORM_RESTRUCTURE_PLAN.md`** — target
+architecture + a phased PR plan (Phase 0 merges → Phase 1 spine → Phase 2 dashboard →
+Phase 3 entity graph + records → Phase 4 tools → Phase 5 data/depth → Phase 6 launch gates).
+**Next: Founder approves Phase 0 merges + Phase 1 scope; then Phase 1 draft PRs open.**
