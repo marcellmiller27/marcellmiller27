@@ -11,28 +11,29 @@ is built or final; this is the working artifact we edit as we decide together.
 ---
 
 ## ▶ NEXT SESSION — STARTING POINT (awaiting Founder acknowledgement)
-**Status:** Four-session Mergr dissection COMPLETE (Parts A–L). Core nomenclature mirrored
-& captured verbatim. Draft **PR #78** — nothing merged (Founder review pending).
+**Status:** Mergr dissection COMPLETE (Parts A–L). Nomenclature mirrored + **ALL outliers
+DECIDED** (A/B/C/D). Draft **PR #78** — nothing merged (Founder review pending).
+
+**✅ Settled this session:** B3 Valuation · B4 Risk Score · B5 Group Placement → "Diligence
+a Target" group · anti-duplication architecture (one BQS/Valuation/Risk engine) · A1–A3
+SEARCH additions · C1 Research & Analysts segment · **D1–D4 Fundamentals as 4 flat tabs
+(option C)** · DEPTH PRINCIPLE.
 
 **Resume here, in order:**
-1. **Finish the outlier decisions (as a team):**
-   - **Sector A data entities** — Securities & Markets · Macro Series · SEC Filings:
-     include? + peer-style names + disclosed definitions.
-   - **Sector B tool definitions** — write peer-style definitions for **Valuation** and
-     **Risk Score** (Limited Scope Review & QoE already done).
-   - **Segment** — Research & Analysts: add or not?
-   - **Architecture confirm** — one shared **Business Quality Score** engine feeding both
-     Screening and Limited Scope Review; **QoE** stays a separate deeper module.
-2. **Complete the nomenclature** — write JHI's disclosed **Functional-Output definition**
-   for every mirrored item (entities + tools) to the institutional bar (Core Rule).
-3. **Day 4 — Synthesis** — consolidate IA + dashboard + entity graph + record templates +
+1. **Day 4 — Synthesis.** Consolidate IA + dashboard + entity graph + record templates +
    tools + nomenclature + differentiation + data sourcing into ONE restructure blueprint;
-   scope into **phased, reviewed (draft) PRs** for Founder approval. *(No building before this
-   plan is approved.)*
+   scope into **phased, reviewed (draft) PRs** for Founder approval. *(No building before
+   the plan is approved.)*
+2. **Test the workbook download.** The download issue was corrected (root cause: the running
+   Docker frontend baked an old `public/` and cached its file list → new files 404'd + saved
+   as 0 bytes). Fix: rebuild the frontend so the **Documents page (`/downloads`) shows the
+   file with a working Download button** (see AGENTS.md file-delivery note + PR #79).
+   **Founder to test** that downloads succeed again (should show ~13 KB, not 0 bytes).
+3. **Then:** once Day 4 plan is approved, begin the phased Mergr-mirror build.
 
-**Governing principles to honor every step:** Context Principle · Mirror Principle ·
-Core Rule (name + definition) · Foundation-first (draft PRs; Founder reviews, approves,
-merges).
+**Governing principles to honor every step:** **Depth Principle** · Context Principle ·
+Mirror Principle · Core Rule (name + definition) · Foundation-first (draft PRs; Founder
+reviews, approves, merges).
 
 **Founder acknowledgement:** ⬜ _(to sign at start of next session)_
 
@@ -53,6 +54,8 @@ merges).
 | 2026-07-17 | **Quality of Earnings acronym** | APPROVED — keep **"QoE"** (NOT "QE" = Quantitative Easing; avoids Macro collision) |
 | 2026-07-19 | **B3 — Valuation · B4 — Risk Score · B5 — Group Placement** | APPROVED — titles + peer-style definitions; B5 creates the JTBD group **"Diligence a Target"** (LSR/QoE/Valuation/Risk Score) |
 | 2026-07-19 | **Anti-duplication architecture** | APPROVED — ONE engine per capability (BQS · Valuation · Risk) consumed at different depths; QoE separate module; no duplicate processes |
+| 2026-07-19 | **A1–A3 SEARCH additions · C1 Research & Analysts · D1–D4 Fundamentals facets** | APPROVED — A & C individual; **D = 4 FLAT tabs (option C)** (Financials & Ratios · Valuation · Filings · Risk & Governance) |
+| 2026-07-19 | **DEPTH PRINCIPLE** | APPROVED — JHI wins on true deep-dive (bedrock financials/valuation/risk/macro), not aggregate-shallow counts like Mergr |
 
 ## Part A — Mergr, reverse-engineered (our case study)
 
@@ -731,9 +734,12 @@ JHI adopts Mergr's names AND definitions verbatim:
 | M&A Professionals | "Deal-team members by firm & role." |
 | M&A Press Releases | "Full announcement archive across PE and strategic M&A." |
 
-**OUTLIERS (JHI-added — DISCUSS AS A TEAM, not yet adopted):** Securities & Markets ·
-Macro Series · SEC Filings (EDGAR). Rationale: JHI integrates market/macro/filing data
-Mergr lacks. Names/definitions to be decided together, in Mergr's style.
+**OUTLIERS (JHI-added — APPROVED 2026-07-19, appended to the flat SEARCH list):**
+| JHI term | Disclosed definition (peer style) |
+|---|---|
+| **Securities & Markets** | "By ticker, sector, price & live market data." |
+| **Macro Series** | "Economic indicators by series, source & geography — GDP, inflation, rates, employment." |
+| **SEC Filings** | "Full SEC filing archive by company, form type & date — 10-K, 10-Q, 8-K, proxies." |
 
 ### L.4 Dashboard Tier 2 — "Tools & Insights" (name + disclosed definition, verbatim)
 **Group taglines (disclosed):** Working a Live Deal — "You have a mandate — find the right
@@ -809,6 +815,15 @@ No capability is computed in two places.
 | Firm/Investor | Profile · M&A Activity · Portfolio · Team · Offices · M&A Connections · Analytics | Profile · Investment Criteria · Activity · Portfolio · Team · Offices · Connections · Analytics |
 | Advisor | Profile · M&A Team · Offices · M&A Advisory · M&A Clients · M&A Advisory Connections · Analytics | Profile · Team · Offices · Advisory · Clients · Connections · Analytics |
 | Ownership Graph | Deal Topology · Maturity · Exit Signals · Advisor Relationships | Deal Topology · Maturity · Exit Signals · Advisor Relationships |
+
+**Company record — JHI-added facets (D1–D4, APPROVED 2026-07-19 as 4 FLAT tabs, option C —
+detail, straight to the point; NOT grouped under a parent tab):**
+| Tab | Disclosed definition (peer style) |
+|---|---|
+| **Financials & Ratios** | "Income, balance sheet & cash flow + profitability, liquidity, solvency & efficiency ratios (EDGAR)." |
+| **Valuation** | "DCF, LBO, and comparable-multiple valuation for this company." |
+| **Filings** | "This company's SEC filings — 10-K, 10-Q, 8-K, proxies." |
+| **Risk & Governance** | "Risk Score, distress models, and ESG/governance flags." |
 
 ### L.7 Cross-entity pivot tabs (mirrored verbatim)
 Company results pivot tabs: **Company M&A · PE Investors · Company Investors · Advisors**
