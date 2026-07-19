@@ -749,21 +749,31 @@ JHI adopts Mergr's tool names AND definitions verbatim:
 | Analytics | "Market activity & sector trends." |
 | Deal Flow Map | "Cross-border M&A flows by country, time window & keyword." |
 
-**OUTLIERS (JHI-added tools):**
+**OUTLIERS (JHI-added tools) — new JTBD group "Diligence a Target" (B5, APPROVED 2026-07-19):**
+Group tagline (peer style): *"Underwrite a specific target — quality, earnings, value, and risk."*
 - ✅ **Limited Scope Review (LSR)** *(APPROVED — renamed from "Deal X-Ray" 2026-07-17)* —
   *"Rapid, limited-scope read of a target's CIM: business-quality score, valuation, red
   flags, and SBA/DSCR fit. Indicative and unverified — not a CPA review or audit (see
-  Quality of Earnings for verified confirmation)."* Audit-authentic term the audience
-  knows; full-disclosure built in; no CPA required for a clearly-disclaimed automated tool.
-- ✅ **Quality of Earnings (QoE)** *(APPROVED — keep "QoE", NOT "QE" which = Quantitative
-  Easing and collides with Macro)* — the **verified** deep-dive (proof of cash, EBITDA
-  normalization, working capital, red flags); CPA-grade.
-- **Valuation (DCF/LBO/Search-Fund)** · **Risk Score** — definitions still to write.
+  Quality of Earnings for verified confirmation)."* Audit-authentic; full-disclosure built
+  in; no CPA required for a clearly-disclaimed automated tool.
+- ✅ **Quality of Earnings (QoE)** *(APPROVED — keep "QoE", NOT "QE" = Quantitative Easing,
+  collides with Macro)* — the **verified** deep-dive (proof of cash, EBITDA normalization,
+  working capital, red flags); CPA-grade.
+- ✅ **Valuation (B3, APPROVED 2026-07-19)** — *"Value a target three ways — DCF, LBO, and
+  search-fund (SDE/SBA/DSCR) — for a defensible price range and financing fit."* Solves
+  "what is it worth / what can I pay?" via intrinsic (DCF), sponsor return-hurdle (LBO), and
+  SMB SBA-clearing bid (search-fund). Replaces hours of hand-built Excel with an instant,
+  defensible range + financing check.
+- ✅ **Risk Score (B4, APPROVED 2026-07-19)** — *"Score a target's risk — distress models,
+  leverage/coverage, and concentration — for fast triage and red-flag detection."*
+  Aggregates Altman Z / Piotroski F / Beneish M + leverage/coverage + concentration/
+  volatility; risk counterpart to the Opportunity Score; published methodology.
 
 **Assurance ladder (funnel):** Limited Scope Review (indicative, unverified) → Quality of
-Earnings (verified). **Recommended (pending confirm):** one shared Business Quality Score
-engine feeds both Screening and LSR; QoE stays a separate deeper module (avoids duplicate
-scoring logic).
+Earnings (verified). **Two-sided loop:** Find (Buyer Match/Prospector) → **Diligence a
+Target** (LSR/QoE/Valuation/Risk Score) → Value/Decide. **Recommended (pending confirm):**
+one shared Business Quality Score engine feeds both Screening and LSR; QoE stays a separate
+deeper module (avoids duplicate scoring logic).
 
 ### L.5 Dashboard right rail (Mergr) → JHI
 | Mergr | JHI candidate |
