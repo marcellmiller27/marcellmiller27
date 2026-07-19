@@ -21,7 +21,7 @@ import urllib.request
 from datetime import datetime, timezone
 from typing import Any
 
-from app.edgar_models import EdgarFinancials
+from app.edgar_models import EdgarFinancials, EdgarHistory, EdgarYear
 
 # SEC requires a descriptive User-Agent with contact info (else 403).
 USER_AGENT = os.getenv(
@@ -223,8 +223,79 @@ def normalize(ticker: str) -> EdgarFinancials:
     )
 
 
+def _annual_series(facts: dict[str, Any], tags: list[str]) -> dict[int, float]:
+    """Fiscal-year -> value across candidate tags (latest annual filing per year)."""
+    us_gaap = (facts.get("facts") or {}).get("us-gaap") or {}
+    for tag in tags:
+        node = us_gaap.get(tag)
+        if not node:
+            continue
+        units = (node.get("units") or {}).get("USD") or []
+        by_year: dict[int, dict[str, Any]] = {}
+        for d in units:
+            if d.get("form") not in ANNUAL_FORMS or not d.get("end") or d.get("fy") is None:
+                continue
+            try:
+                fy = int(d["fy"])
+            except (ValueError, TypeError):
+                continue
+            if fy not in by_year or str(d["end"]) > str(by_year[fy]["end"]):
+                by_year[fy] = d
+        result: dict[int, float] = {}
+        for fy, d in by_year.items():
+            try:
+                result[fy] = float(d["val"])
+            except (ValueError, KeyError, TypeError):
+                continue
+        if result:
+            return result
+    return {}
+
+
+def history(ticker: str, max_years: int = 5) -> EdgarHistory:
+    cik10, entity_name = ticker_to_cik(ticker)
+    facts = _cached(f"edgar:facts:{cik10}", FACTS_TTL_SECONDS, lambda: company_facts(cik10))
+    if not entity_name:
+        entity_name = str(facts.get("entityName") or ticker.upper())
+
+    series = {concept: _annual_series(facts, tags) for concept, tags in _CONCEPT_TAGS.items()}
+    all_years = set(series.get("revenue", {})) | set(series.get("net_income", {}))
+    years = sorted(all_years)[-max_years:]
+
+    rows: list[EdgarYear] = []
+    for y in years:
+        rev = series["revenue"].get(y)
+        gp = series["gross_profit"].get(y)
+        if gp is None and rev is not None and series["cost_of_revenue"].get(y) is not None:
+            gp = rev - series["cost_of_revenue"][y]
+        oi = series["operating_income"].get(y)
+        ni = series["net_income"].get(y)
+        rows.append(EdgarYear(
+            fiscal_year=y,
+            revenue=rev,
+            cost_of_revenue=series["cost_of_revenue"].get(y),
+            gross_profit=gp,
+            operating_income=oi,
+            net_income=ni,
+            total_assets=series["total_assets"].get(y),
+            total_liabilities=series["total_liabilities"].get(y),
+            stockholders_equity=series["stockholders_equity"].get(y),
+            cash_and_equivalents=series["cash_and_equivalents"].get(y),
+            gross_margin=_safe_ratio(gp, rev),
+            operating_margin=_safe_ratio(oi, rev),
+            net_margin=_safe_ratio(ni, rev),
+        ))
+    return EdgarHistory(
+        ticker=ticker.strip().upper(), cik=cik10, entity_name=entity_name,
+        years=rows, as_of=datetime.now(timezone.utc),
+    )
+
+
 class EdgarService:
     """Thin service wrapper (parity with other JHI services)."""
 
     def financials(self, ticker: str) -> EdgarFinancials:
         return normalize(ticker)
+
+    def history(self, ticker: str, max_years: int = 5) -> EdgarHistory:
+        return history(ticker, max_years)

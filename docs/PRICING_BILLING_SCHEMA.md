@@ -12,6 +12,20 @@ price the unit well above cost, then leapfrog forward on revenue drivers.
 > Estimates for internal planning — not a forecast. NASDAQ overage rate is a
 > placeholder pending the signed Service Description.
 
+## 0. Tier numbering convention (founder, 2026-07-15) — AUTHORITATIVE
+To avoid ambiguity, JHI numbers tiers **top-down** (T1 = highest/premium):
+
+| Tier | Package | Price | Premium? | Premium-feature access (e.g. Company→Excel workbook) |
+|---|---|---|---|---|
+| **T1** | **Enterprise** | $1,500/mo | ✅ Premium | ✅ Yes (richest: branded / portfolio / batch) |
+| **T2** | **Professional** | $299/mo | ✅ Premium | ✅ Yes (company/comps workbook) |
+| **T3** | **Consumer / Individual** | $50/mo | — Individual | ❌ No access |
+
+**Premium features are gated to T1 (Enterprise) + T2 (Professional). T3 (the $50
+individual package) does not receive them** — which also makes them an upgrade
+lever (T3 → T2/T1). Backend gate: `dependencies.require_premium` (allows plans
+`ENTERPRISE`/`PROFESSIONAL`).
+
 ## 1. The mirrored mechanism
 | NASDAQ (our cost) | JHI (our revenue) — mirrored |
 |---|---|
