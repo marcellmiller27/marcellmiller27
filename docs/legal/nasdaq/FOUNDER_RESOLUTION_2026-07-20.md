@@ -6,8 +6,13 @@
 > `ORDER_FORM_REVIEW.md`, `SERVICE_ORDER_00151172_REVIEW.md`, `COUNSEL_REVIEW_BRIEF.md`;
 > pricing: `../../PRICING_BILLING_SCHEMA.md`.
 
-## Status: RESOLVED
+## Status: CLOSED
 The firm is **proceeding into agreement** with Nasdaq (Nasdaq Data Link). The items below are the Founder's directives; they govern how we execute the MSA/Order Form and how we build against the data.
+
+### Closure (2026-07-20, Founder)
+- The **Founder will upload a new Order Form**; it will **not carry the previously stated/drafted addendum terms**.
+- **The subject matter is closed** — no further negotiation of terms on our side.
+- The firm's **binding operational commitment going forward is data-set isolation — no spillage** (see §4). This is the controlling requirement regardless of paperwork.
 
 ## Decisions
 
