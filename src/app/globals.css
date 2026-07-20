@@ -980,7 +980,7 @@ li::before {
   gap: 0.05rem;
 }
 .app-toc__section {
-  margin: 0.7rem 0.55rem 0.2rem;
+  margin: 0.45rem 0.55rem 0.15rem;
   font-size: var(--fs-2xs);
   font-weight: var(--fw-bold);
   text-transform: uppercase;
@@ -988,16 +988,26 @@ li::before {
   color: rgba(255, 255, 255, 0.42);
 }
 .app-toc a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   border-radius: var(--radius-sm);
-  padding: 0.3rem 0.55rem;
+  padding: 0.2rem 0.55rem;
   color: rgba(255, 255, 255, 0.76);
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
-  line-height: 1.3;
+  line-height: 1.25;
+}
+.app-toc a svg {
+  flex-shrink: 0;
+  opacity: 0.85;
 }
 .app-toc a:hover {
   background: rgba(255, 255, 255, 0.08);
   color: #fff;
+}
+.app-toc a:hover svg {
+  opacity: 1;
 }
 .app-toc__group--utility {
   margin-top: auto;

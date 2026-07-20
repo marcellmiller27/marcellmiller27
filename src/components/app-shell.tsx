@@ -1,53 +1,71 @@
 // JHI-SIG: 69M2705M | Application Shell (left-sidebar TOC) | JHI Research & Analytics Firm, Inc. (proprietary)
 import Link from "next/link";
 import type { ReactNode } from "react";
+import {
+  BarChart3,
+  Briefcase,
+  Calculator,
+  Download,
+  FileSearch,
+  FileText,
+  LayoutDashboard,
+  LifeBuoy,
+  ScanSearch,
+  Scale,
+  Search,
+  Sparkles,
+  UserCircle,
+  Workflow,
+  type LucideIcon
+} from "lucide-react";
 import { Logo } from "@/components/logo";
 import { MarketTicker } from "@/components/market-ticker";
 
 // The application Table of Contents (left sidebar). Function-first, institutional
-// nomenclature; grouped by job-to-be-done. Routes to existing modules today; the
-// SEARCH entity set + full Tools taxonomy land in later phases.
-type TocItem = { href: string; label: string };
+// nomenclature; grouped by job-to-be-done. Each context carries a line icon
+// (lucide) mirroring the institutional-workspace convention. Routes to existing
+// modules today; the SEARCH entity set + full Tools taxonomy land in later phases.
+type TocItem = { href: string; label: string; icon: LucideIcon };
 type TocGroup = { section: string | null; items: TocItem[] };
 
 const toc: TocGroup[] = [
-  { section: null, items: [{ href: "/dashboard", label: "Dashboard" }] },
+  { section: null, items: [{ href: "/dashboard", label: "Dashboard", icon: LayoutDashboard }] },
   {
     section: "Research & Intelligence",
     items: [
-      { href: "/macro", label: "Economics" },
-      { href: "/opportunities", label: "Screener" },
-      { href: "/reports", label: "Reports" }
+      { href: "/macro", label: "Economics", icon: BarChart3 },
+      { href: "/opportunities", label: "Screener", icon: Search },
+      { href: "/reports", label: "Reports", icon: FileText }
     ]
   },
   {
     section: "Diligence a Target",
     items: [
-      { href: "/deal-xray", label: "Scope" },
-      { href: "/diligence-suite", label: "Earnings" },
-      { href: "/due-diligence", label: "Document Review" }
+      { href: "/deal-xray", label: "Scope", icon: ScanSearch },
+      { href: "/diligence-suite", label: "Earnings", icon: Calculator },
+      { href: "/due-diligence", label: "Document Review", icon: FileSearch }
     ]
   },
   {
     section: "Deal Workflow",
     items: [
-      { href: "/pipeline", label: "Pipeline" },
-      { href: "/portfolio", label: "Portfolio" }
+      { href: "/pipeline", label: "Pipeline", icon: Workflow },
+      { href: "/portfolio", label: "Portfolio", icon: Briefcase }
     ]
   },
   {
     section: "Outputs & AI",
     items: [
-      { href: "/assistant", label: "Ask JHI" },
-      { href: "/downloads", label: "Documents" }
+      { href: "/assistant", label: "Ask JHI", icon: Sparkles },
+      { href: "/downloads", label: "Documents", icon: Download }
     ]
   },
-  { section: "Firm Operations", items: [{ href: "/accounting", label: "Accounting" }] }
+  { section: "Firm Operations", items: [{ href: "/accounting", label: "Accounting", icon: Scale }] }
 ];
 
 const utility: TocItem[] = [
-  { href: "/account", label: "Account" },
-  { href: "/support", label: "Help" }
+  { href: "/account", label: "Account", icon: UserCircle },
+  { href: "/support", label: "Help", icon: LifeBuoy }
 ];
 
 type AppShellProps = {
@@ -89,7 +107,8 @@ export function AppShell({ eyebrow, title, description, children }: AppShellProp
                 {group.section && <p className="app-toc__section">{group.section}</p>}
                 {group.items.map((item) => (
                   <Link href={item.href} key={item.href}>
-                    {item.label}
+                    <item.icon size={16} strokeWidth={1.75} aria-hidden />
+                    <span>{item.label}</span>
                   </Link>
                 ))}
               </div>
@@ -97,7 +116,8 @@ export function AppShell({ eyebrow, title, description, children }: AppShellProp
             <div className="app-toc__group app-toc__group--utility">
               {utility.map((item) => (
                 <Link href={item.href} key={item.href}>
-                  {item.label}
+                  <item.icon size={16} strokeWidth={1.75} aria-hidden />
+                  <span>{item.label}</span>
                 </Link>
               ))}
             </div>
