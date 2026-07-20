@@ -46,6 +46,8 @@ export type Opportunity = {
   recommendation: "Buy" | "Watch" | "Pass";
   thesis: string;
   metrics: string[];
+  // When the idea maps to an entity in the graph, link to its record.
+  recordSlug?: string;
 };
 
 export type DueDiligenceItem = {
@@ -427,7 +429,8 @@ export const opportunities: Opportunity[] = [
     score: 79,
     recommendation: "Watch",
     thesis: "Recurring maintenance revenue and fragmented local competition support roll-up potential.",
-    metrics: ["$1.2M EBITDA", "2.1x DSCR", "SBA eligible"]
+    metrics: ["$1.2M EBITDA", "2.1x DSCR", "SBA eligible"],
+    recordSlug: "apex-hvac-services"
   },
   {
     name: "Bitcoin Cycle Allocation",
