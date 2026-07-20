@@ -27,7 +27,7 @@ NASDAQ_AT_CAP_PER_USER_MO = NASDAQ_FLAT_ANNUAL / 12 / NASDAQ_CAP_USERS  # ~$1.50
 # Consumer / Professional = single seat. Enterprise = base seats + per-add'l
 # seat (our mirror of NASDAQ's "up to N, overage above").
 TIERS = {
-    "Consumer": {"price": 50.0, "seats_included": 1, "extra_seat": 0.0},
+    "Consumer": {"price": 110.0, "seats_included": 1, "extra_seat": 0.0},  # $110 list; $1,188/yr prepaid ($99/mo effective, 10% off)
     "Professional": {"price": 299.0, "seats_included": 1, "extra_seat": 0.0},
     "Enterprise": {"price": 1500.0, "seats_included": 5, "extra_seat": 99.0},
 }
