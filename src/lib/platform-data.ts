@@ -532,6 +532,124 @@ export const intelligenceReports: IntelligenceReport[] = [
   }
 ];
 
+export type LaunchItem = {
+  href: string;
+  label: string;
+  // Function-output disclosure (Core Rule: name + disclosed definition).
+  blurb: string;
+  meta: string;
+};
+
+export type LaunchGroup = {
+  section: string;
+  items: LaunchItem[];
+};
+
+// Dashboard launchpad — the authenticated entry point. Grouped by job-to-be-done,
+// each tile routes to a live module (no dead ends) and states what it produces.
+export const dashboardLaunchpad: LaunchGroup[] = [
+  {
+    section: "Research & Intelligence",
+    items: [
+      {
+        href: "/macro",
+        label: "Economics",
+        blurb: "Federal Reserve, Treasury, BEA, World Bank, IMF and OECD series in one macro view.",
+        meta: "Live · FRED + BEA"
+      },
+      {
+        href: "/opportunities",
+        label: "Screener",
+        blurb: "Filter public, private, real-estate, credit and digital-asset ideas by fundamentals.",
+        meta: "Score 0–100"
+      },
+      {
+        href: "/reports",
+        label: "Reports",
+        blurb: "Branded macro, acquisition, crypto and dividend intelligence on a fixed cadence.",
+        meta: "Weekly · PDF"
+      }
+    ]
+  },
+  {
+    section: "Diligence a Target",
+    items: [
+      {
+        href: "/deal-xray",
+        label: "Scope",
+        blurb: "Limited Scope Review — a fast, unverified read of a target's economics and structure.",
+        meta: "Unverified · indicative"
+      },
+      {
+        href: "/diligence-suite",
+        label: "Earnings",
+        blurb: "Quality-of-earnings style normalization: add-backs, DSCR and cash-flow bridges.",
+        meta: "Normalized EBITDA"
+      },
+      {
+        href: "/due-diligence",
+        label: "Document Review",
+        blurb: "Ingest tax returns, P&Ls, balance sheets and bank statements; flag risk and fraud.",
+        meta: "Risk-scored queue"
+      }
+    ]
+  },
+  {
+    section: "Deal Workflow",
+    items: [
+      {
+        href: "/pipeline",
+        label: "Pipeline",
+        blurb: "Track active targets from sourcing through diligence, offer and close.",
+        meta: "7 active targets"
+      },
+      {
+        href: "/portfolio",
+        label: "Portfolio",
+        blurb: "Consolidated wealth across equities, private businesses, real estate and crypto.",
+        meta: "IRR · cash flow"
+      }
+    ]
+  },
+  {
+    section: "Outputs & AI",
+    items: [
+      {
+        href: "/assistant",
+        label: "Ask JHI",
+        blurb: "Private analyst: security analysis, target evaluation and portfolio construction.",
+        meta: "Charts · scores"
+      },
+      {
+        href: "/downloads",
+        label: "Documents",
+        blurb: "Generated workbooks, models and diligence deliverables ready to export.",
+        meta: "XLSX · PDF"
+      }
+    ]
+  }
+];
+
+export type CoverageStat = { label: string; value: string };
+
+// At-a-glance coverage the workspace tracks (indicative universe stats).
+export const coverageStats: CoverageStat[] = [
+  { label: "Companies tracked", value: "12,480" },
+  { label: "Transactions indexed", value: "48,210" },
+  { label: "SEC filings", value: "1.9M" },
+  { label: "Macro series", value: "320" }
+];
+
+export type WatchItem = { name: string; meta: string; tone: "positive" | "neutral" | "warning" };
+
+// Saved screens / watchlist surfaced on the dashboard rail.
+export const watchlist: WatchItem[] = [
+  { name: "Dividend Compounder Basket", meta: "Score 84 · Buy", tone: "positive" },
+  { name: "Regional HVAC Services", meta: "Score 79 · Watch", tone: "neutral" },
+  { name: "Bitcoin Cycle Allocation", meta: "Score 72 · Watch", tone: "neutral" },
+  { name: "Distressed Retail Strip", meta: "Score 48 · Pass", tone: "warning" }
+];
+
 export const assistantWorkflows: AssistantWorkflow[] = [
   {
     prompt: "Analyze Tesla for a long-term investor.",
