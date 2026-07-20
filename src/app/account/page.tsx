@@ -1,4 +1,4 @@
-import { PlatformShell } from "@/components/platform-shell";
+import { AppShell } from "@/components/app-shell";
 
 const accountFoundation = [
   {
@@ -25,7 +25,7 @@ const accountFoundation = [
 
 export default function AccountPage() {
   return (
-    <PlatformShell
+    <AppShell
       eyebrow="Account"
       title="Your account & organization"
       description="The backend now provides the account structure needed for protected dashboards, plan-based entitlements, billing status, and operational audit review."
@@ -64,6 +64,6 @@ export default function AccountPage() {
           )}
         </div>
       </section>
-    </PlatformShell>
+    </AppShell>
   );
 }

@@ -1,12 +1,12 @@
 import { LiveMarket } from "@/components/live-market";
-import { PlatformShell } from "@/components/platform-shell";
+import { AppShell } from "@/components/app-shell";
 import { dashboardMetrics, dashboardWidgets, opportunities } from "@/lib/platform-data";
 
 export default function DashboardPage() {
   const topOpportunities = opportunities.slice(0, 3);
 
   return (
-    <PlatformShell
+    <AppShell
       eyebrow="Overview"
       title="Command center"
       description="Monitor portfolio value, market alerts, economic indicators, acquisition opportunities, and AI recommendations from one operating dashboard."
@@ -77,6 +77,6 @@ export default function DashboardPage() {
           ))}
         </div>
       </section>
-    </PlatformShell>
+    </AppShell>
   );
 }

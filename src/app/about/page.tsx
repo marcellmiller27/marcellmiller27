@@ -1,4 +1,4 @@
-import { PlatformShell } from "@/components/platform-shell";
+import { StorefrontShell } from "@/components/storefront-shell";
 
 // About / "Our story" — deliberately anonymous. Credibility comes from problem
 // clarity, method, focus, and a real entity — no personal names, photos, or bios.
@@ -51,7 +51,7 @@ const bodyStyle = {
 
 export default function AboutPage() {
   return (
-    <PlatformShell
+    <StorefrontShell
       eyebrow="About · JHI Research & Analytics Firm, Inc."
       title="We are a team of operators augmented by AI."
       description="At John Henry Investments, we combine a lean team of skilled operators with advanced AI to deliver the capabilities and output of a much larger firm. Rather than competing with technology, we leverage it to maximize our efficiency and results."
@@ -111,6 +111,6 @@ export default function AboutPage() {
           ))}
         </div>
       </section>
-    </PlatformShell>
+    </StorefrontShell>
   );
 }

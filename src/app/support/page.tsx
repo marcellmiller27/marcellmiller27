@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { PlatformShell } from "@/components/platform-shell";
+import { AppShell } from "@/components/app-shell";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v1";
@@ -95,7 +95,7 @@ export default function SupportPage() {
   const categories = Array.from(new Set(faqs.map((item) => item.category)));
 
   return (
-    <PlatformShell
+    <AppShell
       eyebrow="Help center"
       title="Support & frequently asked questions"
       description="Ask the AI assistant a question, or browse common answers about plans, security, market data, and the mobile app."
@@ -204,6 +204,6 @@ export default function SupportPage() {
           </div>
         ))}
       </section>
-    </PlatformShell>
+    </AppShell>
   );
 }

@@ -1,9 +1,9 @@
-import { PlatformShell } from "@/components/platform-shell";
+import { AppShell } from "@/components/app-shell";
 import { opportunities, scoreCategories } from "@/lib/platform-data";
 
 export default function OpportunitiesPage() {
   return (
-    <PlatformShell
+    <AppShell
       eyebrow="Research"
       title="Discover and score investable opportunities"
       description="Screen public securities, private companies, real estate, and digital assets with the John Henry Opportunity Score."
@@ -49,6 +49,6 @@ export default function OpportunitiesPage() {
           ))}
         </div>
       </section>
-    </PlatformShell>
+    </AppShell>
   );
 }

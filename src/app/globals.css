@@ -864,6 +864,165 @@ li::before {
   line-height: 1.7;
 }
 
+/* ── Storefront CTA ── */
+.app-nav__cta {
+  border-radius: var(--radius-pill);
+  background: var(--growth);
+  color: #fff;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-base);
+  padding: 0.65rem 1.1rem;
+}
+.app-nav__cta:hover {
+  background: var(--growth-strong);
+}
+
+/* ── Application shell: left-sidebar TOC layout (Phase 1 structural spine) ── */
+.app-layout {
+  display: flex;
+  gap: 0;
+  max-width: 1440px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+.app-sidebar {
+  width: 252px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  background: var(--background-card);
+  padding: var(--space-4) var(--space-3);
+  display: flex;
+  flex-direction: column;
+}
+.app-sidebar__brand {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  color: var(--text);
+  font-weight: var(--fw-black);
+  font-size: var(--fs-md);
+  padding: var(--space-2) var(--space-2) var(--space-4);
+}
+.app-toc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+}
+.app-toc__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.app-toc__section {
+  margin: var(--space-3) var(--space-2) var(--space-1);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.app-toc a {
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.6rem;
+  color: var(--muted-strong);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+.app-toc a:hover {
+  background: var(--trust-soft);
+  color: var(--text);
+}
+.app-toc__group--utility {
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-3);
+}
+.app-main {
+  flex: 1;
+  min-width: 0;
+  padding: 0 var(--space-6) var(--space-8);
+}
+.app-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  background: linear-gradient(var(--background) 70%, transparent);
+  backdrop-filter: blur(10px);
+}
+.app-search {
+  flex: 1;
+  max-width: 540px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--background-card);
+  padding: 0.55rem 1rem;
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+.app-topbar__actions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+.app-topbar__ai {
+  border-radius: var(--radius-pill);
+  background: var(--growth);
+  color: #fff;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-sm);
+  padding: 0.5rem 1rem;
+}
+.app-topbar__ai:hover {
+  background: var(--growth-strong);
+}
+.app-topbar__account {
+  color: var(--muted-strong);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-sm);
+  padding: 0.5rem 0.75rem;
+}
+.app-hero--compact {
+  padding: var(--space-6) 0 var(--space-4);
+}
+.app-main .app-card,
+.app-main .app-section {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+@media (max-width: 900px) {
+  .app-layout {
+    flex-direction: column;
+  }
+  .app-sidebar {
+    width: auto;
+    height: auto;
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .app-toc {
+    flex-flow: row wrap;
+  }
+  .app-toc__group--utility {
+    margin-top: 0;
+    border-top: none;
+  }
+  .app-main {
+    padding: 0 var(--space-4) var(--space-6);
+  }
+}
+
 .app-grid {
   display: grid;
   gap: 1rem;

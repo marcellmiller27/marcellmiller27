@@ -1,9 +1,9 @@
-import { PlatformShell } from "@/components/platform-shell";
+import { AppShell } from "@/components/app-shell";
 import { intelligenceReports, marketSignals } from "@/lib/platform-data";
 
 export default function ReportsPage() {
   return (
-    <PlatformShell
+    <AppShell
       eyebrow="Research"
       title="Generate branded investment intelligence reports"
       description="Package macro signals, crypto cycles, acquisition screens, and dividend opportunities into subscriber-ready newsletters and PDF reports."
@@ -41,6 +41,6 @@ export default function ReportsPage() {
           ))}
         </div>
       </section>
-    </PlatformShell>
+    </AppShell>
   );
 }

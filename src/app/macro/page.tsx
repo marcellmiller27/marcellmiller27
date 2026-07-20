@@ -1,9 +1,9 @@
 import { LiveMacro } from "@/components/live-macro";
-import { PlatformShell } from "@/components/platform-shell";
+import { AppShell } from "@/components/app-shell";
 
 export default function MacroPage() {
   return (
-    <PlatformShell
+    <AppShell
       eyebrow="Economy"
       title="Macro Dashboard"
       description="Live federal and global economic data in one view — the Federal Reserve (FRED), BEA national accounts, US Treasury, World Bank, IMF, and OECD."
@@ -15,6 +15,6 @@ export default function MacroPage() {
         </div>
         <LiveMacro />
       </section>
-    </PlatformShell>
+    </AppShell>
   );
 }
