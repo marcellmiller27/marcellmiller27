@@ -11,7 +11,7 @@ export default function MacroPage() {
       <section className="app-section">
         <div className="app-section__heading">
           <p className="eyebrow">Live economic indicators</p>
-          <h2>Federal &amp; global economic data</h2>
+          <h2>Federal Policy &amp; Global Economic Data</h2>
         </div>
         <LiveMacro />
       </section>
