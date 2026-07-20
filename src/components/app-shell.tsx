@@ -8,7 +8,7 @@ import {
   Download,
   FileSearch,
   FileText,
-  LayoutDashboard,
+  Home,
   LifeBuoy,
   ScanSearch,
   Scale,
@@ -29,7 +29,7 @@ type TocItem = { href: string; label: string; icon: LucideIcon };
 type TocGroup = { section: string | null; items: TocItem[] };
 
 const toc: TocGroup[] = [
-  { section: null, items: [{ href: "/dashboard", label: "Dashboard", icon: LayoutDashboard }] },
+  { section: null, items: [{ href: "/dashboard", label: "Dashboard", icon: Home }] },
   {
     section: "Research & Intelligence",
     items: [
