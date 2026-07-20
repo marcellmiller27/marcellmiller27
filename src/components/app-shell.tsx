@@ -15,16 +15,16 @@ const toc: TocGroup[] = [
   {
     section: "Research & Intelligence",
     items: [
-      { href: "/macro", label: "Macro Dashboard" },
-      { href: "/opportunities", label: "Opportunity Screener" },
+      { href: "/macro", label: "Economics" },
+      { href: "/opportunities", label: "Screener" },
       { href: "/reports", label: "Reports" }
     ]
   },
   {
     section: "Diligence a Target",
     items: [
-      { href: "/deal-xray", label: "Limited Scope Review" },
-      { href: "/diligence-suite", label: "Quality of Earnings" },
+      { href: "/deal-xray", label: "Scope" },
+      { href: "/diligence-suite", label: "Earnings" },
       { href: "/due-diligence", label: "Document Review" }
     ]
   },
@@ -59,60 +59,60 @@ type AppShellProps = {
 
 export function AppShell({ eyebrow, title, description, children }: AppShellProps) {
   return (
-    <div className="app-layout">
-      <aside className="app-sidebar" aria-label="Platform navigation">
-        <Link className="app-sidebar__brand" href="/dashboard">
-          <Logo size={30} />
+    <div className="app-root">
+      <header className="app-topbar">
+        <Link className="app-topbar__brand" href="/dashboard">
+          <Logo size={26} />
           <span>JHI Research &amp; Analytics</span>
         </Link>
-        <nav className="app-toc">
-          {toc.map((group, i) => (
-            <div className="app-toc__group" key={group.section ?? `g${i}`}>
-              {group.section && <p className="app-toc__section">{group.section}</p>}
-              {group.items.map((item) => (
+        <input
+          className="app-search"
+          type="search"
+          placeholder="Search companies, transactions, filings…"
+          aria-label="Global search"
+        />
+        <div className="app-topbar__actions">
+          <Link className="app-topbar__ai" href="/assistant">
+            Ask JHI
+          </Link>
+          <Link className="app-topbar__account" href="/account">
+            Account
+          </Link>
+        </div>
+      </header>
+
+      <div className="app-layout">
+        <aside className="app-sidebar" aria-label="Platform navigation">
+          <nav className="app-toc">
+            {toc.map((group, i) => (
+              <div className="app-toc__group" key={group.section ?? `g${i}`}>
+                {group.section && <p className="app-toc__section">{group.section}</p>}
+                {group.items.map((item) => (
+                  <Link href={item.href} key={item.href}>
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            ))}
+            <div className="app-toc__group app-toc__group--utility">
+              {utility.map((item) => (
                 <Link href={item.href} key={item.href}>
                   {item.label}
                 </Link>
               ))}
             </div>
-          ))}
-          <div className="app-toc__group app-toc__group--utility">
-            {utility.map((item) => (
-              <Link href={item.href} key={item.href}>
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </nav>
-      </aside>
+          </nav>
+        </aside>
 
-      <div className="app-main">
-        <header className="app-topbar">
-          <input
-            className="app-search"
-            type="search"
-            placeholder="Search companies, transactions, filings…"
-            aria-label="Global search"
-          />
-          <div className="app-topbar__actions">
-            <Link className="app-topbar__ai" href="/assistant">
-              Ask JHI
-            </Link>
-            <Link className="app-topbar__account" href="/account">
-              Account
-            </Link>
-          </div>
-        </header>
-
-        <MarketTicker />
-
-        <section className="app-hero app-hero--compact">
-          <p className="eyebrow">{eyebrow}</p>
-          <h1>{title}</h1>
-          <p>{description}</p>
-        </section>
-
-        {children}
+        <div className="app-main">
+          <MarketTicker />
+          <section className="app-hero app-hero--compact">
+            <p className="eyebrow">{eyebrow}</p>
+            <h1>{title}</h1>
+            <p>{description}</p>
+          </section>
+          {children}
+        </div>
       </div>
     </div>
   );
