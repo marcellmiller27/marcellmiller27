@@ -214,7 +214,7 @@ export const platformModules: PlatformModule[] = [
   },
   {
     phase: "Phase 3 - John Henry Intelligence Center",
-    name: "Global Macro Dashboard",
+    name: "Economics",
     summary: "Tracks central banks, rates, commodities, Bitcoin, money supply, and economic cycles.",
     features: [
       "Federal Reserve",
@@ -229,9 +229,9 @@ export const platformModules: PlatformModule[] = [
   {
     phase: "Phase 3 - John Henry Intelligence Center",
     name: "Weekly Intelligence Reports",
-    summary: "Automated branded reports for macro, crypto, acquisitions, and dividend opportunities.",
+    summary: "Automated branded reports for economic, crypto, acquisitions, and dividend opportunities.",
     features: [
-      "John Henry Weekly Macro Report",
+      "John Henry Weekly Economics Report",
       "Crypto Intelligence Report",
       "Business Acquisition Report",
       "Dividend Opportunities Report",
@@ -374,7 +374,7 @@ export const dashboardMetrics: DashboardMetric[] = [
     tone: "neutral"
   },
   {
-    label: "Macro risk",
+    label: "Economic risk",
     value: "Moderate",
     change: "Liquidity improving",
     tone: "neutral"
@@ -510,7 +510,7 @@ export const portfolioHoldings: PortfolioHolding[] = [
 
 export const intelligenceReports: IntelligenceReport[] = [
   {
-    title: "John Henry Weekly Macro Report",
+    title: "John Henry Weekly Economics Report",
     cadence: "Weekly",
     audience: "All paid subscribers",
     highlights: ["Federal Reserve policy", "Treasury liquidity", "Inflation outlook"]
@@ -557,7 +557,7 @@ export const dashboardLaunchpad: LaunchGroup[] = [
       {
         href: "/macro",
         label: "Economics",
-        blurb: "Federal Reserve, Treasury, BEA, World Bank, IMF and OECD series in one macro view.",
+        blurb: "Federal Reserve, Treasury, BEA, World Bank, IMF and OECD series in one economic view.",
         meta: "Live · FRED + BEA"
       },
       {
@@ -569,7 +569,7 @@ export const dashboardLaunchpad: LaunchGroup[] = [
       {
         href: "/reports",
         label: "Reports",
-        blurb: "Branded macro, acquisition, crypto and dividend intelligence on a fixed cadence.",
+        blurb: "Branded economic, acquisition, crypto and dividend intelligence on a fixed cadence.",
         meta: "Weekly · PDF"
       }
     ]
@@ -640,7 +640,7 @@ export const coverageStats: CoverageStat[] = [
   { label: "Companies tracked", value: "12,480" },
   { label: "Transactions indexed", value: "48,210" },
   { label: "SEC filings", value: "1.9M" },
-  { label: "Macro series", value: "320" }
+  { label: "Economic series", value: "320" }
 ];
 
 export type WatchItem = { name: string; meta: string; tone: "positive" | "neutral" | "warning" };

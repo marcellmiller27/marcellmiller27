@@ -389,10 +389,10 @@ export function CompanyRecord({ company }: { company: Company }) {
                   </ul>
                 </article>
                 <article className="app-card app-card--accent">
-                  <span>Macro overlay</span>
+                  <span>Economic overlay</span>
                   <p>{company.analytics.macroOverlay}</p>
                   <p className="rec-basis">
-                    JHI depth edge: financials + macro on one record.
+                    JHI depth edge: financials + economics on one record.
                   </p>
                 </article>
               </div>
