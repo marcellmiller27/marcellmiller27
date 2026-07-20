@@ -70,9 +70,9 @@ const utility: TocItem[] = [
 ];
 
 type AppShellProps = {
-  eyebrow: string;
-  title: string;
-  description: string;
+  eyebrow?: string;
+  title?: string;
+  description?: string;
   children: ReactNode;
 };
 
@@ -122,11 +122,13 @@ export function AppShell({ eyebrow, title, description, children }: AppShellProp
 
         <div className="app-main">
           <MarketTicker />
-          <section className="app-hero app-hero--compact">
-            <p className="eyebrow">{eyebrow}</p>
-            <h1>{title}</h1>
-            <p>{description}</p>
-          </section>
+          {title && (
+            <section className="app-hero app-hero--compact">
+              {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+              <h1>{title}</h1>
+              {description && <p>{description}</p>}
+            </section>
+          )}
           {children}
         </div>
       </div>

@@ -39,11 +39,7 @@ const launchIcons: Record<string, LucideIcon> = {
 
 export default function DashboardPage() {
   return (
-    <AppShell
-      eyebrow="Overview"
-      title="Command center"
-      description="Your launchpad into research, diligence and deal workflow — with portfolio, watch list and macro at a glance."
-    >
+    <AppShell>
       <section className="app-grid app-grid--four">
         {dashboardMetrics.map((metric) => (
           <article className={`app-card app-card--${metric.tone}`} key={metric.label}>
