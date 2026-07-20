@@ -1,5 +1,5 @@
 "use client";
-// JHI-SIG: 69M2705M | Deal Pipeline | John Henry Investments (proprietary)
+// JHI-SIG: 69M2705M | Deal Pipeline | JHI Research & Analytics Firm, Inc. (proprietary)
 
 import { useEffect, useState } from "react";
 
@@ -135,18 +135,18 @@ export function PipelineBoard() {
                     <article className="app-card" key={d.id} style={{ marginBottom: "0.8rem" }}>
                       <span>{d.deal_type === "qoe" ? "Quality of Earnings" : "Deal X-Ray (BQA)"}</span>
                       <strong>{d.business_name}</strong>
-                      <p style={{ fontSize: "0.82rem", opacity: 0.85 }}>
+                      <p style={{ fontSize: "var(--fs-sm)", opacity: 0.85 }}>
                         {d.score != null ? `Score ${d.score} · ` : ""}
                         {d.recommendation}
                       </p>
                       {d.headline ? (
-                        <p style={{ fontSize: "0.76rem", opacity: 0.7 }}>{d.headline}</p>
+                        <p style={{ fontSize: "var(--fs-xs)", opacity: 0.7 }}>{d.headline}</p>
                       ) : null}
                       <div style={{ display: "flex", gap: "0.4rem", marginTop: "0.6rem", flexWrap: "wrap" }}>
                         <select
                           value={d.stage}
                           onChange={(e) => move(d.id, e.target.value)}
-                          style={{ padding: "0.35rem", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "inherit", fontSize: "0.78rem" }}
+                          style={{ padding: "0.35rem", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "inherit", fontSize: "var(--fs-sm)" }}
                         >
                           {stages.map((s) => (
                             <option key={s} value={s}>
@@ -157,7 +157,7 @@ export function PipelineBoard() {
                         <button
                           type="button"
                           className="button button--secondary"
-                          style={{ fontSize: "0.75rem", padding: "0.3rem 0.6rem" }}
+                          style={{ fontSize: "var(--fs-xs)", padding: "0.3rem 0.6rem" }}
                           onClick={() => remove(d.id)}
                         >
                           Remove

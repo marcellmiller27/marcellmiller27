@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | Billing webhook tests | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | Billing webhook tests | JHI Research & Analytics Firm, Inc. (proprietary)
 """Tests for Stripe webhook signature verification on the billing webhook."""
 
 import hashlib

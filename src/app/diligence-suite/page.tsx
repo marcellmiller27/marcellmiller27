@@ -1,4 +1,4 @@
-// JHI-SIG: 69M2705M | Financial Diligence Suite | John Henry Investments (proprietary)
+// JHI-SIG: 69M2705M | Financial Diligence Suite | JHI Research & Analytics Firm, Inc. (proprietary)
 import { FinancialDiligence } from "@/components/financial-diligence";
 import { PlatformShell } from "@/components/platform-shell";
 

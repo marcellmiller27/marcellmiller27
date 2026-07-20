@@ -80,11 +80,12 @@ export const pricingTiers: PricingTier[] = [
   {
     name: "Consumer Plan",
     audience: "Retail investors and wealth builders",
-    price: "$50 / month",
+    price: "$110 / month",
     seats: "1 user seat",
     target: "50,000 subscribers",
-    revenue: "$2.5M monthly recurring revenue",
+    revenue: "$4.95M monthly recurring revenue",
     features: [
+      "Annual prepaid — $1,188/yr ($99/mo, save 10%)",
       "Portfolio tracker",
       "AI research assistant",
       "Market intelligence",

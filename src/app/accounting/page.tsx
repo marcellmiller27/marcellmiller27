@@ -1,4 +1,4 @@
-// JHI-SIG: 69M2705M | Accounting UI | John Henry Investments (proprietary)
+// JHI-SIG: 69M2705M | Accounting UI | JHI Research & Analytics Firm, Inc. (proprietary)
 import { LiveAccounting } from "@/components/live-accounting";
 import { PlatformShell } from "@/components/platform-shell";
 

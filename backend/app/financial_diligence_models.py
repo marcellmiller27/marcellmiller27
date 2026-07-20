@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | Financial Diligence Suite | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | Financial Diligence Suite | JHI Research & Analytics Firm, Inc. (proprietary)
 """Pydantic models for the Financial Diligence Suite (Quality-of-Earnings support).
 
 Software-accelerated buy-side financial due-diligence: proof-of-cash, EBITDA

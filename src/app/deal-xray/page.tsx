@@ -1,4 +1,4 @@
-// JHI-SIG: 69M2705M | Acquisition / Deal X-Ray | John Henry Investments (proprietary)
+// JHI-SIG: 69M2705M | Acquisition / Deal X-Ray | JHI Research & Analytics Firm, Inc. (proprietary)
 import { DealXRay } from "@/components/deal-xray";
 import { PlatformShell } from "@/components/platform-shell";
 

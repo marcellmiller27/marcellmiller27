@@ -1,5 +1,5 @@
 "use client";
-// JHI-SIG: 69M2705M | Financial Diligence Suite | John Henry Investments (proprietary)
+// JHI-SIG: 69M2705M | Financial Diligence Suite | JHI Research & Analytics Firm, Inc. (proprietary)
 
 import { useState } from "react";
 
@@ -186,7 +186,7 @@ export function FinancialDiligence() {
   };
 
   const num = (k: keyof typeof DEFAULTS, label: string) => (
-    <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "0.8rem" }}>
+    <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "var(--fs-sm)" }}>
       <span>{label}</span>
       <input
         type="number"
@@ -201,7 +201,7 @@ export function FinancialDiligence() {
     <div>
       <form onSubmit={run} className="app-card" style={{ marginBottom: "1.5rem" }}>
         <div className="app-grid app-grid--three" style={{ gap: "0.8rem" }}>
-          <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "0.8rem" }}>
+          <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: "var(--fs-sm)" }}>
             <span>Business name</span>
             <input value={form.business_name as string} onChange={(e) => set("business_name", e.target.value)}
               style={{ padding: "0.5rem", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "inherit" }} />
@@ -234,7 +234,7 @@ export function FinancialDiligence() {
       {report ? (
         <div>
           <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end", alignItems: "center", marginBottom: "0.8rem" }}>
-            {saved ? <span style={{ color: "var(--growth)", fontSize: "0.8rem", fontWeight: 700 }}>{saved}</span> : null}
+            {saved ? <span style={{ color: "var(--growth)", fontSize: "var(--fs-sm)", fontWeight: 700 }}>{saved}</span> : null}
             <button type="button" className="button button--secondary" onClick={saveToPipeline}>
               Save to Pipeline
             </button>
@@ -248,14 +248,14 @@ export function FinancialDiligence() {
           <section className="app-grid app-grid--three">
             <article className="app-card" style={{ borderTop: `3px solid ${scoreColor(report.financial_integrity_score)}` }}>
               <span>Financial Integrity Score</span>
-              <strong style={{ fontSize: "2.4rem" }}>{report.financial_integrity_score}</strong>
+              <strong style={{ fontSize: "var(--fs-5xl)" }}>{report.financial_integrity_score}</strong>
               <p style={{ color: scoreColor(report.financial_integrity_score), fontWeight: 800 }}>
                 Recommended: Tier {report.recommended_tier}
               </p>
             </article>
             <article className="app-card">
               <span>Adjusted EBITDA</span>
-              <strong style={{ fontSize: "1.8rem" }}>{money(report.adjusted_ebitda)}</strong>
+              <strong style={{ fontSize: "var(--fs-3xl)" }}>{money(report.adjusted_ebitda)}</strong>
               <p>Reported {money(report.reported_ebitda)} · adjustment −{money(report.ebitda_adjustment)}</p>
             </article>
             <article className="app-card">
@@ -269,19 +269,19 @@ export function FinancialDiligence() {
             <div className="app-grid app-grid--three">
               <article className="app-card">
                 <span>Proof of cash</span>
-                <strong style={{ fontSize: "1.1rem" }}>
+                <strong style={{ fontSize: "var(--fs-xl)" }}>
                   {report.proof_of_cash.checked ? `${report.proof_of_cash.variance_pct}% variance` : "Not performed"}
                 </strong>
                 <p>{report.proof_of_cash.flag}</p>
               </article>
               <article className="app-card">
                 <span>Net working capital</span>
-                <strong style={{ fontSize: "1.1rem" }}>{money(report.working_capital.net_working_capital)} ({report.working_capital.nwc_pct_of_revenue}%)</strong>
+                <strong style={{ fontSize: "var(--fs-xl)" }}>{money(report.working_capital.net_working_capital)} ({report.working_capital.nwc_pct_of_revenue}%)</strong>
                 <p>{report.working_capital.note}</p>
               </article>
               <article className="app-card">
                 <span>Quality of revenue</span>
-                <strong style={{ fontSize: "1.1rem" }}>{report.revenue_quality.score}/100</strong>
+                <strong style={{ fontSize: "var(--fs-xl)" }}>{report.revenue_quality.score}/100</strong>
                 <p>{report.revenue_quality.note}</p>
               </article>
             </div>
@@ -302,7 +302,7 @@ export function FinancialDiligence() {
                   <span>{report.add_on_pricing.band}</span>
                   <strong>Quality of Earnings (Tier B)</strong>
                 </div>
-                <p style={{ fontSize: "0.85rem" }}>
+                <p style={{ fontSize: "var(--fs-sm)" }}>
                   Manual market: {money(report.add_on_pricing.manual_low)}–{money(report.add_on_pricing.manual_high)}<br />
                   <strong style={{ color: "var(--growth,#35c46b)" }}>
                     JHI platform: {money(report.add_on_pricing.platform_low)}–{money(report.add_on_pricing.platform_high)}
@@ -329,7 +329,7 @@ export function FinancialDiligence() {
             </section>
           ) : null}
 
-          <p className="live-market__muted" style={{ fontSize: "0.78rem" }}>{report.disclaimer}</p>
+          <p className="live-market__muted" style={{ fontSize: "var(--fs-sm)" }}>{report.disclaimer}</p>
         </div>
       ) : null}
     </div>

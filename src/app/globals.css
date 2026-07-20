@@ -30,6 +30,72 @@
   --muted: #5a6b7d;
   --muted-strong: #33465a;
   --shadow: 0 18px 48px rgba(15, 39, 68, 0.10);
+
+  /* ── Design tokens: single source of truth for the platform's visual system.
+     All typography, spacing, and radii MUST reference these tokens. Raw values
+     are only permitted for intentional one-off decorative elements. See
+     docs/ENGINEERING_POLICY.md. ── */
+
+  /* Type scale (institutional, data-dense; base body = 15px). */
+  --fs-2xs: 0.6875rem;  /* 11px — micro labels, legal fine print */
+  --fs-xs: 0.75rem;     /* 12px — eyebrows, captions, table meta */
+  --fs-sm: 0.8125rem;   /* 13px — dense table cells, secondary UI */
+  --fs-base: 0.875rem;  /* 14px — supporting body */
+  --fs-md: 0.9375rem;   /* 15px — default body */
+  --fs-lg: 1.0625rem;   /* 17px — emphasized body / small lead */
+  --fs-xl: 1.1875rem;   /* 19px — h4 / card titles */
+  --fs-2xl: 1.375rem;   /* 22px — h3 / section subheads */
+  --fs-3xl: 1.625rem;   /* 26px — h2 */
+  --fs-4xl: 2.125rem;   /* 34px — large headings */
+  --fs-5xl: 2.625rem;   /* 42px — display */
+  --fs-lead: clamp(1.0625rem, 2vw, 1.25rem);  /* fluid lead paragraph */
+  --fs-hero: clamp(2.25rem, 5vw, 3.75rem);    /* fluid hero headline */
+
+  /* Line heights. */
+  --lh-tight: 1.1;
+  --lh-snug: 1.3;
+  --lh-normal: 1.55;
+  --lh-relaxed: 1.7;
+
+  /* Font weights. */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-black: 800;
+
+  /* Spacing scale (4px rhythm). */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+  --space-10: 4rem;
+  --space-12: 5rem;
+
+  /* Radii. */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-pill: 999px;
+}
+
+/* ── Base typography defaults: every element inherits the scale so new markup
+   is consistent by default, without per-page font-size guesses. ── */
+body {
+  font-size: var(--fs-md);
+  line-height: var(--lh-normal);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+}
+
+small {
+  font-size: var(--fs-sm);
 }
 
 * {
@@ -87,14 +153,14 @@ main {
 
 .hero__content h1 {
   max-width: 860px;
-  font-size: clamp(2.2rem, 5vw, 4.3rem);
+  font-size: var(--fs-hero);
 }
 
 .hero__lead {
   max-width: 720px;
   margin: 1.5rem 0 0;
   color: var(--muted-strong);
-  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  font-size: var(--fs-lead);
   line-height: 1.7;
 }
 
@@ -104,7 +170,7 @@ main {
   align-items: center;
   margin-bottom: 1.4rem;
   color: var(--text);
-  font-size: 1.05rem;
+  font-size: var(--fs-lg);
   font-weight: 900;
   letter-spacing: -0.01em;
 }
@@ -183,7 +249,7 @@ main {
 .pricing-card__audience,
 .module-card__phase {
   color: var(--gold);
-  font-size: 0.78rem;
+  font-size: var(--fs-sm);
   font-weight: 900;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -239,7 +305,7 @@ main {
 .metric-card strong {
   display: block;
   margin-top: 0.75rem;
-  font-size: 1.35rem;
+  font-size: var(--fs-2xl);
 }
 
 .split,
@@ -255,7 +321,7 @@ main {
 .score-section h2,
 .vision h2 {
   max-width: 860px;
-  font-size: clamp(2.2rem, 5vw, 4.3rem);
+  font-size: var(--fs-hero);
 }
 
 .tag-grid {
@@ -326,13 +392,13 @@ main {
 .waitlist__note {
   margin: 0.2rem 0 0;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
 }
 
 .waitlist__error {
   margin: 0;
   color: #ff9f7a;
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
 }
 
 .waitlist--done {
@@ -345,7 +411,7 @@ main {
 
 .waitlist--done strong {
   color: var(--growth);
-  font-size: 1.1rem;
+  font-size: var(--fs-xl);
 }
 
 .join {
@@ -364,7 +430,7 @@ main {
 
 .join__title {
   margin: 0.3rem 0 0;
-  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  font-size: var(--fs-hero);
   letter-spacing: -0.04em;
   line-height: 1.05;
 }
@@ -372,7 +438,7 @@ main {
 .join__lead {
   margin: 1rem 0 1.5rem;
   color: var(--muted-strong);
-  font-size: 1.1rem;
+  font-size: var(--fs-xl);
   line-height: 1.6;
 }
 
@@ -437,7 +503,7 @@ main {
 
 .team-card__role {
   color: var(--gold);
-  font-size: 0.72rem;
+  font-size: var(--fs-xs);
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -445,7 +511,7 @@ main {
 
 .team-card__name {
   margin: 0;
-  font-size: 1.3rem;
+  font-size: var(--fs-2xl);
 }
 
 .team-card__persona {
@@ -457,7 +523,7 @@ main {
 .team-card__bg {
   margin: 0.25rem 0 0.5rem;
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: var(--fs-md);
   line-height: 1.6;
 }
 
@@ -469,7 +535,7 @@ main {
 .mission__statement {
   margin: 0;
   color: var(--muted-strong);
-  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-size: var(--fs-lead);
   line-height: 1.6;
 }
 
@@ -483,7 +549,7 @@ main {
     transparent 80%
   );
   color: var(--text);
-  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-size: var(--fs-lead);
   font-style: italic;
   font-weight: 700;
   line-height: 1.5;
@@ -521,20 +587,20 @@ main {
 .score-grid h3,
 .stack-grid h3 {
   margin: 0.5rem 0 0;
-  font-size: 1.35rem;
+  font-size: var(--fs-2xl);
 }
 
 .pricing-card strong {
   display: block;
   margin-top: 1rem;
   color: var(--green);
-  font-size: 2.1rem;
+  font-size: var(--fs-4xl);
 }
 
 .pricing-card__seats {
   margin: 0.35rem 0 0;
   color: var(--muted-strong);
-  font-size: 0.82rem;
+  font-size: var(--fs-sm);
   font-weight: 600;
 }
 
@@ -594,7 +660,7 @@ li::before {
   display: grid;
   gap: 0.6rem;
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: var(--fs-md);
 }
 
 .module-grid {
@@ -675,7 +741,7 @@ li::before {
 
 .vision__valuation strong {
   color: var(--green);
-  font-size: clamp(2rem, 4vw, 4rem);
+  font-size: var(--fs-hero);
 }
 
 .vision__valuation span {
@@ -768,7 +834,7 @@ li::before {
   border: 1px solid transparent;
   border-radius: 999px;
   color: var(--muted-strong);
-  font-size: 0.88rem;
+  font-size: var(--fs-base);
   font-weight: 800;
   padding: 0.65rem 0.85rem;
 }
@@ -786,7 +852,7 @@ li::before {
 .app-hero h1 {
   max-width: 900px;
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.6rem);
+  font-size: var(--fs-hero);
   letter-spacing: -0.045em;
   line-height: 1.05;
 }
@@ -794,7 +860,7 @@ li::before {
 .app-hero p:not(.eyebrow) {
   max-width: 760px;
   color: var(--muted-strong);
-  font-size: 1.18rem;
+  font-size: var(--fs-xl);
   line-height: 1.7;
 }
 
@@ -845,7 +911,7 @@ li::before {
 .scenario-grid span,
 .table-row span {
   color: var(--gold);
-  font-size: 0.76rem;
+  font-size: var(--fs-xs);
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -854,7 +920,7 @@ li::before {
 .app-card strong {
   display: block;
   margin: 0.6rem 0;
-  font-size: 2.3rem;
+  font-size: var(--fs-4xl);
 }
 
 .app-card p,
@@ -894,7 +960,7 @@ li::before {
 .app-section__heading h2,
 .assistant-panel h2 {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.6rem);
+  font-size: var(--fs-hero);
   letter-spacing: -0.045em;
   line-height: 1;
 }
@@ -926,7 +992,7 @@ li::before {
   align-items: center;
   margin: 1.25rem 0 0.75rem;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
 }
 
@@ -984,7 +1050,7 @@ li::before {
   align-items: baseline;
   gap: 0.45rem;
   margin-right: 2.75rem;
-  font-size: 0.82rem;
+  font-size: var(--fs-sm);
 }
 
 .market-ticker__sym {
@@ -1000,7 +1066,7 @@ li::before {
 
 .market-ticker__chg {
   font-weight: 700;
-  font-size: 0.78rem;
+  font-size: var(--fs-sm);
 }
 
 .market-ticker__chg.up {
@@ -1043,7 +1109,7 @@ li::before {
 .signal-card strong {
   display: block;
   margin-top: 0.35rem;
-  font-size: 1.3rem;
+  font-size: var(--fs-2xl);
 }
 
 .recommendation,
@@ -1066,7 +1132,7 @@ li::before {
 .opportunity-card h2,
 .report-card h2 {
   margin: 0.35rem 0 0;
-  font-size: 1.6rem;
+  font-size: var(--fs-3xl);
 }
 
 .score-badge {
@@ -1081,7 +1147,7 @@ li::before {
 
 .score-badge strong {
   color: var(--text);
-  font-size: 2rem;
+  font-size: var(--fs-4xl);
 }
 
 .upload-grid,
@@ -1101,7 +1167,7 @@ li::before {
 .scenario-grid strong {
   display: block;
   margin-top: 0.5rem;
-  font-size: 1.5rem;
+  font-size: var(--fs-3xl);
 }
 
 .table-card {
@@ -1205,7 +1271,7 @@ li::before {
 .support-meta {
   margin: 0 0 0.4rem;
   color: var(--gold);
-  font-size: 0.72rem;
+  font-size: var(--fs-xs);
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1338,7 +1404,7 @@ li::before {
 .m-brand small {
   display: block;
   color: var(--muted);
-  font-size: 0.7rem;
+  font-size: var(--fs-2xs);
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1347,7 +1413,7 @@ li::before {
 .m-eyebrow {
   margin: 1.6rem 0 0.3rem;
   color: var(--gold);
-  font-size: 0.72rem;
+  font-size: var(--fs-xs);
   font-weight: 900;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -1355,7 +1421,7 @@ li::before {
 
 .m-title {
   margin: 0;
-  font-size: 1.7rem;
+  font-size: var(--fs-3xl);
   letter-spacing: -0.03em;
   line-height: 1.1;
 }
@@ -1363,7 +1429,7 @@ li::before {
 .m-sub {
   margin: 0.6rem 0 0;
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: var(--fs-md);
   line-height: 1.55;
 }
 
@@ -1384,7 +1450,7 @@ li::before {
 
 .m-field label {
   color: var(--muted-strong);
-  font-size: 0.78rem;
+  font-size: var(--fs-sm);
   font-weight: 800;
   letter-spacing: 0.04em;
 }
@@ -1396,7 +1462,7 @@ li::before {
   background: rgba(255, 255, 255, 0.05);
   color: var(--text);
   font: inherit;
-  font-size: 1rem;
+  font-size: var(--fs-lg);
   padding: 0.85rem 0.95rem;
 }
 
@@ -1416,7 +1482,7 @@ li::before {
   border-radius: 999px;
   cursor: pointer;
   font: inherit;
-  font-size: 1rem;
+  font-size: var(--fs-lg);
   font-weight: 900;
   padding: 0.95rem 1rem;
   transition:
@@ -1487,7 +1553,7 @@ li::before {
   justify-content: center;
   border-radius: 0.9rem;
   background: var(--trust-soft);
-  font-size: 1.3rem;
+  font-size: var(--fs-2xl);
 }
 
 .m-method__icon--bio {
@@ -1500,12 +1566,12 @@ li::before {
 
 .m-method strong {
   display: block;
-  font-size: 1rem;
+  font-size: var(--fs-lg);
 }
 
 .m-method span {
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: var(--fs-sm);
 }
 
 .m-otp {
@@ -1521,7 +1587,7 @@ li::before {
   background: rgba(255, 255, 255, 0.05);
   color: var(--text);
   font: inherit;
-  font-size: 2rem;
+  font-size: var(--fs-4xl);
   font-weight: 900;
   letter-spacing: 0.6em;
   padding: 0.8rem 0.4rem 0.8rem 1rem;
@@ -1533,7 +1599,7 @@ li::before {
   border-radius: 0.9rem;
   background: rgba(255, 255, 255, 0.04);
   color: var(--muted-strong);
-  font-size: 0.82rem;
+  font-size: var(--fs-sm);
   line-height: 1.45;
   padding: 0.7rem 0.85rem;
 }
@@ -1544,7 +1610,7 @@ li::before {
 
 .m-note--code strong {
   color: var(--growth);
-  font-size: 1.1rem;
+  font-size: var(--fs-xl);
   letter-spacing: 0.18em;
 }
 
@@ -1553,7 +1619,7 @@ li::before {
   border-radius: 0.9rem;
   background: rgba(255, 138, 110, 0.12);
   color: #ffc4ad;
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   padding: 0.7rem 0.85rem;
 }
 
@@ -1568,7 +1634,7 @@ li::before {
   border-radius: 999px;
   background: var(--growth-soft);
   box-shadow: 0 0 40px rgba(31, 197, 133, 0.25);
-  font-size: 2.6rem;
+  font-size: var(--fs-5xl);
 }
 
 .m-card {
@@ -1580,7 +1646,7 @@ li::before {
 
 .m-card span {
   color: var(--gold);
-  font-size: 0.7rem;
+  font-size: var(--fs-2xs);
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1589,13 +1655,13 @@ li::before {
 .m-card strong {
   display: block;
   margin-top: 0.3rem;
-  font-size: 1.5rem;
+  font-size: var(--fs-3xl);
 }
 
 .m-card p {
   margin: 0.2rem 0 0;
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: var(--fs-sm);
 }
 
 .m-grid-2 {
@@ -1618,17 +1684,17 @@ li::before {
 
 .m-row strong {
   display: block;
-  font-size: 0.95rem;
+  font-size: var(--fs-md);
 }
 
 .m-row span {
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: var(--fs-sm);
 }
 
 .m-pill {
   border-radius: 999px;
-  font-size: 0.72rem;
+  font-size: var(--fs-xs);
   font-weight: 900;
   letter-spacing: 0.05em;
   padding: 0.35rem 0.7rem;
@@ -1706,7 +1772,7 @@ li::before {
 .hero__trust {
   margin-top: 0.9rem;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   font-weight: 600;
 }
 
@@ -1717,7 +1783,7 @@ li::before {
 .contrast-strip p {
   margin: 0 auto;
   max-width: 60rem;
-  font-size: 1.35rem;
+  font-size: var(--fs-2xl);
   line-height: 1.5;
   color: var(--muted-strong);
 }
@@ -1730,7 +1796,7 @@ li::before {
   margin-top: 1.2rem;
   text-align: center;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: var(--fs-base);
   font-weight: 600;
 }
 
@@ -1750,13 +1816,13 @@ li::before {
 
 .trust-card h3 {
   margin: 0 0 0.4rem;
-  font-size: 1.02rem;
+  font-size: var(--fs-lg);
   color: var(--text);
 }
 
 .trust-card p {
   margin: 0;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: var(--fs-base);
   line-height: 1.5;
 }

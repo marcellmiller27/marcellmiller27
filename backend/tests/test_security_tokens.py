@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | Token/JWT tests | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | Token/JWT tests | JHI Research & Analytics Firm, Inc. (proprietary)
 """Tests for JWT access tokens and scoped challenge tokens (PyJWT-backed)."""
 
 import pytest

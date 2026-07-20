@@ -99,6 +99,6 @@ not the whole codebase.
 | IP accounting / asset basis | `docs/IP_INTANGIBLES_AMORTIZATION.md` |
 | Version/commit | `git tag` + commit hash for the registered build |
 
-> Founder signature: `69M2705M` · John Henry Investments (proprietary). Confirm all
+> Founder signature: `69M2705M` · JHI Research & Analytics Firm, Inc. (proprietary). Confirm all
 > steps — especially **publication status**, **AI-authorship disclaimer**, and
 > **trade-secret deposit** — with qualified IP counsel before filing.

@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | PDF Memo Export | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | PDF Memo Export | JHI Research & Analytics Firm, Inc. (proprietary)
 """Branded one-page PDF deal memos for Deal X-Ray (Business Quality Assessment) and
 Quality of Earnings — the client-ready leave-behind (for sellers, lenders, LPs).
 

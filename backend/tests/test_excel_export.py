@@ -1,4 +1,4 @@
-# JHI-SIG: 69M2705M | Excel Dashboard Export | John Henry Investments (proprietary)
+# JHI-SIG: 69M2705M | Excel Dashboard Export | JHI Research & Analytics Firm, Inc. (proprietary)
 """Tests for the interactive Excel workbook exports (Deal X-Ray / QoE)."""
 
 from io import BytesIO
