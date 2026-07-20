@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { opportunities, scoreCategories } from "@/lib/platform-data";
 
@@ -8,6 +9,9 @@ export default function OpportunitiesPage() {
       title="Discover and score investable opportunities"
       description="Screen public securities, private companies, real estate, and digital assets with the John Henry Opportunity Score."
     >
+      <p className="rec-crumb">
+        <Link href="/companies">Browse the entity directory →</Link>
+      </p>
       <section className="app-grid app-grid--two">
         {opportunities.map((opportunity) => (
           <article className="opportunity-card" key={opportunity.name}>
@@ -27,6 +31,11 @@ export default function OpportunitiesPage() {
                 <li key={metric}>{metric}</li>
               ))}
             </ul>
+            {opportunity.recordSlug && (
+              <Link className="opportunity-card__link" href={`/companies/${opportunity.recordSlug}`}>
+                Open company record →
+              </Link>
+            )}
           </article>
         ))}
       </section>

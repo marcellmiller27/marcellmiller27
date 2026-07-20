@@ -18,6 +18,7 @@ import {
   Workflow,
   type LucideIcon
 } from "lucide-react";
+import { GlobalSearch } from "@/components/global-search";
 import { Logo } from "@/components/logo";
 import { MarketTicker } from "@/components/market-ticker";
 
@@ -83,12 +84,7 @@ export function AppShell({ eyebrow, title, description, children }: AppShellProp
           <Logo size={26} />
           <span>JHI Research &amp; Analytics</span>
         </Link>
-        <input
-          className="app-search"
-          type="search"
-          placeholder="Search companies, transactions, filings…"
-          aria-label="Global search"
-        />
+        <GlobalSearch />
         <div className="app-topbar__actions">
           <Link className="app-topbar__ai" href="/assistant">
             Ask JHI
