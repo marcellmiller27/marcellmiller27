@@ -4,7 +4,7 @@
 **Present:** Founder (Galen Marcellus Miller).
 
 > NOT legal/tax/accounting advice. Prior session: `docs/board/BOARD_MINUTES_2026-07-13.md`.
-> Signature of record: `69M2705M`. Ethos: *How we do anything is how we do everything.*
+> Signature of record: `69M2705M`. Ethos: *How We Do Anything Is, How We Do Everything.*
 
 ---
 
