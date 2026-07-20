@@ -1,9 +1,9 @@
-import { PlatformShell } from "@/components/platform-shell";
+import { StorefrontShell } from "@/components/storefront-shell";
 import { pricingTiers } from "@/lib/platform-data";
 
 export default function PricingPage() {
   return (
-    <PlatformShell
+    <StorefrontShell
       eyebrow="Plans & pricing"
       title="Simple, transparent plans"
       description="Pay monthly or annually, cancel anytime. Transparent per-seat pricing with no surprise fees."
@@ -25,6 +25,6 @@ export default function PricingPage() {
           </article>
         ))}
       </section>
-    </PlatformShell>
+    </StorefrontShell>
   );
 }

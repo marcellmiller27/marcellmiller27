@@ -1,11 +1,11 @@
-import { PlatformShell } from "@/components/platform-shell";
+import { AppShell } from "@/components/app-shell";
 import { dueDiligenceQueue } from "@/lib/platform-data";
 
 const uploadTypes = ["Tax returns", "P&L statements", "Balance sheets", "Bank statements"];
 
 export default function DueDiligencePage() {
   return (
-    <PlatformShell
+    <AppShell
       eyebrow="Acquisitions"
       title="Document Review — analyze acquisition documents before capital is at risk"
       description="Upload financial records, normalize cash flow, detect risk indicators, and generate diligence questions for acquisition and lending decisions."
@@ -47,6 +47,6 @@ export default function DueDiligencePage() {
           ))}
         </div>
       </section>
-    </PlatformShell>
+    </AppShell>
   );
 }

@@ -1,5 +1,5 @@
 // JHI-SIG: 69M2705M | Firm Documents / Downloads | JHI Research & Analytics Firm, Inc. (proprietary)
-import { PlatformShell } from "@/components/platform-shell";
+import { AppShell } from "@/components/app-shell";
 
 type DocItem = {
   title: string;
@@ -55,7 +55,7 @@ const btnStyle = {
 
 export default function DownloadsPage() {
   return (
-    <PlatformShell
+    <AppShell
       eyebrow="Firm operations"
       title="Documents"
       description="Download the firm's models and reports. Files open in Excel / Numbers / Google Sheets (.xlsx) or Word / Pages / Google Docs (.docx)."
@@ -83,6 +83,6 @@ export default function DownloadsPage() {
           Confidential — for internal use. Provenance: JHI-SIG 69M2705M.
         </p>
       </section>
-    </PlatformShell>
+    </AppShell>
   );
 }

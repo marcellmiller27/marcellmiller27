@@ -864,6 +864,222 @@ li::before {
   line-height: 1.7;
 }
 
+/* ── Storefront CTA ── */
+.app-nav__cta {
+  border-radius: var(--radius-pill);
+  background: var(--growth);
+  color: #fff;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-base);
+  padding: 0.65rem 1.1rem;
+}
+.app-nav__cta:hover {
+  background: var(--growth-strong);
+}
+
+/* ── Application shell: dark chrome (full-width top bar + left TOC) + white content ── */
+/* Dark navy chrome mirrors the institutional workspace pattern; the working
+   surface stays white for density and legibility. --app-chrome height keeps the
+   sticky sidebar aligned under the sticky top bar. */
+:root {
+  --app-chrome: #0c1f33;
+  --app-chrome-line: rgba(255, 255, 255, 0.1);
+  --app-topbar-h: 52px;
+}
+.app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.app-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: var(--app-topbar-h);
+  padding: 0.5rem var(--space-4);
+  background: var(--app-chrome);
+  border-bottom: 1px solid var(--app-chrome-line);
+}
+.app-topbar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: #fff;
+  font-weight: var(--fw-black);
+  font-size: var(--fs-sm);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.app-search {
+  flex: 1;
+  max-width: 440px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  padding: 0.4rem 0.75rem;
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+.app-search::placeholder {
+  color: var(--muted);
+}
+.app-topbar__actions {
+  margin-left: auto;
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+.app-topbar__ai {
+  border-radius: var(--radius-pill);
+  background: var(--growth);
+  color: #fff;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  padding: 0.4rem 0.9rem;
+}
+.app-topbar__ai:hover {
+  background: var(--growth-strong);
+}
+.app-topbar__account {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-xs);
+  padding: 0.4rem 0.5rem;
+}
+
+.app-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.app-sidebar {
+  width: 208px;
+  flex-shrink: 0;
+  position: sticky;
+  top: var(--app-topbar-h);
+  align-self: flex-start;
+  height: calc(100vh - var(--app-topbar-h));
+  overflow-y: auto;
+  background: var(--app-chrome);
+  padding: var(--space-3) var(--space-2) var(--space-4);
+  display: flex;
+  flex-direction: column;
+}
+.app-toc {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  flex: 1;
+}
+.app-toc__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+}
+.app-toc__section {
+  margin: 0.45rem 0.55rem 0.15rem;
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.42);
+}
+.app-toc a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.55rem;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  line-height: 1.25;
+}
+.app-toc a svg {
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+.app-toc a:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+.app-toc a:hover svg {
+  opacity: 1;
+}
+.app-toc__group--utility {
+  margin-top: auto;
+  border-top: 1px solid var(--app-chrome-line);
+  padding-top: var(--space-2);
+}
+.app-main {
+  flex: 1;
+  min-width: 0;
+  background: var(--background);
+  padding: 0 var(--space-5) var(--space-8);
+}
+.app-hero--compact {
+  padding: var(--space-4) 0 var(--space-3);
+}
+.app-hero--compact h1 {
+  font-size: 1.55rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.app-hero--compact p:not(.eyebrow) {
+  font-size: var(--fs-md);
+  line-height: 1.5;
+  max-width: 760px;
+}
+.app-main .app-card strong {
+  font-size: var(--fs-3xl);
+}
+/* In the dense workspace, section headings step down from the marketing hero
+   scale to sit just below the compact page title (h1 ≈ 25px > h2 ≈ 22px). */
+.app-main .app-section h2,
+.app-main .app-section__heading h2,
+.app-main .assistant-panel h2 {
+  font-size: var(--fs-2xl);
+  letter-spacing: -0.02em;
+  line-height: var(--lh-snug);
+}
+.app-main .app-card,
+.app-main .app-section {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+@media (max-width: 900px) {
+  .app-topbar {
+    flex-wrap: wrap;
+  }
+  .app-search {
+    order: 3;
+    max-width: none;
+    flex-basis: 100%;
+  }
+  .app-layout {
+    flex-direction: column;
+  }
+  .app-sidebar {
+    width: auto;
+    height: auto;
+    position: static;
+  }
+  .app-toc {
+    flex-flow: row wrap;
+  }
+  .app-toc__group--utility {
+    margin-top: 0;
+    border-top: none;
+  }
+  .app-main {
+    padding: 0 var(--space-4) var(--space-6);
+  }
+}
+
 .app-grid {
   display: grid;
   gap: 1rem;

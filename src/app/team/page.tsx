@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PlatformShell } from "@/components/platform-shell";
+import { StorefrontShell } from "@/components/storefront-shell";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v1";
@@ -40,7 +40,7 @@ export default function TeamPage() {
   }, []);
 
   return (
-    <PlatformShell
+    <StorefrontShell
       eyebrow="Our team"
       title="Meet the John Henry Investments team"
       description="Our platform is built and maintained by a dedicated AI engineering department, supported 24/7 by five specialized AI agents. These agents assist our members with onboarding, subscriptions, account security, product guidance, and technical triage—which escalates directly to the founder when necessary."
@@ -126,6 +126,6 @@ export default function TeamPage() {
           {agents.length === 0 ? <p>Loading the team…</p> : null}
         </div>
       </section>
-    </PlatformShell>
+    </StorefrontShell>
   );
 }

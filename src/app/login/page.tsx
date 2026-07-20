@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { PlatformShell } from "@/components/platform-shell";
+import { StorefrontShell } from "@/components/storefront-shell";
 
 export default function LoginPage() {
   return (
-    <PlatformShell
+    <StorefrontShell
       eyebrow="Secure access"
       title="Sign in to protected platform workflows"
       description="Login validates hashed credentials and returns a signed bearer token containing user, organization, role, and subscription context."
@@ -47,6 +47,6 @@ export default function LoginPage() {
           <p>Passwords are salted and hashed. Tokens are signed and expire based on backend settings.</p>
         </article>
       </section>
-    </PlatformShell>
+    </StorefrontShell>
   );
 }

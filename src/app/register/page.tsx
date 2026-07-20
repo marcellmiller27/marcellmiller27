@@ -1,4 +1,4 @@
-import { PlatformShell } from "@/components/platform-shell";
+import { StorefrontShell } from "@/components/storefront-shell";
 
 const registrationFields = [
   "Organization name",
@@ -10,7 +10,7 @@ const registrationFields = [
 
 export default function RegisterPage() {
   return (
-    <PlatformShell
+    <StorefrontShell
       eyebrow="Authentication foundation"
       title="Create a John Henry Investments workspace"
       description="The backend now supports organization registration, secure password hashing, bearer tokens, trial subscriptions, and audit logging for account creation."
@@ -33,6 +33,6 @@ export default function RegisterPage() {
           ))}
         </div>
       </section>
-    </PlatformShell>
+    </StorefrontShell>
   );
 }

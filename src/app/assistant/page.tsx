@@ -1,9 +1,9 @@
-import { PlatformShell } from "@/components/platform-shell";
+import { AppShell } from "@/components/app-shell";
 import { assistantWorkflows } from "@/lib/platform-data";
 
 export default function AssistantPage() {
   return (
-    <PlatformShell
+    <AppShell
       eyebrow="Research"
       title="Private investment analyst for research and acquisition review"
       description="Ask questions about securities, SBA loans, business targets, Bitcoin cycles, dividend portfolios, and portfolio risk."
@@ -33,6 +33,6 @@ export default function AssistantPage() {
           ))}
         </div>
       </section>
-    </PlatformShell>
+    </AppShell>
   );
 }

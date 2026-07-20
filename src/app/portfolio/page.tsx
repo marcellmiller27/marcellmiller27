@@ -1,4 +1,4 @@
-import { PlatformShell } from "@/components/platform-shell";
+import { AppShell } from "@/components/app-shell";
 import { portfolioHoldings } from "@/lib/platform-data";
 
 const scenarioMetrics = [
@@ -9,7 +9,7 @@ const scenarioMetrics = [
 
 export default function PortfolioPage() {
   return (
-    <PlatformShell
+    <AppShell
       eyebrow="Portfolio management"
       title="Track assets, cash flow, and wealth projection scenarios"
       description="Combine brokerage, banking, crypto, real estate, and private equity holdings into one portfolio operating system."
@@ -45,6 +45,6 @@ export default function PortfolioPage() {
           ))}
         </div>
       </section>
-    </PlatformShell>
+    </AppShell>
   );
 }
