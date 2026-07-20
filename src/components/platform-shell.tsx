@@ -8,6 +8,7 @@ import { MarketTicker } from "@/components/market-ticker";
 const navigation = [
   { href: "/", label: "Home" },
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/macro", label: "Macro" },
   { href: "/opportunities", label: "Opportunities" },
   { href: "/reports", label: "Reports" },
   { href: "/assistant", label: "AI Assistant" },
