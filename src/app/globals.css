@@ -1045,6 +1045,36 @@ li::before {
   letter-spacing: -0.02em;
   line-height: var(--lh-snug);
 }
+/* Founder direction: inside the platform, the informational word-labels
+   (eyebrows / section titles / card labels) drop the gold and read monochrome.
+   Icons, the TOC, semantic colors and the storefront are intentionally untouched. */
+.app-main .eyebrow,
+.app-main .app-card span,
+.app-main .opportunity-card span,
+.app-main .report-card span,
+.app-main .signal-card span,
+.app-main .upload-grid span {
+  color: var(--text);
+}
+/* Drop the global gold "/" list marker inside the platform's structured lists
+   (Coverage, Watch List, directory, record key-values) for a clean, professional
+   read. The storefront's feature lists keep the "/" flourish. */
+.rail-stats li,
+.rail-watch li,
+.dir-list li,
+.rec-kv li,
+.rec-flags li,
+.rec-news li {
+  padding-left: 0;
+}
+.rail-stats li::before,
+.rail-watch li::before,
+.dir-list li::before,
+.rec-kv li::before,
+.rec-flags li::before,
+.rec-news li::before {
+  content: none;
+}
 .app-main .app-card,
 .app-main .app-section {
   margin-left: 0;
