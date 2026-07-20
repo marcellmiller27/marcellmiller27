@@ -1,16 +1,45 @@
-import { LiveMarket } from "@/components/live-market";
+// JHI-SIG: 69M2705M | Dashboard workspace (launchpad + at-a-glance) | JHI Research & Analytics Firm, Inc. (proprietary)
+import Link from "next/link";
+import {
+  ArrowUpRight,
+  BarChart3,
+  Briefcase,
+  Calculator,
+  Download,
+  FileSearch,
+  FileText,
+  ScanSearch,
+  Search,
+  Sparkles,
+  Workflow,
+  type LucideIcon
+} from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { dashboardMetrics, dashboardWidgets, opportunities } from "@/lib/platform-data";
+import { LiveMarket } from "@/components/live-market";
+import {
+  coverageStats,
+  dashboardLaunchpad,
+  dashboardMetrics,
+  watchlist
+} from "@/lib/platform-data";
+
+// Map each launchpad context to its line icon (shares the TOC iconography).
+const launchIcons: Record<string, LucideIcon> = {
+  Economics: BarChart3,
+  Screener: Search,
+  Reports: FileText,
+  Scope: ScanSearch,
+  Earnings: Calculator,
+  "Document Review": FileSearch,
+  Pipeline: Workflow,
+  Portfolio: Briefcase,
+  "Ask JHI": Sparkles,
+  Documents: Download
+};
 
 export default function DashboardPage() {
-  const topOpportunities = opportunities.slice(0, 3);
-
   return (
-    <AppShell
-      eyebrow="Overview"
-      title="Command center"
-      description="Monitor portfolio value, market alerts, economic indicators, acquisition opportunities, and AI recommendations from one operating dashboard."
-    >
+    <AppShell>
       <section className="app-grid app-grid--four">
         {dashboardMetrics.map((metric) => (
           <article className={`app-card app-card--${metric.tone}`} key={metric.label}>
@@ -21,62 +50,72 @@ export default function DashboardPage() {
         ))}
       </section>
 
-      <section className="app-section app-section--split">
-        <div>
-          <p className="eyebrow">Market watch</p>
-          <h2>Live intelligence widgets</h2>
-          <div className="widget-strip">
-            {dashboardWidgets.map((widget) => (
-              <span key={widget}>{widget}</span>
-            ))}
-          </div>
-        </div>
-        <LiveMarket symbols="BTC,ETH,GOLD,SPX,UST10Y,INFLATION" />
-      </section>
-
-      <section className="app-section app-section--split">
-        <div>
-          <p className="eyebrow">Currencies</p>
-          <h2>Live FX</h2>
-          <div className="widget-strip">
-            {["EUR/USD", "GBP/USD", "USD/JPY", "Dollar Index"].map((label) => (
-              <span key={label}>{label}</span>
-            ))}
-          </div>
-        </div>
-        <LiveMarket symbols="EURUSD,GBPUSD,USDJPY,DXY" />
-      </section>
-
-      <section className="app-section app-section--split">
-        <div>
-          <p className="eyebrow">Fixed income</p>
-          <h2>Rates curve & bonds</h2>
-          <div className="widget-strip">
-            {["3M", "5Y", "10Y", "30Y", "Aggregate", "IG", "High yield"].map((label) => (
-              <span key={label}>{label}</span>
-            ))}
-          </div>
-        </div>
-        <LiveMarket symbols="UST3M,UST5Y,UST10Y,UST30Y,BOND_AGG,BOND_IG,BOND_HY" />
-      </section>
-
-      <section className="app-section">
-        <div className="app-section__heading">
-          <p className="eyebrow">AI recommendations</p>
-          <h2>Highest priority opportunities</h2>
-        </div>
-        <div className="app-grid app-grid--three">
-          {topOpportunities.map((opportunity) => (
-            <article className="app-card" key={opportunity.name}>
-              <span>{opportunity.category}</span>
-              <strong>{opportunity.score}</strong>
-              <h3>{opportunity.name}</h3>
-              <p>{opportunity.thesis}</p>
-              <div className="recommendation">{opportunity.recommendation}</div>
-            </article>
+      <div className="dash-workspace">
+        <div className="dash-main">
+          {dashboardLaunchpad.map((group) => (
+            <section className="launch-group" key={group.section}>
+              <p className="eyebrow">{group.section}</p>
+              <div className="launch-grid">
+                {group.items.map((item) => {
+                  const Icon = launchIcons[item.label] ?? ArrowUpRight;
+                  return (
+                    <Link className="launch-card" href={item.href} key={item.href}>
+                      <span className="launch-card__icon">
+                        <Icon size={20} strokeWidth={1.75} aria-hidden />
+                      </span>
+                      <span className="launch-card__body">
+                        <span className="launch-card__title">
+                          <h3>{item.label}</h3>
+                          <ArrowUpRight className="launch-card__go" size={15} aria-hidden />
+                        </span>
+                        <p>{item.blurb}</p>
+                        <span className="launch-card__meta">{item.meta}</span>
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
           ))}
         </div>
-      </section>
+
+        <aside className="dash-rail" aria-label="At a glance">
+          <section className="rail-card">
+            <p className="eyebrow">Coverage</p>
+            <ul className="rail-stats">
+              {coverageStats.map((stat) => (
+                <li key={stat.label}>
+                  <span>{stat.label}</span>
+                  <strong>{stat.value}</strong>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="rail-card">
+            <div className="rail-card__head">
+              <p className="eyebrow">Watch list</p>
+              <Link href="/opportunities">View all</Link>
+            </div>
+            <ul className="rail-watch">
+              {watchlist.map((item) => (
+                <li key={item.name}>
+                  <span className={`rail-dot rail-dot--${item.tone}`} aria-hidden />
+                  <span className="rail-watch__body">
+                    <span className="rail-watch__name">{item.name}</span>
+                    <span className="rail-watch__meta">{item.meta}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="rail-card">
+            <p className="eyebrow">Market snapshot</p>
+            <LiveMarket symbols="BTC,GOLD,SPX,UST10Y,INFLATION" />
+          </section>
+        </aside>
+      </div>
     </AppShell>
   );
 }

@@ -18,6 +18,7 @@ import {
   Workflow,
   type LucideIcon
 } from "lucide-react";
+import { GlobalSearch } from "@/components/global-search";
 import { Logo } from "@/components/logo";
 import { MarketTicker } from "@/components/market-ticker";
 
@@ -69,9 +70,9 @@ const utility: TocItem[] = [
 ];
 
 type AppShellProps = {
-  eyebrow: string;
-  title: string;
-  description: string;
+  eyebrow?: string;
+  title?: string;
+  description?: string;
   children: ReactNode;
 };
 
@@ -83,12 +84,7 @@ export function AppShell({ eyebrow, title, description, children }: AppShellProp
           <Logo size={26} />
           <span>JHI Research &amp; Analytics</span>
         </Link>
-        <input
-          className="app-search"
-          type="search"
-          placeholder="Search companies, transactions, filings…"
-          aria-label="Global search"
-        />
+        <GlobalSearch />
         <div className="app-topbar__actions">
           <Link className="app-topbar__ai" href="/assistant">
             Ask JHI
@@ -126,11 +122,13 @@ export function AppShell({ eyebrow, title, description, children }: AppShellProp
 
         <div className="app-main">
           <MarketTicker />
-          <section className="app-hero app-hero--compact">
-            <p className="eyebrow">{eyebrow}</p>
-            <h1>{title}</h1>
-            <p>{description}</p>
-          </section>
+          {title && (
+            <section className="app-hero app-hero--compact">
+              {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+              <h1>{title}</h1>
+              {description && <p>{description}</p>}
+            </section>
+          )}
           {children}
         </div>
       </div>
