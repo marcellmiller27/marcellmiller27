@@ -26,7 +26,7 @@ const groupHeadStyle = {
   padding: "0.5rem 0.75rem",
   background: "var(--border)",
   fontWeight: 800,
-  fontSize: "0.72rem",
+  fontSize: "var(--fs-xs)",
   textTransform: "uppercase" as const,
   letterSpacing: "0.04em"
 };
@@ -67,8 +67,8 @@ function money(v: string | number): string {
   return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-const cellStyle = { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--border)", fontSize: "0.85rem" } as const;
-const headStyle = { ...cellStyle, textAlign: "left" as const, color: "var(--muted)", fontWeight: 800, fontSize: "0.75rem", textTransform: "uppercase" as const };
+const cellStyle = { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--border)", fontSize: "var(--fs-sm)" } as const;
+const headStyle = { ...cellStyle, textAlign: "left" as const, color: "var(--muted)", fontWeight: 800, fontSize: "var(--fs-xs)", textTransform: "uppercase" as const };
 
 const PERIOD_START = "2020-01-01";
 const PERIOD_END = "2030-12-31";
@@ -180,7 +180,7 @@ export function LiveAccounting() {
               Balances{" "}
               <span
                 style={{
-                  fontSize: "0.8rem",
+                  fontSize: "var(--fs-sm)",
                   fontWeight: 800,
                   color: trial.is_balanced ? "var(--growth)" : "#c0392b"
                 }}
@@ -236,7 +236,7 @@ export function LiveAccounting() {
             <article className="app-card" key={e.id} style={{ marginBottom: "0.8rem" }}>
               <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "0.5rem" }}>
                 <strong>{e.memo}</strong>
-                <span style={{ color: "var(--muted)", fontSize: "0.8rem" }}>
+                <span style={{ color: "var(--muted)", fontSize: "var(--fs-sm)" }}>
                   {e.entry_date} · {e.source_module}
                 </span>
               </div>
@@ -268,7 +268,7 @@ export function LiveAccounting() {
           <h2>Operational metrics (8000 series)</h2>
         </div>
         <article className="app-card" style={{ overflowX: "auto" }}>
-          <p style={{ color: "var(--muted)", fontSize: "0.85rem", marginTop: 0 }}>
+          <p style={{ color: "var(--muted)", fontSize: "var(--fs-sm)", marginTop: 0 }}>
             Tracked alongside the ledger for management insight — these are{" "}
             <span style={{ fontWeight: 700 }}>not</span> general-ledger accounts and do not post to the
             trial balance.
@@ -299,7 +299,7 @@ const inputStyle = {
   padding: "0.45rem 0.55rem",
   borderRadius: "8px",
   border: "1px solid var(--border)",
-  fontSize: "0.85rem",
+  fontSize: "var(--fs-sm)",
   background: "var(--surface, #fff)",
   color: "inherit",
   width: "100%"
@@ -426,7 +426,7 @@ function JournalEntryForm({ accounts, onPosted }: { accounts: Account[]; onPoste
             background: open ? "transparent" : "var(--growth, #1f7a4d)",
             color: open ? "inherit" : "#fff",
             fontWeight: 700,
-            fontSize: "0.85rem",
+            fontSize: "var(--fs-sm)",
             cursor: "pointer"
           }}
         >
@@ -437,11 +437,11 @@ function JournalEntryForm({ accounts, onPosted }: { accounts: Account[]; onPoste
       {open ? (
         <article className="app-card">
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
-            <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem", fontSize: "0.75rem", fontWeight: 700, color: "var(--muted)", textTransform: "uppercase" }}>
+            <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem", fontSize: "var(--fs-xs)", fontWeight: 700, color: "var(--muted)", textTransform: "uppercase" }}>
               Date
               <input type="date" value={entryDate} onChange={(e) => setEntryDate(e.target.value)} style={{ ...inputStyle, width: "170px" }} />
             </label>
-            <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem", fontSize: "0.75rem", fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", flex: 1, minWidth: "220px" }}>
+            <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem", fontSize: "var(--fs-xs)", fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", flex: 1, minWidth: "220px" }}>
               Memo
               <input
                 type="text"
@@ -521,7 +521,7 @@ function JournalEntryForm({ accounts, onPosted }: { accounts: Account[]; onPoste
                           background: "transparent",
                           cursor: lines.length <= 2 ? "not-allowed" : "pointer",
                           color: lines.length <= 2 ? "var(--border)" : "#c0392b",
-                          fontSize: "1.1rem",
+                          fontSize: "var(--fs-xl)",
                           lineHeight: 1
                         }}
                       >
@@ -554,14 +554,14 @@ function JournalEntryForm({ accounts, onPosted }: { accounts: Account[]; onPoste
                   background: "transparent",
                   cursor: "pointer",
                   fontWeight: 700,
-                  fontSize: "0.8rem"
+                  fontSize: "var(--fs-sm)"
                 }}
               >
                 + Add line
               </button>
               <span
                 style={{
-                  fontSize: "0.8rem",
+                  fontSize: "var(--fs-sm)",
                   fontWeight: 800,
                   color: balanced ? "var(--growth)" : "#c0392b"
                 }}
@@ -580,7 +580,7 @@ function JournalEntryForm({ accounts, onPosted }: { accounts: Account[]; onPoste
                 background: canPost ? "var(--growth, #1f7a4d)" : "var(--border)",
                 color: "#fff",
                 fontWeight: 800,
-                fontSize: "0.9rem",
+                fontSize: "var(--fs-base)",
                 cursor: canPost ? "pointer" : "not-allowed"
               }}
             >
@@ -592,7 +592,7 @@ function JournalEntryForm({ accounts, onPosted }: { accounts: Account[]; onPoste
             <p
               style={{
                 marginTop: "0.75rem",
-                fontSize: "0.85rem",
+                fontSize: "var(--fs-sm)",
                 fontWeight: 700,
                 color: message.ok ? "var(--growth)" : "#c0392b"
               }}
