@@ -2326,6 +2326,12 @@ li::before {
   color: var(--muted);
   font-size: var(--fs-sm);
 }
+.news__byline {
+  margin: 0.15rem 0 0;
+  color: var(--muted-strong);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
 .news__lede {
   margin-bottom: var(--space-5);
 }

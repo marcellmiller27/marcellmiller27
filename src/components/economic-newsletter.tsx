@@ -177,6 +177,7 @@ export function EconomicNewsletter() {
         <p className="eyebrow">JHI Research &amp; Analytics · Economic Tracking</p>
         <h2>The Economic Brief</h2>
         <p className="news__edition">Edition of {edition}</p>
+        <p className="news__byline">By Ellery Vance · VP of Editorial, JHI Research &amp; Analytics (AI)</p>
       </header>
 
       <section className="news__lede">
