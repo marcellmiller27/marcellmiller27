@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { intelligenceReports, marketSignals } from "@/lib/platform-data";
 
@@ -8,6 +9,9 @@ export default function ReportsPage() {
       title="Generate branded investment intelligence reports"
       description="Package macro signals, crypto cycles, acquisition screens, and dividend opportunities into subscriber-ready newsletters and PDF reports."
     >
+      <p className="rec-crumb">
+        <Link href="/newsletters">Generate the Economic Tracking newsletter →</Link>
+      </p>
       <section className="app-grid app-grid--two">
         {intelligenceReports.map((report) => (
           <article className="report-card" key={report.title}>

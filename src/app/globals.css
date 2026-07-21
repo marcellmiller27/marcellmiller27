@@ -2297,6 +2297,139 @@ li::before {
   line-height: 1.5;
 }
 
+/* ── Economic Tracking newsletter (auto-generated) ── */
+.news {
+  max-width: 760px;
+  margin: 0 auto;
+  background: var(--background-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-6) var(--space-6) var(--space-5);
+}
+.news__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-3);
+}
+.news__masthead {
+  border-bottom: 2px solid var(--text);
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.news__masthead h2 {
+  margin: 0.2rem 0 0;
+  font-size: var(--fs-4xl);
+  letter-spacing: -0.02em;
+}
+.news__edition {
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+.news__lede {
+  margin-bottom: var(--space-5);
+}
+.news__lede h3,
+.news__section h3 {
+  margin: 0 0 0.4rem;
+  font-size: var(--fs-xl);
+  color: var(--text);
+}
+.news__lede p {
+  margin: 0;
+  font-size: var(--fs-lg);
+  line-height: 1.6;
+  color: var(--text);
+}
+.news__section {
+  margin-bottom: var(--space-5);
+}
+.news__blurb {
+  margin: 0 0 var(--space-3);
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+.news__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.news li {
+  padding-left: 0;
+}
+.news li::before {
+  content: none;
+}
+.news__row {
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-2);
+}
+.news__row-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.news__metric {
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.news__value {
+  font-size: var(--fs-lg);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.news__note {
+  margin: 0.2rem 0 0;
+  color: var(--muted-strong);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+.news__source {
+  margin: 0.15rem 0 0;
+  color: var(--muted);
+  font-size: var(--fs-2xs);
+}
+.news__footer {
+  margin-top: var(--space-5);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-3);
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+}
+.news__disclaimer {
+  margin-top: 0.4rem;
+  font-style: italic;
+}
+
+@media print {
+  .app-topbar,
+  .app-sidebar,
+  .market-ticker,
+  .app-menu-btn,
+  .app-hero--compact,
+  .rec-crumb,
+  .news__actions {
+    display: none !important;
+  }
+  .app-root,
+  .app-main {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+  }
+  .news {
+    max-width: none;
+    border: 0;
+    padding: 0;
+  }
+}
+
 /* ── Global search form (top bar) ── */
 .app-search-form {
   flex: 1;
