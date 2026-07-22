@@ -97,6 +97,52 @@ export default function TeamPage() {
 
       <section className="app-section">
         <div className="app-section__heading">
+          <p className="eyebrow">Research &amp; editorial</p>
+          <h2>Who authors the intelligence</h2>
+        </div>
+        <div
+          className="team-grid"
+          style={{ gridTemplateColumns: "300px", justifyContent: "start" }}
+        >
+          <article className="team-card">
+            <div className="team-card__photo" style={monogramStyle}>
+              EV
+            </div>
+            <div className="team-card__body">
+              <span className="team-card__role">VP of Editorial</span>
+              <h3 className="team-card__name">Ellery Vance</h3>
+              <p className="team-card__persona">
+                The firm&apos;s AI editorial lead — authors every newsletter, insider brief, and
+                red alert, with depth across all asset classes.
+              </p>
+              <div className="output-tags">
+                {[
+                  "Newsletters & updates",
+                  "Insider briefs",
+                  "Red alerts",
+                  "Cross-asset opportunities",
+                  "Depth research"
+                ].map((tag) => (
+                  <span className="tag" key={tag}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <p className="team-card__bg">
+                Ellery leads JHI&apos;s editorial desk — turning the data the platform polls into
+                published intelligence: recurring updates, deep-dive insider briefs, time-sensitive
+                red alerts, and opportunity scans that surface unforeseen ideas across equities,
+                credit, real assets, private markets, and digital assets. Written in JHI&apos;s
+                independent professional perspective; human-directed and published via review.
+              </p>
+              <span className="m-pill m-pill--on">Human-directed · published via review</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section className="app-section">
+        <div className="app-section__heading">
           <p className="eyebrow">Customer-service team</p>
           <h2>Five specialized AI support agents</h2>
         </div>
