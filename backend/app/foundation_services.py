@@ -137,6 +137,8 @@ class FoundationService:
         return self._auth_response(user, organization, membership, subscription)
 
     def me(self, principal: Principal) -> MeResponse:
+        from app.rbac import is_staff
+
         user = self.db.get(UserDB, principal.user_id)
         organization = self.db.get(OrganizationDB, principal.organization_id)
         subscription = self._current_subscription(principal.organization_id)
@@ -145,6 +147,7 @@ class FoundationService:
             organization=organization_read(organization),
             role=principal.role,
             subscription=subscription_read(subscription),
+            is_staff=is_staff(principal),
         )
 
     def billing_plans(self) -> list[BillingPlan]:
