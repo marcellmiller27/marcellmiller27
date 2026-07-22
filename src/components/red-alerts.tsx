@@ -4,6 +4,9 @@
 import { useEffect, useState } from "react";
 import { editionDate, fetchQuotes, type QuoteMap } from "@/lib/newsletter-format";
 import { EditorialByline } from "@/components/editorial-byline";
+import { UpgradeGate } from "@/components/upgrade-gate";
+import { useRole } from "@/components/role-provider";
+import { canFullNewsletter } from "@/lib/roles";
 
 type Severity = "High" | "Medium" | "Low";
 type Alert = { severity: Severity; title: string; detail: string; classes: string[] };
@@ -81,6 +84,7 @@ function buildAlerts(map: QuoteMap): Alert[] {
 }
 
 export function RedAlerts() {
+  const { role } = useRole();
   const [map, setMap] = useState<QuoteMap>({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -106,7 +110,9 @@ export function RedAlerts() {
   if (loading) return <p className="rec-empty">Scanning the live feed for triggered alerts…</p>;
   if (error) return <p className="rec-empty">Unable to reach the data service ({error}).</p>;
 
-  const alerts = buildAlerts(map);
+  const full = canFullNewsletter(role);
+  const allAlerts = buildAlerts(map);
+  const alerts = full ? allAlerts : allAlerts.slice(0, 1);
 
   return (
     <article className="news">
@@ -147,6 +153,8 @@ export function RedAlerts() {
           ))}
         </ul>
       )}
+
+      {!full && allAlerts.length > 0 && <UpgradeGate />}
 
       <footer className="news__footer">
         <p>

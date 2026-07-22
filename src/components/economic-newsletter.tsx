@@ -9,6 +9,9 @@ import {
   type QuoteMap
 } from "@/lib/newsletter-format";
 import { EditorialByline } from "@/components/editorial-byline";
+import { UpgradeGate } from "@/components/upgrade-gate";
+import { useRole } from "@/components/role-provider";
+import { canFullNewsletter } from "@/lib/roles";
 
 type Section = { heading: string; blurb: string; symbols: string[] };
 
@@ -101,6 +104,7 @@ function headline(map: QuoteMap): string {
 }
 
 export function EconomicNewsletter() {
+  const { role } = useRole();
   const [map, setMap] = useState<QuoteMap>({});
   const [asOf, setAsOf] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -131,6 +135,9 @@ export function EconomicNewsletter() {
   if (error)
     return <p className="rec-empty">Unable to reach the data service ({error}). Try again shortly.</p>;
 
+  const full = canFullNewsletter(role);
+  const sections = full ? SECTIONS : SECTIONS.slice(0, 1);
+
   return (
     <article className="news">
       <div className="news__actions">
@@ -151,7 +158,7 @@ export function EconomicNewsletter() {
         <p>{headline(map)}</p>
       </section>
 
-      {SECTIONS.map((section) => (
+      {sections.map((section) => (
         <section className="news__section" key={section.heading}>
           <h3>{section.heading}</h3>
           <p className="news__blurb">{section.blurb}</p>
@@ -173,6 +180,8 @@ export function EconomicNewsletter() {
           </ul>
         </section>
       ))}
+
+      {!full && <UpgradeGate />}
 
       <footer className="news__footer">
         <p>

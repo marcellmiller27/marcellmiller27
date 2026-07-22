@@ -5,6 +5,7 @@ import { AppMenu } from "@/components/app-menu";
 import { GlobalSearch } from "@/components/global-search";
 import { Logo } from "@/components/logo";
 import { MarketTicker } from "@/components/market-ticker";
+import { RolePreviewSwitcher } from "@/components/role-preview-switcher";
 
 type AppShellProps = {
   eyebrow?: string;
@@ -24,6 +25,7 @@ export function AppShell({ eyebrow, title, description, children }: AppShellProp
         </Link>
         <GlobalSearch />
         <div className="app-topbar__actions">
+          <RolePreviewSwitcher />
           <Link className="app-topbar__ai" href="/assistant">
             Ask JHI
           </Link>
