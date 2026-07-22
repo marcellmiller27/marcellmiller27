@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { editionDate, fetchQuotes, type QuoteMap } from "@/lib/newsletter-format";
+import { EditorialByline } from "@/components/editorial-byline";
 
 type Severity = "High" | "Medium" | "Low";
 type Alert = { severity: Severity; title: string; detail: string; classes: string[] };
@@ -119,7 +120,7 @@ export function RedAlerts() {
         <p className="eyebrow">JHI Research &amp; Analytics · Red Alerts</p>
         <h2>Red Alerts</h2>
         <p className="news__edition">Edition of {editionDate()}</p>
-        <p className="news__byline">By Ellery Vance · VP of Editorial, JHI Research &amp; Analytics (AI)</p>
+        <EditorialByline />
       </header>
 
       {alerts.length === 0 ? (

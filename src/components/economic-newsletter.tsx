@@ -8,6 +8,7 @@ import {
   fmt,
   type QuoteMap
 } from "@/lib/newsletter-format";
+import { EditorialByline } from "@/components/editorial-byline";
 
 type Section = { heading: string; blurb: string; symbols: string[] };
 
@@ -142,7 +143,7 @@ export function EconomicNewsletter() {
         <p className="eyebrow">JHI Research &amp; Analytics · Economic Tracking</p>
         <h2>The Economic Brief</h2>
         <p className="news__edition">Edition of {edition}</p>
-        <p className="news__byline">By Ellery Vance · VP of Editorial, JHI Research &amp; Analytics (AI)</p>
+        <EditorialByline />
       </header>
 
       <section className="news__lede">
