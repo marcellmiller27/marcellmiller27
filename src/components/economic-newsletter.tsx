@@ -2,19 +2,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api/v1";
-
-type Quote = {
-  symbol: string;
-  name: string;
-  price: number | null;
-  unit: string;
-  change_percent: number | null;
-  status: string;
-  note: string | null;
-  as_of: string | null;
-};
+import {
+  editionDate,
+  fetchQuotes,
+  fmt,
+  type QuoteMap
+} from "@/lib/newsletter-format";
 
 type Section = { heading: string; blurb: string; symbols: string[] };
 
@@ -48,26 +41,6 @@ const SECTIONS: Section[] = [
 ];
 
 const ALL_SYMBOLS = Array.from(new Set(SECTIONS.flatMap((s) => s.symbols))).join(",");
-
-function fmt(q: Quote): string {
-  if (q.price === null || q.price === undefined) return "—";
-  const v = q.price;
-  switch (q.unit) {
-    case "%":
-      return `${v.toFixed(2)}%`;
-    case "index":
-      return v.toFixed(1);
-    case "USD bn":
-      return v >= 1000 ? `$${(v / 1000).toFixed(2)}T` : `$${v.toFixed(1)}B`;
-    case "USD mn":
-      return v >= 1000 ? `$${(v / 1000).toFixed(2)}B` : `$${v.toFixed(1)}M`;
-    case "USD/oz":
-    case "USD":
-      return `$${v.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
-    default:
-      return v.toLocaleString("en-US", { maximumFractionDigits: 2 });
-  }
-}
 
 // JHI professional-voice commentary, derived deterministically from the data.
 function commentary(symbol: string, v: number | null): string {
@@ -116,7 +89,7 @@ function commentary(symbol: string, v: number | null): string {
   }
 }
 
-function headline(map: Record<string, Quote>): string {
+function headline(map: QuoteMap): string {
   const ff = map.FED_FUNDS?.price;
   const cpi = map.INFLATION?.price;
   const un = map.UNEMPLOYMENT?.price;
@@ -127,21 +100,18 @@ function headline(map: Record<string, Quote>): string {
 }
 
 export function EconomicNewsletter() {
-  const [map, setMap] = useState<Record<string, Quote>>({});
+  const [map, setMap] = useState<QuoteMap>({});
   const [asOf, setAsOf] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let active = true;
-    fetch(`${API_BASE}/market/quotes?symbols=${encodeURIComponent(ALL_SYMBOLS)}`)
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
-      .then((d) => {
+    fetchQuotes(ALL_SYMBOLS)
+      .then(({ map: m, asOf: a }) => {
         if (!active) return;
-        const next: Record<string, Quote> = {};
-        for (const q of d.quotes ?? []) next[q.symbol] = q;
-        setMap(next);
-        setAsOf(d.as_of ?? new Date().toISOString());
+        setMap(m);
+        setAsOf(a);
         setLoading(false);
       })
       .catch((e) => {
@@ -154,12 +124,7 @@ export function EconomicNewsletter() {
     };
   }, []);
 
-  const edition = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  });
+  const edition = editionDate();
 
   if (loading) return <p className="rec-empty">Generating the latest edition from live data…</p>;
   if (error)

@@ -10,7 +10,7 @@ export default function ReportsPage() {
       description="Package macro signals, crypto cycles, acquisition screens, and dividend opportunities into subscriber-ready newsletters and PDF reports."
     >
       <p className="rec-crumb">
-        <Link href="/newsletters">Generate the Economic Tracking newsletter →</Link>
+        <Link href="/newsletters">Open the Newsletters desk (Economic Brief · Red Alerts · Opportunity Scan) →</Link>
       </p>
       <section className="app-grid app-grid--two">
         {intelligenceReports.map((report) => (

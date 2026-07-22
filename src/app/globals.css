@@ -2412,6 +2412,106 @@ li::before {
   font-style: italic;
 }
 
+/* Red Alerts */
+.alert-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.alert {
+  border: 1px solid var(--border);
+  border-left-width: 4px;
+  border-radius: var(--radius-md);
+  background: var(--background-card);
+  padding: var(--space-3) var(--space-4);
+}
+.alert::before {
+  content: none;
+}
+.alert--high {
+  border-left-color: #b23b34;
+}
+.alert--medium {
+  border-left-color: #d9822b;
+}
+.alert--low {
+  border-left-color: var(--muted);
+}
+.alert__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: 0.3rem;
+}
+.alert__sev {
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.alert--high .alert__sev {
+  background: rgba(178, 59, 52, 0.12);
+  color: #b23b34;
+}
+.alert--medium .alert__sev {
+  background: rgba(217, 130, 43, 0.16);
+  color: #b56a1c;
+}
+.alert--low .alert__sev {
+  background: rgba(15, 31, 51, 0.06);
+  color: var(--muted-strong);
+}
+.alert__title {
+  font-size: var(--fs-md);
+  color: var(--text);
+}
+.alert__detail {
+  margin: 0 0 var(--space-2);
+  color: var(--muted-strong);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+
+/* Opportunity Scan */
+.scan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-3);
+}
+.scan-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background-card);
+  padding: var(--space-3) var(--space-4);
+}
+.scan-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: 0.3rem;
+}
+.scan-card__class {
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+.scan-card__signal {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.scan-card__thesis {
+  margin: 0;
+  color: var(--muted-strong);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+
 @media print {
   .app-topbar,
   .app-sidebar,
