@@ -6,7 +6,7 @@ export default function ReportsPage() {
     <AppShell
       eyebrow="Research"
       title="Generate branded investment intelligence reports"
-      description="Package macro signals, crypto cycles, acquisition screens, and dividend opportunities into subscriber-ready newsletters and PDF reports."
+      description="Package economic signals, crypto cycles, acquisition screens, and dividend opportunities into subscriber-ready newsletters and PDF reports."
     >
       <section className="app-grid app-grid--two">
         {intelligenceReports.map((report) => (
@@ -28,7 +28,7 @@ export default function ReportsPage() {
 
       <section className="app-section">
         <div className="app-section__heading">
-          <p className="eyebrow">Macro dashboard feed</p>
+          <p className="eyebrow">Economics feed</p>
           <h2>Signals available for report generation</h2>
         </div>
         <div className="app-grid app-grid--three">

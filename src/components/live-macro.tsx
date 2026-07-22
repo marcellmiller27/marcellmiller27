@@ -117,7 +117,7 @@ export function LiveMacro() {
       </p>
       <div className="app-grid app-grid--three">
         <article className="app-card">
-          <span>US Macro · FRED</span>
+          <span>US Economy · FRED</span>
           <div className="macro-panel">
             {fred.length === 0 ? (
               <p className="live-market__muted">Loading…</p>
