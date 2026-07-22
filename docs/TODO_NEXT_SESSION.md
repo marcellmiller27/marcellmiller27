@@ -3,6 +3,51 @@
 Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 `docs/ROBUSTNESS_READINESS_GAP_ANALYSIS.md`.
 
+---
+
+## 🔝 Current Work Group (2026-07-21) — prioritized
+
+> Nomenclature sits at the top by Founder direction. **Nomenclature is living — it may
+> change as the product matures.** Standing rule: any kindergarten/elementary term is
+> upgraded to institutional-grade; two layers (institutional **display** names vs. stable
+> **internal** ids); dictated context headings use **Title Case**.
+
+### 1. 🟣 NOMENCLATURE (TOP — Founder mulling; will lock terms)
+- [ ] Finalize **List 1 (Macro scrub)** + **List 2 (elementary page titles)** → lock the institutional display names for discussion/approval.
+- [ ] Founder-decided so far: Economics page title "Macro Dashboard" → **Economic Tracking**; heading "Federal & global macro" → **Federal & Global Markets**.
+- [ ] On approval, execute the sweep in **one consistent pass** (display-only; internals untouched) — fold the macro items into **PR #92**.
+- [ ] Keep the two-layer rule + Title-Case convention applied in every future phase.
+
+### 2. 🔵 Open PRs — Founder review / merge (all based on `main`)
+- [ ] **#91** — Rule B monochrome + remove "/" hash-lines
+- [ ] **#92** — "Macro" → institutional nomenclature (+ pending finalization in item 1)
+- [ ] **#93** — same-origin `/api/v1` default (fixes FRED "Loading…" on forwarded ports)
+- [ ] **#94** — NASDAQ Founder resolution (subject **CLOSED**)
+- [ ] **#95** — NASDAQ 5-day trial line-item **5h** contingency + back-up data plan
+- [ ] **#96** — TOC → click-to-open **left** menu drawer (CapIQ/PitchBook pattern)
+
+### 3. 🟢 Build phases (foundation-first; each its own tested PR off `main`)
+- [ ] **Phase 3.1** — backend entity schema: Postgres nodes/edges (Transaction keystone) + `/api/v1/entities` router + idempotent seed; rewire `src/lib/entities.ts` to read the API. *(Unblocks Phases 4–5.)*
+- [ ] **Phase 4** — consolidate "Diligence a Target" on shared engines (Valuation · Risk · BQS; QoE separate) + **Buyer Match** and the LSR ↔ Buyer Match loop.
+- [ ] **Phase 5** — EDGAR-powered financials/valuation depth on records (graduate the "not yet mapped" facets); client-upload path later.
+- [ ] **Phase 6** — launch gates: **mobile parity decision**, RBAC/seat + billing enforcement, empty/error states.
+
+### 4. 🟠 NASDAQ / legal (`docs/legal/nasdaq/`)
+- [ ] Founder to **upload the new Order Form**; Cy pins the **5h** validation criteria (one-line pass/fail) from it.
+- [ ] If **5h fails** within the 5-day trial → **refute the MSA**, execute back-up (FMP → Tiingo → Intrinio → EODHD, + free EDGAR immediately).
+- [ ] Enforce **no data-set spillage** when wiring the Nasdaq Data Link feed (isolate licensed set, derived-only outputs, provenance tagging).
+- [ ] Seat basis in JHI's subscriber MSA: Tiers 1–3 = 1 user-seat; additional at current rates; revisit rate at 1,000 subs/seats.
+
+### 5. ⚪ Design / UX follow-ups
+- [ ] Review the **Rule B** outcome — option to go full-grayscale or two-tone if not loved (centralized on `.app-main` + `--severity`).
+- [ ] Align remaining **page titles/eyebrows** to the institutional menu labels (elementary List 2).
+- [ ] Optional: storefront "macro" pass + broader kindergarten audit beyond the app.
+
+### 6. 💡 Ideas meeting (when ready)
+Buyer Match design · data-sourcing depth (EDGAR vs. client-upload vs. modeled) · lock the monochrome-vs-accent design principle · 30-rep GTM alignment · mobile parity path.
+
+---
+
 ## Where we left off (2026-07-13) — CLEAN START
 **Merged to `main` today:** #48 (NAICS/posture), #49 (IP valuation — corrected: $0.0001 par → Common Stock $1,000 + APIC $399,000), #50 (commission ramp), #55 (System Admin design + 07-12 minutes), #56 (Cy Henry on Team), #57 (software audit + due-diligence binder), #58 (glossary/acronyms). Earlier: #51 (accounting), #52 (finance model + competitor), #59 (full Chart of Accounts + Documents page).
 
