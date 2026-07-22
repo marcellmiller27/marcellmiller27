@@ -31,6 +31,7 @@ const monogramStyle = {
 export default function TeamPage() {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [cyPhotoOk, setCyPhotoOk] = useState(true);
+  const [evPhotoOk, setEvPhotoOk] = useState(true);
 
   useEffect(() => {
     fetch(`${API_BASE}/agents`)
@@ -105,9 +106,19 @@ export default function TeamPage() {
           style={{ gridTemplateColumns: "300px", justifyContent: "start" }}
         >
           <article className="team-card">
-            <div className="team-card__photo" style={monogramStyle}>
-              EV
-            </div>
+            {evPhotoOk ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className="team-card__photo"
+                src="/team/vp-editorial.png"
+                alt="Ellery Vance, VP of Editorial"
+                onError={() => setEvPhotoOk(false)}
+              />
+            ) : (
+              <div className="team-card__photo" style={monogramStyle}>
+                EV
+              </div>
+            )}
             <div className="team-card__body">
               <span className="team-card__role">VP of Editorial</span>
               <h3 className="team-card__name">Ellery Vance</h3>
