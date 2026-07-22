@@ -99,7 +99,6 @@ export default function TeamPage() {
       <section className="app-section">
         <div className="app-section__heading">
           <p className="eyebrow">Research &amp; editorial</p>
-          <h2>Who authors the intelligence</h2>
         </div>
         <div
           className="team-grid"
