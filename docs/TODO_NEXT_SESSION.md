@@ -5,45 +5,57 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 
 ---
 
-## 🔝 Current Work Group (2026-07-21) — prioritized
+## 🔝 Current Work Group (2026-07-22) — prioritized
 
 > Nomenclature sits at the top by Founder direction. **Nomenclature is living — it may
 > change as the product matures.** Standing rule: any kindergarten/elementary term is
 > upgraded to institutional-grade; two layers (institutional **display** names vs. stable
 > **internal** ids); dictated context headings use **Title Case**.
 
-### 1. 🟣 NOMENCLATURE (TOP — Founder mulling; will lock terms)
-- [ ] Finalize **List 1 (Macro scrub)** + **List 2 (elementary page titles)** → lock the institutional display names for discussion/approval.
-- [ ] Founder-decided so far: Economics page title "Macro Dashboard" → **Economic Tracking**; heading "Federal & global macro" → **Federal & Global Markets**.
-- [ ] On approval, execute the sweep in **one consistent pass** (display-only; internals untouched) — fold the macro items into **PR #92**.
-- [ ] Keep the two-layer rule + Title-Case convention applied in every future phase.
+### ✅ Completed 2026-07-20 → 22 (merged to `main`)
+Rule B monochrome (#91) · "Macro" → "Economics" nomenclature + Title-Case heading (#92) ·
+same-origin API fix — FRED loads on forwarded ports (#93) · NASDAQ resolution / subject
+**closed** (#94) · 5-day trial **5h** contingency + back-up plan (#95) · TOC → **left** menu
+drawer (#96) · Work Group doc (#97) · **Editorial system** — newsletters (Economic Brief ·
+Red Alerts · Opportunity Scan) + **VP of Editorial (Ellery Vance)** + subscribe (#98) · board
+minutes 07-20 (#89) & 07-22 (#99). **Verified:** `main` clean — lint/build green, all routes
+200, cross-PR features integrated.
 
-### 2. 🔵 Open PRs — Founder review / merge (all based on `main`)
-- [ ] **#91** — Rule B monochrome + remove "/" hash-lines
-- [ ] **#92** — "Macro" → institutional nomenclature (+ pending finalization in item 1)
-- [ ] **#93** — same-origin `/api/v1` default (fixes FRED "Loading…" on forwarded ports)
-- [ ] **#94** — NASDAQ Founder resolution (subject **CLOSED**)
-- [ ] **#95** — NASDAQ 5-day trial line-item **5h** contingency + back-up data plan
-- [ ] **#96** — TOC → click-to-open **left** menu drawer (CapIQ/PitchBook pattern)
+### 🔵 Open PR — review / merge
+- [ ] **#100** — Ellery Vance portrait (Team card + byline on every edition) + dropped the redundant Team subheading.
+
+### 1. 🟣 NOMENCLATURE (TOP — Founder mulling; will lock terms)
+- [ ] Finalize **List 1 (Macro scrub)** + **List 2 (elementary page titles)** → lock institutional display names.
+- [ ] Founder-decided: Economics title → **Economic Tracking**; heading → **Federal & Global Markets** *(supersedes the shipped "Economics" / "Federal Policy & Global Economic Data" from #92 — reconcile on the sweep).*
+- [ ] On approval, execute the sweep in **one consistent pass** (display-only; internals untouched).
+- [ ] Keep the two-layer rule + Title-Case convention in every future phase.
+
+### 2. 🟠 Founder actions (unblock the next builds)
+- [ ] **Upload the new NASDAQ Order Form** → Cy pins the **5h** pass/fail test.
+- [ ] **Add email-provider (SES) credentials** to Secrets → Cy turns on newsletter email (Step B send).
+- [ ] Add `TWELVEDATA` / `NASDAQ_DATA_LINK` / `FUNDAMENTALS` keys to Secrets when ready (extra feeds).
 
 ### 3. 🟢 Build phases (foundation-first; each its own tested PR off `main`)
 - [ ] **Phase 3.1** — backend entity schema: Postgres nodes/edges (Transaction keystone) + `/api/v1/entities` router + idempotent seed; rewire `src/lib/entities.ts` to read the API. *(Unblocks Phases 4–5.)*
 - [ ] **Phase 4** — consolidate "Diligence a Target" on shared engines (Valuation · Risk · BQS; QoE separate) + **Buyer Match** and the LSR ↔ Buyer Match loop.
-- [ ] **Phase 5** — EDGAR-powered financials/valuation depth on records (graduate the "not yet mapped" facets); client-upload path later.
+- [ ] **Phase 5** — EDGAR-powered financials/valuation depth on records (graduate "not yet mapped"); client-upload path later.
 - [ ] **Phase 6** — launch gates: **mobile parity decision**, RBAC/seat + billing enforcement, empty/error states.
 
-### 4. 🟠 NASDAQ / legal (`docs/legal/nasdaq/`)
-- [ ] Founder to **upload the new Order Form**; Cy pins the **5h** validation criteria (one-line pass/fail) from it.
-- [ ] If **5h fails** within the 5-day trial → **refute the MSA**, execute back-up (FMP → Tiingo → Intrinio → EODHD, + free EDGAR immediately).
-- [ ] Enforce **no data-set spillage** when wiring the Nasdaq Data Link feed (isolate licensed set, derived-only outputs, provenance tagging).
-- [ ] Seat basis in JHI's subscriber MSA: Tiers 1–3 = 1 user-seat; additional at current rates; revisit rate at 1,000 subs/seats.
+### 4. ✍️ Editorial roadmap (VP of Editorial)
+- [ ] **Step B email send** (after SES creds): email-ready render + scheduler + unsubscribe/CAN-SPAM, behind `ENABLE_NEWSLETTER_EMAIL`.
+- [ ] New editions: **Insider Briefs** (depth deep-dives); expand Red Alerts / Opportunity Scans.
 
-### 5. ⚪ Design / UX follow-ups
-- [ ] Review the **Rule B** outcome — option to go full-grayscale or two-tone if not loved (centralized on `.app-main` + `--severity`).
+### 5. 🟠 NASDAQ / legal (`docs/legal/nasdaq/`)
+- [ ] If **5h fails** within the 5-day trial → refute the MSA, execute back-up (FMP → Tiingo → Intrinio → EODHD, + free EDGAR).
+- [ ] Enforce **no data-set spillage** when wiring Nasdaq Data Link (isolate licensed set, derived-only, provenance tags).
+- [ ] Seat basis: Tiers 1–3 = 1 user-seat; additional at current rates; revisit at 1,000 subs/seats.
+
+### 6. ⚪ Design / UX follow-ups
+- [ ] Review the **Rule B** outcome — full-grayscale or two-tone option (centralized on `.app-main` + `--severity`).
 - [ ] Align remaining **page titles/eyebrows** to the institutional menu labels (elementary List 2).
 - [ ] Optional: storefront "macro" pass + broader kindergarten audit beyond the app.
 
-### 6. 💡 Ideas meeting (when ready)
+### 7. 💡 Ideas meeting (when ready)
 Buyer Match design · data-sourcing depth (EDGAR vs. client-upload vs. modeled) · lock the monochrome-vs-accent design principle · 30-rep GTM alignment · mobile parity path.
 
 ---
