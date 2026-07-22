@@ -890,6 +890,7 @@ li::before {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: var(--background);
 }
 .app-topbar {
   position: sticky;
@@ -1014,8 +1015,99 @@ li::before {
   border-top: 1px solid var(--app-chrome-line);
   padding-top: var(--space-2);
 }
-.app-main {
+
+/* ── Menu drawer (click-to-open nav; mirrors the institutional "☰ MENU") ── */
+.app-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #fff;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.45rem 0.8rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-sm);
+}
+.app-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+.app-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  visibility: hidden;
+}
+.app-drawer--open {
+  visibility: visible;
+}
+.app-drawer__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(6, 18, 31, 0.55);
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.app-drawer--open .app-drawer__backdrop {
+  opacity: 1;
+}
+.app-drawer__panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 300px;
+  max-width: 86vw;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: var(--app-chrome);
+  box-shadow: 12px 0 40px rgba(6, 18, 31, 0.4);
+  padding: var(--space-3) var(--space-3) var(--space-5);
+  transform: translateX(-100%);
+  transition: transform 0.2s ease;
+}
+.app-drawer--open .app-drawer__panel {
+  transform: translateX(0);
+}
+.app-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+  font-weight: var(--fw-black);
+  font-size: var(--fs-sm);
+  padding: 0.2rem 0.55rem var(--space-2);
+}
+.app-drawer__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+}
+.app-drawer__close:hover {
+  color: #fff;
+}
+.app-drawer__panel .app-toc {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
   flex: 1;
+}
+
+.app-main {
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
   min-width: 0;
   background: var(--background);
   padding: 0 var(--space-5) var(--space-8);
