@@ -2731,6 +2731,66 @@ li::before {
   color: var(--text);
 }
 
+/* Auth form (login / register) */
+.auth-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+.auth-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background-card);
+  padding: var(--space-5);
+}
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.auth-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.auth-form label span {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--muted-strong);
+}
+.auth-form input,
+.auth-form select {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.8rem;
+  font-size: var(--fs-sm);
+  color: var(--text);
+  background: var(--background);
+}
+.auth-form .button {
+  margin-top: var(--space-2);
+}
+.auth-form__err {
+  margin: 0;
+  color: #b23b34;
+  font-size: var(--fs-sm);
+}
+.auth-alt {
+  margin: var(--space-3) 0 0;
+  font-size: var(--fs-sm);
+  color: var(--muted);
+}
+.auth-alt a {
+  color: var(--trust);
+  font-weight: var(--fw-semibold);
+}
+@media (max-width: 760px) {
+  .auth-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Upgrade gate (free → paid conversion wall) */
 .upgrade-gate {
   margin-top: var(--space-4);
