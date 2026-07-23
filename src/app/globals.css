@@ -644,16 +644,8 @@ ul {
 }
 
 li {
-  position: relative;
-  padding: 0.35rem 0 0.35rem 1.2rem;
+  padding: 0.35rem 0;
   color: var(--muted-strong);
-}
-
-li::before {
-  position: absolute;
-  left: 0;
-  color: var(--gold);
-  content: "/";
 }
 
 .pricing-card footer {
