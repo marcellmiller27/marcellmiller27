@@ -48,6 +48,7 @@ class Edition:
     groups: list[Group]
     footer: str
     disclaimer: str
+    methodology: str
     teaser: bool = False
 
 
@@ -58,6 +59,15 @@ EDITION_SLUGS = ("economic-brief", "red-alerts", "opportunity-scan")
 _DISCLAIMER = (
     "For research and educational purposes only. Not investment, legal, tax, or "
     "accounting advice. Written in JHI's independent professional perspective."
+)
+
+# Methodology disclosure — the institutional standard from docs/EDITORIAL_STYLE_GUIDE.md (E1).
+# Kept identical to the on-screen note so screen and PDF match verbatim.
+METHODOLOGY = (
+    "This edition is generated deterministically from JHI's polled public-data feeds "
+    "(Federal Reserve/FRED · U.S. Bureau of Labor Statistics · BEA · market feeds). "
+    "Commentary is rule-based on disclosed thresholds; figures are shown as last released "
+    "(see 'as of'). It is an independent professional read, not a forecast or advice."
 )
 
 
@@ -286,7 +296,7 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
             dateline=dateline, intro=intro, groups=groups,
             footer="Sourced from public data — Federal Reserve (FRED), U.S. Bureau of Labor "
                    "Statistics, and market feeds. Figures are as last released.",
-            disclaimer=_DISCLAIMER, teaser=not full)
+            disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full)
 
     if slug == "red-alerts":
         alerts = _build_alerts(m)
@@ -299,7 +309,7 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
             intro=intro, groups=[Group(heading="Triggered alerts", items=shown)] if shown else [],
             footer="Triggered from public data (FRED · BLS · market feeds). Thresholds are "
                    "indicative, not trading signals.",
-            disclaimer=_DISCLAIMER, teaser=not full)
+            disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full)
 
     # opportunity-scan
     ideas = _build_scan(m)
@@ -312,4 +322,4 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
         groups=[Group(heading="Opportunities by asset class", items=shown)],
         footer="Ideas are generated from public data (FRED · BLS · market feeds), written in "
                "JHI's independent professional perspective.",
-        disclaimer=_DISCLAIMER, teaser=not full)
+        disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full)

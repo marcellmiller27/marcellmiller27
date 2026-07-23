@@ -10,6 +10,7 @@ import {
 } from "@/lib/newsletter-format";
 import { EditorialByline } from "@/components/editorial-byline";
 import { NewsletterDownloadButton } from "@/components/newsletter-download-button";
+import { NewsletterMethodology } from "@/components/newsletter-methodology";
 import { UpgradeGate } from "@/components/upgrade-gate";
 import { useRole } from "@/components/role-provider";
 import { canFullNewsletter } from "@/lib/roles";
@@ -179,6 +180,8 @@ export function EconomicNewsletter() {
       ))}
 
       {!full && <UpgradeGate />}
+
+      <NewsletterMethodology />
 
       <footer className="news__footer">
         <p>

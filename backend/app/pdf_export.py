@@ -160,6 +160,9 @@ def newsletter_pdf(edition: Edition) -> bytes:
             "available to JHI subscribers. Upgrade at johnhenry to unlock the complete brief.",
             _BODY))
 
+    flow.append(Paragraph("Methodology &amp; sources", _H))
+    flow.append(Paragraph(edition.methodology, _SMALL))
+
     flow.append(Spacer(1, 10))
     flow.append(Paragraph(f"Prepared by {ENTITY}. {edition.footer}", _SMALL))
     flow.append(Paragraph(edition.disclaimer, _SMALL))
