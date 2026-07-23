@@ -91,6 +91,7 @@ class MeResponse(BaseModel):
     organization: OrganizationRead
     role: UserRole
     subscription: SubscriptionRead
+    is_staff: bool = False
 
 
 class BillingPlan(BaseModel):
@@ -115,6 +116,18 @@ class CheckoutSessionResponse(BaseModel):
     plan: SubscriptionPlan
     status: str
     message: str
+
+
+class CancelSubscriptionRequest(BaseModel):
+    # A cancellation reason is required and must read as a complete sentence so the
+    # audit trail captures a substantive, human-readable explanation (not "n/a").
+    reason: str
+
+
+class CancelSubscriptionResponse(BaseModel):
+    subscription: SubscriptionRead
+    effective_date: datetime
+    reason: str
 
 
 class BillingWebhookEvent(BaseModel):

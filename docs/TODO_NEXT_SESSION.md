@@ -5,7 +5,7 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 
 ---
 
-## 🔝 Current Work Group (2026-07-22, updated) — prioritized
+## 🔝 Current Work Group (2026-07-23) — prioritized
 
 > Nomenclature is living (Founder). Standing rule: kindergarten/elementary terms → institutional-grade;
 > two layers (institutional **display** names vs. stable **internal** ids); dictated headings use **Title Case**.
@@ -17,8 +17,24 @@ drawer (#96) · Work Group (#97, #101) · **Editorial system** — newsletters +
 + subscribe (#98) · **Ellery portrait** on Team + every byline (#100) · **42 Macro competitor audit** (#102) ·
 **Editorial-access module (A)** — role-aware menu + free/paid teaser gating (#103) · board minutes (#89, #99).
 
+### ✅ Completed 2026-07-23 (merged to `main`)
+RBAC foundation (#104) · Newsletter server-side PDF, role-aware (#109) · **Re-land** of institutional
+type-scale + two-step subscription cancellation + god-eye menu fix (#115, replacing the falsely-"merged"
+#108) · Editorial **E1** house style + methodology disclosure (#113) · board minutes 07-23 + storefront
+hash-marks removed (#110) · launch-readiness package (#112) · **E2 vendor shortlist** (#114).
+
 ### 🔵 Open PR — review / merge
-- [ ] **#104** — **Real login/logout + server-side route enforcement (RBAC, exe B)**: `proxy.ts` blocks product routes for the unauthenticated; real auth forms; role derived from the auth cookie.
+- [ ] **#106** — Back-office / ERP build plan (docs).
+- [ ] **#107** — Enterprise architecture review (docs).
+- [ ] **#105** — this Work Group refresh.
+- [x] **Close #108** (superseded by #115) and **#111** (Newsletter link already on `main` via #104).
+
+### 🆕 New this session (2026-07-23) — Founder review feedback
+- [ ] **🔴 Institutional-grade storefront copy rewrite.** The marketing descriptions (home hero, "What you get", "How it works", "Who it's for", pricing feature lines) are **not** the professional voice required for **JHI Research & Analytics Firm, Inc.** *Founder to provide voice/scope; then Cy executes the rewrite.* Also **reconcile the legacy "John Henry Investments" brand mark** on the home hero to the single institutional entity name. (Board minutes 2026-07-23 §5.)
+- [ ] **🟡 Activate "Generate report preview."** Root cause: unwired placeholder button (no `onClick`) on `src/app/reports/page.tsx`. Proposed: wire report cards to the #109 server-side PDF engine / matching `/newsletters` edition. *Needs founder authorization on the report→output mapping* (3 editions vs. 4 report cards). (Board minutes 2026-07-23 §6.)
+- [x] **Hash-marks removed on the storefront** (gold "/" list markers on pricing/marketing lists). In-app + newsletters were already clean (Rule B #91). (Board minutes 2026-07-23 §7.)
+- [ ] **Per-plan feature/seat gating** (clarified): not enforced yet — scheduled at **Gatekeeper P0** (mechanism) → **P1** (entitlements + seat self-management) → **Phase 6** (full seat/billing + premium-route enforcement).
+>>>>>>> origin/main
 
 ### 1. 🔴 Founder actions (unblock the next builds)
 - [ ] **Add `AUTH_JWT_SECRET` to Secrets** (strong value) — **without it the backend 500s on every login/register** (a dev secret was used to test #104). Blocks real auth in a fresh environment.

@@ -9,6 +9,8 @@ from app.dependencies import get_current_principal, require_admin
 from app.foundation_models import (
     AuditLogRead,
     BillingPlan,
+    CancelSubscriptionRequest,
+    CancelSubscriptionResponse,
     CheckoutSessionRequest,
     CheckoutSessionResponse,
     MeResponse,
@@ -40,6 +42,18 @@ def create_checkout_session(
     db: Annotated[Session, Depends(get_db)],
 ) -> CheckoutSessionResponse:
     return FoundationService(db).create_checkout_session(principal, payload)
+
+
+@router.post("/cancel", response_model=CancelSubscriptionResponse)
+def cancel_subscription(
+    payload: CancelSubscriptionRequest,
+    principal: Annotated[Principal, Depends(get_current_principal)],
+    db: Annotated[Session, Depends(get_db)],
+) -> CancelSubscriptionResponse:
+    try:
+        return FoundationService(db).cancel_subscription(principal, payload.reason)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @router.post("/webhook", response_model=SubscriptionRead)
