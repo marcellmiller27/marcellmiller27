@@ -91,6 +91,7 @@ class MeResponse(BaseModel):
     organization: OrganizationRead
     role: UserRole
     subscription: SubscriptionRead
+    is_staff: bool = False
 
 
 class BillingPlan(BaseModel):

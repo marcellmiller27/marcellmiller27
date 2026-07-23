@@ -4,6 +4,9 @@
 import { useEffect, useState } from "react";
 import { editionDate, fetchQuotes, fmt, type QuoteMap } from "@/lib/newsletter-format";
 import { EditorialByline } from "@/components/editorial-byline";
+import { UpgradeGate } from "@/components/upgrade-gate";
+import { useRole } from "@/components/role-provider";
+import { canFullNewsletter } from "@/lib/roles";
 
 type Idea = { assetClass: string; signal: string; thesis: string };
 
@@ -48,6 +51,7 @@ function buildScan(map: QuoteMap): Idea[] {
 }
 
 export function OpportunityScan() {
+  const { role } = useRole();
   const [map, setMap] = useState<QuoteMap>({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -73,7 +77,9 @@ export function OpportunityScan() {
   if (loading) return <p className="rec-empty">Scanning asset classes for opportunities…</p>;
   if (error) return <p className="rec-empty">Unable to reach the data service ({error}).</p>;
 
-  const ideas = buildScan(map);
+  const full = canFullNewsletter(role);
+  const allIdeas = buildScan(map);
+  const ideas = full ? allIdeas : allIdeas.slice(0, 2);
 
   return (
     <article className="news">
@@ -108,6 +114,8 @@ export function OpportunityScan() {
           </article>
         ))}
       </div>
+
+      {!full && <UpgradeGate />}
 
       <footer className="news__footer">
         <p>

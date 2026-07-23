@@ -2,9 +2,7 @@
 // JHI-SIG: 69M2705M | Accounting UI | JHI Research & Analytics Firm, Inc. (proprietary)
 
 import { Fragment, useCallback, useEffect, useState } from "react";
-
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api/v1";
+import { apiFetch } from "@/lib/api";
 
 type Account = { code: string; name: string; account_type: string; category?: string };
 
@@ -83,11 +81,11 @@ export function LiveAccounting() {
   const load = useCallback(
     () =>
       Promise.all([
-        fetch(`${API_BASE}/accounting/chart-of-accounts`).then((r) => (r.ok ? r.json() : Promise.reject(r))),
-        fetch(`${API_BASE}/accounting/trial-balance?period_start=${PERIOD_START}&period_end=${PERIOD_END}`).then((r) =>
+        apiFetch(`/accounting/chart-of-accounts`).then((r) => (r.ok ? r.json() : Promise.reject(r))),
+        apiFetch(`/accounting/trial-balance?period_start=${PERIOD_START}&period_end=${PERIOD_END}`).then((r) =>
           r.ok ? r.json() : Promise.reject(r)
         ),
-        fetch(`${API_BASE}/accounting/journal-entries`).then((r) => (r.ok ? r.json() : Promise.reject(r)))
+        apiFetch(`/accounting/journal-entries`).then((r) => (r.ok ? r.json() : Promise.reject(r)))
       ]).then(([acc, tb, je]) => {
         setAccounts(acc);
         setTrial(tb);
@@ -383,7 +381,7 @@ function JournalEntryForm({ accounts, onPosted }: { accounts: Account[]; onPoste
           credit: toNumber(l.credit).toFixed(2)
         }))
       };
-      const res = await fetch(`${API_BASE}/accounting/journal-entries`, {
+      const res = await apiFetch(`/accounting/journal-entries`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
