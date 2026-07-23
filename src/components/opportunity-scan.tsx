@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { editionDate, fetchQuotes, fmt, type QuoteMap } from "@/lib/newsletter-format";
 import { EditorialByline } from "@/components/editorial-byline";
+import { NewsletterDownloadButton } from "@/components/newsletter-download-button";
 import { UpgradeGate } from "@/components/upgrade-gate";
 import { useRole } from "@/components/role-provider";
 import { canFullNewsletter } from "@/lib/roles";
@@ -83,11 +84,7 @@ export function OpportunityScan() {
 
   return (
     <article className="news">
-      <div className="news__actions">
-        <button type="button" className="button button--secondary" onClick={() => window.print()}>
-          Print / Save as PDF
-        </button>
-      </div>
+      <NewsletterDownloadButton slug="opportunity-scan" />
 
       <header className="news__masthead">
         <p className="eyebrow">JHI Research &amp; Analytics · Opportunity Scan</p>

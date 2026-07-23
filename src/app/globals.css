@@ -2487,7 +2487,14 @@ li::before {
 .news__actions {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-3);
   margin-bottom: var(--space-3);
+}
+.news__dl-error {
+  color: var(--severity);
+  font-size: var(--fs-sm);
+  font-weight: 700;
 }
 .news__masthead {
   border-bottom: 2px solid var(--text);
