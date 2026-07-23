@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { editionDate, fetchQuotes, type QuoteMap } from "@/lib/newsletter-format";
 import { EditorialByline } from "@/components/editorial-byline";
 import { NewsletterDownloadButton } from "@/components/newsletter-download-button";
+import { NewsletterMethodology } from "@/components/newsletter-methodology";
 import { UpgradeGate } from "@/components/upgrade-gate";
 import { useRole } from "@/components/role-provider";
 import { canFullNewsletter } from "@/lib/roles";
@@ -152,6 +153,8 @@ export function RedAlerts() {
       )}
 
       {!full && allAlerts.length > 0 && <UpgradeGate />}
+
+      <NewsletterMethodology />
 
       <footer className="news__footer">
         <p>
