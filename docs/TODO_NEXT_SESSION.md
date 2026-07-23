@@ -5,7 +5,7 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 
 ---
 
-## 🔝 Current Work Group (2026-07-22) — prioritized
+## 🔝 Current Work Group (2026-07-23) — prioritized
 
 > Nomenclature sits at the top by Founder direction. **Nomenclature is living — it may
 > change as the product matures.** Standing rule: any kindergarten/elementary term is
@@ -23,6 +23,14 @@ minutes 07-20 (#89) & 07-22 (#99). **Verified:** `main` clean — lint/build gre
 
 ### 🔵 Open PR — review / merge
 - [ ] **#100** — Ellery Vance portrait (Team card + byline on every edition) + dropped the redundant Team subheading.
+- [ ] **#108** — God-Eye (staff) access + reliable staff menu · institutional storefront type-scale · two-step subscription cancellation (full-sentence reason, red→green). *(Stacked on #104 RBAC — merge #104 first.)*
+- [ ] **#109** — Newsletter Print/PDF crash fix: server-side `GET /newsletters/{edition}/pdf` (reportlab) replacing `window.print()`; reusable for Step-B email.
+
+### 🆕 New this session (2026-07-23) — Founder review feedback
+- [ ] **🔴 Institutional-grade storefront copy rewrite.** The marketing descriptions (home hero, "What you get", "How it works", "Who it's for", pricing feature lines) are **not** the professional voice required for **JHI Research & Analytics Firm, Inc.** *Founder to provide voice/scope; then Cy executes the rewrite.* Also **reconcile the legacy "John Henry Investments" brand mark** on the home hero to the single institutional entity name. (Board minutes 2026-07-23 §5.)
+- [ ] **🟡 Activate "Generate report preview."** Root cause: unwired placeholder button (no `onClick`) on `src/app/reports/page.tsx`. Proposed: wire report cards to the #109 server-side PDF engine / matching `/newsletters` edition. *Needs founder authorization on the report→output mapping* (3 editions vs. 4 report cards). (Board minutes 2026-07-23 §6.)
+- [x] **Hash-marks removed on the storefront** (gold "/" list markers on pricing/marketing lists). In-app + newsletters were already clean (Rule B #91). (Board minutes 2026-07-23 §7.)
+- [ ] **Per-plan feature/seat gating** (clarified): not enforced yet — scheduled at **Gatekeeper P0** (mechanism) → **P1** (entitlements + seat self-management) → **Phase 6** (full seat/billing + premium-route enforcement).
 
 ### 1. 🟣 NOMENCLATURE (TOP — Founder mulling; will lock terms)
 - [ ] Finalize **List 1 (Macro scrub)** + **List 2 (elementary page titles)** → lock institutional display names.
