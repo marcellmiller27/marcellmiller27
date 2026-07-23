@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/app-shell";
+import { LogoutButton } from "@/components/logout-button";
 
 const accountFoundation = [
   {
@@ -38,6 +39,13 @@ export default function AccountPage() {
             <p>{item.note}</p>
           </article>
         ))}
+      </section>
+
+      <section className="app-section">
+        <div className="app-section__heading">
+          <p className="eyebrow">Session</p>
+        </div>
+        <LogoutButton />
       </section>
 
       <section className="app-section app-section--split">

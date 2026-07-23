@@ -55,10 +55,12 @@ export async function fetchQuotes(
 }
 
 // Download the server-generated PDF for an edition. Replaces window.print() (which
-// crashed the forwarded/desktop viewer). The editions are public, so a same-origin
-// fetch is sufficient; the browser saves the returned attachment.
+// crashed the forwarded/desktop viewer). Uses apiFetch so the auth token is
+// forwarded — subscribers/staff get the full edition, everyone else the teaser,
+// matching the on-screen role gate.
 export async function downloadNewsletterPdf(slug: string): Promise<void> {
-  const res = await fetch(`${NEWSLETTER_API_BASE}/newsletters/${slug}/pdf`);
+  const { apiFetch } = await import("@/lib/api");
+  const res = await apiFetch(`/newsletters/${slug}/pdf`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);
