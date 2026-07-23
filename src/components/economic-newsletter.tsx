@@ -9,6 +9,7 @@ import {
   type QuoteMap
 } from "@/lib/newsletter-format";
 import { EditorialByline } from "@/components/editorial-byline";
+import { NewsletterDownloadButton } from "@/components/newsletter-download-button";
 
 type Section = { heading: string; blurb: string; symbols: string[] };
 
@@ -133,11 +134,7 @@ export function EconomicNewsletter() {
 
   return (
     <article className="news">
-      <div className="news__actions">
-        <button type="button" className="button button--secondary" onClick={() => window.print()}>
-          Print / Save as PDF
-        </button>
-      </div>
+      <NewsletterDownloadButton slug="economic-brief" />
 
       <header className="news__masthead">
         <p className="eyebrow">JHI Research &amp; Analytics · Economic Tracking</p>
