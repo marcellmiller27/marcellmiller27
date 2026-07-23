@@ -41,8 +41,17 @@ and `docs/EDITORIAL_STYLE_GUIDE.md`.
 - **Observability / eval:** LangSmith, Arize Phoenix, or Weights & Biases — track hallucination, latency, cost, and drift (feeds E4 learning).
 - **E-sign / procurement:** standard MSA + DPA execution (legal).
 
-## 5. Recommendation
-- **Default path:** **Anthropic Claude or Azure OpenAI via a cloud we already use (AWS Bedrock or Azure)** — best balance of quality, enterprise data protection, no-train terms, and in-account isolation. **AWS Bedrock** is attractive because it gives **model portability + data-in-our-account** under one contract.
+## 5. Recommendation (ranked — and a clarification)
+**Important:** these are **not three like-for-like competitors.** **Claude is a model; Bedrock and
+Azure are platforms that host models.** Claude runs *on* AWS Bedrock (and GCP Vertex); Azure hosts
+OpenAI's **GPT** (not Claude). So the recommendation is a **model + platform pairing**, ranked:
+
+1. **AWS Bedrock hosting Anthropic Claude** *(platform + model together)* — **top pick.** Claude's institutional long-form quality and low hallucination, delivered inside **our AWS account** (data-in-account, no-train, IAM/VPC isolation) under **one contract**, with model portability (swap models without re-integrating).
+2. **Anthropic Claude — direct** *(or via GCP Vertex)* — same model, direct enterprise contract. Choose if we're **not** standardizing on AWS.
+3. **Azure OpenAI (GPT family)** — the **alternative**, best if we're a Microsoft/Azure shop. Note: Azure = GPT, **not** Claude.
+
+*(So to answer directly: it's not "1) Bedrock 2) Claude 3) Azure" as separate items — #1 is **Bedrock + Claude paired**; #2 is Claude direct; #3 is Azure/GPT as the alternative.)*
+
 - **Guardrails from day one:** the LLM only rephrases figures our deterministic engine produces (fact-lock). Never let it source numbers.
 - **Run a 2–3 vendor bake-off** on the same editions before signing: score on voice quality, factual fidelity (zero invented figures), latency, cost/edition, and contract terms.
 
