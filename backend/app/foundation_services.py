@@ -1,6 +1,6 @@
 import json
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -11,6 +11,7 @@ from app.foundation_models import (
     AuthResponse,
     BillingPlan,
     BillingWebhookEvent,
+    CancelSubscriptionResponse,
     CheckoutSessionRequest,
     CheckoutSessionResponse,
     LoginRequest,
@@ -148,6 +149,59 @@ class FoundationService:
             role=principal.role,
             subscription=subscription_read(subscription),
             is_staff=is_staff(principal),
+        )
+
+    @staticmethod
+    def _validate_cancellation_reason(reason: str) -> str:
+        """Require a complete-sentence explanation.
+
+        Mirrors the front-end red→green rule: a substantive reason must contain at
+        least four words and close with sentence-ending punctuation. This keeps the
+        audit trail human-readable instead of a terse "n/a".
+        """
+        cleaned = (reason or "").strip()
+        words = [w for w in re.split(r"\s+", cleaned) if w]
+        if len(cleaned) < 15 or len(words) < 4 or not re.search(r"[.!?]$", cleaned):
+            raise ValueError(
+                "A complete-sentence cancellation reason is required "
+                "(at least four words, ending with a period)."
+            )
+        return cleaned
+
+    def cancel_subscription(self, principal: Principal, reason: str) -> CancelSubscriptionResponse:
+        cleaned = self._validate_cancellation_reason(reason)
+        subscription = self._current_subscription(principal.organization_id)
+
+        # Cancellation is retention-friendly: access continues until the end of the
+        # current paid period. If no period end is on file, grant a short grace window.
+        now = datetime.now(timezone.utc)
+        period_end = subscription.current_period_end
+        if period_end is not None and period_end.tzinfo is None:
+            period_end = period_end.replace(tzinfo=timezone.utc)
+        effective_date = period_end if period_end and period_end > now else now + timedelta(days=2)
+
+        subscription.status = SubscriptionStatus.CANCELED.value
+        subscription.current_period_end = effective_date
+        self.db.flush()
+
+        self.audit(
+            action="subscription.canceled",
+            resource_type="subscription",
+            resource_id=subscription.id,
+            organization_id=principal.organization_id,
+            actor_user_id=principal.user_id,
+            event={
+                "reason": cleaned,
+                "effective_date": effective_date.isoformat(),
+                "plan": subscription.plan,
+            },
+        )
+        self.db.commit()
+        self.db.refresh(subscription)
+        return CancelSubscriptionResponse(
+            subscription=subscription_read(subscription),
+            effective_date=effective_date,
+            reason=cleaned,
         )
 
     def billing_plans(self) -> list[BillingPlan]:
