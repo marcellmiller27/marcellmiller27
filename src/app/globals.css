@@ -48,8 +48,8 @@
   --fs-3xl: 1.625rem;   /* 26px — h2 */
   --fs-4xl: 2.125rem;   /* 34px — large headings */
   --fs-5xl: 2.625rem;   /* 42px — display */
-  --fs-lead: clamp(1.0625rem, 2vw, 1.25rem);  /* fluid lead paragraph */
-  --fs-hero: clamp(2.25rem, 5vw, 3.75rem);    /* fluid hero headline */
+  --fs-lead: clamp(1rem, 1.4vw, 1.125rem);    /* fluid lead paragraph (institutional, not oversized) */
+  --fs-hero: clamp(1.75rem, 3vw, 2.5rem);     /* fluid hero headline — tightened to an institutional 28–40px */
 
   /* Line heights. */
   --lh-tight: 1.1;
@@ -860,8 +860,8 @@ li::before {
 .app-hero p:not(.eyebrow) {
   max-width: 760px;
   color: var(--muted-strong);
-  font-size: var(--fs-xl);
-  line-height: 1.7;
+  font-size: var(--fs-lg);
+  line-height: 1.6;
 }
 
 /* ── Storefront CTA ── */
@@ -3314,4 +3314,175 @@ li::before {
   margin-left: auto;
   color: var(--muted);
   font-size: var(--fs-lg);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Subscription cancellation flow
+   The reason field intentionally uses a red→green semantic (invalid → valid),
+   an explicit product requirement layered on top of the Rule-B monochrome UI.
+   ───────────────────────────────────────────────────────────────────────── */
+.cancel-flow {
+  max-width: 720px;
+}
+.cancel-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg, 16px);
+  background: var(--background-card);
+  padding: 1.75rem;
+  box-shadow: var(--shadow);
+}
+.cancel-card--confirmed {
+  border-color: rgba(15, 157, 99, 0.4);
+}
+.cancel-step {
+  margin: 0 0 0.35rem;
+  color: var(--muted-strong);
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.cancel-card h2 {
+  margin: 0 0 0.6rem;
+  font-size: var(--fs-2xl);
+  letter-spacing: -0.02em;
+}
+.cancel-lead,
+.cancel-confirm__lead {
+  margin: 0 0 1rem;
+  color: var(--muted-strong);
+  font-size: var(--fs-md);
+  line-height: 1.6;
+}
+.cancel-list {
+  margin: 0 0 1.25rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+}
+.cancel-list li {
+  position: relative;
+  padding-left: 1.1rem;
+  color: var(--muted-strong);
+  font-size: var(--fs-base);
+  line-height: 1.5;
+}
+.cancel-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--muted-strong);
+}
+.cancel-field {
+  display: block;
+  margin: 0 0 1rem;
+}
+.cancel-field__label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-strong);
+}
+.cancel-reason {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: var(--background, #fff);
+  padding: 0.85rem 0.95rem;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-md);
+  line-height: 1.5;
+  resize: vertical;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.cancel-reason:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 39, 68, 0.08);
+}
+.cancel-reason--invalid {
+  border-color: var(--severity);
+  box-shadow: 0 0 0 3px var(--severity-soft);
+}
+.cancel-reason--valid {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(15, 157, 99, 0.14);
+}
+.cancel-help {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: var(--fs-sm);
+  color: var(--muted-strong);
+}
+.cancel-help--invalid {
+  color: var(--severity);
+  font-style: italic;
+}
+.cancel-help--valid {
+  color: var(--green);
+  font-weight: 700;
+}
+.cancel-error {
+  margin: 0 0 1rem;
+  color: var(--severity);
+  font-size: var(--fs-base);
+  font-weight: 700;
+}
+.cancel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+.cancel-confirm__reason {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(15, 39, 68, 0.03);
+  padding: 0.85rem 0.95rem;
+  margin: 0 0 1.25rem;
+}
+.cancel-confirm__reason span {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-strong);
+  margin-bottom: 0.25rem;
+}
+.cancel-confirm__reason p {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+}
+
+/* Button variants used by the cancellation flow (scoped to survive Rule-B). */
+.button--danger {
+  background: var(--severity);
+  color: #fff;
+  border: 1px solid var(--severity);
+}
+.button--danger:hover {
+  filter: brightness(0.94);
+}
+.button--danger[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.button--ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.button--ghost:hover {
+  background: rgba(15, 39, 68, 0.05);
+}
+.app-main .button--danger-ghost {
+  border-color: var(--severity);
+  color: var(--severity);
 }
