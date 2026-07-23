@@ -54,6 +54,25 @@ export async function fetchQuotes(
   return { map, asOf: d.as_of ?? new Date().toISOString() };
 }
 
+// Download the server-generated PDF for an edition. Replaces window.print() (which
+// crashed the forwarded/desktop viewer). Uses apiFetch so the auth token is
+// forwarded — subscribers/staff get the full edition, everyone else the teaser,
+// matching the on-screen role gate.
+export async function downloadNewsletterPdf(slug: string): Promise<void> {
+  const { apiFetch } = await import("@/lib/api");
+  const res = await apiFetch(`/newsletters/${slug}/pdf`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `jhi-${slug}-${new Date().toISOString().slice(0, 10)}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
 export function editionDate(): string {
   return new Date().toLocaleDateString("en-US", {
     weekday: "long",
