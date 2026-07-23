@@ -13,6 +13,9 @@ ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 # Next bakes rewrites() at build time, so the API proxy target must be set here.
 ARG API_PROXY_TARGET=http://localhost:8000
 ENV API_PROXY_TARGET=$API_PROXY_TARGET
+
+ARG NEXT_PUBLIC_SITE_URL=https://johnhenrycapital.com
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 RUN npm run build
 
 ENV NODE_ENV=production

@@ -61,6 +61,8 @@ services:
         # time). Reaches the backend on the compose network; no browser
         # dependency on :8000, no CORS.
         API_PROXY_TARGET: http://backend:8000
+        # Canonical/OG base — the owned company domain (overridable for staging).
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://johnhenrycapital.com}
     ports:
       - "3000:3000"
     depends_on:
