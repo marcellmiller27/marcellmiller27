@@ -13,6 +13,7 @@ import {
   Home,
   LifeBuoy,
   Menu,
+  Newspaper,
   ScanSearch,
   Scale,
   Search,
@@ -57,6 +58,7 @@ const toc: TocGroup[] = [
   {
     section: "Outputs & AI",
     items: [
+      { href: "/newsletters", label: "Newsletter", icon: Newspaper },
       { href: "/assistant", label: "Ask JHI", icon: Sparkles },
       { href: "/downloads", label: "Documents", icon: Download }
     ]
