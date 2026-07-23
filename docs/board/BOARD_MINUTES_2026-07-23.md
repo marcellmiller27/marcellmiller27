@@ -62,7 +62,7 @@
 
 ### 8.5 Newsletter reliability (fixed)
 - **Dev (`:3009`)** renders with live data and downloads PDFs correctly. **Docker prod (`:3000`)** was returning **404** on `/newsletters/*` — a **stale 3-day-old container** predating the routes; **rebuilt → now 200** (index + editions + PDF). Server-side PDF is role-aware (#109 merged).
-- **Step-B email** still needs an **AWS SES verified sender domain** — tied to the pending **company domain** (not yet owned).
+- **Company domain — verified 2026-07-23:** **`johnhenrycapital.com`** is **registered** (Google-managed nameservers) with **Google Workspace email live** (MX + SPF `v=spf1 include:_spf.google.com ~all`). **However:** **no website A record** (apex serves nothing), it is **not wired into the app** (no `metadataBase`/site URL/Stripe/OG), and it is **not SES-verified**. Remaining for launch: deploy target + DNS, app wiring, and **SES domain verification** (DKIM/TXT; extend SPF to include `amazonses.com`) — or send Step-B via Google Workspace.
 
 ## 9. Monthly AI Editorial Budget (RECORDED) + Contribution-Margin treatment
 - **Budget range to choose (a hard cap):** **$100 (Starter) / $250 (Recommended) / $500 (Growth)** — range **$100–$500/mo**. Enforced as a **hard cap with deterministic fallback** (when the cap is hit, publish the deterministic edition — spend cannot run away). Estimated **steady-state ≈ $25–$75/mo**; the cap is headroom for iteration/bake-off/growth. *(Founder to select the cap.)*
@@ -84,7 +84,7 @@ God-Eye = staff account + `JHI_STAFF_EMAILS`; per-plan gating deferred to Gateke
 | 5 | **Select the monthly AI Editorial budget cap** — $100 / $250 / $500 (recommended $250) → folds into F | Founder | 🟡 |
 | 6 | **Close the E2 model discussion / authorize the Bedrock bake-off**; then enable Bedrock model access + add `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`/`AWS_REGION` | Founder | 🟡 |
 | 7 | **Submit the AWS/Anthropic one-time use-case blurb** (minimal, truthful) to unlock Claude on Bedrock | Founder | 🟢 |
-| 8 | **Register the company domain** (still unowned) — unblocks production, SES sender domain, Stripe URLs, OG/canonical, and the IP domain-ownership record | Founder → Cy | 🔴 |
+| 8 | **Company domain `johnhenrycapital.com` — verified registered (Google Workspace email live).** Remaining: pick a deploy target + point DNS, wire the app (metadataBase/`NEXT_PUBLIC_SITE_URL`/Stripe URLs/OG), and **SES domain verification** for newsletter send (or send via Workspace) | Founder → Cy | 🔴 |
 
 **Next review:** next working session.
 **Recorded by:** Cy Henry · signature of record `69M2705M`.
