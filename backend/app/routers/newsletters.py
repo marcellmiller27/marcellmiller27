@@ -1,8 +1,12 @@
 # JHI-SIG: 69M2705M | Newsletters router (server-side PDF) | JHI Research & Analytics Firm, Inc. (proprietary)
 from datetime import datetime, timezone
+from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from sqlalchemy.orm import Session
 
+from app.database import get_db
+from app.editorial_llm import elevate_edition, llm_enabled
 from app.market_services import MarketDataService
 from app.newsletter_content import EDITION_SLUGS, NEWSLETTER_SYMBOLS, build_edition
 from app.pdf_export import newsletter_pdf
@@ -25,7 +29,11 @@ def _is_authenticated(request: Request) -> bool:
 
 
 @router.get("/{edition}/pdf")
-def newsletter_pdf_download(edition: str, request: Request) -> Response:
+def newsletter_pdf_download(
+    edition: str,
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+) -> Response:
     """Server-generated PDF for an editorial edition.
 
     Replaces the browser `window.print()` path (which crashed the forwarded/desktop
@@ -40,11 +48,21 @@ def newsletter_pdf_download(edition: str, request: Request) -> Response:
     data = MarketDataService().quotes(NEWSLETTER_SYMBOLS)
     now = datetime.now(timezone.utc)
     built = build_edition(edition, data.quotes, now, full=full)
-    pdf_bytes = newsletter_pdf(built)
 
+    # E2 (flag-gated, off by default): elevate the prose with the LLM, fact-locked, with
+    # deterministic fallback. Numeric fields are never sent to the model.
+    source = "deterministic"
+    if llm_enabled():
+        built, meta = elevate_edition(built, db=db)
+        source = "llm" if meta.get("used_llm") else f"deterministic:{meta.get('reason')}"
+
+    pdf_bytes = newsletter_pdf(built)
     filename = f"jhi-{edition}-{now:%Y-%m-%d}.pdf"
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "X-Editorial-Source": source,
+        },
     )

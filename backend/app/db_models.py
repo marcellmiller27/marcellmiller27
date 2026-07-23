@@ -6,6 +6,7 @@ from sqlalchemy import (
     Boolean,
     Date,
     DateTime,
+    Float,
     ForeignKey,
     Integer,
     String,
@@ -317,3 +318,19 @@ class VendorBillDB(Base):
     lines_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
     total_amount: Mapped[str] = mapped_column(String(40), nullable=False, default="0.00")
     imported_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+
+class LLMUsageDB(Base):
+    """Editorial LLM (E2) spend ledger — enforces the monthly budget cap and feeds
+    Contribution-Margin fixed-cost tracking. One row per model invocation."""
+
+    __tablename__ = "llm_usage"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    period: Mapped[str] = mapped_column(String(7), nullable=False, index=True)  # YYYY-MM
+    feature: Mapped[str] = mapped_column(String(80), nullable=False, default="editorial")
+    model: Mapped[str] = mapped_column(String(120), nullable=False, default="")
+    input_tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    output_tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    cost_usd: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
