@@ -62,5 +62,20 @@ OpenAI's **GPT** (not Claude). So the recommendation is a **model + platform pai
 - [ ] Bake-off scoring (voice, fidelity, latency, cost) → select.
 - [ ] Legal: MSA + DPA; add API key to Secrets; wire behind our guardrails + editor approval (E3).
 
+## 7. Decision (2026-07-23) — model selected
+- **Model: Anthropic *Claude Sonnet 5* (Founder's choice).** Strong institutional long-form quality at a favorable cost/latency point for a scheduled newsletter cadence.
+- **Delivery path — to confirm:**
+  - **Fastest to start the bake-off:** **Anthropic direct** — one credential (`ANTHROPIC_API_KEY`).
+  - **Recommended for production:** **AWS Bedrock** (Claude Sonnet 5 hosted **in our AWS account** — data-in-account, no-train, IAM/VPC isolation). We can start direct and move to Bedrock without changing the app logic.
+- **Guardrail (non-negotiable):** Sonnet 5 only **rephrases** figures the deterministic engine produces (fact-lock). It never sources or alters numbers. E1 style guide is the standing constraint.
+
+### To unblock the build (Founder actions)
+1. Add **`ANTHROPIC_API_KEY`** to Secrets (or, for the Bedrock path, AWS credentials/role for Bedrock).
+2. Confirm a **monthly token budget** (cost cap).
+
+### What Cy builds once unblocked
+- A backend drafting service (behind an `ENABLE_LLM_EDITORIAL` flag, **off by default**) that: takes the engine's computed facts → prompts Claude Sonnet 5 with the E1 house style → returns prose with **no new numbers** (validated against the engine's figures) → falls back to the deterministic text on any guardrail failure.
+- A small **bake-off harness** (Sonnet 5 vs. the deterministic baseline on the same editions) scored on voice, factual fidelity (zero invented figures), latency, and cost/edition.
+
 ---
-*Next step:* Founder selects a provider + budget → Cy runs the bake-off and wires the fact-locked E2 layer behind the E1 style guide.
+*Next step:* Founder adds `ANTHROPIC_API_KEY` + budget → Cy wires the fact-locked E2 layer behind the E1 style guide and runs the bake-off.
