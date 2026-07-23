@@ -44,6 +44,12 @@ services:
       # Comma-separated emails of JHI staff (Founder + employees) — grants back-office
       # access (Accounting, Admin, etc.) until a dedicated staff role/column lands.
       JHI_STAFF_EMAILS: ${JHI_STAFF_EMAILS:-}
+      # Editorial E2 (grounded LLM). OFF by default — set ENABLE_LLM_EDITORIAL=1 to
+      # elevate newsletter prose (fact-locked). Model/budget are overridable.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ENABLE_LLM_EDITORIAL: ${ENABLE_LLM_EDITORIAL:-0}
+      EDITORIAL_LLM_MODEL: ${EDITORIAL_LLM_MODEL:-claude-sonnet-4-5}
+      EDITORIAL_LLM_MONTHLY_BUDGET_USD: ${EDITORIAL_LLM_MONTHLY_BUDGET_USD:-250}
     depends_on:
       db:
         condition: service_healthy
