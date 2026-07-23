@@ -34,7 +34,6 @@ hash-marks removed (#110) · launch-readiness package (#112) · **E2 vendor shor
 - [ ] **🟡 Activate "Generate report preview."** Root cause: unwired placeholder button (no `onClick`) on `src/app/reports/page.tsx`. Proposed: wire report cards to the #109 server-side PDF engine / matching `/newsletters` edition. *Needs founder authorization on the report→output mapping* (3 editions vs. 4 report cards). (Board minutes 2026-07-23 §6.)
 - [x] **Hash-marks removed on the storefront** (gold "/" list markers on pricing/marketing lists). In-app + newsletters were already clean (Rule B #91). (Board minutes 2026-07-23 §7.)
 - [ ] **Per-plan feature/seat gating** (clarified): not enforced yet — scheduled at **Gatekeeper P0** (mechanism) → **P1** (entitlements + seat self-management) → **Phase 6** (full seat/billing + premium-route enforcement).
->>>>>>> origin/main
 
 ### 1. 🔴 Founder actions (unblock the next builds)
 - [ ] **Add `AUTH_JWT_SECRET` to Secrets** (strong value) — **without it the backend 500s on every login/register** (a dev secret was used to test #104). Blocks real auth in a fresh environment.
