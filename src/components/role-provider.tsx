@@ -2,6 +2,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import type { Role } from "@/lib/roles";
 import { FREE_COOKIE, getCookie, TOKEN_COOKIE } from "@/lib/auth";
 import { apiFetch } from "@/lib/api";
@@ -24,14 +25,19 @@ function deriveRole(): Role {
 
 export function RoleProvider({ children }: { children: ReactNode }) {
   const [role, setRoleState] = useState<Role>("public");
+  // Re-derive on navigation so a client-side login redirect (e.g. → /dashboard)
+  // is reflected immediately, instead of only after a full page reload.
+  const pathname = usePathname();
 
   useEffect(() => {
     let active = true;
-    // Derive from cookies after mount (client-only; avoids SSR/hydration mismatch).
+    const hasToken = Boolean(getCookie(TOKEN_COOKIE));
+    // Derive from cookies (client-only; avoids SSR/hydration mismatch). Preserve a
+    // confirmed "staff" role across navigations so the staff menu doesn't flicker.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setRoleState(deriveRole());
+    setRoleState((prev) => (prev === "staff" && hasToken ? prev : deriveRole()));
     // If authenticated, confirm real role/staff status from the backend (source of truth).
-    if (getCookie(TOKEN_COOKIE)) {
+    if (hasToken) {
       apiFetch("/auth/me")
         .then((r) => (r.ok ? r.json() : null))
         .then((d) => {
@@ -44,7 +50,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
     return () => {
       active = false;
     };
-  }, []);
+  }, [pathname]);
 
   return <RoleContext.Provider value={{ role, setRole: setRoleState }}>{children}</RoleContext.Provider>;
 }

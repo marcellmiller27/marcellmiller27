@@ -118,6 +118,18 @@ class CheckoutSessionResponse(BaseModel):
     message: str
 
 
+class CancelSubscriptionRequest(BaseModel):
+    # A cancellation reason is required and must read as a complete sentence so the
+    # audit trail captures a substantive, human-readable explanation (not "n/a").
+    reason: str
+
+
+class CancelSubscriptionResponse(BaseModel):
+    subscription: SubscriptionRead
+    effective_date: datetime
+    reason: str
+
+
 class BillingWebhookEvent(BaseModel):
     event_type: str
     organization_id: str
