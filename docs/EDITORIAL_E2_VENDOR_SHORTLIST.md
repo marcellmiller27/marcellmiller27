@@ -62,5 +62,32 @@ OpenAI's **GPT** (not Claude). So the recommendation is a **model + platform pai
 - [ ] Bake-off scoring (voice, fidelity, latency, cost) → select.
 - [ ] Legal: MSA + DPA; add API key to Secrets; wire behind our guardrails + editor approval (E3).
 
+## 7. Model evaluation (OPEN — 2026-07-23) — decision NOT closed
+The Founder created an **AWS account**, so all candidates are available on **AWS Bedrock** under one
+account — ideal for a head-to-head bake-off before committing. **This decision is open; still under
+discussion.** Candidates on the table:
+
+| Candidate (on Bedrock) | Profile | Fit for institutional editorial |
+|---|---|---|
+| **Anthropic Claude Sonnet 5** | Balanced flagship; strong long-form, low hallucination | **Top** for nuanced institutional prose |
+| **Amazon Nova Premier** | Amazon's flagship; strong price/performance, native to Bedrock | Cost-efficient; solid general drafting |
+| **Meta Llama 3.1 70B Instruct** | Open-weight; lowest cost; self-hostable later | Cost/control; may need more prompt tuning for voice |
+
+**Which Claude on Bedrock:** the **Sonnet** tier (Sonnet 5) is the right balance of quality/cost;
+**Opus** if we want maximum quality on flagship editions; **Haiku** for cheap, high-volume runs.
+
+**Recommendation:** don't pick blind — run the **bake-off across all three on Bedrock** (same editions;
+score voice, factual fidelity [zero invented figures], latency, cost/edition), then lock the model. All
+paths keep the **fact-lock guardrail** (the model only rephrases engine-produced figures) and the E1 house style.
+
+### To run the bake-off (Founder actions — when the discussion closes)
+1. Enable **Bedrock model access** for the candidates in the AWS console (Claude Sonnet 5, Nova Premier, Llama 3.1 70B).
+2. Add AWS credentials to Secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION` (a Bedrock-enabled region).
+3. Confirm a monthly budget cap.
+
+### What Cy builds once unblocked
+- A backend drafting service (behind `ENABLE_LLM_EDITORIAL`, **off by default**): engine facts → chosen Bedrock model in the E1 house style → output **validated to contain no new/changed numbers** → deterministic fallback on any guardrail failure.
+- A **bake-off harness** comparing the candidates (+ the deterministic baseline) on the same editions.
+
 ---
-*Next step:* Founder selects a provider + budget → Cy runs the bake-off and wires the fact-locked E2 layer behind the E1 style guide.
+*Next step:* Founder closes the model discussion (or authorizes the bake-off) → enable Bedrock access + add AWS creds → Cy runs the bake-off and wires the fact-locked E2 layer.
