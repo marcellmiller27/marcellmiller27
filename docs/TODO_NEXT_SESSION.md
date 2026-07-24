@@ -5,10 +5,28 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 
 ---
 
-## 🔝 Current Work Group (2026-07-23) — prioritized
+## 🔝 Current Work Group (2026-07-24) — prioritized
 
-> Nomenclature is living (Founder). Standing rule: kindergarten/elementary terms → institutional-grade;
-> two layers (institutional **display** names vs. stable **internal** ids); dictated headings use **Title Case**.
+> **Priority #1 tomorrow: MERGE the open PRs (below).** Nomenclature is living (Founder). Standing rule:
+> kindergarten/elementary terms → institutional-grade; two layers (institutional **display** names vs. stable
+> **internal** ids); dictated headings use **Title Case**.
+
+### 🥇 PRIORITY 1 — Merge PRs (2026-07-24)
+**A. Ready now (base `main`, all verified MERGEABLE) — merge these:**
+- [ ] **#122** — 🔴 Newsletter PDF = **institutional research note** (exact page via headless Chromium + letterhead/footer/page numbers). *The finished-product fix.*
+- [ ] **#120** — Editorial **E2** grounded, fact-locked LLM drafting (flag OFF by default).
+- [ ] **#121** — Wire owned domain **johnhenrycapital.com** (metadataBase/OG/canonical).
+- [ ] **#119** — Board minutes 2026-07-23 (AWS Bedrock editorial + monthly AI budget).
+- [ ] **#118** — CVP: editorial AI monthly budget range + Contribution-Margin treatment.
+- [ ] **#117** — E2 model evaluation (OPEN) — Bedrock bake-off doc.
+
+**B. Close (superseded, do not merge):**
+- [ ] **Close #111** — Newsletter menu link already on `main` via #104 (CONFLICTING/redundant).
+
+**C. Legacy backlog triage (#12–#83, on NON-`main` bases):** ~35 old PRs stacked on `unified-platform` /
+`logo-color-scheme` / `company-excel-workbook` / `dev-environment-setup`. Many are superseded by what's on
+`main`. **Do not bulk-merge** (they target stale bases). *Cy to triage: rebase-to-`main` & merge the still-
+relevant, close the obsolete — one careful pass.*
 
 ### ✅ Completed 2026-07-20 → 22 (merged to `main`)
 Rule B monochrome (#91) · "Macro" → "Economics" + Title-Case heading (#92) · same-origin API fix (#93) ·
@@ -17,17 +35,14 @@ drawer (#96) · Work Group (#97, #101) · **Editorial system** — newsletters +
 + subscribe (#98) · **Ellery portrait** on Team + every byline (#100) · **42 Macro competitor audit** (#102) ·
 **Editorial-access module (A)** — role-aware menu + free/paid teaser gating (#103) · board minutes (#89, #99).
 
-### ✅ Completed 2026-07-23 (merged to `main`)
+### ✅ Completed 2026-07-23 → 24 (merged to `main`)
 RBAC foundation (#104) · Newsletter server-side PDF, role-aware (#109) · **Re-land** of institutional
 type-scale + two-step subscription cancellation + god-eye menu fix (#115, replacing the falsely-"merged"
 #108) · Editorial **E1** house style + methodology disclosure (#113) · board minutes 07-23 + storefront
-hash-marks removed (#110) · launch-readiness package (#112) · **E2 vendor shortlist** (#114).
-
-### 🔵 Open PR — review / merge
-- [ ] **#106** — Back-office / ERP build plan (docs).
-- [ ] **#107** — Enterprise architecture review (docs).
-- [ ] **#105** — this Work Group refresh.
-- [x] **Close #108** (superseded by #115) and **#111** (Newsletter link already on `main` via #104).
+hash-marks removed (#110) · launch-readiness package (#112) · **E2 vendor shortlist** (#114) · E2 ranking
+clarification (#116) · Work Group refreshes (#105) · Back-office/ERP plan (#106) · Enterprise arch review
+(#107). **Also fixed live:** stale-dev-server ChunkLoadError (server restart), stale Docker prod newsletter
+404 (frontend rebuild).
 
 ### 🆕 New this session (2026-07-23) — Founder review feedback
 - [ ] **🔴 Institutional-grade storefront copy rewrite.** The marketing descriptions (home hero, "What you get", "How it works", "Who it's for", pricing feature lines) are **not** the professional voice required for **JHI Research & Analytics Firm, Inc.** *Founder to provide voice/scope; then Cy executes the rewrite.* Also **reconcile the legacy "John Henry Investments" brand mark** on the home hero to the single institutional entity name. (Board minutes 2026-07-23 §5.)
@@ -41,6 +56,11 @@ hash-marks removed (#110) · launch-readiness package (#112) · **E2 vendor shor
 - [ ] **Add email-provider (SES) credentials** → Cy turns on newsletter email (Step B send).
 - [ ] Add `TWELVEDATA` / `NASDAQ_DATA_LINK` / `FUNDAMENTALS` keys when ready (extra feeds).
 - [ ] **Decision:** approve a distinct **"staff/employee" role** so Accounting/admin is staff-gated (today every registrant is org `admin`; Accounting is auth-gated only).
+- [ ] **Editorial E2 — re-save `ANTHROPIC_API_KEY` correctly** (raw `sk-ant-…`, no `export`/quotes; the prior value was a pasted shell line — validates in a fresh session).
+- [ ] **Editorial E2 — pick the monthly AI budget cap** ($100 / $250 / $500; folds into F) and **lock the model** (or authorize the Bedrock bake-off across Sonnet 5 / Nova Pro / Llama) + add AWS Bedrock creds + submit the Anthropic use-case blurb.
+- [ ] **Domain go-live:** point `johnhenrycapital.com` DNS at a deploy target; choose **SES vs Google Workspace** for newsletter send (Step B).
+- [ ] **Storefront copy:** provide voice/scope for the institutional rewrite + brand-name reconciliation ("John Henry Investments" → single entity name).
+- [ ] **Stripe:** add live keys + per-plan/interval **price IDs** to turn the purchase flow (Phase A) into real billing (Phase B).
 
 ### 2. 🟣 NOMENCLATURE (Founder mulling; will lock terms)
 - [ ] Finalize **List 1 (Macro scrub)** + **List 2 (elementary page titles)** → lock display names.
@@ -48,6 +68,14 @@ hash-marks removed (#110) · launch-readiness package (#112) · **E2 vendor shor
 - [ ] Execute the sweep in one consistent pass (display-only; internals untouched).
 
 ### 3. 🟢 Build phases (foundation-first; each its own tested PR off `main`)
+**Buildable now on Founder's one-word go-ahead (fully in Cy's control):**
+- [ ] **Purchase flow — Phase A:** radio-select tiers → Continue → mock checkout → success (revenue-critical; design ready). Phase B = live Stripe once keys land.
+- [ ] **Wire "Generate report preview"** to the #122 render/PDF engine (needs the report→output mapping: 3 editions vs 4 report cards).
+- [ ] **Empty/error states** pass across product pages.
+- [ ] **Fix pre-existing accounting test failures** (10 × 401 from #104 staff-gating — authenticate those tests as staff → green CI).
+- [ ] Editorial roadmap: **E2 bake-off** (once creds) → **E3** editor-in-the-loop → **E4** forever-learning loop → **E5** governance; **Step-B email send** (after SES).
+
+**Larger phases:**
 - [ ] **Phase 3.1** — backend entity schema (Postgres nodes/edges + `/api/v1/entities` + seed; rewire `src/lib/entities.ts`). *(Unblocks 4–5.)*
 - [ ] **Phase 4** — "Diligence a Target" shared engines + **Buyer Match** (LSR ↔ Buyer Match loop).
 - [ ] **Phase 5** — EDGAR financials/valuation depth on records; client-upload later.
