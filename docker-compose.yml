@@ -44,6 +44,9 @@ services:
       # Comma-separated emails of JHI staff (Founder + employees) — grants back-office
       # access (Accounting, Admin, etc.) until a dedicated staff role/column lands.
       JHI_STAFF_EMAILS: ${JHI_STAFF_EMAILS:-}
+      # Origin the backend prints from for exact-as-viewed newsletter PDFs (headless
+      # Chromium renders the real page). The frontend service on the compose network.
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://frontend:3000}
     depends_on:
       db:
         condition: service_healthy
