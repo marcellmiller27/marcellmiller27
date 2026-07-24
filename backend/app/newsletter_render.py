@@ -11,13 +11,38 @@ renders the full edition for subscribers/staff (teaser otherwise), mirroring on-
 from __future__ import annotations
 
 import os
+from datetime import datetime, timezone
 from urllib.parse import urlparse
 
 # The frontend origin the backend prints from. In the compose network the frontend
 # service is reachable at http://frontend:3000; override for other environments.
 FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://frontend:3000")
 
-_PDF_MARGIN = {"top": "0.5in", "bottom": "0.5in", "left": "0.5in", "right": "0.5in"}
+# Institutional document margins — leave room for the running letterhead + footer.
+_PDF_MARGIN = {"top": "0.95in", "bottom": "0.75in", "left": "0.6in", "right": "0.6in"}
+
+# Running letterhead (every page) — firm mark + desk.
+_HEADER_TEMPLATE = (
+    '<div style="width:100%;font-size:8px;color:#0C1F33;font-family:Georgia,\'Times New Roman\',serif;'
+    'padding:0 0.6in;display:flex;justify-content:space-between;align-items:center;'
+    '-webkit-print-color-adjust:exact;">'
+    '<span style="font-weight:bold;letter-spacing:0.02em;">JHI Research &amp; Analytics Firm, Inc.</span>'
+    '<span style="color:#5A6B7D;letter-spacing:0.08em;text-transform:uppercase;font-size:7px;">'
+    "Institutional Research &middot; Economic Tracking</span></div>"
+)
+
+
+def _footer_template(year: int) -> str:
+    # Running footer (every page): provenance + confidentiality + page numbers.
+    return (
+        '<div style="width:100%;font-size:7px;color:#5A6B7D;font-family:Helvetica,Arial,sans-serif;'
+        'padding:0 0.6in;display:flex;justify-content:space-between;align-items:center;'
+        '-webkit-print-color-adjust:exact;">'
+        f"<span>&copy; {year} JHI Research &amp; Analytics Firm, Inc. &middot; "
+        "Confidential &mdash; not for redistribution</span>"
+        '<span>JHI-SIG: 69M2705M &middot; Page <span class="pageNumber"></span> of '
+        '<span class="totalPages"></span></span></div>'
+    )
 
 
 def render_newsletter_pdf(slug: str, token: str | None = None, origin: str | None = None) -> bytes:
@@ -48,7 +73,9 @@ def render_newsletter_pdf(slug: str, token: str | None = None, origin: str | Non
                 print_background=True,
                 format="Letter",
                 margin=_PDF_MARGIN,
-                prefer_css_page_size=True,
+                display_header_footer=True,
+                header_template=_HEADER_TEMPLATE,
+                footer_template=_footer_template(datetime.now(timezone.utc).year),
             )
         finally:
             browser.close()
