@@ -5,31 +5,40 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 
 ---
 
-## 🔝 Current Work Group (2026-07-23) — prioritized
+## 🔝 Current Work Group (2026-07-26) — prioritized
 
-> Nomenclature is living (Founder). Standing rule: kindergarten/elementary terms → institutional-grade;
-> two layers (institutional **display** names vs. stable **internal** ids); dictated headings use **Title Case**.
+> **Priority #1: open the JHI business bank account (Founder).** Nomenclature is living. Standing rule:
+> kindergarten/elementary terms → institutional-grade; two layers (institutional **display** names vs.
+> stable **internal** ids); dictated headings use **Title Case**.
 
-### ✅ Completed 2026-07-20 → 22 (merged to `main`)
-Rule B monochrome (#91) · "Macro" → "Economics" + Title-Case heading (#92) · same-origin API fix (#93) ·
-NASDAQ resolution / **closed** (#94) · 5-day trial **5h** contingency + back-up (#95) · TOC → **left** menu
-drawer (#96) · Work Group (#97, #101) · **Editorial system** — newsletters + **VP of Editorial (Ellery Vance)**
-+ subscribe (#98) · **Ellery portrait** on Team + every byline (#100) · **42 Macro competitor audit** (#102) ·
-**Editorial-access module (A)** — role-aware menu + free/paid teaser gating (#103) · board minutes (#89, #99).
+### 🥇 PRIORITY 1 (2026-07-26)
+- [ ] **🔴 Open the JHI business bank account** (entity legal name → connect to **Stripe payouts** + accounting; underpins revenue, AP/payroll, clean books). *Founder + accountant/attorney.* (Board minutes 2026-07-26 §1.)
+- [ ] **Merge tonight's PRs:** **#126** (AI editorial activated on-screen + PDF) and **#127** (architecture / AWS / cross-asset valuation write-ups). Then **close #123** (superseded) and **#125** if merged.
+- [ ] **Persist editorial activation** in Secrets (Bedrock key already set): `ENABLE_LLM_EDITORIAL=1`, `AWS_REGION=us-east-2`, `EDITORIAL_LLM_MODEL=us.anthropic.claude-sonnet-4-5-20250929-v1:0`. *(Optional: request Sonnet 5 model access in Bedrock.)*
+- [ ] **Green CI:** fix the **10 pre-existing accounting tests** (staff-auth from #104) — test-only.
 
-### ✅ Completed 2026-07-23 (merged to `main`)
-RBAC foundation (#104) · Newsletter server-side PDF, role-aware (#109) · **Re-land** of institutional
-type-scale + two-step subscription cancellation + god-eye menu fix (#115, replacing the falsely-"merged"
-#108) · Editorial **E1** house style + methodology disclosure (#113) · board minutes 07-23 + storefront
-hash-marks removed (#110) · launch-readiness package (#112) · **E2 vendor shortlist** (#114).
+### 🆕 New builds — awaiting Founder go-ahead (specs in #127)
+- [ ] **Cross-Asset Valuation & Action Engine — Phase 1:** detailed **equity DCF in the Excel workbook** + AI action write-up (enter/sideline/dry-powder/rebalance), then commodities → crypto → forex. **Decide first (spec §10):** universe, action thresholds, US-only/EDGAR, workbook-vs-screen priority. (`docs/CROSS_ASSET_VALUATION_ENGINE_SPEC.md`)
+- [ ] **AWS Tier-1 experience:** **SES** (email the newsletters) · **CloudFront+S3** (speed) · **RDS** (reliable DB). Needs a **deploy target** + domain DNS/SES. (`docs/AWS_ENHANCEMENT_ROADMAP.md`)
+- [ ] **Purchase flow — Phase A** (radio tiers → mock checkout → success); then live Stripe (Phase B). *(Revenue-critical; design ready.)*
+- [ ] Architecture reference for layout/sequencing decisions: `docs/PLATFORM_ARCHITECTURE_MAP.md`.
 
-### 🔵 Open PR — review / merge
-- [ ] **#106** — Back-office / ERP build plan (docs).
-- [ ] **#107** — Enterprise architecture review (docs).
-- [ ] **#105** — this Work Group refresh.
-- [x] **Close #108** (superseded by #115) and **#111** (Newsletter link already on `main` via #104).
+### ✅ Completed through 2026-07-26 (merged to `main`)
+**07-20→22:** Rule B (#91) · Economics nomenclature (#92) · same-origin API (#93) · NASDAQ closed (#94) ·
+5h contingency (#95) · left menu drawer (#96) · editorial system + Ellery (#98,#100) · 42 Macro audit (#102) ·
+editorial-access module (#103) · board minutes (#89,#97,#99,#101).
+**07-23→26:** RBAC foundation (#104) · newsletter server-side PDF (#109) · type-scale + cancellation +
+god-eye (#115) · **E1** house style + methodology (#113) · board minutes 07-23 + storefront hash-marks (#110) ·
+launch-readiness package (#112) · E2 vendor shortlist + ranking + decision (#114,#116,#117) · CVP editorial
+budget (#118) · board minutes AWS editorial (#119) · **Editorial E2 grounded LLM on AWS Bedrock** (#120) ·
+**domain wiring `johnhenrycapital.com`** (#121) · **institutional newsletter PDF (headless render)** (#122) ·
+menu no-op close (#111) · ERP/enterprise/work-group docs (#105,#106,#107) · board minutes 07-26 (#124).
+**Live fixes:** dev-server ChunkLoadError, stale-prod newsletter 404. **Verified:** `main` green — ruff/eslint/
+`next build` clean, 195 backend tests pass (10 known pre-existing accounting-test failures), stack healthy.
 
-### 🆕 New this session (2026-07-23) — Founder review feedback
+> *Note: supersedes the unmerged Work Group PR #123 (2026-07-24) — close it.*
+
+### 🆕 Carry-over — Founder review feedback
 - [ ] **🔴 Institutional-grade storefront copy rewrite.** The marketing descriptions (home hero, "What you get", "How it works", "Who it's for", pricing feature lines) are **not** the professional voice required for **JHI Research & Analytics Firm, Inc.** *Founder to provide voice/scope; then Cy executes the rewrite.* Also **reconcile the legacy "John Henry Investments" brand mark** on the home hero to the single institutional entity name. (Board minutes 2026-07-23 §5.)
 - [ ] **🟡 Activate "Generate report preview."** Root cause: unwired placeholder button (no `onClick`) on `src/app/reports/page.tsx`. Proposed: wire report cards to the #109 server-side PDF engine / matching `/newsletters` edition. *Needs founder authorization on the report→output mapping* (3 editions vs. 4 report cards). (Board minutes 2026-07-23 §6.)
 - [x] **Hash-marks removed on the storefront** (gold "/" list markers on pricing/marketing lists). In-app + newsletters were already clean (Rule B #91). (Board minutes 2026-07-23 §7.)
