@@ -7,7 +7,7 @@ export default function OpportunitiesPage() {
     <AppShell
       eyebrow="Research"
       title="Discover and score investable opportunities"
-      description="Screen public securities, private companies, real estate, and digital assets with the John Henry Opportunity Score."
+      description="Screen public securities, private companies, real estate, and digital assets with the Aegira Opportunity Score."
     >
       <p className="rec-crumb">
         <Link href="/companies">Browse the entity directory →</Link>

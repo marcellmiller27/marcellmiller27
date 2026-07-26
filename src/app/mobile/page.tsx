@@ -407,7 +407,7 @@ export default function MobileApp() {
               <div className="m-brand">
                 <Logo size={36} />
                 <span>
-                  John Henry
+                  Aegira
                   <small>Investments</small>
                 </span>
               </div>
@@ -536,7 +536,7 @@ export default function MobileApp() {
               <p className="m-eyebrow">Two-factor authentication</p>
               <h1 className="m-title">Enter your 6-digit code.</h1>
               <p className="m-sub">
-                Open your authenticator app and enter the current John Henry
+                Open your authenticator app and enter the current Aegira
                 Investments code.
               </p>
               {devCode && (
@@ -649,7 +649,7 @@ export default function MobileApp() {
                 <div className="m-brand">
                   <Logo size={30} />
                   <span>
-                    John Henry
+                    Aegira
                     <small>Investments</small>
                   </span>
                 </div>

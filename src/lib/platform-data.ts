@@ -213,7 +213,7 @@ export const platformModules: PlatformModule[] = [
     output: "Risk assessment, cash flow analysis, fraud indicators, and opportunity score"
   },
   {
-    phase: "Phase 3 - John Henry Intelligence Center",
+    phase: "Phase 3 - Aegira Intelligence Center",
     name: "Economics",
     summary: "Tracks central banks, rates, commodities, Bitcoin, money supply, and economic cycles.",
     features: [
@@ -227,11 +227,11 @@ export const platformModules: PlatformModule[] = [
     output: "Recession probability, inflation outlook, and liquidity trends"
   },
   {
-    phase: "Phase 3 - John Henry Intelligence Center",
+    phase: "Phase 3 - Aegira Intelligence Center",
     name: "Weekly Intelligence Reports",
     summary: "Automated branded reports for economic, crypto, acquisitions, and dividend opportunities.",
     features: [
-      "John Henry Weekly Economics Report",
+      "Aegira Weekly Economics Report",
       "Crypto Intelligence Report",
       "Business Acquisition Report",
       "Dividend Opportunities Report",
@@ -240,7 +240,7 @@ export const platformModules: PlatformModule[] = [
     ]
   },
   {
-    phase: "Phase 3 - John Henry Intelligence Center",
+    phase: "Phase 3 - Aegira Intelligence Center",
     name: "AI Research Assistant",
     summary: "Private AI assistant for security analysis, acquisition review, SBA comparisons, and portfolio construction.",
     features: [
@@ -298,7 +298,7 @@ export const platformModules: PlatformModule[] = [
   },
   {
     phase: "Phase 6 - AI Scoring System",
-    name: "John Henry Opportunity Score",
+    name: "Aegira Opportunity Score",
     summary: "Proprietary 0-100 score across public markets, business acquisitions, and crypto assets.",
     features: [
       "Valuation",
@@ -510,7 +510,7 @@ export const portfolioHoldings: PortfolioHolding[] = [
 
 export const intelligenceReports: IntelligenceReport[] = [
   {
-    title: "John Henry Weekly Economics Report",
+    title: "Aegira Weekly Economics Report",
     cadence: "Weekly",
     audience: "All paid subscribers",
     highlights: ["Federal Reserve policy", "Treasury liquidity", "Inflation outlook"]

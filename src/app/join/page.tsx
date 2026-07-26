@@ -3,7 +3,7 @@ import { Logo } from "@/components/logo";
 import { WaitlistForm } from "@/components/waitlist-form";
 
 const POINTS = [
-  "Institutional-grade research & the John Henry Opportunity Score",
+  "Institutional-grade research & the Aegira Opportunity Score",
   "Live multi-asset market data — crypto, equities, FX, rates, and more",
   "AI due diligence, portfolio tracking, and a 24/7 AI assistant"
 ];
