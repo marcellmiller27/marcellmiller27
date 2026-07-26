@@ -43,7 +43,7 @@ export default function TeamPage() {
   return (
     <StorefrontShell
       eyebrow="Our team"
-      title="Meet the John Henry Investments team"
+      title="Meet the Aegira team"
       description="Our platform is built and maintained by a dedicated AI engineering department, supported 24/7 by five specialized AI agents. These agents assist our members with onboarding, subscriptions, account security, product guidance, and technical triage—which escalates directly to the founder when necessary."
     >
       <section className="app-section">

@@ -27,7 +27,7 @@ type ChatMessage = {
 const GREETING: ChatMessage = {
   role: "assistant",
   text:
-    "Hi! You're chatting with the John Henry Investments AI team — Ava (onboarding), " +
+    "Hi! You're chatting with the Aegira AI team — Ava (onboarding), " +
     "Max (billing), Sage (security), Quinn (product), and Tess (technical, who escalates " +
     "to the founder). Ask anything, and I'll route you to the right specialist.",
   suggestions: [

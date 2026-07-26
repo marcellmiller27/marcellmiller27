@@ -109,9 +109,9 @@ export default function Home() {
         <div className="hero__content">
           <Link className="hero__brand" href="/">
             <Logo size={44} />
-            John Henry Investments
+            Aegira
           </Link>
-          <p className="eyebrow">JHI Research &amp; Analytics Firm, Inc.</p>
+          <p className="eyebrow">Institutional Intelligence for Global Markets</p>
           <h1>Institutional research and deal diligence — without the institutional price.</h1>
           <p className="hero__lead">
             Screen opportunities, x-ray a CIM, run a CPA-signed Quality of Earnings, and track
@@ -130,7 +130,7 @@ export default function Home() {
         </div>
         <div className="hero__panel" aria-label="Platform summary">
           <div className="score-card">
-            <span>John Henry Opportunity Score</span>
+            <span>Aegira Opportunity Score</span>
             <strong>87</strong>
             <p>Transparent 0–100 decision-support score with published methodology.</p>
           </div>

@@ -20,7 +20,7 @@ export function AppShell({ eyebrow, title, description, children }: AppShellProp
         <AppMenu />
         <Link className="app-topbar__brand" href="/dashboard">
           <Logo size={26} />
-          <span>JHI Research &amp; Analytics</span>
+          <span>Aegira</span>
         </Link>
         <GlobalSearch />
         <div className="app-topbar__actions">

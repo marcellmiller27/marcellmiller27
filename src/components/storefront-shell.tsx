@@ -28,7 +28,7 @@ export function StorefrontShell({ eyebrow, title, description, children }: Store
       <header className="app-header">
         <Link className="app-header__brand" href="/">
           <Logo size={38} />
-          JHI Research &amp; Analytics Firm, Inc.
+          Aegira
         </Link>
         <nav className="app-nav" aria-label="Marketing navigation">
           {navigation.map((item) => (

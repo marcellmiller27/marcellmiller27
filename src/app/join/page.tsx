@@ -3,7 +3,7 @@ import { Logo } from "@/components/logo";
 import { WaitlistForm } from "@/components/waitlist-form";
 
 const POINTS = [
-  "Institutional-grade research & the John Henry Opportunity Score",
+  "Institutional-grade research & the Aegira Opportunity Score",
   "Live multi-asset market data — crypto, equities, FX, rates, and more",
   "AI due diligence, portfolio tracking, and a 24/7 AI assistant"
 ];
@@ -13,12 +13,12 @@ export default function JoinPage() {
     <main className="join">
       <Link className="join__brand" href="/">
         <Logo size={40} />
-        John Henry Investments
+        Aegira
       </Link>
       <p className="eyebrow">Early access</p>
       <h1 className="join__title">Invest with institutional intelligence.</h1>
       <p className="join__lead">
-        Join the waitlist for early access to the John Henry Investments platform —
+        Join the waitlist for early access to the Aegira platform —
         built to put institutional-grade research and modern technology in the hands of
         everyday investors.
       </p>

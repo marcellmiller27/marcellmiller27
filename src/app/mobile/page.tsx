@@ -95,7 +95,7 @@ async function deviceBiometric(
       const credential = (await navigator.credentials.create({
         publicKey: {
           challenge,
-          rp: { name: "John Henry Investments" },
+          rp: { name: "Aegira" },
           user: {
             id: new TextEncoder().encode(email),
             name: email,
@@ -407,7 +407,7 @@ export default function MobileApp() {
               <div className="m-brand">
                 <Logo size={36} />
                 <span>
-                  John Henry
+                  Aegira
                   <small>Investments</small>
                 </span>
               </div>
@@ -469,7 +469,7 @@ export default function MobileApp() {
                   <span className="m-method__icon m-method__icon--gold">✨</span>
                   <span>
                     <strong>Create account</strong>
-                    <span>New to John Henry Investments? Start here.</span>
+                    <span>New to Aegira? Start here.</span>
                   </span>
                 </button>
               </div>
@@ -536,7 +536,7 @@ export default function MobileApp() {
               <p className="m-eyebrow">Two-factor authentication</p>
               <h1 className="m-title">Enter your 6-digit code.</h1>
               <p className="m-sub">
-                Open your authenticator app and enter the current John Henry
+                Open your authenticator app and enter the current Aegira
                 Investments code.
               </p>
               {devCode && (
@@ -649,7 +649,7 @@ export default function MobileApp() {
                 <div className="m-brand">
                   <Logo size={30} />
                   <span>
-                    John Henry
+                    Aegira
                     <small>Investments</small>
                   </span>
                 </div>
@@ -816,7 +816,7 @@ export default function MobileApp() {
       </div>
 
       <p className="mobile-stage__intro">
-        John Henry Investments companion app · also available on the{" "}
+        Aegira companion app · also available on the{" "}
         <Link href="/">web platform</Link>.
       </p>
     </div>
