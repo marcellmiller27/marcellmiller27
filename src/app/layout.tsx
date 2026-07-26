@@ -6,7 +6,7 @@ import "./globals.css";
 // Canonical/OG base for the Aegira platform domain. Overridable via NEXT_PUBLIC_SITE_URL
 // for staging/preview. (Aegira = platform brand; JHI Research & Analytics Firm, Inc. =
 // corporate publisher.)
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aegira.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aegiraenterprise.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
