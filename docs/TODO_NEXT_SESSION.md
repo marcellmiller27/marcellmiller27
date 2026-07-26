@@ -5,17 +5,26 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 
 ---
 
-## 🔝 Current Work Group (2026-07-26) — prioritized
+## 🔝 Current Work Group (2026-07-26 evening) — prioritized
 
 > **Priority #1: open the JHI business bank account (Founder).** Nomenclature is living. Standing rule:
 > kindergarten/elementary terms → institutional-grade; two layers (institutional **display** names vs.
 > stable **internal** ids); dictated headings use **Title Case**.
+>
+> **Brand LOCKED (2026-07-26):** platform = **Aegira**; corporate publisher = **JHI Research & Analytics Firm, Inc.**
+> Primary domain = **`aegiraenterprise.com`** (+ `.ai/.io/.dev/.app` defensive) — **purchased via AWS Route 53,
+> registration in progress.** `.com` canonical; other TLDs 301-redirect. Code default `NEXT_PUBLIC_SITE_URL` shipped.
 
-### 🥇 PRIORITY 1 (2026-07-26)
+### ✅ Merge slate COMPLETE (2026-07-26 evening)
+- [x] **Merged to `main`:** #126 (AI editorial on-screen + PDF) · #129 (Aegira brand sweep + `aegiraenterprise.com` default) · #130 (walkthrough videos) · #127 (architecture/AWS/valuation write-ups) · #128 (brand-naming board record) · #124 (board minutes 07-26) · #125 (Work Group 07-26).
+- [x] **Closed 16 stale PRs** already in `main`: #3–#12, #36–#41. **Closed #123** (superseded by #125).
+
+### 🥇 PRIORITY 1 — now (2026-07-26 evening)
 - [ ] **🔴 Open the JHI business bank account** (entity legal name → connect to **Stripe payouts** + accounting; underpins revenue, AP/payroll, clean books). *Founder + accountant/attorney.* (Board minutes 2026-07-26 §1.)
-- [ ] **Merge tonight's PRs:** **#126** (AI editorial activated on-screen + PDF) and **#127** (architecture / AWS / cross-asset valuation write-ups). Then **close #123** (superseded) and **#125** if merged.
-- [ ] **Persist editorial activation** in Secrets (Bedrock key already set): `ENABLE_LLM_EDITORIAL=1`, `AWS_REGION=us-east-2`, `EDITORIAL_LLM_MODEL=us.anthropic.claude-sonnet-4-5-20250929-v1:0`. *(Optional: request Sonnet 5 model access in Bedrock.)*
-- [ ] **Green CI:** fix the **10 pre-existing accounting tests** (staff-auth from #104) — test-only.
+- [ ] **Persist editorial activation** in Secrets (Bedrock key already set): `ENABLE_LLM_EDITORIAL=1`, `AWS_REGION=us-east-2`, `EDITORIAL_LLM_MODEL=us.anthropic.claude-sonnet-4-5-20250929-v1:0`. *(Optional: request Sonnet 5 model access in Bedrock.)* *Founder.*
+- [ ] **🟢 Green CI (Cy can execute now):** fix the **10 pre-existing accounting tests** (staff-auth from #104) — test-only, no founder input needed.
+- [ ] **🟢 Purchase Flow — Phase A (Cy can execute now):** radio tiers → mock checkout → success (design ready, revenue-critical). Live Stripe = Phase B (needs keys/price IDs).
+- [ ] **Legacy-stack audit (Cy):** verdict merge-vs-close on the old non-`main` stacks **#14–#35** and **#78–#83** (several likely superseded; needs content-level check).
 
 ### 🆕 New builds — awaiting Founder go-ahead (specs in #127)
 - [ ] **Cross-Asset Valuation & Action Engine — Phase 1:** detailed **equity DCF in the Excel workbook** + AI action write-up (enter/sideline/dry-powder/rebalance), then commodities → crypto → forex. **Decide first (spec §10):** universe, action thresholds, US-only/EDGAR, workbook-vs-screen priority. (`docs/CROSS_ASSET_VALUATION_ENGINE_SPEC.md`)
@@ -36,7 +45,7 @@ menu no-op close (#111) · ERP/enterprise/work-group docs (#105,#106,#107) · bo
 **Live fixes:** dev-server ChunkLoadError, stale-prod newsletter 404. **Verified:** `main` green — ruff/eslint/
 `next build` clean, 195 backend tests pass (10 known pre-existing accounting-test failures), stack healthy.
 
-> *Note: supersedes the unmerged Work Group PR #123 (2026-07-24) — close it.*
+> *Note: superseded Work Group PR #123 (2026-07-24) — now closed.*
 
 ### 🆕 Carry-over — Founder review feedback
 - [ ] **🔴 Institutional-grade storefront copy rewrite.** The marketing descriptions (home hero, "What you get", "How it works", "Who it's for", pricing feature lines) are **not** the professional voice required for **JHI Research & Analytics Firm, Inc.** *Founder to provide voice/scope; then Cy executes the rewrite.* Also **reconcile the legacy "John Henry Investments" brand mark** on the home hero to the single institutional entity name. (Board minutes 2026-07-23 §5.)
