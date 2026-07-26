@@ -62,6 +62,15 @@ def _valid_key() -> str | None:
     return key
 
 
+def _bedrock_model() -> str:
+    """A Bedrock model / inference-profile id. If EDITORIAL_LLM_MODEL isn't a Bedrock-style
+    id (e.g. the Anthropic-direct default), fall back to an accessible Sonnet profile."""
+    m = os.getenv("EDITORIAL_LLM_MODEL", "").strip()
+    if m and any(m.startswith(p) for p in ("us.", "global.", "anthropic.")):
+        return m
+    return "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
+
+
 def _bedrock_creds() -> tuple[str, str] | None:
     """Amazon Bedrock long-term API key (bearer token) + region, if configured.
 
@@ -224,6 +233,7 @@ def elevate_edition(edition: Edition, db=None, draft_fn: DraftFn | None = None) 
         bedrock = _bedrock_creds()
         if bedrock is not None:
             token, region = bedrock
+            model = _bedrock_model()  # ensure a Bedrock model/inference-profile id
             meta["provider"] = "bedrock"
             draft_fn = lambda p: _bedrock_draft(p, model, token, region)  # noqa: E731
         else:
