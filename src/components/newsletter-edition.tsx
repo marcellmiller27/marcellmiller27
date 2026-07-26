@@ -51,7 +51,7 @@ export function NewsletterEdition({ slug, variant }: { slug: string; variant: Va
       <NewsletterDownloadButton slug={slug} />
 
       <header className="news__masthead">
-        <p className="eyebrow">JHI Research &amp; Analytics · {ed.eyebrow}</p>
+        <p className="eyebrow">Aegira · {ed.eyebrow}</p>
         <h2>{ed.title}</h2>
         <p className="news__edition">{ed.dateline}</p>
         <EditorialByline />
