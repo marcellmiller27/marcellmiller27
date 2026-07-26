@@ -1,5 +1,20 @@
-from app.editorial_llm import elevate_edition
+from app.editorial_llm import _bedrock_creds, _valid_key, elevate_edition
 from app.newsletter_content import Edition, Group, Item
+
+
+def test_bedrock_creds_detected(monkeypatch) -> None:
+    monkeypatch.setenv("AWS_BEARER_TOKEN_BEDROCK", "ABSKtestvalue123")
+    monkeypatch.setenv("AWS_REGION", "us-east-2")
+    assert _bedrock_creds() == ("ABSKtestvalue123", "us-east-2")
+    monkeypatch.delenv("AWS_BEARER_TOKEN_BEDROCK", raising=False)
+    assert _bedrock_creds() is None
+
+
+def test_anthropic_key_validation(monkeypatch) -> None:
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "export ANTHROPIC_API_KEY=oops")  # malformed
+    assert _valid_key() is None
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-api03-valid-looking-key")
+    assert _valid_key() == "sk-ant-api03-valid-looking-key"
 
 
 def _sample() -> Edition:

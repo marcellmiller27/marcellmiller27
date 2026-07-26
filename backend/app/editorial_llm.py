@@ -62,6 +62,18 @@ def _valid_key() -> str | None:
     return key
 
 
+def _bedrock_creds() -> tuple[str, str] | None:
+    """Amazon Bedrock long-term API key (bearer token) + region, if configured.
+
+    AWS shows the value once at generation and hands you `AWS_BEARER_TOKEN_BEDROCK`.
+    We call the Bedrock runtime endpoint directly with it (no boto3 / SigV4 needed)."""
+    token = os.getenv("AWS_BEARER_TOKEN_BEDROCK", "").strip()
+    if not token or " " in token:
+        return None
+    region = os.getenv("AWS_REGION", "").strip() or "us-east-2"
+    return token, region
+
+
 def _numbers(text: str | None) -> set[str]:
     if not text:
         return set()
@@ -94,7 +106,15 @@ def _collect_prose(edition: Edition) -> dict[str, str]:
     return prose
 
 
-def _real_draft(payload: dict[str, str], model: str, key: str) -> tuple[dict[str, str], int, int]:
+def _parse_json_object(text: str) -> dict[str, str]:
+    text = text.strip()
+    if text.startswith("```"):
+        text = text.strip("`")
+        text = text[text.find("{") : text.rfind("}") + 1]
+    return {str(k): str(v) for k, v in json.loads(text).items()}
+
+
+def _anthropic_draft(payload: dict[str, str], model: str, key: str) -> tuple[dict[str, str], int, int]:
     import anthropic
 
     client = anthropic.Anthropic(api_key=key)
@@ -104,15 +124,44 @@ def _real_draft(payload: dict[str, str], model: str, key: str) -> tuple[dict[str
         system=_SYSTEM,
         messages=[{"role": "user", "content": json.dumps(payload, ensure_ascii=False)}],
     )
-    text = "".join(getattr(b, "text", "") for b in msg.content).strip()
-    if text.startswith("```"):
-        text = text.strip("`")
-        text = text[text.find("{") : text.rfind("}") + 1]
-    data = json.loads(text)
+    text = "".join(getattr(b, "text", "") for b in msg.content)
     usage = getattr(msg, "usage", None)
     in_tok = getattr(usage, "input_tokens", 0) or 0
     out_tok = getattr(usage, "output_tokens", 0) or 0
-    return {str(k): str(v) for k, v in data.items()}, in_tok, out_tok
+    return _parse_json_object(text), in_tok, out_tok
+
+
+def _bedrock_draft(
+    payload: dict[str, str], model: str, token: str, region: str
+) -> tuple[dict[str, str], int, int]:
+    """Call Claude on Amazon Bedrock via the runtime endpoint using the bearer API key.
+
+    `model` is the Bedrock model / inference-profile id (e.g. us.anthropic.claude-...).
+    """
+    import httpx
+
+    url = f"https://bedrock-runtime.{region}.amazonaws.com/model/{model}/invoke"
+    body = {
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": MAX_OUTPUT_TOKENS,
+        "system": _SYSTEM,
+        "messages": [{"role": "user", "content": json.dumps(payload, ensure_ascii=False)}],
+    }
+    resp = httpx.post(
+        url,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        },
+        json=body,
+        timeout=60,
+    )
+    resp.raise_for_status()
+    data = resp.json()
+    text = "".join(b.get("text", "") for b in data.get("content", []))
+    usage = data.get("usage", {})
+    return _parse_json_object(text), usage.get("input_tokens", 0), usage.get("output_tokens", 0)
 
 
 def _apply(edition: Edition, elevated: dict[str, str], allowed: set[str]) -> tuple[Edition, int]:
@@ -172,11 +221,18 @@ def elevate_edition(edition: Edition, db=None, draft_fn: DraftFn | None = None) 
     period = datetime.now(timezone.utc).strftime("%Y-%m")
 
     if draft_fn is None:
-        key = _valid_key()
-        if key is None:
-            meta["reason"] = "invalid_or_missing_api_key"
-            return edition, meta
-        draft_fn = lambda p: _real_draft(p, model, key)  # noqa: E731
+        bedrock = _bedrock_creds()
+        if bedrock is not None:
+            token, region = bedrock
+            meta["provider"] = "bedrock"
+            draft_fn = lambda p: _bedrock_draft(p, model, token, region)  # noqa: E731
+        else:
+            key = _valid_key()
+            if key is None:
+                meta["reason"] = "invalid_or_missing_api_key"
+                return edition, meta
+            meta["provider"] = "anthropic"
+            draft_fn = lambda p: _anthropic_draft(p, model, key)  # noqa: E731
 
     if db is not None and _month_spend(db, period) >= DEFAULT_MONTHLY_BUDGET_USD:
         meta["reason"] = "budget_exceeded"
