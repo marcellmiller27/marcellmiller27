@@ -13,8 +13,15 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 
 ### 🥇 PRIORITY 1 (2026-07-26)
 - [ ] **🔴 Open the JHI business bank account** (entity legal name → connect to **Stripe payouts** + accounting; underpins revenue, AP/payroll, clean books). *Founder + accountant/attorney.* (Board minutes 2026-07-26 §1.)
-- [ ] **Activate AWS Bedrock in editorial:** it's **integrated + verified** (Claude Sonnet 4.5, ~$0.01/edition) but **not yet active** — flag is off **and** post-#122 E2 only touches the PDF *fallback*. To go live: **wire E2 into the on-screen edition** (so the page + its PDF show the AI voice) → set `ENABLE_LLM_EDITORIAL=1` + pick the budget cap. *(Needs Founder go-ahead.)*
+- [ ] **Merge tonight's PRs:** **#126** (AI editorial activated on-screen + PDF) and **#127** (architecture / AWS / cross-asset valuation write-ups). Then **close #123** (superseded) and **#125** if merged.
+- [ ] **Persist editorial activation** in Secrets (Bedrock key already set): `ENABLE_LLM_EDITORIAL=1`, `AWS_REGION=us-east-2`, `EDITORIAL_LLM_MODEL=us.anthropic.claude-sonnet-4-5-20250929-v1:0`. *(Optional: request Sonnet 5 model access in Bedrock.)*
 - [ ] **Green CI:** fix the **10 pre-existing accounting tests** (staff-auth from #104) — test-only.
+
+### 🆕 New builds — awaiting Founder go-ahead (specs in #127)
+- [ ] **Cross-Asset Valuation & Action Engine — Phase 1:** detailed **equity DCF in the Excel workbook** + AI action write-up (enter/sideline/dry-powder/rebalance), then commodities → crypto → forex. **Decide first (spec §10):** universe, action thresholds, US-only/EDGAR, workbook-vs-screen priority. (`docs/CROSS_ASSET_VALUATION_ENGINE_SPEC.md`)
+- [ ] **AWS Tier-1 experience:** **SES** (email the newsletters) · **CloudFront+S3** (speed) · **RDS** (reliable DB). Needs a **deploy target** + domain DNS/SES. (`docs/AWS_ENHANCEMENT_ROADMAP.md`)
+- [ ] **Purchase flow — Phase A** (radio tiers → mock checkout → success); then live Stripe (Phase B). *(Revenue-critical; design ready.)*
+- [ ] Architecture reference for layout/sequencing decisions: `docs/PLATFORM_ARCHITECTURE_MAP.md`.
 
 ### ✅ Completed through 2026-07-26 (merged to `main`)
 **07-20→22:** Rule B (#91) · Economics nomenclature (#92) · same-origin API (#93) · NASDAQ closed (#94) ·
