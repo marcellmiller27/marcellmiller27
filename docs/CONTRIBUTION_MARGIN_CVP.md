@@ -63,7 +63,39 @@ Using **Table A** monthly CM. *(Confirm F from `scripts/consolidated_projections
 - **Renewals are the profit engine:** Year-1 CM 79–81% → renewal CM 94–96% once commission rolls off. Retention is worth more than a marginal new sale.
 - **Gate rep hiring to break-even math:** add reps as incremental CM covers their fully-loaded cost (ties to the EBITDA-gated staffing plan in the consolidated projections).
 
-## 7. Next step (optional build)
+## 7. Editorial AI (E2) production spend — how it hits Contribution Margin
+The LLM editorial spend (Claude Sonnet 5 / Nova Pro / Llama on Bedrock — evaluation open) is a
+**shared production cost, not a per-seat variable cost.** One edition is generated **once** and served
+to **every** subscriber, so it does **not** scale per unit like data/cloud/processing. Correct CVP
+treatment: it sits in **Fixed Costs (F)** (content production), and its **cost-per-subscriber falls as
+we scale.** (If we ever want a per-unit view, it's the amortized figure below — but it is technically fixed/shared.)
+
+### Recommended monthly budget (a *cap*, pick one)
+Set as a **hard cap** in the drafting service (stop / fall back to the deterministic edition when hit),
+so spend cannot run away. Estimated steady-state at our cadence (daily/monthly/quarterly/annual, tiered
+models + a fact-check pass) is **only ~$25–$75/mo**; the cap adds headroom for iteration, the bake-off,
+and growth.
+
+| Option | Monthly cap | Covers |
+|---|---:|---|
+| Starter | **$100** | Production at current cadence + light iteration |
+| **Recommended** | **$250** | Production + fact-check pass + bake-off iteration + buffer |
+| Growth | **$500** | Heavy experimentation, multi-model in parallel, scaling cadence |
+
+*(Range to choose from: **$100–$500/mo**. True spend likely lands well under the cap.)*
+
+### CM impact is negligible (amortized per subscriber, at a $250 cap)
+| Subscribers | Editorial $/sub/mo | Consumer CM after editorial (from $103.70) |
+|---:|---:|---:|
+| 100 | $2.50 | $101.20 (92%) |
+| 1,000 | $0.25 | $103.45 (94%) |
+| 10,000 | $0.025 | $103.68 (94%) |
+| 50,000 | $0.005 | $103.70 (94%) |
+
+- **Break-even effect:** a $250/mo cap raises fixed costs by `F/CM` ≈ **2–3 Consumer subs** to cover — a rounding error against 94–96% margins.
+- **Takeaway:** the AI editorial budget is **immaterial to unit economics at any real scale**; it's a fixed production line, and the fact-lock keeps quality without quality-risk. Fold the chosen cap into **F** in the consolidated projections.
+
+## 7a. Next step (optional build)
 On authorization, I'll generate an **Excel CVP workbook** (`scripts/contribution_margin_cvp.py`) — editable P/V/F/mix inputs, per-tier CM, break-even chart, target-profit and margin-of-safety calculators — matching our other institutional workbooks. Say the word.
 
 ---
