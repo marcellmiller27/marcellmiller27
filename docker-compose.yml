@@ -50,6 +50,9 @@ services:
       ENABLE_LLM_EDITORIAL: ${ENABLE_LLM_EDITORIAL:-0}
       EDITORIAL_LLM_MODEL: ${EDITORIAL_LLM_MODEL:-claude-sonnet-4-5}
       EDITORIAL_LLM_MONTHLY_BUDGET_USD: ${EDITORIAL_LLM_MONTHLY_BUDGET_USD:-250}
+      # Origin the backend prints from for exact-as-viewed newsletter PDFs (headless
+      # Chromium renders the real page). The frontend service on the compose network.
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://frontend:3000}
     depends_on:
       db:
         condition: service_healthy

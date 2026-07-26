@@ -14,7 +14,8 @@ dependencies = [
   "cryptography",
   "PyJWT",
   "stripe",
-  "anthropic"
+  "anthropic",
+  "playwright"
 ]
 
 [project.optional-dependencies]

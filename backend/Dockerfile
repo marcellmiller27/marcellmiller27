@@ -6,10 +6,16 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 COPY backend/ /app/backend/
-RUN pip install -e /app/backend
+
+# Headless Chromium (Playwright) for exact-as-viewed newsletter PDF rendering.
+# Browsers live in a shared path so the non-root runtime user can launch them.
+ENV PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers
+RUN pip install -e /app/backend \
+    && python -m playwright install --with-deps chromium
 
 # Run as a non-root user.
-RUN useradd -m -u 10001 appuser && chown -R appuser:appuser /app
+RUN useradd -m -u 10001 appuser \
+    && chown -R appuser:appuser /app /opt/pw-browsers
 USER appuser
 
 WORKDIR /app/backend
