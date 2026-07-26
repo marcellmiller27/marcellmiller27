@@ -2,12 +2,15 @@
 "use client";
 
 import { useState } from "react";
+import { useRole } from "@/components/role-provider";
+import { FREE_COOKIE, setCookie } from "@/lib/auth";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api/v1";
 
 type Status = "idle" | "sending" | "ok" | "error";
 
 export function NewsletterSubscribe() {
+  const { setRole } = useRole();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [msg, setMsg] = useState("");
@@ -27,6 +30,9 @@ export function NewsletterSubscribe() {
         })
       });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      // Mark this visitor as a free-newsletter registrant (teaser tier).
+      setCookie(FREE_COOKIE, "1", 90);
+      setRole("free");
       setStatus("ok");
       setMsg("You're on the list. Editions will be emailed once delivery is enabled.");
       setEmail("");

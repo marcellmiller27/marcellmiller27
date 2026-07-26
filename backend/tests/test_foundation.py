@@ -91,3 +91,36 @@ def test_checkout_webhook_and_audit_log_flow() -> None:
     assert subscription_response.json()["subscription"]["status"] == "active"
     assert audit_response.status_code == 200
     assert any(log["action"] == "billing.checkout_requested" for log in audit_response.json())
+
+
+def test_cancel_subscription_requires_full_sentence_reason() -> None:
+    registered = register_user()
+    headers = {"Authorization": f"Bearer {registered['access_token']}"}
+
+    # Terse, non-sentence reasons are rejected (this is the "red" state).
+    for bad_reason in ["", "n/a", "None. ty", "too short"]:
+        rejected = client.post(
+            "/api/v1/billing/cancel", headers=headers, json={"reason": bad_reason}
+        )
+        assert rejected.status_code == 422, bad_reason
+
+    # A complete sentence is accepted (the "green" state).
+    reason = "The platform was excellent, but our team paused all subscriptions this quarter."
+    accepted = client.post("/api/v1/billing/cancel", headers=headers, json={"reason": reason})
+    assert accepted.status_code == 200
+    body = accepted.json()
+    assert body["subscription"]["status"] == "canceled"
+    assert body["reason"] == reason
+    assert body["effective_date"]
+
+    # Cancellation is recorded in the audit trail with the reason preserved.
+    audit_response = client.get("/api/v1/billing/audit-logs", headers=headers)
+    cancel_logs = [
+        log for log in audit_response.json() if log["action"] == "subscription.canceled"
+    ]
+    assert cancel_logs and cancel_logs[0]["event"]["reason"] == reason
+
+
+def test_cancel_subscription_requires_authentication() -> None:
+    response = client.post("/api/v1/billing/cancel", json={"reason": "A complete sentence here."})
+    assert response.status_code == 401

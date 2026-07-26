@@ -20,6 +20,7 @@ from app.routers import (
     leads,
     market,
     mobile_auth,
+    newsletters,
     pipeline,
     public_macro,
     reports,
@@ -60,6 +61,7 @@ app.include_router(reports.router, prefix="/api/v1")
 app.include_router(dashboards.router, prefix="/api/v1")
 app.include_router(crm.router, prefix="/api/v1")
 app.include_router(market.router, prefix="/api/v1")
+app.include_router(newsletters.router, prefix="/api/v1")
 app.include_router(bea.router, prefix="/api/v1")
 app.include_router(public_macro.router, prefix="/api/v1")
 app.include_router(research.router, prefix="/api/v1")

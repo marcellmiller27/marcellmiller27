@@ -60,6 +60,11 @@ export default function NewslettersPage() {
         ))}
       </div>
 
+      <p className="news__source" style={{ marginTop: "0.75rem" }}>
+        Previous editions are archived weekly — free registrants can open any edition as a
+        preview; subscribers (Tier 1–3) get the full archive. Rolling out with email delivery.
+      </p>
+
       <section className="app-section">
         <NewsletterSubscribe />
       </section>

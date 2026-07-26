@@ -13,7 +13,9 @@ dependencies = [
   "reportlab",
   "cryptography",
   "PyJWT",
-  "stripe"
+  "stripe",
+  "anthropic",
+  "playwright"
 ]
 
 [project.optional-dependencies]

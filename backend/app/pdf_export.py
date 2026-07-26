@@ -26,6 +26,7 @@ from reportlab.platypus import (
 
 from app.deal_xray_models import DealInput, DealXRayReport
 from app.financial_diligence_models import DiligenceInput, DiligenceReport
+from app.newsletter_content import Edition
 
 SIG = "JHI-SIG: 69M2705M"
 ENTITY = "JHI Research & Analytics Firm, Inc."
@@ -108,6 +109,65 @@ def _build(flow: list) -> bytes:
     )
     doc.build(flow, onFirstPage=_footer, onLaterPages=_footer)
     return buf.getvalue()
+
+
+_BYLINE = "Ellery Vance, VP of Editorial (AI) · JHI Research & Analytics"
+_EYEBROW = ParagraphStyle("JHIEyebrow", parent=_styles["Normal"], fontSize=8,
+                          textColor=_MUTED, spaceAfter=1)
+_LEDE = ParagraphStyle("JHILede", parent=_styles["Normal"], fontSize=10, leading=15,
+                       textColor=_NAVY, spaceAfter=6)
+_ITEM_HEAD = ParagraphStyle("JHIItemHead", parent=_styles["Normal"], fontName="Helvetica-Bold",
+                            fontSize=9.5, textColor=_NAVY, spaceBefore=6, spaceAfter=1)
+
+
+def newsletter_pdf(edition: Edition) -> bytes:
+    """Render a normalized editorial Edition to a branded, print-ready PDF.
+
+    Server-side generation replaces the browser `window.print()` path (which crashed
+    the forwarded/desktop viewer) and is reusable for the Step-B email attachment.
+    """
+    flow: list = [
+        Paragraph(f"JHI Research &amp; Analytics · {edition.eyebrow}", _EYEBROW),
+        Paragraph(edition.title, _TITLE),
+        Paragraph(edition.dateline, _META),
+        Paragraph(f"By {_BYLINE}", _META),
+        Spacer(1, 8),
+    ]
+
+    if edition.intro:
+        flow.append(Paragraph(edition.intro, _LEDE))
+
+    for group in edition.groups:
+        flow.append(Paragraph(group.heading, _H))
+        if group.blurb:
+            flow.append(Paragraph(group.blurb, _SMALL))
+        if not group.items:
+            flow.append(Paragraph("No items in this section for the current edition.", _BODY))
+        for item in group.items:
+            head = item.label if not item.value else f"{item.label} — {item.value}"
+            flow.append(Paragraph(head, _ITEM_HEAD))
+            if item.body:
+                flow.append(Paragraph(item.body, _BODY))
+            if item.tags:
+                flow.append(Paragraph("Asset classes: " + ", ".join(item.tags), _SMALL))
+            if item.source:
+                flow.append(Paragraph(item.source, _SMALL))
+
+    if edition.teaser:
+        flow.append(Spacer(1, 8))
+        flow.append(Paragraph(
+            "This is a complimentary preview. The full edition — every section and idea — is "
+            "available to JHI subscribers. Upgrade at johnhenry to unlock the complete brief.",
+            _BODY))
+
+    flow.append(Paragraph("Methodology &amp; sources", _H))
+    flow.append(Paragraph(edition.methodology, _SMALL))
+
+    flow.append(Spacer(1, 10))
+    flow.append(Paragraph(f"Prepared by {ENTITY}. {edition.footer}", _SMALL))
+    flow.append(Paragraph(edition.disclaimer, _SMALL))
+    flow.append(Paragraph(f"{ENTITY}  ·  {SIG}  ·  All rights reserved.", _SMALL))
+    return _build(flow)
 
 
 def deal_xray_pdf(deal: DealInput, report: DealXRayReport) -> bytes:

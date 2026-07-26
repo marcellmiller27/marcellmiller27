@@ -1,50 +1,32 @@
+// JHI-SIG: 69M2705M | Login route | JHI Research & Analytics Firm, Inc. (proprietary)
 import Link from "next/link";
 import { StorefrontShell } from "@/components/storefront-shell";
+import { AuthForm } from "@/components/auth-form";
 
 export default function LoginPage() {
   return (
     <StorefrontShell
       eyebrow="Secure access"
-      title="Sign in to protected platform workflows"
-      description="Login validates hashed credentials and returns a signed bearer token containing user, organization, role, and subscription context."
+      title="Sign in"
+      description="Sign in to the JHI platform. Access to research, records, and diligence tools is reserved for subscribers; the newsletter preview is open to all."
     >
-      <section className="app-section--split">
-        <article className="app-card">
-          <span>Dual access</span>
-          <strong>Mobile companion app</strong>
-          <p>
-            The same account signs in on mobile with password, two-factor, and
-            biometric unlock.
+      <section className="auth-layout">
+        <div className="auth-panel">
+          <AuthForm mode="login" />
+          <p className="auth-alt">
+            New to JHI? <Link href="/register">Create an account →</Link>
           </p>
-          <Link className="button button--primary" href="/mobile" style={{ marginTop: "1rem" }}>
-            Open the mobile app
+        </div>
+        <article className="app-card">
+          <span>What you get</span>
+          <strong>Subscriber access</strong>
+          <p>
+            Dashboard, Economics, Screener, records, and diligence tools — plus the full
+            editions of The Economic Brief, Red Alerts, and the Cross-Asset Opportunity Scan.
+          </p>
+          <Link className="opportunity-card__link" href="/pricing">
+            See plans &amp; pricing →
           </Link>
-        </article>
-        <article className="app-card">
-          <span>Sign-in methods</span>
-          <strong>Password · 2FA · Biometric</strong>
-          <p>
-            Multi-factor sign-in is backed by `/api/v1/auth/login/initiate`,
-            `/auth/2fa/*`, and `/auth/biometric/*`.
-          </p>
-        </article>
-      </section>
-
-      <section className="app-grid app-grid--three">
-        <article className="app-card">
-          <span>Endpoint</span>
-          <strong>/api/v1/auth/login</strong>
-          <p>Accepts email and password, then returns a bearer token for protected API calls.</p>
-        </article>
-        <article className="app-card">
-          <span>Protected identity</span>
-          <strong>/api/v1/auth/me</strong>
-          <p>Returns the current user, organization, role, and subscription for an authenticated session.</p>
-        </article>
-        <article className="app-card">
-          <span>Security</span>
-          <strong>PBKDF2 + HMAC token</strong>
-          <p>Passwords are salted and hashed. Tokens are signed and expire based on backend settings.</p>
         </article>
       </section>
     </StorefrontShell>
