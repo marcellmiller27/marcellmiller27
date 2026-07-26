@@ -95,7 +95,7 @@ async function deviceBiometric(
       const credential = (await navigator.credentials.create({
         publicKey: {
           challenge,
-          rp: { name: "John Henry Investments" },
+          rp: { name: "Aegira" },
           user: {
             id: new TextEncoder().encode(email),
             name: email,
@@ -469,7 +469,7 @@ export default function MobileApp() {
                   <span className="m-method__icon m-method__icon--gold">✨</span>
                   <span>
                     <strong>Create account</strong>
-                    <span>New to John Henry Investments? Start here.</span>
+                    <span>New to Aegira? Start here.</span>
                   </span>
                 </button>
               </div>
@@ -816,7 +816,7 @@ export default function MobileApp() {
       </div>
 
       <p className="mobile-stage__intro">
-        John Henry Investments companion app · also available on the{" "}
+        Aegira companion app · also available on the{" "}
         <Link href="/">web platform</Link>.
       </p>
     </div>

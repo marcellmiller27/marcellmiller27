@@ -109,7 +109,7 @@ export default function Home() {
         <div className="hero__content">
           <Link className="hero__brand" href="/">
             <Logo size={44} />
-            John Henry Investments
+            Aegira
           </Link>
           <p className="eyebrow">JHI Research &amp; Analytics Firm, Inc.</p>
           <h1>Institutional research and deal diligence — without the institutional price.</h1>

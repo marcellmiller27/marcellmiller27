@@ -26,7 +26,7 @@ _HEADER_TEMPLATE = (
     '<div style="width:100%;font-size:8px;color:#0C1F33;font-family:Georgia,\'Times New Roman\',serif;'
     'padding:0 0.6in;display:flex;justify-content:space-between;align-items:center;'
     '-webkit-print-color-adjust:exact;">'
-    '<span style="font-weight:bold;letter-spacing:0.02em;">JHI Research &amp; Analytics Firm, Inc.</span>'
+    '<span style="font-weight:bold;letter-spacing:0.02em;">Aegira</span>'
     '<span style="color:#5A6B7D;letter-spacing:0.08em;text-transform:uppercase;font-size:7px;">'
     "Institutional Research &middot; Economic Tracking</span></div>"
 )

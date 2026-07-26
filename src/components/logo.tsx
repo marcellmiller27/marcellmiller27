@@ -4,11 +4,11 @@ type LogoProps = {
 };
 
 /**
- * John Henry Investments emblem: the "Jh" monogram in brand gold on a trust-navy
- * badge (matching the firm mark). Inline SVG so it stays crisp at any size and
- * inherits the brand palette. (A tech-forward mark is planned to follow.)
+ * Aegira emblem: the "Ae" monogram in brand gold on a trust-navy badge. Inline SVG
+ * so it stays crisp at any size and inherits the brand palette. (Aegira is the
+ * platform brand; JHI Research & Analytics Firm, Inc. is the corporate publisher.)
  */
-export function Logo({ size = 40, title = "John Henry Investments" }: LogoProps) {
+export function Logo({ size = 40, title = "Aegira" }: LogoProps) {
   return (
     <svg
       width={size}
@@ -50,7 +50,7 @@ export function Logo({ size = 40, title = "John Henry Investments" }: LogoProps)
         letterSpacing="0.5"
         fill="url(#jhGold)"
       >
-        Jh
+        Ae
       </text>
     </svg>
   );
