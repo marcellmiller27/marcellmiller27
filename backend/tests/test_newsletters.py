@@ -41,6 +41,22 @@ def test_unknown_edition_is_404() -> None:
     assert response.status_code == 404
 
 
+def test_edition_json_endpoint() -> None:
+    # The content API that drives on-screen render + PDF + email.
+    for slug in EDITION_SLUGS:
+        r = client.get(f"/api/v1/newsletters/{slug}")
+        assert r.status_code == 200, slug
+        body = r.json()
+        assert body["edition"]["slug"] == slug
+        assert body["edition"]["title"]
+        assert isinstance(body["edition"]["groups"], list)
+        assert body["as_of"]
+        assert body["editorial"] in ("deterministic", "llm") or body["editorial"].startswith(
+            "deterministic:"
+        )
+    assert client.get("/api/v1/newsletters/not-a-real-edition").status_code == 404
+
+
 def test_pdf_download_is_role_aware() -> None:
     # Anonymous readers get the teaser; an authenticated reader gets the full edition.
     anon = client.get("/api/v1/newsletters/economic-brief/pdf")

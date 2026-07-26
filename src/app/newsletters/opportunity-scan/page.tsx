@@ -1,7 +1,7 @@
 // JHI-SIG: 69M2705M | Opportunity Scan route | JHI Research & Analytics Firm, Inc. (proprietary)
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
-import { OpportunityScan } from "@/components/opportunity-scan";
+import { NewsletterEdition } from "@/components/newsletter-edition";
 
 export default function OpportunityScanPage() {
   return (
@@ -13,7 +13,7 @@ export default function OpportunityScanPage() {
       <p className="rec-crumb">
         <Link href="/newsletters">Newsletters</Link> <span aria-hidden>›</span> Opportunity Scan
       </p>
-      <OpportunityScan />
+      <NewsletterEdition slug="opportunity-scan" variant="scan" />
     </AppShell>
   );
 }
