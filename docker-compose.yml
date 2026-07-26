@@ -44,6 +44,16 @@ services:
       # Comma-separated emails of JHI staff (Founder + employees) — grants back-office
       # access (Accounting, Admin, etc.) until a dedicated staff role/column lands.
       JHI_STAFF_EMAILS: ${JHI_STAFF_EMAILS:-}
+      # Editorial E2 (grounded LLM). OFF by default — set ENABLE_LLM_EDITORIAL=1 to
+      # elevate newsletter prose (fact-locked). Provider is auto-selected: Amazon
+      # Bedrock if AWS_BEARER_TOKEN_BEDROCK is set, else Anthropic-direct (sk-ant-).
+      # For Bedrock, EDITORIAL_LLM_MODEL must be the Bedrock model / inference-profile id.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      AWS_BEARER_TOKEN_BEDROCK: ${AWS_BEARER_TOKEN_BEDROCK:-}
+      AWS_REGION: ${AWS_REGION:-us-east-2}
+      ENABLE_LLM_EDITORIAL: ${ENABLE_LLM_EDITORIAL:-0}
+      EDITORIAL_LLM_MODEL: ${EDITORIAL_LLM_MODEL:-claude-sonnet-4-5}
+      EDITORIAL_LLM_MONTHLY_BUDGET_USD: ${EDITORIAL_LLM_MONTHLY_BUDGET_USD:-250}
       # Origin the backend prints from for exact-as-viewed newsletter PDFs (headless
       # Chromium renders the real page). The frontend service on the compose network.
       FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://frontend:3000}
