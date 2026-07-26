@@ -1,7 +1,7 @@
 // JHI-SIG: 69M2705M | Red Alerts route | JHI Research & Analytics Firm, Inc. (proprietary)
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
-import { RedAlerts } from "@/components/red-alerts";
+import { NewsletterEdition } from "@/components/newsletter-edition";
 
 export default function RedAlertsPage() {
   return (
@@ -13,7 +13,7 @@ export default function RedAlertsPage() {
       <p className="rec-crumb">
         <Link href="/newsletters">Newsletters</Link> <span aria-hidden>›</span> Red Alerts
       </p>
-      <RedAlerts />
+      <NewsletterEdition slug="red-alerts" variant="alerts" />
     </AppShell>
   );
 }

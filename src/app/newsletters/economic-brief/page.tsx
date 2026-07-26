@@ -1,7 +1,7 @@
 // JHI-SIG: 69M2705M | Economic Brief route | JHI Research & Analytics Firm, Inc. (proprietary)
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
-import { EconomicNewsletter } from "@/components/economic-newsletter";
+import { NewsletterEdition } from "@/components/newsletter-edition";
 
 export default function EconomicBriefPage() {
   return (
@@ -13,7 +13,7 @@ export default function EconomicBriefPage() {
       <p className="rec-crumb">
         <Link href="/newsletters">Newsletters</Link> <span aria-hidden>›</span> The Economic Brief
       </p>
-      <EconomicNewsletter />
+      <NewsletterEdition slug="economic-brief" variant="brief" />
     </AppShell>
   );
 }

@@ -1,5 +1,6 @@
 # JHI-SIG: 69M2705M | Newsletters router (server-side PDF) | JHI Research & Analytics Firm, Inc. (proprietary)
 import logging
+from dataclasses import asdict
 from datetime import datetime, timezone
 from typing import Annotated
 
@@ -16,6 +17,30 @@ from app.security import decode_access_token
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/newsletters", tags=["newsletters"])
+
+
+@router.get("/{edition}")
+def newsletter_edition(
+    edition: str,
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+) -> dict:
+    """The edition content as JSON — the single source of truth for on-screen render,
+    the PDF (which prints the page), and future email. Deterministic build, then E2 LLM
+    elevation (flag-gated, fact-locked). Role-aware: a valid bearer token → full edition."""
+    if edition not in EDITION_SLUGS:
+        raise HTTPException(status_code=404, detail="Unknown newsletter edition.")
+
+    token = _bearer_token(request)
+    data = MarketDataService().quotes(NEWSLETTER_SYMBOLS)
+    built = build_edition(edition, data.quotes, datetime.now(timezone.utc), full=token is not None)
+
+    editorial = "deterministic"
+    if llm_enabled():
+        built, meta = elevate_edition(built, db=db)
+        editorial = "llm" if meta.get("used_llm") else f"deterministic:{meta.get('reason')}"
+
+    return {"edition": asdict(built), "as_of": data.as_of.isoformat(), "editorial": editorial}
 
 
 def _bearer_token(request: Request) -> str | None:
