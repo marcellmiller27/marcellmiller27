@@ -1108,9 +1108,9 @@ li {
   padding: var(--space-4) 0 var(--space-3);
 }
 .app-hero--compact h1 {
-  font-size: 1.55rem;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  font-size: 1.25rem;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
 }
 .app-hero--compact p:not(.eyebrow) {
   font-size: var(--fs-md);
@@ -2495,7 +2495,7 @@ li {
 }
 .news__masthead h2 {
   margin: 0.2rem 0 0;
-  font-size: var(--fs-4xl);
+  font-size: var(--fs-3xl);
   letter-spacing: -0.02em;
 }
 .news__edition {
@@ -2525,12 +2525,12 @@ li {
 .news__lede h3,
 .news__section h3 {
   margin: 0 0 0.4rem;
-  font-size: var(--fs-xl);
+  font-size: var(--fs-lg);
   color: var(--text);
 }
 .news__lede p {
   margin: 0;
-  font-size: var(--fs-lg);
+  font-size: var(--fs-md);
   line-height: 1.6;
   color: var(--text);
 }
@@ -2895,7 +2895,7 @@ li {
     margin-bottom: 1.1rem;
   }
   .news__masthead h2 {
-    font-size: 25pt;
+    font-size: 19pt;
     letter-spacing: -0.01em;
   }
   .news__byline-avatar {
@@ -2911,7 +2911,7 @@ li {
     page-break-inside: avoid;
   }
   .news__section h3 {
-    font-size: 12.5pt;
+    font-size: 11pt;
   }
   /* The teaser gate keeps its message but drops the buttons (handled above). */
   .upgrade-gate {
