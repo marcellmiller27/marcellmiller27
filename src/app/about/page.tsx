@@ -52,7 +52,7 @@ const bodyStyle = {
 export default function AboutPage() {
   return (
     <StorefrontShell
-      eyebrow="About · JHI Research & Analytics Firm, Inc."
+      eyebrow="About · Aegira"
       title="We are a team of operators augmented by AI."
       description="At Aegira, we combine a lean team of skilled operators with advanced AI to deliver the capabilities and output of a much larger firm. Rather than competing with technology, we leverage it to maximize our efficiency and results."
     >
@@ -64,7 +64,7 @@ export default function AboutPage() {
         <p style={bodyStyle}>
           Diligence data is often fragmented and expensive, and the initial review of a CIM can
           consume days of senior leadership&rsquo;s time — frequently on deals that do not move
-          forward. We built JHI to provide independent investors and acquirers with
+          forward. We built Aegira to provide independent investors and acquirers with
           institutional-grade research and diligence that is clear, transparent, and grounded in
           real data. We offer this at a fraction of the traditional cost, with a genuine trial
           period and no contract lock-in.
@@ -77,7 +77,8 @@ export default function AboutPage() {
           <h2>Veteran-led. Combat-tested. Built to endure.</h2>
         </div>
         <p style={bodyStyle}>
-          JHI is led by operators with 20+ years of experience building accounting systems,
+          Aegira is built and published by JHI Research &amp; Analytics Firm, Inc., and led by
+          operators with 20+ years of experience building accounting systems,
           internal controls, and financial reporting — plus hands-on experience running an
           accounting, tax, and audit practice. Our senior accounting and finance leadership
           includes a CPA candidate, with a career spent operating businesses across:

@@ -151,7 +151,7 @@ export function FinancialDiligence() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `JHI_QoE_${String(form.business_name ?? "target").replace(/[^A-Za-z0-9]+/g, "_")}.${ext}`;
+      a.download = `Aegira_QoE_${String(form.business_name ?? "target").replace(/[^A-Za-z0-9]+/g, "_")}.${ext}`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -305,7 +305,7 @@ export function FinancialDiligence() {
                 <p style={{ fontSize: "var(--fs-sm)" }}>
                   Manual market: {money(report.add_on_pricing.manual_low)}–{money(report.add_on_pricing.manual_high)}<br />
                   <strong style={{ color: "var(--growth,#35c46b)" }}>
-                    JHI platform: {money(report.add_on_pricing.platform_low)}–{money(report.add_on_pricing.platform_high)}
+                    Aegira platform: {money(report.add_on_pricing.platform_low)}–{money(report.add_on_pricing.platform_high)}
                   </strong>
                 </p>
                 <button className="button button--primary" disabled={quoting} onClick={requestQoE}>

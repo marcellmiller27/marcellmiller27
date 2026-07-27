@@ -31,7 +31,7 @@ def test_every_edition_returns_a_pdf_download() -> None:
         assert response.status_code == 200, slug
         assert response.headers["content-type"] == "application/pdf"
         assert response.headers["content-disposition"].startswith("attachment;")
-        assert f"jhi-{slug}-" in response.headers["content-disposition"]
+        assert f"aegira-{slug}-" in response.headers["content-disposition"]
         # Valid PDF magic bytes — proves reportlab produced a real document.
         assert response.content[:4] == b"%PDF", slug
 

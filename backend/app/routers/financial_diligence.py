@@ -58,7 +58,7 @@ def export_diligence(payload: DiligenceInput) -> Response:
     return Response(
         content=data,
         media_type=_XLSX_MEDIA,
-        headers={"Content-Disposition": f'attachment; filename="JHI_QoE_{safe}.xlsx"'},
+        headers={"Content-Disposition": f'attachment; filename="Aegira_QoE_{safe}.xlsx"'},
     )
 
 
@@ -71,5 +71,5 @@ def export_diligence_pdf(payload: DiligenceInput) -> Response:
     return Response(
         content=data,
         media_type="application/pdf",
-        headers={"Content-Disposition": f'attachment; filename="JHI_QoE_{safe}.pdf"'},
+        headers={"Content-Disposition": f'attachment; filename="Aegira_QoE_{safe}.pdf"'},
     )

@@ -19,6 +19,8 @@ export function GlobalSearch() {
       }}
     >
       <input
+        id="global-search"
+        name="q"
         className="app-search"
         type="search"
         value={q}

@@ -34,7 +34,7 @@ type TocItem = { href: string; label: string; icon: LucideIcon; access: AccessLe
 type TocGroup = { section: string | null; items: TocItem[] };
 
 const toc: TocGroup[] = [
-  { section: null, items: [{ href: "/dashboard", label: "Dashboard", icon: Home, access: "subscriber" }] },
+  { section: null, items: [{ href: "/dashboard", label: "Home", icon: Home, access: "subscriber" }] },
   {
     section: "Research & Intelligence",
     items: [

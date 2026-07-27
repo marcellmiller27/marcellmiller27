@@ -42,7 +42,7 @@ def test_deal_xray_export_is_interactive_workbook() -> None:
     resp = client.post("/api/v1/deal-xray/export.xlsx", json=payload)
     assert resp.status_code == 200, resp.text
     assert resp.headers["content-type"] == _XLSX_MEDIA
-    assert "JHI_BQA_Carrollton_Design_Build.xlsx" in resp.headers["content-disposition"]
+    assert "Aegira_BQA_Carrollton_Design_Build.xlsx" in resp.headers["content-disposition"]
 
     wb = load_workbook(BytesIO(resp.content))  # formulas preserved (data_only=False)
     assert {"Dashboard", "Business Quality Assessment", "Detail", "Legal & Provenance"} <= set(wb.sheetnames)
@@ -111,7 +111,7 @@ def test_deal_xray_pdf_export() -> None:
     assert resp.status_code == 200, resp.text
     assert resp.headers["content-type"] == "application/pdf"
     assert resp.content[:5] == b"%PDF-"
-    assert "JHI_BQA_Carrollton_Design_Build.pdf" in resp.headers["content-disposition"]
+    assert "Aegira_BQA_Carrollton_Design_Build.pdf" in resp.headers["content-disposition"]
 
 
 def test_diligence_pdf_export() -> None:

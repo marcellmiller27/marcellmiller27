@@ -66,7 +66,7 @@ def export_deal_xray(payload: DealInput) -> Response:
     return Response(
         content=data,
         media_type=_XLSX_MEDIA,
-        headers={"Content-Disposition": f'attachment; filename="JHI_BQA_{safe}.xlsx"'},
+        headers={"Content-Disposition": f'attachment; filename="Aegira_BQA_{safe}.xlsx"'},
     )
 
 
@@ -79,5 +79,5 @@ def export_deal_xray_pdf(payload: DealInput) -> Response:
     return Response(
         content=data,
         media_type="application/pdf",
-        headers={"Content-Disposition": f'attachment; filename="JHI_BQA_{safe}.pdf"'},
+        headers={"Content-Disposition": f'attachment; filename="Aegira_BQA_{safe}.pdf"'},
     )

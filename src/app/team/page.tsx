@@ -85,7 +85,7 @@ export default function TeamPage() {
                 )}
               </div>
               <p className="team-card__bg">
-                Cy leads JHI&apos;s AI engineering department — building and hardening the platform
+                Cy leads Aegira&apos;s AI engineering department — building and hardening the platform
                 end-to-end (frontend, backend, data, and developer experience), running tests, and
                 keeping the board minutes with the founder. Cy works under human direction; every change
                 is reviewed and shipped as a pull request.
@@ -139,10 +139,10 @@ export default function TeamPage() {
                 ))}
               </div>
               <p className="team-card__bg">
-                Ellery leads JHI&apos;s editorial desk — turning the data the platform polls into
+                Ellery leads Aegira&apos;s editorial desk — turning the data the platform polls into
                 published intelligence: recurring updates, deep-dive insider briefs, time-sensitive
                 red alerts, and opportunity scans that surface unforeseen ideas across equities,
-                credit, real assets, private markets, and digital assets. Written in JHI&apos;s
+                credit, real assets, private markets, and digital assets. Written in Aegira&apos;s
                 independent professional perspective; human-directed and published via review.
               </p>
               <span className="m-pill m-pill--on">Human-directed · published via review</span>

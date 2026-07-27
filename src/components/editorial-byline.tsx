@@ -6,7 +6,7 @@ export function EditorialByline() {
     <p className="news__byline">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img className="news__byline-avatar" src="/team/vp-editorial.png" alt="Ellery Vance" />
-      <span>By Ellery Vance · VP of Editorial, JHI Research &amp; Analytics (AI)</span>
+      <span>By Ellery Vance · VP of Editorial, Aegira (AI)</span>
     </p>
   );
 }
