@@ -305,7 +305,7 @@ export function FinancialDiligence() {
                 <p style={{ fontSize: "var(--fs-sm)" }}>
                   Manual market: {money(report.add_on_pricing.manual_low)}–{money(report.add_on_pricing.manual_high)}<br />
                   <strong style={{ color: "var(--growth,#35c46b)" }}>
-                    JHI platform: {money(report.add_on_pricing.platform_low)}–{money(report.add_on_pricing.platform_high)}
+                    Aegira platform: {money(report.add_on_pricing.platform_low)}–{money(report.add_on_pricing.platform_high)}
                   </strong>
                 </p>
                 <button className="button button--primary" disabled={quoting} onClick={requestQoE}>

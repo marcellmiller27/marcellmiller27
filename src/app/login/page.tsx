@@ -8,13 +8,13 @@ export default function LoginPage() {
     <StorefrontShell
       eyebrow="Secure access"
       title="Sign in"
-      description="Sign in to the JHI platform. Access to research, records, and diligence tools is reserved for subscribers; the newsletter preview is open to all."
+      description="Sign in to the Aegira platform. Access to research, records, and diligence tools is reserved for subscribers; the newsletter preview is open to all."
     >
       <section className="auth-layout">
         <div className="auth-panel">
           <AuthForm mode="login" />
           <p className="auth-alt">
-            New to JHI? <Link href="/register">Create an account →</Link>
+            New to Aegira? <Link href="/register">Create an account →</Link>
           </p>
         </div>
         <article className="app-card">

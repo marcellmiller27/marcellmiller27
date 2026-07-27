@@ -9,7 +9,7 @@ export function UpgradeGate() {
       <h3>Unlock the full edition</h3>
       <p>
         You&apos;re reading the free preview. The full edition — every section, all Red Alerts,
-        and the complete Cross-Asset Opportunity Scan — is included with a JHI subscription
+        and the complete Cross-Asset Opportunity Scan — is included with an Aegira subscription
         (Tier 1–3), alongside the full platform: records, screening, and diligence tools.
       </p>
       <div className="upgrade-gate__actions">

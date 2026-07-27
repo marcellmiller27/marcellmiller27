@@ -32,7 +32,7 @@ LEGAL_LINES = [
     "an audit, a review, a CPA opinion, or brokerage.",
     "Formal assurance opinions (Unqualified / Qualified / Adverse / Disclaimer) are issued "
     "only by a licensed partner CPA firm that engages the target entity.",
-    "Live-formula cells are a transparent single-model view for you to stress-test; the JHI "
+    "Live-formula cells are a transparent single-model view for you to stress-test; the Aegira "
     "engine snapshot may use additional multi-year logic. Verify all figures with a "
     "quality-of-earnings review and licensed professionals before making an offer.",
     f"© {date.today().year} {ENTITY}. All rights reserved. Proprietary & confidential.",
@@ -186,7 +186,7 @@ def deal_xray_workbook(deal: DealInput, report: DealXRayReport) -> bytes:
     ws.cell(row=39, column=3, value=f"=B33/(-PMT({apr}/100,{term},{price}*0.85))").number_format = _RATIO
     ws.cell(row=39, column=4, value=f"=B33/(-PMT({apr}/100,{term},{price}*0.8))").number_format = _RATIO
 
-    _subhead(ws, 41, "JHI ASSESSMENT SNAPSHOT (Business Quality Assessment engine)")
+    _subhead(ws, 41, "AEGIRA ASSESSMENT SNAPSHOT (Business Quality Assessment engine)")
     snap = [
         ("Deal Score (0–100)", report.deal_score),
         ("Recommendation", report.recommendation),
@@ -298,7 +298,7 @@ def diligence_workbook(deal: DiligenceInput, report: DiligenceReport) -> bytes:
     _out_row(ws, 20, "Net working capital", f"={ar}+{inv}-{ap}", _MONEY)
     _out_row(ws, 21, "NWC % of revenue", f"=IF({rev}=0,0,({ar}+{inv}-{ap})/{rev})", _PCT)
 
-    _subhead(ws, 23, "JHI ASSESSMENT SNAPSHOT")
+    _subhead(ws, 23, "AEGIRA ASSESSMENT SNAPSHOT")
     snap = [
         ("Financial Integrity Score (0–100)", report.financial_integrity_score),
         ("Recommended tier", report.recommended_tier),

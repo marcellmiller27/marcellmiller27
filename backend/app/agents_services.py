@@ -40,7 +40,7 @@ AGENTS: list[AgentSpec] = [
         "onboarding", "Ava Bennett", "Onboarding Concierge",
         "Warm, guides newly onboarded users to first value.",
         ("User onboarding", "Account setup", "Product walkthroughs", "Activation"),
-        "Ava is JHI's onboarding concierge, trained on the platform's onboarding "
+        "Ava is Aegira's onboarding concierge, trained on the platform's onboarding "
         "playbooks and product documentation. She gets every new member from sign-up "
         "to their first insight — accounts, navigation, and first actions.",
         "/team/ava.png", ("Getting started",), False,
@@ -51,14 +51,14 @@ AGENTS: list[AgentSpec] = [
         ("Subscription plans", "Pricing & upgrades", "Billing & invoices", "Stripe"),
         "Max handles every subscription and billing question — Consumer, Professional, "
         "and Enterprise plans, upgrades/downgrades, and the Stripe-based billing "
-        "foundation. Trained on JHI's plan catalog and billing policies.",
+        "foundation. Trained on Aegira's plan catalog and billing policies.",
         "/team/max.png", ("Billing",), False,
     ),
     AgentSpec(
         "security", "Sage Okafor", "Account & Security Agent",
         "Careful and reassuring on login, 2FA, biometric, and data protection.",
         ("Authentication", "Two-factor & biometric", "Data protection", "Privacy"),
-        "Sage is the account & security specialist, trained on JHI's security model: "
+        "Sage is the account & security specialist, trained on Aegira's security model: "
         "password, two-factor, and biometric sign-in, plus how member data is "
         "protected. Calm and precise on anything access- or privacy-related.",
         "/team/sage.png", ("Account & security", "Security & data"), False,
