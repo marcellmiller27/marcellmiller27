@@ -33,7 +33,7 @@ const launchIcons: Record<string, LucideIcon> = {
   "Document Review": FileSearch,
   Pipeline: Workflow,
   Portfolio: Briefcase,
-  "Ask JHI": Sparkles,
+  "Ask Aegira": Sparkles,
   Documents: Download
 };
 

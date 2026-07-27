@@ -25,7 +25,7 @@ subscription scale — with clear subscriber benefit, rough effort, and dependen
 ## 🥈 Tier 2 — Intelligence & differentiation (premium feel)
 | Service | What it does for subscribers | Effort | Depends on |
 |---|---|---|---|
-| **Bedrock — expanded** | Smarter **Ask JHI** assistant; **document Q&A** over CIMs/filings (Bedrock **Knowledge Bases** / RAG); personalized digests | M–L | Bedrock (have), doc store (S3) |
+| **Bedrock — expanded** | Smarter **Ask Aegira** assistant; **document Q&A** over CIMs/filings (Bedrock **Knowledge Bases** / RAG); personalized digests | M–L | Bedrock (have), doc store (S3) |
 | **Bedrock Guardrails** | Enforced safety/"not advice" + PII/spillage checks on any generated text | S | Bedrock |
 | **Amazon OpenSearch** | Fast, relevant **search** across companies/filings/deals (snappy Screener & directory) | M | entity graph |
 

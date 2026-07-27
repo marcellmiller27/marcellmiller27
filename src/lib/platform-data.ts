@@ -619,7 +619,7 @@ export const dashboardLaunchpad: LaunchGroup[] = [
     items: [
       {
         href: "/assistant",
-        label: "Ask JHI",
+        label: "Ask Aegira",
         blurb: "Private analyst: security analysis, target evaluation and portfolio construction.",
         meta: "Charts · scores"
       },

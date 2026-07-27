@@ -47,7 +47,7 @@ Security hardening (encrypted TOTP, PyJWT, Stripe webhook verify, real WebAuthn)
 | `/due-diligence` (Document Review) | 🟡 | **Static** content |
 | `/pipeline` | 🟢 | Live pipeline API (add/remove wired) |
 | `/portfolio` | 🟡 | **Static** seed |
-| `/assistant` (Ask JHI) | 🟡 | Verify live agents wiring on the page |
+| `/assistant` (Ask Aegira) | 🟡 | Verify live agents wiring on the page |
 | `/newsletters` (+ 3 editions) | 🟢⏳ | Live generation; **PDF download** PR #109; **menu link** PR #111 |
 | `/companies`, `/firms/*`, `/advisors/*` | 🟡 | Entity graph = **frontend seed**; Phase-3.1 backend pending |
 | `/downloads` (Documents) | 🟢 | Static file list (baked) |

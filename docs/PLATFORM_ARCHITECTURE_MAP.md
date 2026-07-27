@@ -15,7 +15,7 @@ loop that turns market context into deal decisions.
 
 ### Pillar A — Markets & Research *(public world)*
 *Job: understand the world, surface ideas, tell the story.*
-- **Economics** (rates, inflation, growth, labor — FRED/BEA/BLS), **Market tickers** (equities, commodities, crypto, forex), **Screener**, **Reports**, **Newsletters** (Ellery Vance / Bedrock), **Ask JHI**.
+- **Economics** (rates, inflation, growth, labor — FRED/BEA/BLS), **Market tickers** (equities, commodities, crypto, forex), **Screener**, **Reports**, **Newsletters** (Ellery Vance / Bedrock), **Ask Aegira**.
 - Data source: **live public feeds** (+ EDGAR for company fundamentals).
 
 ### Pillar B — Acquire & Diligence *(private world)*
