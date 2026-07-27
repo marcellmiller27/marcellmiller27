@@ -105,7 +105,7 @@ def _build(flow: list) -> bytes:
         buf, pagesize=letter,
         leftMargin=0.7 * inch, rightMargin=0.7 * inch,
         topMargin=0.7 * inch, bottomMargin=0.7 * inch,
-        title="Aegira deal memo",
+        title="JHI deal memo",
     )
     doc.build(flow, onFirstPage=_footer, onLaterPages=_footer)
     return buf.getvalue()
