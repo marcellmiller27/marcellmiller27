@@ -25,7 +25,7 @@ export function AppShell({ eyebrow, title, description, children }: AppShellProp
         <GlobalSearch />
         <div className="app-topbar__actions">
           <Link className="app-topbar__ai" href="/assistant">
-            Ask JHI
+            Ask Aegira
           </Link>
           <Link className="app-topbar__account" href="/account">
             Account

@@ -62,7 +62,7 @@ const toc: TocGroup[] = [
     section: "Outputs & AI",
     items: [
       { href: "/newsletters", label: "Newsletter", icon: Newspaper, access: "free" },
-      { href: "/assistant", label: "Ask JHI", icon: Sparkles, access: "subscriber" },
+      { href: "/assistant", label: "Ask Aegira", icon: Sparkles, access: "subscriber" },
       { href: "/downloads", label: "Documents", icon: Download, access: "subscriber" }
     ]
   },
