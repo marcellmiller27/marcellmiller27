@@ -41,7 +41,7 @@ export default function NewslettersPage() {
     <AppShell
       eyebrow="Reports"
       title="Newsletters"
-      description="Published intelligence, auto-generated from the data we poll and written in JHI's professional perspective by the VP of Editorial. Read on-platform or export to PDF."
+      description="Published intelligence, auto-generated from the data we poll and written in Aegira's professional perspective by the VP of Editorial. Read on-platform or export to PDF."
     >
       <div className="app-grid app-grid--two">
         {EDITIONS.map((e) => (

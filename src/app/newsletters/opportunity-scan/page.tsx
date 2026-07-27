@@ -8,7 +8,7 @@ export default function OpportunityScanPage() {
     <AppShell
       eyebrow="Reports"
       title="Cross-Asset Opportunity Scan"
-      description="Idea generation across all asset classes, derived from the live data and written in JHI's professional perspective."
+      description="Idea generation across all asset classes, derived from the live data and written in Aegira's professional perspective."
     >
       <p className="rec-crumb">
         <Link href="/newsletters">Newsletters</Link> <span aria-hidden>›</span> Opportunity Scan

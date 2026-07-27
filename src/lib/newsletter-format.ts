@@ -66,7 +66,7 @@ export async function downloadNewsletterPdf(slug: string): Promise<void> {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `jhi-${slug}-${new Date().toISOString().slice(0, 10)}.pdf`;
+  a.download = `aegira-${slug}-${new Date().toISOString().slice(0, 10)}.pdf`;
   document.body.appendChild(a);
   a.click();
   a.remove();

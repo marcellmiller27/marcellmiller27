@@ -111,7 +111,7 @@ def _build(flow: list) -> bytes:
     return buf.getvalue()
 
 
-_BYLINE = "Ellery Vance, VP of Editorial (AI) · JHI Research & Analytics"
+_BYLINE = "Ellery Vance, VP of Editorial (AI) · Aegira"
 _EYEBROW = ParagraphStyle("JHIEyebrow", parent=_styles["Normal"], fontSize=8,
                           textColor=_MUTED, spaceAfter=1)
 _LEDE = ParagraphStyle("JHILede", parent=_styles["Normal"], fontSize=10, leading=15,
@@ -127,7 +127,7 @@ def newsletter_pdf(edition: Edition) -> bytes:
     the forwarded/desktop viewer) and is reusable for the Step-B email attachment.
     """
     flow: list = [
-        Paragraph(f"JHI Research &amp; Analytics · {edition.eyebrow}", _EYEBROW),
+        Paragraph(f"Aegira · {edition.eyebrow}", _EYEBROW),
         Paragraph(edition.title, _TITLE),
         Paragraph(edition.dateline, _META),
         Paragraph(f"By {_BYLINE}", _META),
@@ -157,7 +157,7 @@ def newsletter_pdf(edition: Edition) -> bytes:
         flow.append(Spacer(1, 8))
         flow.append(Paragraph(
             "This is a complimentary preview. The full edition — every section and idea — is "
-            "available to JHI subscribers. Upgrade at johnhenry to unlock the complete brief.",
+            "available to Aegira subscribers. Upgrade to unlock the complete brief.",
             _BODY))
 
     flow.append(Paragraph("Methodology &amp; sources", _H))
@@ -253,7 +253,7 @@ def diligence_pdf(deal: DiligenceInput, report: DiligenceReport) -> bytes:
     flow.append(Paragraph("Recommended QoE add-on", _H))
     p = report.add_on_pricing
     flow.append(Paragraph(
-        f"{p.band}: JHI platform {_m(p.platform_low)}–{_m(p.platform_high)} "
+        f"{p.band}: Aegira platform {_m(p.platform_low)}–{_m(p.platform_high)} "
         f"(manual market {_m(p.manual_low)}–{_m(p.manual_high)}).", _BODY))
 
     flow.append(Spacer(1, 8))
