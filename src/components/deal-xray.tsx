@@ -225,7 +225,7 @@ export function DealXRay() {
           {num("loan_rate_pct", "Loan APR %", "0.1")}
         </div>
         <button type="submit" className="button button--primary" disabled={busy} style={{ marginTop: "1rem" }}>
-          {busy ? "Analyzing…" : "Run Deal X-Ray"}
+          {busy ? "Analyzing…" : "Run LSR"}
         </button>
         {error ? (
           <p className="live-market__status" style={{ marginTop: "0.6rem" }}>
