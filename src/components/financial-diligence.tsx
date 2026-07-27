@@ -151,7 +151,7 @@ export function FinancialDiligence() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `JHI_QoE_${String(form.business_name ?? "target").replace(/[^A-Za-z0-9]+/g, "_")}.${ext}`;
+      a.download = `Aegira_QoE_${String(form.business_name ?? "target").replace(/[^A-Za-z0-9]+/g, "_")}.${ext}`;
       document.body.appendChild(a);
       a.click();
       a.remove();

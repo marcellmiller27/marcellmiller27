@@ -13,21 +13,21 @@ const documents: DocItem[] = [
     title: "Sales Commission & EBITDA Model",
     description:
       "Editable workbook: 24-month commission schedule, Year-1 by mix, a monthly EBITDA & operating-cost statement, and the prepaid-MSA salesperson-bonus sheet (bonus = 10% of EBITDA).",
-    href: "/downloads/JHI_Sales_Commission_EBITDA_Model.xlsx",
+    href: "/downloads/Aegira_Sales_Commission_EBITDA_Model.xlsx",
     kind: "Excel workbook (.xlsx)"
   },
   {
     title: "Competitor Deep-Dive & Reverse-Engineering Audit",
     description:
       "Mergr, S&P Global (Capital IQ Pro), and CB Insights: per-competitor teardown, synthesis matrix, the \u201cdiamond in the rough\u201d thesis, cost/risk/reward, verified pricing, and a board recommendation.",
-    href: "/downloads/JHI_Competitor_Deep_Dive_Mergr_SPGlobal_CBInsights.docx",
+    href: "/downloads/Aegira_Competitor_Deep_Dive_Mergr_SPGlobal_CBInsights.docx",
     kind: "Word document (.docx)"
   },
   {
     title: "Data-Sources Comparison",
     description:
       "Breakdown of 11 market & economic data sources (Nasdaq Data Link, Twelve Data, FRED, SEC EDGAR, BLS, BEA, Treasury, Federal Reserve, IMF, OECD, World Bank) by coverage, cost, and \u2014 critically \u2014 redistribution rights to subscribers. Includes a FRED datasets sheet and a redistribution-rights matrix.",
-    href: "/downloads/JHI_Data_Sources_Comparison.xlsx",
+    href: "/downloads/Aegira_Data_Sources_Comparison.xlsx",
     kind: "Excel workbook (.xlsx)"
   }
 ];

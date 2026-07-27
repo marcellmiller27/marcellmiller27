@@ -111,7 +111,7 @@ export function DealXRay() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `JHI_BQA_${String(form.business_name ?? "deal").replace(/[^A-Za-z0-9]+/g, "_")}.${ext}`;
+      a.download = `Aegira_BQA_${String(form.business_name ?? "deal").replace(/[^A-Za-z0-9]+/g, "_")}.${ext}`;
       document.body.appendChild(a);
       a.click();
       a.remove();
