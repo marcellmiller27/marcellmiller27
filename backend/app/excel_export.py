@@ -25,7 +25,8 @@ from app.deal_xray_models import DealInput, DealXRayReport
 from app.financial_diligence_models import DiligenceInput, DiligenceReport
 
 SIG = "JHI-SIG: 69M2705M"
-ENTITY = "JHI Research & Analytics Firm, Inc."
+ENTITY = "JHI Research & Analytics Firm, Inc."  # legal entity / publisher of record
+BRAND = "Aegira"  # product brand shown on presentation surfaces
 LEGAL_LINES = [
     "Decision-support analysis generated from user-supplied figures.",
     "This document is NOT investment advice, a valuation/appraisal, a fairness opinion, "
@@ -64,12 +65,12 @@ def _watermark(ws: Worksheet, prepared_for: str = "Licensed subscriber") -> None
     ws.oddFooter.left.text = f"&8© {_ENTITY_HF}  ·  {SIG}"
     ws.oddFooter.center.text = "&8Confidential — not for redistribution"
     ws.oddFooter.right.text = f"&8Prepared for {who}  ·  Page &P of &N"
-    ws.oddHeader.right.text = "&9JHI Research && Analytics Firm, Inc."
+    ws.oddHeader.right.text = f"&9{BRAND}"
 
 
 def _title_block(ws: Worksheet, subtitle: str, business: str) -> None:
     ws.merge_cells("A1:D1")
-    ws["A1"] = ENTITY
+    ws["A1"] = BRAND
     ws["A1"].font = _WHITE
     ws["A1"].fill = _NAVY_FILL
     ws["A1"].alignment = Alignment(horizontal="left", vertical="center")
@@ -78,7 +79,8 @@ def _title_block(ws: Worksheet, subtitle: str, business: str) -> None:
     ws["A2"] = subtitle
     ws["A2"].font = Font(bold=True, size=13, color=_NAVY)
     ws.merge_cells("A3:D3")
-    ws["A3"] = f"{business}  ·  generated {date.today().isoformat()}  ·  {SIG}"
+    # Product masthead is Aegira; the legal publisher-of-record + provenance ride the subline.
+    ws["A3"] = f"Published by {ENTITY}  ·  {business}  ·  generated {date.today().isoformat()}  ·  {SIG}"
     ws["A3"].font = _MUTED
 
 
@@ -112,7 +114,8 @@ def _legal_sheet(wb: Workbook) -> None:
     ws.column_dimensions["A"].width = 110
     ws.cell(row=1, column=1, value=ENTITY).font = Font(bold=True, size=13, color=_NAVY)
     ws.cell(row=2, column=1, value="Legal terms & provenance").font = _BOLD
-    r = 4
+    ws.cell(row=3, column=1, value=f"{BRAND} is a product of {ENTITY}.").font = _BOLD
+    r = 5
     for line in LEGAL_LINES:
         cell = ws.cell(row=r, column=1, value=line)
         cell.alignment = Alignment(wrap_text=True, vertical="top")
@@ -186,7 +189,7 @@ def deal_xray_workbook(deal: DealInput, report: DealXRayReport) -> bytes:
     ws.cell(row=39, column=3, value=f"=B33/(-PMT({apr}/100,{term},{price}*0.85))").number_format = _RATIO
     ws.cell(row=39, column=4, value=f"=B33/(-PMT({apr}/100,{term},{price}*0.8))").number_format = _RATIO
 
-    _subhead(ws, 41, "JHI ASSESSMENT SNAPSHOT (Business Quality Assessment engine)")
+    _subhead(ws, 41, "AEGIRA ASSESSMENT SNAPSHOT (Business Quality Assessment engine)")
     snap = [
         ("Deal Score (0–100)", report.deal_score),
         ("Recommendation", report.recommendation),
@@ -298,7 +301,7 @@ def diligence_workbook(deal: DiligenceInput, report: DiligenceReport) -> bytes:
     _out_row(ws, 20, "Net working capital", f"={ar}+{inv}-{ap}", _MONEY)
     _out_row(ws, 21, "NWC % of revenue", f"=IF({rev}=0,0,({ar}+{inv}-{ap})/{rev})", _PCT)
 
-    _subhead(ws, 23, "JHI ASSESSMENT SNAPSHOT")
+    _subhead(ws, 23, "AEGIRA ASSESSMENT SNAPSHOT")
     snap = [
         ("Financial Integrity Score (0–100)", report.financial_integrity_score),
         ("Recommended tier", report.recommended_tier),
