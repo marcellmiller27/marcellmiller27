@@ -122,7 +122,7 @@ export default function Home() {
             <a className="button button--primary" href="#waitlist">
               Start free — no sales call
             </a>
-            <a className="button button--secondary" href="/dashboard">
+            <a className="button button--secondary" href="/home">
               Open the platform
             </a>
           </div>

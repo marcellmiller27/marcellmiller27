@@ -11,6 +11,7 @@ import {
   FileSearch,
   FileText,
   Home,
+  LayoutDashboard,
   LifeBuoy,
   Menu,
   Newspaper,
@@ -34,7 +35,13 @@ type TocItem = { href: string; label: string; icon: LucideIcon; access: AccessLe
 type TocGroup = { section: string | null; items: TocItem[] };
 
 const toc: TocGroup[] = [
-  { section: null, items: [{ href: "/dashboard", label: "Home", icon: Home, access: "subscriber" }] },
+  {
+    section: null,
+    items: [
+      { href: "/home", label: "Home", icon: Home, access: "subscriber" },
+      { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, access: "subscriber" }
+    ]
+  },
   {
     section: "Research & Intelligence",
     items: [

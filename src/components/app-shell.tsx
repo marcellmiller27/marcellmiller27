@@ -18,7 +18,7 @@ export function AppShell({ eyebrow, title, description, children }: AppShellProp
     <div className="app-root">
       <header className="app-topbar">
         <AppMenu />
-        <Link className="app-topbar__brand" href="/dashboard">
+        <Link className="app-topbar__brand" href="/home">
           <Logo size={26} />
           <span>Aegira</span>
         </Link>

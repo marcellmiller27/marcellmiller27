@@ -57,7 +57,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
       // Any authenticated customer maps to the subscriber tier. A dedicated JHI
       // "staff" tier (for Accounting/admin) requires a real backend staff role.
       setRole("subscriber");
-      const next = new URLSearchParams(window.location.search).get("next") || "/dashboard";
+      const next = new URLSearchParams(window.location.search).get("next") || "/home";
       router.push(next);
       router.refresh();
     } catch (e) {
