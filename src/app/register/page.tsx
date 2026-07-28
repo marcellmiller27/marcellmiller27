@@ -7,7 +7,7 @@ export default function RegisterPage() {
   return (
     <StorefrontShell
       eyebrow="Get started"
-      title="Create your JHI workspace"
+      title="Create your Aegira workspace"
       description="Register an organization workspace with a plan. You can start on Consumer (Tier 3) and upgrade anytime."
     >
       <section className="auth-layout">

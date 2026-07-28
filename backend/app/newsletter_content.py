@@ -58,13 +58,13 @@ EDITION_SLUGS = ("economic-brief", "red-alerts", "opportunity-scan")
 
 _DISCLAIMER = (
     "For research and educational purposes only. Not investment, legal, tax, or "
-    "accounting advice. Written in JHI's independent professional perspective."
+    "accounting advice. Written in Aegira's independent professional perspective."
 )
 
 # Methodology disclosure — the institutional standard from docs/EDITORIAL_STYLE_GUIDE.md (E1).
 # Kept identical to the on-screen note so screen and PDF match verbatim.
 METHODOLOGY = (
-    "This edition is generated deterministically from JHI's polled public-data feeds "
+    "This edition is generated deterministically from Aegira's polled public-data feeds "
     "(Federal Reserve/FRED · U.S. Bureau of Labor Statistics · BEA · market feeds). "
     "Commentary is rule-based on disclosed thresholds; figures are shown as last released "
     "(see 'as of'). It is an independent professional read, not a forecast or advice."
@@ -274,8 +274,8 @@ def _build_scan(m: QuoteMap) -> list[Item]:
                   "cash-flowing real estate where cap rates have repriced to the new rate regime."),
         Item(label="Private Markets / SMB", value=f"Debt cost ~{fmt(ff)}+",
              body="Higher leverage costs pressure LBO math — the edge is in lower-leverage, "
-                  "cash-flowing small businesses acquired at disciplined multiples (JHI's core "
-                  "hunting ground)."),
+                  "cash-flowing small businesses acquired at disciplined multiples (a disciplined "
+                  "acquirer's core hunting ground)."),
         Item(label="Digital Assets", value=f"BTC {fmt(m.get('BTC'))}",
              body="A high-beta read on liquidity — size positions to volatility and treat as a "
                   "satellite, not a core holding, until policy eases."),
@@ -321,5 +321,5 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
               "resilient but softening consumer — is creating opportunity across asset classes.",
         groups=[Group(heading="Opportunities by asset class", items=shown)],
         footer="Ideas are generated from public data (FRED · BLS · market feeds), written in "
-               "JHI's independent professional perspective.",
+               "Aegira's independent professional perspective.",
         disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full)

@@ -100,7 +100,7 @@ export function CancelSubscription() {
       <section className="cancel-flow">
         <div className="cancel-card">
           <p className="cancel-step">Step 1 of 2</p>
-          <h2>Cancel your JHI subscription</h2>
+          <h2>Cancel your Aegira subscription</h2>
           <p className="cancel-lead">
             Before you cancel, note what happens next. Your subscription remains active through the
             end of your current billing period, then automatically deactivates — no auto-renewal

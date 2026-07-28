@@ -147,7 +147,7 @@ export const companies: Company[] = [
       macroOverlay:
         "Nonresidential construction spend and services PPI support pricing; watch skilled-labor wage inflation.",
       rows: [
-        { label: "JHI Opportunity Score", value: "79 / 100" },
+        { label: "Aegira Opportunity Score", value: "79 / 100" },
         { label: "Sector momentum", value: "Improving" },
         { label: "Rate sensitivity", value: "Moderate" }
       ]
@@ -199,7 +199,7 @@ export const companies: Company[] = [
     analytics: {
       macroOverlay: "Mid-Atlantic nonresidential backlog steady; margin depends on labor availability.",
       rows: [
-        { label: "JHI Opportunity Score", value: "71 / 100" },
+        { label: "Aegira Opportunity Score", value: "71 / 100" },
         { label: "Sector momentum", value: "Stable" }
       ]
     }
@@ -263,7 +263,7 @@ export const companies: Company[] = [
     analytics: {
       macroOverlay: "Rate cuts would support nonresidential starts; services PPI passthrough intact.",
       rows: [
-        { label: "JHI Opportunity Score", value: "74 / 100" },
+        { label: "Aegira Opportunity Score", value: "74 / 100" },
         { label: "Sector momentum", value: "Improving" }
       ]
     }

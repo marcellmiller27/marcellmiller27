@@ -8,7 +8,7 @@ export default function EconomicBriefPage() {
     <AppShell
       eyebrow="Reports"
       title="Economic Tracking newsletter"
-      description="Auto-generated from the economic data we poll — assembled and written in JHI's professional perspective, ready to read on-platform or export to PDF."
+      description="Auto-generated from the economic data we poll — assembled and written in Aegira's professional perspective, ready to read on-platform or export to PDF."
     >
       <p className="rec-crumb">
         <Link href="/newsletters">Newsletters</Link> <span aria-hidden>›</span> The Economic Brief

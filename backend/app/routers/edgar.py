@@ -56,5 +56,5 @@ def export_edgar_workbook(
     return Response(
         content=data,
         media_type=_XLSX_MEDIA,
-        headers={"Content-Disposition": f'attachment; filename="JHI_{safe}_Financials.xlsx"'},
+        headers={"Content-Disposition": f'attachment; filename="Aegira_{safe}_Financials.xlsx"'},
     )

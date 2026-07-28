@@ -392,7 +392,7 @@ export function CompanyRecord({ company }: { company: Company }) {
                   <span>Economic overlay</span>
                   <p>{company.analytics.macroOverlay}</p>
                   <p className="rec-basis">
-                    JHI depth edge: financials + economics on one record.
+                    Aegira depth edge: financials + economics on one record.
                   </p>
                 </article>
               </div>

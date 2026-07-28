@@ -6,8 +6,8 @@ export default function DealXRayPage() {
   return (
     <AppShell
       eyebrow="Acquisitions"
-      title="Deal X-Ray — analyze a CIM in minutes"
-      description="For search-fund & SMB buyers: enter the target's key figures for a 7-part scorecard, an honest ethic/credibility rating, a per-deal DCF + multiple valuation, DSCR/SBA fit, and realistic financing offers."
+      title="Limited Scope Review — CIM analysis in Excel"
+      description="For search-fund & SMB acquisitions: enter the company's data for a 7-part scorecard and an honest, ethical credibility rating — with a per-deal DCF + multiple valuation, DSCR/SBA fit, and realistic financing offers, all exportable to Excel."
     >
       <DealXRay />
     </AppShell>

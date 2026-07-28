@@ -31,7 +31,7 @@ TIERS: list[DiligenceTier] = [
         tier="A",
         name="Financial Integrity Screening",
         attest=False,
-        delivered_by="JHI platform (automated)",
+        delivered_by="Aegira platform (automated)",
         description=(
             "Automated analytics on every active subscription: proof-of-cash flags, "
             "EBITDA normalization, working-capital and revenue-quality checks, and a "
@@ -263,7 +263,7 @@ def quote_engagement(req: EngagementRequest) -> EngagementQuote:
         partner_match_status="pending_match",
         turnaround_estimate=turnaround,
         next_steps=[
-            "JHI matches a licensed partner CPA in "
+            "Aegira matches a licensed partner CPA in "
             + (req.state or "the target's state") + ".",
             "Partner issues an engagement letter directly to you (fees + scope confirmed).",
             "Connect the target's accounting data or upload financials + bank statements.",

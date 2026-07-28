@@ -96,7 +96,7 @@ def newsletter_pdf_download(
         logger.warning("Headless newsletter render failed (%s); using reportlab fallback.", exc)
         pdf_bytes, source = _reportlab_pdf(edition, full=token is not None, db=db)
 
-    filename = f"jhi-{edition}-{now:%Y-%m-%d}.pdf"
+    filename = f"aegira-{edition}-{now:%Y-%m-%d}.pdf"
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
