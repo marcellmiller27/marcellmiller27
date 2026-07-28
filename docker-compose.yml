@@ -57,6 +57,13 @@ services:
       # Origin the backend prints from for exact-as-viewed newsletter PDFs (headless
       # Chromium renders the real page). The frontend service on the compose network.
       FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://frontend:3000}
+      # Amazon SES newsletter email ("Step B send"). OFF by default (safe dry-run). To go
+      # live set ENABLE_EMAIL_SEND=1 + a verified SES_SENDER, and provide AWS credentials
+      # (AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY, or an IAM role) with ses:SendEmail.
+      ENABLE_EMAIL_SEND: ${ENABLE_EMAIL_SEND:-0}
+      SES_SENDER: ${SES_SENDER:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
     depends_on:
       db:
         condition: service_healthy
