@@ -1,6 +1,7 @@
 // JHI-SIG: 69M2705M | Home — the Aegira story | JHI Research & Analytics Firm, Inc. (proprietary)
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
+import { TeamShowcase } from "@/components/team-showcase";
 
 // Home is the narrative front page: what Aegira is, what it does, who builds it.
 // (The Dashboard is the working launchpad; this page tells the story.)
@@ -60,19 +61,6 @@ const principles = [
   }
 ];
 
-const team = [
-  {
-    name: "Cy Henry",
-    role: "VP of Software Engineering (AI)",
-    detail: "Builds and hardens the platform end-to-end — human-directed, shipped via review."
-  },
-  {
-    name: "Ellery Vance",
-    role: "VP of Editorial (AI)",
-    detail: "Leads the editorial desk — turning polled data into grounded, institutional-grade intelligence."
-  }
-];
-
 export default function HomePage() {
   return (
     <AppShell
@@ -128,21 +116,16 @@ export default function HomePage() {
           <p className="eyebrow">The team</p>
           <h2>A lean team of operators, augmented by AI.</h2>
         </div>
-        <div className="trust-grid">
-          {team.map((t) => (
-            <article className="trust-card" key={t.name}>
-              <h3>{t.name}</h3>
-              <p>
-                <strong>{t.role}</strong>
-                <br />
-                {t.detail}
-              </p>
-            </article>
-          ))}
-        </div>
-        <p style={{ ...bodyStyle, marginTop: "1rem" }}>
-          Meet the full team, including leadership and the AI desk, on the{" "}
-          <Link href="/team">Team page</Link>.
+        <p style={{ ...bodyStyle, marginBottom: "1.25rem" }}>
+          The platform is built and maintained by an AI engineering department and an AI
+          editorial desk, supported 24/7 by five specialized AI agents — onboarding,
+          subscriptions &amp; billing, account &amp; security, product &amp; markets, and
+          technical triage (which escalates to the founder). Every agent works under human
+          direction.
+        </p>
+        <TeamShowcase />
+        <p style={{ ...bodyStyle, marginTop: "1.25rem", fontSize: "var(--fs-md)" }}>
+          The same roster is on the dedicated <Link href="/team">Team page</Link>.
         </p>
       </section>
 

@@ -67,7 +67,7 @@ AGENTS: list[AgentSpec] = [
         "product", "Quinn Alvarez", "Product & Markets Guide",
         "Knowledgeable on features, market data, and the Opportunity Score (no advice).",
         ("Opportunity Score", "Live market data", "Platform modules", "How-to"),
-        "Quinn explains how the platform works — the John Henry Opportunity Score, "
+        "Quinn explains how the platform works — the Aegira Opportunity Score, "
         "live multi-asset market data, and the modules — in plain language. Provides "
         "education and product guidance, never personalized financial advice.",
         "/team/quinn.png", ("Product", "Market data", "Legal"), False,
