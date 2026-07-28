@@ -1,0 +1,13 @@
+{
+  "FirstName": "REPLACE_FIRST_NAME",
+  "LastName": "REPLACE_LAST_NAME",
+  "ContactType": "COMPANY",
+  "OrganizationName": "JHI Research & Analytics Firm, Inc.",
+  "AddressLine1": "REPLACE_STREET_ADDRESS",
+  "City": "REPLACE_CITY",
+  "State": "REPLACE_STATE",
+  "CountryCode": "US",
+  "ZipCode": "REPLACE_ZIP",
+  "PhoneNumber": "+1.XXXXXXXXXX",
+  "Email": "REPLACE_EMAIL@aegiraenterprise.com"
+}

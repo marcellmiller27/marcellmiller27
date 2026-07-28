@@ -18,3 +18,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Domain registration — never commit registrant PII or generated request payloads
+scripts/domains/contact.json
+scripts/domains/*.register.json
+scripts/domains/operations.log
