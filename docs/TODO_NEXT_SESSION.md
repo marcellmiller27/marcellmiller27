@@ -5,16 +5,22 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 
 ---
 
-## 🔝 Current Work Group (2026-07-26) — prioritized
+## 🔝 Current Work Group (2026-07-28 · next session) — prioritized
 
-> **Priority #1: open the JHI business bank account (Founder).** Nomenclature is living. Standing rule:
-> kindergarten/elementary terms → institutional-grade; two layers (institutional **display** names vs.
-> stable **internal** ids); dictated headings use **Title Case**.
+> **Standing brand rule (LOCKED):** product/display = **Aegira**; legal & provenance = **JHI Research &
+> Analytics Firm, Inc.** + `JHI-SIG: 69M2705M`. Financial work-product **file internals** stay JHI (pending
+> the §A refinement below). Dictated headings use **Title Case**.
+> Ethos: *How we do anything is how we do everything.*
 
-### 🥇 PRIORITY 1 (2026-07-26)
-- [ ] **🔴 Open the JHI business bank account** (entity legal name → connect to **Stripe payouts** + accounting; underpins revenue, AP/payroll, clean books). *Founder + accountant/attorney.* (Board minutes 2026-07-26 §1.)
-- [ ] **Merge tonight's PRs:** **#126** (AI editorial activated on-screen + PDF) and **#127** (architecture / AWS / cross-asset valuation write-ups). Then **close #123** (superseded) and **#125** if merged.
-- [ ] **Persist editorial activation** in Secrets (Bedrock key already set): `ENABLE_LLM_EDITORIAL=1`, `AWS_REGION=us-east-2`, `EDITORIAL_LLM_MODEL=us.anthropic.claude-sonnet-4-5-20250929-v1:0`. *(Optional: request Sonnet 5 model access in Bedrock.)*
+### 🥇 PRIORITY 1 (start here)
+- [ ] **🔴 File the DBA / assumed name "Aegira"** under JHI Research & Analytics Firm, Inc. (+ update bank/Stripe/invoice docs). *Founder + counsel.* (Board minutes 2026-07-27 §1.)
+- [ ] **🔴 Open the JHI business bank account** (entity legal name → Stripe payouts + accounting). *Founder + accountant/attorney.* (Board minutes 2026-07-26 §1.)
+- [ ] **🔴 Merge PRs #132** (Ask Aegira) **and #133** (brand/nomenclature/LSR/type-scale + "1 Issue" fix); then **close superseded Work-Group PR #131**.
+- [ ] **🟣 Founder decisions to unblock builds (Board minutes 2026-07-27 §5):**
+  - **(A) Excel workbook masthead — A or B?** A = blue masthead "Aegira" only; **B (Cy recommends)** = full Aegira on presentation surfaces (masthead + section headers) + "Published by JHI Research & Analytics Firm, Inc." subline, JHI confined to the Legal & Provenance tab + `JHI-SIG`.
+  - **(B) Home vs. Dashboard split.** Both are **separate** modules. Proposed: **Home** = front-door launchpad (module tiles, quick actions, what's-new); **Dashboard** = cockpit (Portfolio Value, Watch List, Acquisition Pipeline, Economic Risk, live market). **Aegira wordmark → Home.** *The interim "Dashboard→Home" menu rename in #133 must be **reverted** and a real Home module built.*
+- [ ] **🟡 Rebuild the Docker frontend + backend off `main`** so live `:3000` + served PDFs/workbooks reflect the Aegira brand (containers are stale, pre-brand). *Cy.*
+- [x] **Persist editorial activation** — DONE (E2 verified live on Bedrock Sonnet 4.5). Secrets set (values live in the Secrets store): `ENABLE_LLM_EDITORIAL`, `AWS_REGION`, `EDITORIAL_LLM_MODEL`. *(Optional: request Sonnet 5 model access in Bedrock.)*
 - [ ] **Green CI:** fix the **10 pre-existing accounting tests** (staff-auth from #104) — test-only.
 
 ### 🆕 New builds — awaiting Founder go-ahead (specs in #127)
@@ -23,20 +29,16 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 - [ ] **Purchase flow — Phase A** (radio tiers → mock checkout → success); then live Stripe (Phase B). *(Revenue-critical; design ready.)*
 - [ ] Architecture reference for layout/sequencing decisions: `docs/PLATFORM_ARCHITECTURE_MAP.md`.
 
-### ✅ Completed through 2026-07-26 (merged to `main`)
-**07-20→22:** Rule B (#91) · Economics nomenclature (#92) · same-origin API (#93) · NASDAQ closed (#94) ·
-5h contingency (#95) · left menu drawer (#96) · editorial system + Ellery (#98,#100) · 42 Macro audit (#102) ·
-editorial-access module (#103) · board minutes (#89,#97,#99,#101).
-**07-23→26:** RBAC foundation (#104) · newsletter server-side PDF (#109) · type-scale + cancellation +
-god-eye (#115) · **E1** house style + methodology (#113) · board minutes 07-23 + storefront hash-marks (#110) ·
-launch-readiness package (#112) · E2 vendor shortlist + ranking + decision (#114,#116,#117) · CVP editorial
-budget (#118) · board minutes AWS editorial (#119) · **Editorial E2 grounded LLM on AWS Bedrock** (#120) ·
-**domain wiring `johnhenrycapital.com`** (#121) · **institutional newsletter PDF (headless render)** (#122) ·
-menu no-op close (#111) · ERP/enterprise/work-group docs (#105,#106,#107) · board minutes 07-26 (#124).
-**Live fixes:** dev-server ChunkLoadError, stale-prod newsletter 404. **Verified:** `main` green — ruff/eslint/
-`next build` clean, 195 backend tests pass (10 known pre-existing accounting-test failures), stack healthy.
+### ✅ Completed through 2026-07-27
+**07-26 (merged to `main`):** editorial E2 on-screen (#126) · **Aegira brand sweep + `aegiraenterprise.com` default** (#129) ·
+walkthrough videos (#130) · architecture/AWS/valuation write-ups (#127) · **brand-naming record + Route 53 domains** (#128) ·
+board minutes 07-26 (#124) · work group (#125). **Closed 16 stale PRs** (#3–#12, #36–#41) + #123.
+**07-27 (this session — on PRs #132/#133 pending merge; E2 verified live on Bedrock Sonnet 4.5):** Ask JHI→**Ask Aegira** ·
+newsletter/PDF/AI-persona → Aegira (legal © + "Prepared by" kept JHI) · Deal X-Ray → **Limited Scope Review / Run LSR** ·
+**deliverable filenames → Aegira** (file internals JHI) · institutional type-scale · **"1 Issue" fix** (search input id/name) ·
+About narrative → Aegira. **Verified:** eslint clean, 35 affected backend tests pass, headless PDF re-rendered, `:3009` walkthroughs recorded.
 
-> *Note: supersedes the unmerged Work Group PR #123 (2026-07-24) — close it.*
+> *Note: supersedes the unmerged Work-Group PR #131 (2026-07-26 eve) — close it.*
 
 ### 🆕 Carry-over — Founder review feedback
 - [ ] **🔴 Institutional-grade storefront copy rewrite.** The marketing descriptions (home hero, "What you get", "How it works", "Who it's for", pricing feature lines) are **not** the professional voice required for **JHI Research & Analytics Firm, Inc.** *Founder to provide voice/scope; then Cy executes the rewrite.* Also **reconcile the legacy "John Henry Investments" brand mark** on the home hero to the single institutional entity name. (Board minutes 2026-07-23 §5.)
