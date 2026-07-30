@@ -29,6 +29,27 @@ const documents: DocItem[] = [
       "Breakdown of 11 market & economic data sources (Nasdaq Data Link, Twelve Data, FRED, SEC EDGAR, BLS, BEA, Treasury, Federal Reserve, IMF, OECD, World Bank) by coverage, cost, and \u2014 critically \u2014 redistribution rights to subscribers. Includes a FRED datasets sheet and a redistribution-rights matrix.",
     href: "/downloads/Aegira_Data_Sources_Comparison.xlsx",
     kind: "Excel workbook (.xlsx)"
+  },
+  {
+    title: "5-Year Consolidated Projections",
+    description:
+      "Audited-realistic three-statement model: monthly P&L, Cash Flow, and Balance Sheet with cohort-based renewals, EBITDA-gated staffing, and full reconciliation toward the growth plan.",
+    href: "/downloads/Aegira_5yr_Consolidated_Projections.xlsx",
+    kind: "Excel workbook (.xlsx)"
+  },
+  {
+    title: "Sales Commission — Prepaid MSA",
+    description:
+      "Commission model for the prepaid-MSA structure (15% upfront + year-end MSA bonus), with the schedule, Year-1 by mix, and the salesperson-bonus sheet.",
+    href: "/downloads/Aegira_Sales_Commission_Prepaid_MSA.xlsx",
+    kind: "Excel workbook (.xlsx)"
+  },
+  {
+    title: "Company Book — Policy · Procedures · Processes",
+    description:
+      "The firm's operating handbook: governance, policies, standard procedures, and core processes across the platform and back office.",
+    href: "/downloads/Aegira_Company_Book_Policy_Procedures_Processes.docx",
+    kind: "Word document (.docx)"
   }
 ];
 
