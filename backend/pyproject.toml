@@ -15,7 +15,8 @@ dependencies = [
   "PyJWT",
   "stripe",
   "anthropic",
-  "playwright"
+  "playwright",
+  "boto3"
 ]
 
 [project.optional-dependencies]

@@ -7,12 +7,17 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 
+from pydantic import BaseModel
+
 from app.database import get_db
 from app.editorial_llm import elevate_edition, llm_enabled
+from app.email_service import send_newsletter_email
+from app.foundation_models import Principal
 from app.market_services import MarketDataService
 from app.newsletter_content import EDITION_SLUGS, NEWSLETTER_SYMBOLS, build_edition
 from app.newsletter_render import render_newsletter_pdf
 from app.pdf_export import newsletter_pdf
+from app.rbac import require_staff
 from app.security import decode_access_token
 
 logger = logging.getLogger(__name__)
@@ -105,3 +110,40 @@ def newsletter_pdf_download(
             "X-PDF-Source": source,
         },
     )
+
+
+class NewsletterSendRequest(BaseModel):
+    recipients: list[str] | None = None
+
+
+@router.post("/{edition}/send")
+def newsletter_send(
+    edition: str,
+    payload: NewsletterSendRequest,
+    db: Annotated[Session, Depends(get_db)],
+    staff: Annotated[Principal, Depends(require_staff)],
+) -> dict:
+    """Staff-only: email an edition via **Amazon SES** (the roadmap's Step-B send).
+
+    Builds the full edition (E2-elevated when enabled), then sends via SES. When SES isn't
+    configured (`ENABLE_EMAIL_SEND`/`SES_SENDER`/AWS creds), returns a **dry-run** preview
+    instead of sending. Defaults to a test send to the requesting staff member.
+    """
+    if edition not in EDITION_SLUGS:
+        raise HTTPException(status_code=404, detail="Unknown newsletter edition.")
+
+    data = MarketDataService().quotes(NEWSLETTER_SYMBOLS)
+    built = build_edition(edition, data.quotes, datetime.now(timezone.utc), full=True)
+    if llm_enabled():
+        built, _ = elevate_edition(built, db=db)
+
+    recipients = [r.strip() for r in (payload.recipients or [staff.email]) if r and r.strip()]
+    if not recipients:
+        raise HTTPException(status_code=422, detail="No valid recipients.")
+
+    result = send_newsletter_email(recipients, built)
+    # Keep the API response light: drop the (large) preview HTML, keep a size signal.
+    html = result.pop("html", None)
+    if html is not None:
+        result["preview_bytes"] = len(html)
+    return result
