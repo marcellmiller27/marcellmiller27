@@ -314,12 +314,48 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
     # opportunity-scan
     ideas = _build_scan(m)
     shown = ideas if full else ideas[:2]
+    groups = [Group(heading="Opportunities by asset class", items=shown)]
+    # Full edition only: the discovery-driven equity screen (heavy EDGAR+price fetch,
+    # cached). Teaser omits it (keeps the anonymous path fast + gates the screen to subscribers).
+    if full:
+        equity_group = _build_equity_group()
+        if equity_group is not None:
+            groups.append(equity_group)
     return Edition(
         slug=slug, title="Cross-Asset Opportunity Scan", eyebrow="Opportunity Scan",
         dateline=dateline,
         intro="Where the current regime — restrictive policy, above-target inflation, and a "
               "resilient but softening consumer — is creating opportunity across asset classes.",
-        groups=[Group(heading="Opportunities by asset class", items=shown)],
-        footer="Ideas are generated from public data (FRED · BLS · market feeds), written in "
-               "Aegira's independent professional perspective.",
+        groups=groups,
+        footer="Ideas are generated from public data (FRED · BLS · SEC EDGAR · market feeds), "
+               "written in Aegira's independent professional perspective.",
         disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full)
+
+
+def _build_equity_group() -> "Group | None":
+    """Top-5 equity opportunities from the discovery-driven screen (data finds; Ellery
+    writes). Lazy import (heavy deps + network); resilient — returns None on any failure."""
+    try:
+        from app.equity_opportunity_scan import top_opportunities
+        picks = top_opportunities(n=5)
+    except Exception:  # noqa: BLE001 - never break newsletter generation
+        return None
+    if not picks:
+        return None
+    items = [
+        Item(
+            label=p.ticker,
+            value=p.value_str,
+            body=p.insight,
+            tags=["Equities"],
+            source=f"SEC EDGAR · market price · {p.name}",
+        )
+        for p in picks
+    ]
+    return Group(
+        heading="Top equity opportunities",
+        blurb="Discovery-driven: our value/quality/growth screen ranks large/mid-cap US "
+              "equities by Opportunity Score from free SEC EDGAR fundamentals and live prices — "
+              "the desk surfaces the top five. Research, not investment advice.",
+        items=items,
+    )
