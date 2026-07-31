@@ -5,23 +5,21 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 
 ---
 
-## 🔝 Current Work Group (2026-07-28 · next session) — prioritized
+## 🔝 Current Work Group (2026-08-01 · next session) — prioritized
 
 > **Standing brand rule (LOCKED):** product/display = **Aegira**; legal & provenance = **JHI Research &
-> Analytics Firm, Inc.** + `JHI-SIG: 69M2705M`. Financial work-product **file internals** stay JHI (pending
-> the §A refinement below). Dictated headings use **Title Case**.
+> Analytics Firm, Inc.** + `JHI-SIG: 69M2705M`. **Batched-build process:** assemble the **Build Queue**
+> (`docs/BUILD_QUEUE.md`), then execute on the Founder's "execute the batch." Corrections to an in-scope
+> item are part of that same build; only new scope is a new item.
 > Ethos: *How we do anything is how we do everything.*
 
 ### 🥇 PRIORITY 1 (start here)
-- [ ] **🔴 File the DBA / assumed name "Aegira"** under JHI Research & Analytics Firm, Inc. (+ update bank/Stripe/invoice docs). *Founder + counsel.* (Board minutes 2026-07-27 §1.)
-- [ ] **🔴 Open the JHI business bank account** (entity legal name → Stripe payouts + accounting). *Founder + accountant/attorney.* (Board minutes 2026-07-26 §1.)
-- [ ] **🔴 Merge PRs #132** (Ask Aegira) **and #133** (brand/nomenclature/LSR/type-scale + "1 Issue" fix); then **close superseded Work-Group PR #131**.
-- [ ] **🟣 Founder decisions to unblock builds (Board minutes 2026-07-27 §5):**
-  - **(A) Excel workbook masthead — A or B?** A = blue masthead "Aegira" only; **B (Cy recommends)** = full Aegira on presentation surfaces (masthead + section headers) + "Published by JHI Research & Analytics Firm, Inc." subline, JHI confined to the Legal & Provenance tab + `JHI-SIG`.
-  - **(B) Home vs. Dashboard split.** Both are **separate** modules. Proposed: **Home** = front-door launchpad (module tiles, quick actions, what's-new); **Dashboard** = cockpit (Portfolio Value, Watch List, Acquisition Pipeline, Economic Risk, live market). **Aegira wordmark → Home.** *The interim "Dashboard→Home" menu rename in #133 must be **reverted** and a real Home module built.*
-- [ ] **🟡 Rebuild the Docker frontend + backend off `main`** so live `:3000` + served PDFs/workbooks reflect the Aegira brand (containers are stale, pre-brand). *Cy.*
-- [x] **Persist editorial activation** — DONE (E2 verified live on Bedrock Sonnet 4.5). Secrets set (values live in the Secrets store): `ENABLE_LLM_EDITORIAL`, `AWS_REGION`, `EDITORIAL_LLM_MODEL`. *(Optional: request Sonnet 5 model access in Bedrock.)*
-- [ ] **Green CI:** fix the **10 pre-existing accounting tests** (staff-auth from #104) — test-only.
+- [ ] **🔴 Merge the open PRs:** **#142** (salvage) → then close #83/#82/#79/#35 · **#143** (equity Opportunity Scan) → then rebuild containers to activate · **#144** (Build Queue + board minutes 07-31).
+- [ ] **🔴 Founder foundation:** open the **JHI business bank account** · file the **DBA "Aegira"** · register **`aegiraenterprise.ai/.io/.dev/.app`** (script #141). *Founder + counsel.*
+- [ ] **⏳ Domain green-light (Google↔AWS DNS):** on confirmation → swap **EDGAR User-Agent** to `@aegiraenterprise.com` + turn on **SES** newsletter email. *(Using `johnhenrycapital` contact meanwhile — fully functional.)*
+- [ ] **🟢 Execute the Build Queue** (`docs/BUILD_QUEUE.md`) on the Founder's go — top-down, batched. **Recommended first build:** newsletter depth **Phase 1** (prose depth, no new AWS).
+- [ ] **Green CI:** fix the **10 pre-existing accounting tests** (staff-auth) — test-only.
+- [ ] **Founder inputs to unblock builds:** annual prices for **Professional/Enterprise** (pricing toggle) · **limited-view depth** call (open-browse) · **Stripe** account + keys (after bank).
 
 ### 🆕 New builds — awaiting Founder go-ahead (specs in #127)
 - [ ] **Cross-Asset Valuation & Action Engine — Phase 1:** detailed **equity DCF in the Excel workbook** + AI action write-up (enter/sideline/dry-powder/rebalance), then commodities → crypto → forex. **Decide first (spec §10):** universe, action thresholds, US-only/EDGAR, workbook-vs-screen priority. (`docs/CROSS_ASSET_VALUATION_ENGINE_SPEC.md`)
@@ -29,7 +27,7 @@ Start-of-day checklist. Prioritized; tackle top‑down. Context lives in
 - [ ] **Purchase flow — Phase A** (radio tiers → mock checkout → success); then live Stripe (Phase B). *(Revenue-critical; design ready.)*
 - [ ] Architecture reference for layout/sequencing decisions: `docs/PLATFORM_ARCHITECTURE_MAP.md`.
 
-### ✅ Completed through 2026-07-27
+### ✅ Completed through 2026-07-31
 **07-26 (merged to `main`):** editorial E2 on-screen (#126) · **Aegira brand sweep + `aegiraenterprise.com` default** (#129) ·
 walkthrough videos (#130) · architecture/AWS/valuation write-ups (#127) · **brand-naming record + Route 53 domains** (#128) ·
 board minutes 07-26 (#124) · work group (#125). **Closed 16 stale PRs** (#3–#12, #36–#41) + #123.
@@ -38,7 +36,15 @@ newsletter/PDF/AI-persona → Aegira (legal © + "Prepared by" kept JHI) · Deal
 **deliverable filenames → Aegira** (file internals JHI) · institutional type-scale · **"1 Issue" fix** (search input id/name) ·
 About narrative → Aegira. **Verified:** eslint clean, 35 affected backend tests pass, headless PDF re-rendered, `:3009` walkthroughs recorded.
 
-> *Note: supersedes the unmerged Work-Group PR #131 (2026-07-26 eve) — close it.*
+**07-28 → 07-31:** brand recovery + Home story + full team w/ AI ID photos (#137/#139) · Ask Aegira (#132) ·
+nomenclature/LSR/type-scale/"1 Issue" fix (#133) · AGENTS container-Secrets gotcha (#138) · board minutes 07-27 (#134) ·
+**SES newsletter-email layer** (#140) · **Route 53 registrar tooling** for `aegiraenterprise.*` (#141) · God-eye login fixed.
+**Live free government data:** **FRED** (macro) · **SEC EDGAR** (fundamentals — AAPL FY2025 verified) · **BLS** (CPI, keyless).
+**Open PRs to merge:** **#142** (salvage: 5-Yr projections, prepaid-MSA, Company Book, DD audit + minutes 07-03) ·
+**#143** (discovery-driven equity Opportunity Scan — data finds, Ellery writes, fact-locked; V/CRM/ADBE/MSFT/ORCL) ·
+**#144** (Build Queue + board minutes 07-31).
+
+> *Closed as superseded: #131, #123, and 16 stale PRs. #83/#82/#79/#35 → superseded by #142 (close on merge).*
 
 ### 🆕 Carry-over — Founder review feedback
 - [ ] **🔴 Institutional-grade storefront copy rewrite.** The marketing descriptions (home hero, "What you get", "How it works", "Who it's for", pricing feature lines) are **not** the professional voice required for **JHI Research & Analytics Firm, Inc.** *Founder to provide voice/scope; then Cy executes the rewrite.* Also **reconcile the legacy "John Henry Investments" brand mark** on the home hero to the single institutional entity name. (Board minutes 2026-07-23 §5.)
