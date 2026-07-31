@@ -23,10 +23,12 @@ from typing import Any
 
 from app.edgar_models import EdgarFinancials, EdgarHistory, EdgarYear
 
-# SEC requires a descriptive User-Agent with contact info (else 403).
+# SEC requires a descriptive User-Agent with contact info (else 403). Product brand is
+# Aegira; the contact stays the current johnhenrycapital mailbox until the
+# aegiraenterprise.com mailbox is DNS-validated (then swap EDGAR_USER_AGENT).
 USER_AGENT = os.getenv(
     "EDGAR_USER_AGENT",
-    "John Henry Investments Research (research@johnhenrycapital.com)",
+    "Aegira - JHI Research & Analytics Firm, Inc. (research@johnhenrycapital.com)",
 )
 HTTP_TIMEOUT = 12.0
 TICKERS_TTL_SECONDS = 24 * 3600  # ticker->CIK map changes slowly
@@ -289,6 +291,34 @@ def history(ticker: str, max_years: int = 5) -> EdgarHistory:
         ticker=ticker.strip().upper(), cik=cik10, entity_name=entity_name,
         years=rows, as_of=datetime.now(timezone.utc),
     )
+
+
+def latest_shares_outstanding(ticker: str) -> float | None:
+    """Most recent common shares outstanding (DEI cover-page fact, unit 'shares').
+
+    Lives in the ``dei`` namespace (not ``us-gaap``) and is reported in 'shares'
+    units, so it needs its own reader. Used to derive market cap (price x shares)
+    for the equity Opportunity Score's valuation factor. Returns None if unavailable.
+    """
+    cik10, _ = ticker_to_cik(ticker)
+    facts = _cached(f"edgar:facts:{cik10}", FACTS_TTL_SECONDS, lambda: company_facts(cik10))
+    dei = (facts.get("facts") or {}).get("dei") or {}
+    for tag in ("EntityCommonStockSharesOutstanding", "CommonStockSharesOutstanding"):
+        node = dei.get(tag) or ((facts.get("facts") or {}).get("us-gaap") or {}).get(tag)
+        if not node:
+            continue
+        units = (node.get("units") or {}).get("shares") or []
+        dated = [d for d in units if d.get("end")]
+        if not dated:
+            continue
+        best = max(dated, key=lambda d: d["end"])
+        try:
+            val = float(best["val"])
+            if val > 0:
+                return val
+        except (KeyError, ValueError, TypeError):
+            continue
+    return None
 
 
 class EdgarService:
