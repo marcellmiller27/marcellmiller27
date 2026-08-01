@@ -15,6 +15,8 @@ from app.foundation_models import (
     CheckoutSessionResponse,
     MeResponse,
     Principal,
+    StartTrialRequest,
+    StartTrialResponse,
     SubscriptionRead,
 )
 from app.foundation_services import FoundationService
@@ -42,6 +44,17 @@ def create_checkout_session(
     db: Annotated[Session, Depends(get_db)],
 ) -> CheckoutSessionResponse:
     return FoundationService(db).create_checkout_session(principal, payload)
+
+
+@router.post("/start-trial", response_model=StartTrialResponse)
+def start_trial(
+    payload: StartTrialRequest,
+    principal: Annotated[Principal, Depends(get_current_principal)],
+    db: Annotated[Session, Depends(get_db)],
+) -> StartTrialResponse:
+    """Purchase Flow — Phase A (mock): begin a 7-day free trial for the selected plan
+    and interval. No live charge; Phase B swaps in Stripe Checkout + webhooks."""
+    return FoundationService(db).start_trial(principal, payload.plan, payload.interval)
 
 
 @router.post("/cancel", response_model=CancelSubscriptionResponse)

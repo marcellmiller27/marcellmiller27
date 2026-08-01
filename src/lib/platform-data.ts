@@ -1,6 +1,15 @@
+export type BillingInterval = "monthly" | "annual";
+export type SubscriptionPlan = "consumer" | "professional" | "enterprise";
+
 export type PricingTier = {
   name: string;
   audience: string;
+  // Structured pricing drives the Monthly/Annual toggle + purchase flow.
+  plan: SubscriptionPlan;
+  monthly: number; // pay-monthly, $ / month
+  annualPerMonth: number; // annual billing, effective $ / month (~10% off)
+  annualTotal: number; // annual billing, $ / year (prepaid)
+  // Back-compat display string (monthly) for the storefront preview.
   price: string;
   seats: string;
   target: string;
@@ -82,12 +91,15 @@ export const pricingTiers: PricingTier[] = [
   {
     name: "Consumer Plan",
     audience: "Retail investors and wealth builders",
+    plan: "consumer",
+    monthly: 110,
+    annualPerMonth: 99,
+    annualTotal: 1188,
     price: "$110 / month",
     seats: "1 user seat",
     target: "50,000 subscribers",
     revenue: "$4.95M monthly recurring revenue",
     features: [
-      "Annual prepaid — $1,188/yr ($99/mo, save 10%)",
       "Portfolio tracker",
       "AI research assistant",
       "Market intelligence",
@@ -97,6 +109,10 @@ export const pricingTiers: PricingTier[] = [
   {
     name: "Professional Plan",
     audience: "Acquisition entrepreneurs and advisors",
+    plan: "professional",
+    monthly: 299,
+    annualPerMonth: 269,
+    annualTotal: 3228,
     price: "$299 / month",
     seats: "1 user seat",
     target: "5,000 subscribers",
@@ -111,6 +127,10 @@ export const pricingTiers: PricingTier[] = [
   {
     name: "Enterprise / Family Office",
     audience: "Family offices, investment firms, CPAs, attorneys, and bankers",
+    plan: "enterprise",
+    monthly: 1500,
+    annualPerMonth: 1350,
+    annualTotal: 16200,
     price: "$1,500 / month",
     seats: "5 seats included · +$99 / additional seat",
     target: "500 subscribers",

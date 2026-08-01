@@ -9,6 +9,7 @@ from app.db_models import AuditLogDB, MembershipDB, OrganizationDB, Subscription
 from app.foundation_models import (
     AuditLogRead,
     AuthResponse,
+    BillingInterval,
     BillingPlan,
     BillingWebhookEvent,
     CancelSubscriptionResponse,
@@ -19,6 +20,7 @@ from app.foundation_models import (
     OrganizationRead,
     Principal,
     RegisterRequest,
+    StartTrialResponse,
     SubscriptionPlan,
     SubscriptionRead,
     SubscriptionStatus,
@@ -209,7 +211,7 @@ class FoundationService:
             BillingPlan(
                 plan=SubscriptionPlan.CONSUMER,
                 name="Consumer Plan",
-                price_label="$50/month",
+                price_label="$110/month (or $99/mo billed annually — $1,188/yr)",
                 stripe_price_env="STRIPE_CONSUMER_PRICE_ID",
                 features=["Dashboard", "Market intelligence", "AI assistant", "Opportunity scanner"],
                 seats="1 user seat",
@@ -265,6 +267,52 @@ class FoundationService:
             plan=payload.plan,
             status="checkout_session_created",
             message="Stripe checkout contract is ready; configure Stripe SDK and price IDs for live billing.",
+        )
+
+    TRIAL_DAYS = 7
+
+    def start_trial(
+        self,
+        principal: Principal,
+        plan: SubscriptionPlan,
+        interval: BillingInterval,
+    ) -> StartTrialResponse:
+        """Purchase Flow — Phase A (mock): begin a 7-day free trial for the chosen plan
+        and billing interval. No live charge — this records a card-on-file trial that
+        auto-converts at period end. Phase B replaces this with Stripe Checkout/webhooks.
+        """
+        subscription = self._current_subscription(principal.organization_id)
+        now = datetime.now(timezone.utc)
+        trial_end = now + timedelta(days=self.TRIAL_DAYS)
+        subscription.plan = plan.value
+        subscription.status = SubscriptionStatus.TRIALING.value
+        subscription.provider = "mock"
+        subscription.current_period_end = trial_end
+        subscription.updated_at = now
+        self.audit(
+            action="billing.trial_started",
+            resource_type="subscription",
+            resource_id=subscription.id,
+            organization_id=principal.organization_id,
+            actor_user_id=principal.user_id,
+            event={
+                "plan": plan.value,
+                "interval": interval.value,
+                "trial_days": str(self.TRIAL_DAYS),
+            },
+        )
+        self.db.commit()
+        return StartTrialResponse(
+            subscription=subscription_read(subscription),
+            plan=plan,
+            interval=interval,
+            trial_days=self.TRIAL_DAYS,
+            trial_end=trial_end,
+            message=(
+                f"Your {self.TRIAL_DAYS}-day free trial of the {plan.value.title()} plan "
+                f"({interval.value}) has started. You can cancel anytime before "
+                f"{trial_end:%B %d, %Y} and you won't be charged."
+            ),
         )
 
     def apply_billing_webhook(self, payload: BillingWebhookEvent) -> SubscriptionRead:
