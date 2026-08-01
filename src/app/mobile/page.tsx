@@ -421,7 +421,7 @@ export default function MobileApp() {
               <div className="m-grid-2">
                 <div className="m-card">
                   <span>Web</span>
-                  <p>Full command center in the browser.</p>
+                  <p>Full platform in the browser.</p>
                 </div>
                 <div className="m-card">
                   <span>Mobile</span>
