@@ -5,6 +5,7 @@ import { AppMenu } from "@/components/app-menu";
 import { GlobalSearch } from "@/components/global-search";
 import { Logo } from "@/components/logo";
 import { MarketTicker } from "@/components/market-ticker";
+import { UserSettings } from "@/components/user-settings";
 
 type AppShellProps = {
   eyebrow?: string;
@@ -30,6 +31,7 @@ export function AppShell({ eyebrow, title, description, children }: AppShellProp
           <Link className="app-topbar__account" href="/account">
             Account
           </Link>
+          <UserSettings />
         </div>
       </header>
 

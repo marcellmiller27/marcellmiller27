@@ -29,9 +29,14 @@ export default function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
+  // Pre-paint: apply the saved Visual Mode + language before first paint (no flash).
+  // "Browser Default" resolves prefers-color-scheme. suppressHydrationWarning because we
+  // mutate <html> before React hydrates.
+  const themeInit = `(function(){try{var t=localStorage.getItem('aegira-theme')||'system';var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.dataset.theme=d?'dark':'light';var l=localStorage.getItem('aegira-lang');if(l){document.documentElement.lang=l;}}catch(e){}})();`;
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         <RoleProvider>{children}</RoleProvider>
       </body>
     </html>

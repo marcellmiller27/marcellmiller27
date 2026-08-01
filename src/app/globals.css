@@ -82,6 +82,31 @@
   --radius-pill: 999px;
 }
 
+/* ── Visual Mode: Dark (beta). Overrides the color tokens only — the whole platform
+   is token-based, so cards/text/borders flip via these. Applied by `data-theme="dark"`
+   on <html> (set pre-paint from the user's saved choice; "Browser Default" resolves
+   prefers-color-scheme). Higher/equal specificity than :root + later in source, so it wins. ── */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0a1420;
+  --background-soft: #0f1c2c;
+  --background-card: #12212f;
+  --border: rgba(255, 255, 255, 0.14);
+  --trust: #4f8bff;
+  --trust-strong: #6ea0ff;
+  --trust-soft: rgba(79, 139, 255, 0.16);
+  --growth: #2fb47c;
+  --growth-strong: #3ac489;
+  --growth-soft: rgba(47, 180, 124, 0.18);
+  --green: var(--growth);
+  --gold: #d4a24a;
+  --gold-soft: rgba(212, 162, 74, 0.18);
+  --text: #e8eef5;
+  --muted: #93a3b5;
+  --muted-strong: #c2cedb;
+  --shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+}
+
 /* ── Base typography defaults: every element inherits the scale so new markup
    is consistent by default, without per-page font-size guesses. ── */
 body {
@@ -941,6 +966,103 @@ li {
   font-weight: var(--fw-semibold);
   font-size: var(--fs-xs);
   padding: 0.4rem 0.5rem;
+}
+
+/* ── Current User Settings (gear popover: language + visual mode) ── */
+.user-settings {
+  position: relative;
+  display: inline-flex;
+}
+.user-settings__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  color: rgba(255, 255, 255, 0.85);
+  background: transparent;
+}
+.user-settings__btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+.user-settings__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  width: 232px;
+  padding: var(--space-3);
+  background: var(--background-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.user-settings__title {
+  margin: 0 0 0.25rem;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+.user-settings__label {
+  margin: 0.5rem 0 0.1rem;
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.user-settings__select {
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--background);
+  color: var(--text);
+  font-size: var(--fs-sm);
+}
+.user-settings__hint {
+  margin: 0.15rem 0 0;
+  font-size: var(--fs-2xs);
+  color: var(--muted);
+}
+.user-settings__beta {
+  margin-left: 0.35rem;
+  padding: 0.05rem 0.35rem;
+  border-radius: var(--radius-pill);
+  background: var(--gold-soft);
+  color: var(--gold);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-bold);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.user-settings__modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.3rem;
+}
+.user-settings__mode {
+  padding: 0.4rem 0.3rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--background);
+  color: var(--muted-strong);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+}
+.user-settings__mode:hover {
+  border-color: var(--trust);
+  color: var(--text);
+}
+.user-settings__mode.is-active {
+  border-color: var(--trust);
+  background: var(--trust-soft);
+  color: var(--trust);
 }
 
 .app-layout {
