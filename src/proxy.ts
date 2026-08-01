@@ -14,6 +14,7 @@ const PROTECTED_PREFIXES = [
   "/dashboard",
   "/macro",
   "/opportunities",
+  "/valuation",
   "/deal-xray",
   "/diligence-suite",
   "/due-diligence",

@@ -3649,3 +3649,146 @@ li {
   border-color: var(--severity);
   color: var(--severity);
 }
+
+/* ── Cross-Asset Valuation module (Phase 1) ── */
+.valuation__search {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.valuation__search label {
+  font-weight: 700;
+  font-size: 0.8rem;
+  display: block;
+}
+.valuation__search input {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+  min-width: 16rem;
+  text-transform: uppercase;
+}
+.val-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.val-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.val-card__tkr {
+  color: var(--muted-strong);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.val-card__sub {
+  color: var(--muted-strong);
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0;
+}
+.val-signal {
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.val-signal--sm {
+  font-size: 0.68rem;
+  padding: 0.2rem 0.6rem;
+}
+.val-signal--enter {
+  background: var(--growth);
+  color: #04140d;
+}
+.val-signal--hold {
+  background: #EAEFF6;
+  color: #0C1F33;
+}
+.val-signal--sideline {
+  background: #F8D7D5;
+  color: #7a1f1a;
+}
+.val-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.val-metrics div {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+}
+.val-metrics__k {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-strong);
+}
+.val-metrics strong {
+  font-size: 1.25rem;
+}
+.val-pos { color: var(--growth-strong, #1a7f4b); }
+.val-neg { color: #b3261e; }
+.val-rationale {
+  line-height: 1.6;
+}
+.val-details {
+  margin: 1rem 0;
+}
+.val-details summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.val-assumptions {
+  margin: 0.75rem 0;
+  padding-left: 1rem;
+  color: var(--muted-strong);
+  font-size: 0.9rem;
+  display: grid;
+  gap: 0.3rem;
+}
+.val-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+.val-table th,
+.val-table td {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+.val-table__total td {
+  font-weight: 700;
+  border-top: 2px solid var(--border);
+}
+.val-card__actions {
+  margin: 1rem 0 0.5rem;
+}
+.val-universe {
+  margin-top: 1.5rem;
+}
+.val-table--rank tbody tr {
+  cursor: pointer;
+}
+.val-row:hover {
+  background: rgba(15, 39, 68, 0.04);
+}
+@media (max-width: 720px) {
+  .val-metrics {
+    grid-template-columns: 1fr 1fr;
+  }
+}
