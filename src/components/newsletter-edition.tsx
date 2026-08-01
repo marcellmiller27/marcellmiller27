@@ -24,7 +24,10 @@ type Edition = {
   teaser: boolean;
 };
 type Payload = { edition: Edition; as_of: string; editorial: string };
-type Variant = "brief" | "alerts" | "scan";
+type Variant = "brief" | "alerts" | "scan" | "insider";
+
+// Sectioned editions (thesis/summary + analytical sections + items) share one layout.
+const SECTIONED: Variant[] = ["brief", "insider"];
 
 export function NewsletterEdition({ slug, variant }: { slug: string; variant: Variant }) {
   const [data, setData] = useState<Payload | null>(null);
@@ -59,12 +62,14 @@ export function NewsletterEdition({ slug, variant }: { slug: string; variant: Va
 
       {ed.intro ? (
         <section className="news__lede">
-          {variant === "brief" ? <h3>Executive summary</h3> : null}
+          {SECTIONED.includes(variant) ? (
+            <h3>{variant === "insider" ? "Thesis" : "Executive summary"}</h3>
+          ) : null}
           <p>{ed.intro}</p>
         </section>
       ) : null}
 
-      {variant === "brief" && ed.groups.map((g) => (
+      {SECTIONED.includes(variant) && ed.groups.map((g) => (
         <section className="news__section" key={g.heading}>
           <h3>{g.heading}</h3>
           {g.blurb ? <p className="news__blurb">{g.blurb}</p> : null}

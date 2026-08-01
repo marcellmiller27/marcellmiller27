@@ -28,11 +28,11 @@ const EDITIONS: Edition[] = [
     ready: true
   },
   {
-    href: "/newsletters",
+    href: "/newsletters/insider-briefs",
     name: "Insider Briefs",
     cadence: "As-warranted",
-    blurb: "Deep-dive analysis on a theme, sector, or target — the depth mandate. Coming soon.",
-    ready: false
+    blurb: "A rotating deep-dive on the most salient macro theme — thesis, the setup, why it matters, the cross-asset read, and what would change the call.",
+    ready: true
   }
 ];
 
