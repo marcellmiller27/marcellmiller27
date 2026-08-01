@@ -17,7 +17,7 @@ Status key: 🟢 built (PR open) · 🔵 queued (spec ready) · 🟣 queued (nee
 - 🔵 **Container rebuild off `main`** — activates all merged work (Aegira brand, Home story + team, editorial, Opportunity Scan, SES code). *Run from a shell carrying Secrets (see AGENTS.md).*
 
 ## B. Newsletter depth (Founder vision, 2026‑07‑31)
-- 🔵 **Phase 1 — prose depth (no new AWS):** expand the deterministic **analytical‑facts** layer (trend, level‑vs‑history, vs‑target/threshold, cross‑links like real rates = 10Y − CPI) and restructure the edition into an analytical arc — **executive thesis → analytical sections → cross‑asset implications → forward watch** (~600–900 words). Ellery writes the deep analysis, **fact‑locked**, interpretation‑not‑forecast.
+- 🟢 **Phase 1 — prose depth (no new AWS) [PR #147]:** analytical‑facts layer (level‑vs‑history vs disclosed references, vs‑target, cross‑links — real rate = 10Y − CPI, term spread = 10Y − Fed Funds); The Economic Brief restructured into the analytical arc **executive thesis → analytical sections → cross‑asset implications → forward watch**. Fact‑locked, interpretation‑not‑forecast. *Also shipped **Insider Briefs** (§E pending title) as the depth‑mandate deep‑dive.*
 - ⏳ **Phase 2 — depth multipliers (needs AWS):** **Bedrock Knowledge Bases / RAG** over a historical macro corpus (S3) for grounded "keen insight from history"; **charts/visual layer** (QuickSight or server‑rendered → S3); **Bedrock Agents** to orchestrate research → compute → retrieve → draft.
 
 ## C. Pricing / access (decisions LOCKED)
@@ -32,8 +32,8 @@ Status key: 🟢 built (PR open) · 🔵 queued (spec ready) · 🟣 queued (nee
 
 ## E. Platform UX
 - 🔵 **Current User Setting (gear):** **Language** dropdown (browser default → English; full i18n added incrementally) + **Visual Mode (beta):** Browser Default / Light / Dark (dark palette on our CSS tokens).
-- 🔵 **AI headshots:** regenerate Cy & Ellery (esp. Ellery).
-- 🟣 **Pending titles:** finalize "Insider Briefs (Coming soon)" + the mobile "command center" wording.
+- ✅ **AI headshots:** Cy & Ellery restored to original identities at peer 3:2 sizing [#146].
+- 🟢 **Insider Briefs [PR #147]:** now a live edition — a rotating, data‑selected macro deep‑dive (Thesis → The setup → Why it matters → Cross‑asset read → Forward watch → The Aegira lens). *Remaining pending title: mobile "command center" wording.*
 - 🟣 **Storefront copy rewrite** (institutional voice) — needs Founder voice/scope.
 
 ## F. Data / research depth
