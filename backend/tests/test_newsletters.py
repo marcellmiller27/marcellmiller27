@@ -77,7 +77,12 @@ def test_full_edition_has_more_content_than_teaser() -> None:
 
     full = build_edition("economic-brief", quotes, now, full=True)
     teaser = build_edition("economic-brief", quotes, now, full=False)
-    assert len(full.groups) == 5
+    # Analytical arc: 5 sections + cross-asset implications + forward watch.
+    assert len(full.groups) == 7
+    assert [g.heading for g in full.groups][-2:] == [
+        "Cross-asset implications",
+        "Forward watch — what would change the read",
+    ]
     assert len(teaser.groups) == 1
     assert teaser.teaser is True and full.teaser is False
 
@@ -85,3 +90,43 @@ def test_full_edition_has_more_content_than_teaser() -> None:
     scan_teaser = build_edition("opportunity-scan", quotes, now, full=False)
     assert len(scan_full.groups[0].items) == 5
     assert len(scan_teaser.groups[0].items) == 2
+
+
+def test_economic_brief_thesis_carries_fact_locked_analytics() -> None:
+    # The executive thesis should synthesize the read with the derived real-rate cross-link,
+    # and every number in it must trace to a released figure or a disclosed reference.
+    quotes = MarketDataService().quotes(NEWSLETTER_SYMBOLS).quotes
+    ed = build_edition("economic-brief", quotes, datetime.now(timezone.utc), full=True)
+    assert "real 10-year yield" in ed.intro.lower()
+    # The cross-asset section exposes the derived real-rate and curve facts.
+    xa = next(g for g in ed.groups if g.heading == "Cross-asset implications")
+    labels = {it.label for it in xa.items}
+    assert "Real rates" in labels
+
+
+def test_insider_brief_is_a_themed_deepdive() -> None:
+    quotes = MarketDataService().quotes(NEWSLETTER_SYMBOLS).quotes
+    now = datetime.now(timezone.utc)
+
+    full = build_edition("insider-briefs", quotes, now, full=True)
+    teaser = build_edition("insider-briefs", quotes, now, full=False)
+
+    assert full.slug == "insider-briefs"
+    assert full.title.startswith("Insider Brief —")
+    assert full.intro  # a thesis
+    headings = [g.heading for g in full.groups]
+    assert headings[0].startswith("The setup")
+    assert "Why it matters" in headings
+    assert "The Aegira lens" in headings
+    # Teaser is materially thinner and gated.
+    assert len(teaser.groups) == 1 and teaser.teaser is True
+    assert len(full.groups) > len(teaser.groups)
+
+
+def test_insider_brief_theme_selection_is_deterministic() -> None:
+    # Same data → same brief (stable theme selection + tie-break).
+    quotes = MarketDataService().quotes(NEWSLETTER_SYMBOLS).quotes
+    now = datetime.now(timezone.utc)
+    a = build_edition("insider-briefs", quotes, now, full=True)
+    b = build_edition("insider-briefs", quotes, now, full=True)
+    assert a.title == b.title

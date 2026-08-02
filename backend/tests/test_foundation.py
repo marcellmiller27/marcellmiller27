@@ -124,3 +124,39 @@ def test_cancel_subscription_requires_full_sentence_reason() -> None:
 def test_cancel_subscription_requires_authentication() -> None:
     response = client.post("/api/v1/billing/cancel", json={"reason": "A complete sentence here."})
     assert response.status_code == 401
+
+
+def test_start_trial_begins_seven_day_trial() -> None:
+    # Purchase Flow — Phase A (mock): selecting a plan + interval starts a 7-day trial
+    # that auto-converts at period end, with no live charge.
+    registered = register_user()
+    headers = {"Authorization": f"Bearer {registered['access_token']}"}
+
+    response = client.post(
+        "/api/v1/billing/start-trial",
+        json={"plan": "professional", "interval": "annual"},
+        headers=headers,
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["plan"] == "professional"
+    assert body["interval"] == "annual"
+    assert body["trial_days"] == 7
+    assert body["subscription"]["status"] == "trialing"
+    assert body["subscription"]["current_period_end"]
+
+    # The trial + plan choice are reflected on the subscription record.
+    me = client.get("/api/v1/billing/subscription", headers=headers)
+    assert me.status_code == 200
+    assert me.json()["subscription"]["plan"] == "professional"
+    assert me.json()["subscription"]["status"] == "trialing"
+
+    # The change is captured in the billing audit trail.
+    logs = client.get("/api/v1/billing/audit-logs", headers=headers)
+    assert logs.status_code == 200
+    assert any(log["action"] == "billing.trial_started" for log in logs.json())
+
+
+def test_start_trial_requires_authentication() -> None:
+    response = client.post("/api/v1/billing/start-trial", json={"plan": "consumer"})
+    assert response.status_code == 401

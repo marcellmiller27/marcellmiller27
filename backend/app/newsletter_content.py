@@ -1,11 +1,17 @@
 # JHI-SIG: 69M2705M | Newsletter content engine (server-side) | JHI Research & Analytics Firm, Inc. (proprietary)
 """Server-side generation of the editorial editions (The Economic Brief, Red Alerts,
-Cross-Asset Opportunity Scan) from the live /market/quotes feed.
+Cross-Asset Opportunity Scan, Insider Briefs) from the live /market/quotes feed.
 
-This is a faithful Python port of the deterministic, threshold-based logic that the
-front-end components render, so a downloaded PDF matches what the reader sees on
-screen. Making the backend the source of truth also lets the same content be reused
-for the Step-B email attachment (no browser required).
+This is the single source of truth for the deterministic, threshold-based analysis the
+front-end renders, so a downloaded PDF matches what the reader sees on screen. Making
+the backend authoritative also lets the same content be reused for the SES email.
+
+Depth (2026-08, Phase 1 — no new AWS): the editions carry an *analytical-facts* layer —
+level-vs-history (against disclosed reference levels), vs-target/threshold, and cross-links
+such as the real 10-year yield (10Y − CPI) and the term spread (10Y − Fed Funds). The
+Economic Brief is structured as an analytical arc — executive thesis → analytical sections
+→ cross-asset implications → forward watch. Every figure is deterministic and fact-locked
+(shown as last released); commentary is interpretation, not a forecast.
 """
 
 from __future__ import annotations
@@ -54,7 +60,15 @@ class Edition:
 
 QuoteMap = dict[str, Quote]
 
-EDITION_SLUGS = ("economic-brief", "red-alerts", "opportunity-scan")
+EDITION_SLUGS = ("economic-brief", "red-alerts", "opportunity-scan", "insider-briefs")
+
+# ── Disclosed reference levels for the level-vs-history / vs-target reads ─────
+# These are stated in-copy so the analysis is transparent and auditable (not a
+# black box). They are reference anchors, not forecasts.
+_NEUTRAL_FUNDS = 2.5   # estimated longer-run neutral policy rate (r* + 2% target)
+_CPI_TARGET = 2.0      # Federal Reserve inflation objective
+_FULL_EMPLOYMENT = 4.0  # ~ natural rate of unemployment reference
+_UST10Y_NORM = 4.0     # post-2000 nominal 10-year reference level
 
 _DISCLAIMER = (
     "For research and educational purposes only. Not investment, legal, tax, or "
@@ -100,20 +114,47 @@ def _price(m: QuoteMap, s: str) -> float | None:
     return q.price if q else None
 
 
+# ── Analytical-facts layer (derived, fact-locked cross-links) ────────────────
+def _real_rate(m: QuoteMap) -> float | None:
+    """The real 10-year yield ≈ nominal 10Y − headline CPI. The single most
+    important cross-asset number: the hurdle rate for every risk asset."""
+    ten, cpi = _price(m, "UST10Y"), _price(m, "INFLATION")
+    return None if ten is None or cpi is None else ten - cpi
+
+
+def _term_spread(m: QuoteMap) -> float | None:
+    """10Y minus the policy rate — a curve/term-premium proxy. Negative = inverted."""
+    ten, ff = _price(m, "UST10Y"), _price(m, "FED_FUNDS")
+    return None if ten is None or ff is None else ten - ff
+
+
+def _gap_phrase(value: float, reference: float, unit: str = " points") -> str:
+    """'0.9 points above' / '0.4 points below' / 'in line with' vs a reference."""
+    gap = value - reference
+    if abs(gap) < 0.05:
+        return "in line with"
+    return f"{abs(gap):.1f}{unit} {'above' if gap > 0 else 'below'}"
+
+
 # ── The Economic Brief ──────────────────────────────────────────────────────
 _SECTIONS: list[tuple[str, str, list[str]]] = [
     ("Monetary Policy & Rates",
-     "The policy rate and the long end frame the cost of capital across the economy.",
+     "The policy rate and the long end set the cost of capital for the whole economy. "
+     "We read each against its own history — the policy rate versus a ~2.5% neutral "
+     "estimate, the 10-year versus its ~4% post-2000 norm.",
      ["FED_FUNDS", "UST10Y"]),
     ("Inflation",
-     "The pace of price growth relative to the Federal Reserve's 2% objective.",
+     "Price growth versus the Federal Reserve's 2% objective. The distance from target — "
+     "not the level alone — is what governs the timing and pace of any easing.",
      ["INFLATION"]),
     ("Labor & the Consumer",
-     "Employment slack and household demand — the engine of two-thirds of output.",
+     "Employment slack and household demand — the engine of roughly two-thirds of output, "
+     "and the swing factor for whether the expansion holds.",
      ["UNEMPLOYMENT", "RETAIL_SALES", "CONSUMER_SENTIMENT"]),
-    ("Growth & Output", "Aggregate activity and the industrial base.",
+    ("Growth & Output", "Aggregate activity and the industrial base — the denominator for "
+     "leverage, valuation, and deficit ratios.",
      ["GDP", "INDUSTRIAL_PRODUCTION"]),
-    ("Markets", "Cross-asset read on risk appetite and safe-haven demand.",
+    ("Markets", "The cross-asset read on risk appetite, safe-haven demand, and liquidity.",
      ["SPX", "GOLD", "BTC"]),
 ]
 
@@ -122,27 +163,41 @@ def _commentary(symbol: str, v: float | None) -> str:
     if v is None:
         return "Awaiting the next release."
     if symbol == "FED_FUNDS":
+        vs = _gap_phrase(v, _NEUTRAL_FUNDS)
+        anchor = f" — roughly {vs} our ~{_NEUTRAL_FUNDS:.1f}% neutral estimate" if vs != "in line with" \
+            else " — about in line with our ~2.5% neutral estimate"
         if v >= 4:
-            return "A restrictive stance that continues to weigh on rate-sensitive demand."
+            return (f"A restrictive stance{anchor}, continuing to weigh on rate-sensitive demand, "
+                    "leverage-dependent deals, and refinancings.")
         if v >= 2.5:
-            return "A moderately restrictive stance; policy is not yet neutral."
-        return "An accommodative stance supportive of credit and risk assets."
+            return f"A moderately restrictive stance{anchor}; policy is not yet neutral."
+        return f"An accommodative stance{anchor}, supportive of credit and risk assets."
     if symbol == "UST10Y":
-        return ("Long rates remain elevated, keeping borrowing costs and discount rates high."
+        vs = _gap_phrase(v, _UST10Y_NORM)
+        anchor = (f" ({vs} its ~{_UST10Y_NORM:.1f}% post-2000 norm)"
+                  if vs != "in line with" else " (near its ~4% post-2000 norm)")
+        return (f"Long rates remain elevated{anchor}, keeping borrowing costs and discount rates high."
                 if v >= 4.5 else
-                "Long rates are easing, a tailwind for valuations and refinancing.")
+                f"Long rates are easing{anchor}, a tailwind for valuations and refinancing.")
     if symbol == "INFLATION":
+        above = v - _CPI_TARGET
+        vs = (f"{above:.1f} points above" if above >= 0.05
+              else f"{abs(above):.1f} points below" if above <= -0.05 else "in line with")
         if v <= 2.5:
-            return "At or near the Fed's 2% target — consistent with an easing bias."
+            return f"At {vs} the Fed's 2% target — consistent with an easing bias."
         if v <= 4:
-            return "Running above the 2% target; the last mile of disinflation is proving sticky."
-        return "Elevated and above target, constraining the path to rate cuts."
+            return (f"Running {vs} the 2% target; the last mile of disinflation is proving sticky "
+                    "and is what keeps the Fed on hold.")
+        return f"Elevated at {vs} target, constraining the path to rate cuts."
     if symbol == "UNEMPLOYMENT":
+        vs = _gap_phrase(v, _FULL_EMPLOYMENT)
+        anchor = (f" ({vs} the ~{_FULL_EMPLOYMENT:.1f}% full-employment reference)"
+                  if vs != "in line with" else " (near the ~4% full-employment reference)")
         if v < 4.5:
-            return "The labor market remains firm, underpinning consumer resilience."
+            return f"The labor market remains firm{anchor}, underpinning consumer resilience."
         if v <= 5.5:
-            return "A softening labor market that bears watching for demand risk."
-        return "A weak labor market signaling cyclical downside."
+            return f"A softening labor market{anchor} that bears watching for demand risk."
+        return f"A weak labor market{anchor}, signaling cyclical downside."
     if symbol == "RETAIL_SALES":
         return "Headline household spending — the clearest read on consumer demand."
     if symbol == "CONSUMER_SENTIMENT":
@@ -161,20 +216,124 @@ def _commentary(symbol: str, v: float | None) -> str:
     return ""
 
 
-def _headline(m: QuoteMap) -> str:
-    ff = _price(m, "FED_FUNDS")
-    cpi = _price(m, "INFLATION")
-    un = _price(m, "UNEMPLOYMENT")
-    stance = "current" if ff is None else (
-        "restrictive" if ff >= 4 else "moderately restrictive" if ff >= 2.5 else "accommodative")
-    infl = "" if cpi is None else (
-        "with inflation back near target" if cpi <= 2.5
-        else f"with inflation at {cpi:.1f}%, still above the 2% target")
-    labor = "" if un is None else (
-        "and the labor market holding firm" if un < 4.5 else "as the labor market softens")
-    return (f"Policy remains {stance} {infl} {labor}. The picture below balances a resilient "
-            "consumer against still-elevated financing costs — the central tension for allocators "
-            "and acquirers this cycle.").replace("  ", " ")
+def _thesis(m: QuoteMap) -> str:
+    """The executive thesis — a synthesized, fact-locked read that opens the arc.
+    Each clause ties a level to its reference so the interpretation is transparent."""
+    ff, cpi, un = _price(m, "FED_FUNDS"), _price(m, "INFLATION"), _price(m, "UNEMPLOYMENT")
+    ten, rr, ts = _price(m, "UST10Y"), _real_rate(m), _term_spread(m)
+    parts: list[str] = []
+
+    if ff is not None:
+        stance = ("restrictive" if ff >= 4 else "moderately restrictive" if ff >= 2.5
+                  else "accommodative")
+        parts.append(
+            f"The federal funds rate at {ff:.2f}% sits {_gap_phrase(ff, _NEUTRAL_FUNDS)} our "
+            f"~{_NEUTRAL_FUNDS:.1f}% neutral reference — a {stance} setting that keeps the cost of "
+            "capital high across the economy.")
+    if cpi is not None:
+        if cpi > _CPI_TARGET:
+            parts.append(
+                f"Inflation at {cpi:.2f}% is still {cpi - _CPI_TARGET:.1f} points above the Fed's "
+                "2% objective, so the last mile of disinflation — not growth — governs the timing "
+                "of any cuts.")
+        else:
+            parts.append(
+                f"Inflation at {cpi:.2f}% is at or below the 2% objective, opening room for an "
+                "easing bias.")
+    if rr is not None and ten is not None:
+        parts.append(
+            f"With the 10-year near {ten:.2f}%, the real 10-year yield is roughly {rr:.2f}% — "
+            "positive real rates of this size discipline valuations and reward patient, "
+            "cash-flowing capital.")
+    if un is not None:
+        parts.append(
+            f"The labor market at {un:.2f}% unemployment is "
+            f"{'still firm' if un < 4.5 else 'softening at the margin'}, the swing factor for "
+            "whether the consumer keeps the expansion intact.")
+    if ts is not None and ts < 0:
+        parts.append(
+            f"The 10-year below the policy rate (a {ts:.2f}-point spread) leaves the curve "
+            "inverted — historically a late-cycle signal that rewards up-in-quality positioning.")
+    parts.append(
+        "The sections below read each pillar against its own history, then translate the macro "
+        "into cross-asset implications for allocators and acquirers.")
+    return " ".join(parts)
+
+
+def _cross_asset_group(m: QuoteMap) -> Group:
+    """Synthesis section: translate the macro read into cross-asset implications."""
+    rr, ts = _real_rate(m), _term_spread(m)
+    items: list[Item] = []
+    if rr is not None:
+        items.append(Item(
+            label="Real rates", value=f"{rr:.2f}% (10Y − CPI)",
+            body=(
+                "Positive real yields near multi-decade highs raise the hurdle rate for every "
+                "asset: they cap equity multiples, reward front-to-intermediate high-quality "
+                "credit, and pressure long-duration and richly-valued growth. This is the single "
+                "most important number for cross-asset positioning today."
+                if rr >= 1 else
+                "Real yields are only modestly positive — a less punishing backdrop for duration "
+                "and long-duration equity, but not yet a green light for aggressive risk."),
+            tags=["Rates", "Equities", "Fixed income"],
+            source="Derived: 10-year Treasury − headline CPI (FRED)."))
+    if ts is not None:
+        items.append(Item(
+            label="Yield curve", value=f"{ts:.2f} pts (10Y − Fed Funds)",
+            body=(
+                "Inverted: the market is pricing policy easing ahead. The historical playbook "
+                "favors up-in-quality, shorter-duration credit and locking in yield before the "
+                "curve normalizes."
+                if ts < 0 else
+                "Positively sloped: a normalizing curve that historically supports banks, "
+                "cyclical risk, and a re-steepening carry trade."),
+            tags=["Fixed income", "Equities"],
+            source="Derived: 10-year Treasury − federal funds rate (FRED)."))
+    spx, gold, btc = m.get("SPX"), m.get("GOLD"), m.get("BTC")
+    haven_bits: list[str] = []
+    if gold and gold.price is not None:
+        haven_bits.append(
+            f"Gold at {fmt(gold)} reflects fiscal- and real-rate-hedging demand; pair it with "
+            "cash-flowing real assets repriced to the new rate regime.")
+    if spx and spx.price is not None:
+        haven_bits.append(
+            f"Equities ({spx.name} {fmt(spx)}) still clear a high real-rate hurdle — favor "
+            "quality compounders and free-cash-flow yield over long-duration growth.")
+    if btc and btc.price is not None:
+        haven_bits.append(
+            f"{btc.name} at {fmt(btc)} is a high-beta read on liquidity — a satellite, not a core, "
+            "until policy eases.")
+    if haven_bits:
+        items.append(Item(
+            label="Risk vs. haven", value="positioning",
+            body=" ".join(haven_bits), tags=["Equities", "Real assets", "Digital assets"]))
+    return Group(
+        heading="Cross-asset implications",
+        blurb="How the macro read maps to positioning across asset classes — interpretation, "
+              "not a forecast or advice.",
+        items=items)
+
+
+def _forward_watch_group(m: QuoteMap) -> Group:
+    """What would change the read — the releases and levels the desk is watching next."""
+    return Group(
+        heading="Forward watch — what would change the read",
+        blurb="The catalysts the desk is tracking, and the levels that would flip the balance "
+              "of risk.",
+        items=[
+            Item(label="Inflation path", value=f"CPI {fmt(m.get('INFLATION'))} vs 2% target",
+                 body="A print that resumes progress toward 2% is the clearest trigger for the "
+                      "Fed to cut; a re-acceleration pushes cuts out and pressures duration."),
+            Item(label="Labor market", value=f"Unemployment {fmt(m.get('UNEMPLOYMENT'))}",
+                 body="A sustained move above the ~4.5–5% band would shift the balance of risk "
+                      "from inflation to growth and likely accelerate the easing timeline."),
+            Item(label="Policy rate", value=f"Fed Funds {fmt(m.get('FED_FUNDS'))}",
+                 body="The first cut re-rates rate-sensitive sectors — watch the pace and the "
+                      "dot-path, not just the first move."),
+            Item(label="Long rates", value=f"10Y {fmt(m.get('UST10Y'))}",
+                 body="A durable break in the 10-year resets discount rates across public and "
+                      "private valuations and cap rates in real assets."),
+        ])
 
 
 def _economic_brief(m: QuoteMap, full: bool) -> tuple[str, list[Group]]:
@@ -189,7 +348,11 @@ def _economic_brief(m: QuoteMap, full: bool) -> tuple[str, list[Group]]:
             items.append(Item(label=q.name, value=fmt(q), body=_commentary(sym, q.price),
                               source=q.note))
         groups.append(Group(heading=heading, blurb=blurb, items=items))
-    return _headline(m), groups
+    if full:
+        # Close the analytical arc: synthesis → forward watch.
+        groups.append(_cross_asset_group(m))
+        groups.append(_forward_watch_group(m))
+    return _thesis(m), groups
 
 
 # ── Red Alerts ──────────────────────────────────────────────────────────────
@@ -282,12 +445,210 @@ def _build_scan(m: QuoteMap) -> list[Item]:
     ]
 
 
+# ── Insider Briefs (rotating deep-dive on the most salient macro theme) ──────
+_INSIDER_TITLES = {
+    "real-cost-of-capital": "The Real Cost of Capital",
+    "last-mile-disinflation": "The Last Mile of Disinflation",
+    "labor-at-the-margin": "Labor at the Margin",
+    "safe-haven-bid": "The Safe-Haven Bid",
+}
+
+
+def _insider_theme_key(m: QuoteMap) -> str:
+    """Deterministically pick the most salient theme from the live data. Ordered
+    candidates give a stable tie-break so the same data always yields the same brief."""
+    rr = _real_rate(m)
+    cpi, un = _price(m, "INFLATION"), _price(m, "UNEMPLOYMENT")
+    gold = m.get("GOLD")
+    gchg = abs(gold.change_percent) if gold and gold.change_percent is not None else 0.0
+    candidates: list[tuple[str, float]] = [
+        ("real-cost-of-capital", rr if rr is not None else 0.0),
+        ("last-mile-disinflation", max(0.0, cpi - _CPI_TARGET) if cpi is not None else 0.0),
+        ("labor-at-the-margin", max(0.0, un - _FULL_EMPLOYMENT) if un is not None else 0.0),
+        ("safe-haven-bid", gchg),
+    ]
+    return max(candidates, key=lambda c: c[1])[0]
+
+
+def _insider_setup_group(m: QuoteMap) -> Group:
+    syms = ["FED_FUNDS", "UST10Y", "INFLATION", "UNEMPLOYMENT"]
+    items: list[Item] = []
+    for sym in syms:
+        q = m.get(sym)
+        if not q:
+            continue
+        items.append(Item(label=q.name, value=fmt(q), body=_commentary(sym, q.price),
+                          source=q.note))
+    rr = _real_rate(m)
+    if rr is not None:
+        items.append(Item(
+            label="Real 10-year yield", value=f"{rr:.2f}%",
+            body="The nominal 10-year minus headline CPI — the economy's true, after-inflation "
+                 "hurdle rate and the anchor for cross-asset valuation.",
+            source="Derived: 10-year Treasury − CPI (FRED)."))
+    return Group(heading="The setup — where the data sits",
+                 blurb="The levels this brief is built on, each shown as last released.",
+                 items=items)
+
+
+def _insider_theme_content(key: str, m: QuoteMap) -> tuple[str, list[Item], list[Item]]:
+    """Return (thesis, why-it-matters items, the-Aegira-lens items) for a theme.
+    All figures are pulled from the live data and shown as released (fact-locked)."""
+    ff, cpi, un = fmt(m.get("FED_FUNDS")), fmt(m.get("INFLATION")), fmt(m.get("UNEMPLOYMENT"))
+    ten = fmt(m.get("UST10Y"))
+    rr, ts = _real_rate(m), _term_spread(m)
+    rr_s = f"{rr:.2f}%" if rr is not None else "positive"
+
+    if key == "last-mile-disinflation":
+        thesis = (
+            f"Disinflation is easy at first and hard at the end. With CPI at {cpi} against the "
+            "Fed's 2% objective, the remaining gap is concentrated in the stickiest components — "
+            "shelter and core services — where progress is measured in tenths, not points. That "
+            f"is why the funds rate is still {ff}: the Fed is not fighting the level of inflation "
+            "so much as its persistence. This brief examines why the last mile is the hardest, and "
+            "what it means for the timing of relief.")
+        why = [
+            Item("Services inflation is structural, not transitory",
+                 "measured in tenths",
+                 "The goods disinflation that did the early work has largely run its course. "
+                 "What remains is services and shelter, which move slowly and track wages — so the "
+                 "path to 2% is a grind, not a step-change."),
+            Item("The Fed's reaction function is asymmetric", f"Fed Funds {ff}",
+                 "A central bank that has spent its credibility re-anchoring expectations will "
+                 "wait for convincing evidence before cutting. That bias keeps policy restrictive "
+                 "for longer than a purely mechanical rule would imply."),
+            Item("Duration carries the risk", f"10Y {ten}",
+                 "If the last mile stalls, the front end stays anchored and the long end reprices "
+                 "higher — the pain lands on long-duration bonds and richly-valued growth equity."),
+        ]
+        lens = [
+            Item("Positioning lens", "up-in-quality, laddered",
+                 "Favor intermediate high-quality duration and free-cash-flow yield over "
+                 "long-duration bets on imminent cuts. Let the data — not the calendar — set the "
+                 "timeline. Research, not investment advice.")]
+        return thesis, why, lens
+
+    if key == "labor-at-the-margin":
+        thesis = (
+            f"The expansion lives or dies with the consumer, and the consumer lives or dies with "
+            f"the job market. At {un} unemployment, the labor market is the pivot: firm enough to "
+            "keep spending intact today, but the margin is where the cycle turns. This brief reads "
+            "the labor signal for what it means to the consumer, to credit, and to the Fed's "
+            "dual mandate.")
+        why = [
+            Item("The consumer is the transmission belt", f"Unemployment {un}",
+                 "Roughly two-thirds of output is consumption. A rising jobless rate erodes income "
+                 "growth, confidence, and the willingness to spend — the first domino in a "
+                 "demand slowdown."),
+            Item("Credit performance follows employment", f"Fed Funds {ff}",
+                 "Consumer and small-business credit hold up while people are working. Softening "
+                 "labor plus a high funds rate is the combination that lifts delinquencies and "
+                 "tightens lending."),
+            Item("The dual mandate shifts the Fed's hand", f"CPI {cpi}",
+                 "As labor softens, the Fed's balance tilts from inflation toward employment — the "
+                 "condition that historically pulls the first cut forward."),
+        ]
+        lens = [
+            Item("Positioning lens", "defensive quality",
+                 "Late-cycle labor softening rewards balance-sheet quality, defensive cash flows, "
+                 "and caution on consumer-cyclical and lower-quality credit. Research, not advice.")]
+        return thesis, why, lens
+
+    if key == "safe-haven-bid":
+        gold = fmt(m.get("GOLD"))
+        thesis = (
+            f"When gold rallies with real rates still positive, it is saying something. At {gold}, "
+            "the safe-haven bid is not a bet on deflation — it is a hedge against fiscal risk, "
+            "currency debasement, and the tail where the Fed is forced to ease into sticky "
+            "inflation. This brief unpacks what the haven trade is pricing and how to hold it.")
+        why = [
+            Item("Gold vs. real rates is the tell", f"Real 10Y {rr_s}",
+                 "Gold normally struggles when real yields are high. Strength despite positive "
+                 "real rates points to demand for a hedge against fiscal and monetary tail risk, "
+                 "not a simple rate trade."),
+            Item("Fiscal arithmetic is the backdrop", f"10Y {ten}",
+                 "Large deficits financed at a higher cost of debt raise the odds of financial "
+                 "repression or debasement over time — precisely the regime that rewards real, "
+                 "scarce assets."),
+            Item("It is a hedge, not a core holding", f"Fed Funds {ff}",
+                 "The haven trade earns its place as portfolio insurance. Size it to the risk it "
+                 "hedges, and pair it with cash-flowing real assets rather than treating it as a "
+                 "standalone return engine."),
+        ]
+        lens = [
+            Item("Positioning lens", "insurance, sized",
+                 "Treat the haven allocation as a hedge sized to fiscal and real-rate tail risk — "
+                 "complemented by repriced, cash-flowing real assets. Research, not advice.")]
+        return thesis, why, lens
+
+    # default: real-cost-of-capital
+    curve = (f"an inverted curve ({ts:.2f} pts, 10Y − Fed Funds)" if ts is not None and ts < 0
+             else "a normalizing curve")
+    thesis = (
+        "The defining feature of this cycle is not the headline level of interest rates but their "
+        f"real, after-inflation cost. With the 10-year at {ten} and CPI at {cpi}, the real "
+        f"10-year yield is roughly {rr_s} — near the highest sustained level in more than a "
+        f"decade, alongside {curve}. Positive real rates of this magnitude quietly reset the price "
+        "of everything: they are the hurdle every investment, every deal, and every valuation must "
+        "now clear. This brief traces how that hurdle reshapes capital allocation.")
+    why = [
+        Item("Every valuation carries a higher hurdle", f"Real 10Y {rr_s}",
+             "Discounted cash flows are worth less when the discount rate is higher in real terms. "
+             "The effect is largest for long-duration, back-end-loaded growth and smallest for "
+             "near-term, cash-generative businesses."),
+        Item("Leverage math has fundamentally changed", f"Fed Funds {ff}",
+             "With financing near policy-rate levels, the levered-buyout arithmetic that worked in "
+             "a zero-rate world no longer clears. The edge shifts to lower-leverage, cash-flowing "
+             "acquisitions bought at disciplined multiples."),
+        Item("Cash flow beats promises", f"10Y {ten}",
+             "When capital is no longer free, investors are paid to prefer realized free cash flow "
+             "over promised future growth. Quality, coverage, and pricing power are repriced up."),
+    ]
+    lens = [
+        Item("Positioning lens", "patient, cash-flowing capital",
+             "A positive-real-rate regime rewards discipline: quality compounders, front-to-"
+             "intermediate high-grade credit, and cash-flowing real and private assets acquired "
+             "at sensible multiples. Research, not investment advice.")]
+    return thesis, why, lens
+
+
+def _insider_brief(m: QuoteMap, now: datetime, full: bool) -> Edition:
+    key = _insider_theme_key(m)
+    title = _INSIDER_TITLES[key]
+    thesis, why_items, lens_items = _insider_theme_content(key, m)
+    dateline = f"Edition of {edition_date(now)}"
+
+    groups: list[Group] = [_insider_setup_group(m)]
+    if full:
+        groups.append(Group(
+            heading="Why it matters",
+            blurb="The mechanism — how this theme transmits into the economy and markets.",
+            items=why_items))
+        groups.append(_cross_asset_group(m))
+        groups.append(_forward_watch_group(m))
+        groups.append(Group(
+            heading="The Aegira lens",
+            blurb="How the desk frames the theme for allocators and acquirers.",
+            items=lens_items))
+
+    return Edition(
+        slug="insider-briefs", title=f"Insider Brief — {title}", eyebrow="Insider Briefs",
+        dateline=dateline, intro=thesis, groups=groups,
+        footer="A rotating deep-dive on the most salient macro theme, built from public data "
+               "(FRED · BLS · SEC EDGAR · market feeds) and written in Aegira's independent "
+               "professional perspective.",
+        disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full)
+
+
 def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> Edition:
     """Build a normalized Edition for the given slug. Raises KeyError for unknown slug."""
     if slug not in EDITION_SLUGS:
         raise KeyError(slug)
     m: QuoteMap = {q.symbol: q for q in quotes}
     dateline = f"Edition of {edition_date(now)}"
+
+    if slug == "insider-briefs":
+        return _insider_brief(m, now, full)
 
     if slug == "economic-brief":
         intro, groups = _economic_brief(m, full)

@@ -29,6 +29,11 @@ class SubscriptionStatus(StrEnum):
     INCOMPLETE = "incomplete"
 
 
+class BillingInterval(StrEnum):
+    MONTHLY = "monthly"
+    ANNUAL = "annual"
+
+
 class OrganizationRead(BaseModel):
     id: str
     name: str
@@ -108,6 +113,23 @@ class CheckoutSessionRequest(BaseModel):
     plan: SubscriptionPlan
     success_url: str
     cancel_url: str
+    interval: BillingInterval = BillingInterval.MONTHLY
+
+
+class StartTrialRequest(BaseModel):
+    # Purchase Flow — Phase A (mock): start a card-on-file 7-day trial without a live
+    # charge. Phase B swaps this for Stripe Checkout + Subscriptions + webhooks.
+    plan: SubscriptionPlan
+    interval: BillingInterval = BillingInterval.MONTHLY
+
+
+class StartTrialResponse(BaseModel):
+    subscription: SubscriptionRead
+    plan: SubscriptionPlan
+    interval: BillingInterval
+    trial_days: int
+    trial_end: datetime
+    message: str
 
 
 class CheckoutSessionResponse(BaseModel):
