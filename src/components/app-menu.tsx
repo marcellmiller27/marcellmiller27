@@ -13,6 +13,7 @@ import {
   Home,
   LayoutDashboard,
   LifeBuoy,
+  LineChart,
   Menu,
   Newspaper,
   ScanSearch,
@@ -47,6 +48,7 @@ const toc: TocGroup[] = [
     items: [
       { href: "/macro", label: "Economics", icon: BarChart3, access: "subscriber" },
       { href: "/opportunities", label: "Screener", icon: Search, access: "subscriber" },
+      { href: "/valuation", label: "Valuation", icon: LineChart, access: "subscriber" },
       { href: "/reports", label: "Reports", icon: FileText, access: "subscriber" }
     ]
   },
