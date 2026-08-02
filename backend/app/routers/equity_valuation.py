@@ -1,5 +1,5 @@
 # JHI-SIG: 69M2705M | Cross-Asset Valuation router (equities) | JHI Research & Analytics Firm, Inc. (proprietary)
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, HTTPException, Query, Response
 
@@ -39,7 +39,7 @@ def valuation_workbook(ticker: str) -> Response:
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     filename = f"Aegira_{report.ticker}_DCF_Valuation_{now:%Y-%m-%d}.xlsx"
     return Response(
         content=equity_valuation_workbook(report),

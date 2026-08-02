@@ -15,13 +15,16 @@ use method-specific engines in later phases.)
 
 from __future__ import annotations
 
+import logging
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from pydantic import BaseModel
 
 from app import edgar_services
 from app.market_services import MarketDataService
+
+logger = logging.getLogger(__name__)
 
 # ── Disclosed model assumptions (Phase 1) ────────────────────────────────────
 PROJECTION_YEARS = 5
@@ -39,7 +42,7 @@ ENTER_UPSIDE = 0.20
 SIDELINE_UPSIDE = -0.10
 
 _UNIVERSE_TTL_SECONDS = 6 * 3600
-_universe_cache: dict[str, tuple[float, list["EquityValuation"]]] = {}
+_universe_cache: dict[str, tuple[float, list[EquityValuation]]] = {}
 
 
 class EquityValuation(BaseModel):
@@ -100,8 +103,8 @@ def risk_free_rate() -> float:
         for q in resp.quotes:
             if q.symbol.upper() == "UST10Y" and q.price is not None:
                 return float(q.price) / 100.0
-    except Exception:  # noqa: BLE001 - best-effort; fall back to a sensible default
-        pass
+    except Exception:
+        logger.debug("Falling back to default risk-free rate.", exc_info=True)
     return DEFAULT_RISK_FREE
 
 
@@ -262,7 +265,7 @@ def value_equity(
     return EquityValuation(
         ticker=ticker,
         name=fin.entity_name,
-        as_of=datetime.now(timezone.utc),
+        as_of=datetime.now(UTC),
         price=price,
         shares_outstanding=shares,
         market_cap=market_cap,
@@ -322,7 +325,8 @@ def value_universe(n: int = 8, universe: list[str] | None = None, force: bool = 
             valued.append(value_equity(t, price=prices.get(t.upper()), risk_free=rf))
         except (edgar_services.ProviderError, ValueError):
             continue
-        except Exception:  # noqa: BLE001 - never break the module
+        except Exception:
+            logger.debug("Skipping unexpected valuation failure for %s.", t, exc_info=True)
             continue
 
     valued.sort(key=lambda v: v.upside_pct, reverse=True)
