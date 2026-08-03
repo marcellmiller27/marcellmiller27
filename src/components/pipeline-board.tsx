@@ -20,7 +20,7 @@ type Deal = {
 
 const STAGE_LABELS: Record<string, string> = {
   screen: "Screen",
-  analysis: "Analysis (BQA)",
+  analysis: "Analysis (LSR)",
   qoe: "Quality of Earnings",
   financing: "Financing",
   offer: "Offer",
@@ -115,9 +115,9 @@ export function PipelineBoard() {
         <article className="app-card">
           <span>No saved deals yet</span>
           <p>
-            Run an analysis in <strong>Deal X-Ray</strong> or <strong>Quality of Earnings</strong>{" "}
-            and click <strong>Save to Pipeline</strong> to track targets through your acquisition
-            workflow.
+            Run an analysis in <strong>Limited Scope Review</strong> or{" "}
+            <strong>Quality of Earnings</strong> and click <strong>Save to Pipeline</strong> to
+            track targets through your acquisition workflow.
           </p>
         </article>
       ) : (
@@ -133,7 +133,7 @@ export function PipelineBoard() {
                   .filter((d) => d.stage === stage)
                   .map((d) => (
                     <article className="app-card" key={d.id} style={{ marginBottom: "0.8rem" }}>
-                      <span>{d.deal_type === "qoe" ? "Quality of Earnings" : "Deal X-Ray (BQA)"}</span>
+                      <span>{d.deal_type === "qoe" ? "Quality of Earnings" : "Limited Scope Review (LSR)"}</span>
                       <strong>{d.business_name}</strong>
                       <p style={{ fontSize: "var(--fs-sm)", opacity: 0.85 }}>
                         {d.score != null ? `Score ${d.score} · ` : ""}

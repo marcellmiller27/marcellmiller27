@@ -45,14 +45,15 @@ We prioritize with a **P0–P3** scale (highest → lowest):
 | CCPA | California Consumer Privacy Act | California data-privacy law. |
 | CDN | Content Delivery Network | Edge caching for fast static asset delivery. |
 | CI/CD | Continuous Integration / Continuous Delivery | Automated build/test/deploy pipeline (not yet set up — `.github/` absent). |
-| CIM | Confidential Information Memorandum | The seller's deal book a buyer analyzes (input to Deal X-Ray). |
+| CIM | Confidential Information Memorandum | The seller's deal book a buyer analyzes (input to Limited Scope Review / LSR). |
 | CLI | Command-Line Interface | Terminal tooling. |
 | CORS | Cross-Origin Resource Sharing | Browser rule for cross-origin API calls (removed via same-origin proxy). |
 | C-corp | C Corporation | JHI's entity type (WY Inc.). |
 | CPA | Certified Public Accountant | Partner for signed Quality of Earnings; also the external auditor. |
 | DAST | Dynamic Application Security Testing | Security testing of the running app. |
 | DBA | Doing Business As | A registered trade name. |
-| DCF | Discounted Cash Flow | Valuation method in the Deal X-Ray engine. |
+| DCF | Discounted Cash Flow | Valuation method in the Limited Scope Review (LSR) engine. |
+| Deal X-Ray | (internal codename) | Internal / legacy codename for **Limited Scope Review (LSR)**. Not used in customer-facing UI; routes and modules may still use `deal-xray` / `deal_xray`. |
 | DNS | Domain Name System | Maps domain names to servers. |
 | DPA | Data Processing Agreement | Contract governing how customer data is processed (privacy). |
 | DR | Disaster Recovery | Restoring service/data after a major failure (Phase XIX). |
@@ -83,6 +84,7 @@ We prioritize with a **P0–P3** scale (highest → lowest):
 | LMM | Lower-Middle-Market | Deal-size segment above SMB, below mid-market. |
 | LOI | Letter of Intent | Non-binding offer to buy a business. |
 | LP | Limited Partner | Fund investor (vs. GP). |
+| LSR | Limited Scope Review | **Platform term** for the CIM first-pass diligence product (Business Quality Assessment, Deal Score, valuation, DSCR / SBA financing fit). Display name: Limited Scope Review (LSR). Internal codename: Deal X-Ray. Routes/filenames/backend modules retain `deal-xray` / `deal_xray`. |
 | LTV | Lifetime Value | Total expected revenue per customer; 8000-series metric. |
 | LLC | Limited Liability Company | Prior/family-office entity form. |
 | M&A | Mergers & Acquisitions | Buying/selling companies. |
