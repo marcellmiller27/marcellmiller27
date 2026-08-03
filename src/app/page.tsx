@@ -48,7 +48,7 @@ const workflow = [
 
 const products = [
   {
-    name: "Limited Scope Review",
+    name: "Limited Scope Review (LSR)",
     summary:
       "A six-segment Business Quality Assessment, Deal Score, valuation, and financing options from a CIM's key figures."
   },

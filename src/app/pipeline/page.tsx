@@ -7,7 +7,7 @@ export default function PipelinePage() {
     <AppShell
       eyebrow="Acquisitions"
       title="Deal Pipeline — track every target to close"
-      description="Save Limited Scope Review and Quality of Earnings analyses, then move each target through your workflow: Screen → Analysis → QoE → Financing → Offer → Closed."
+      description="Save Limited Scope Review (LSR) and Quality of Earnings analyses, then move each target through your workflow: Screen → Analysis → QoE → Financing → Offer → Closed."
     >
       <PipelineBoard />
     </AppShell>

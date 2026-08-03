@@ -20,7 +20,7 @@ type Deal = {
 
 const STAGE_LABELS: Record<string, string> = {
   screen: "Screen",
-  analysis: "Analysis (BQA)",
+  analysis: "Analysis (LSR)",
   qoe: "Quality of Earnings",
   financing: "Financing",
   offer: "Offer",
@@ -133,7 +133,7 @@ export function PipelineBoard() {
                   .filter((d) => d.stage === stage)
                   .map((d) => (
                     <article className="app-card" key={d.id} style={{ marginBottom: "0.8rem" }}>
-                      <span>{d.deal_type === "qoe" ? "Quality of Earnings" : "Limited Scope Review"}</span>
+                      <span>{d.deal_type === "qoe" ? "Quality of Earnings" : "Limited Scope Review (LSR)"}</span>
                       <strong>{d.business_name}</strong>
                       <p style={{ fontSize: "var(--fs-sm)", opacity: 0.85 }}>
                         {d.score != null ? `Score ${d.score} · ` : ""}
