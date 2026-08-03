@@ -28,9 +28,9 @@ const workflow = [
   },
   {
     step: "02",
-    name: "Deal X-Ray",
+    name: "Limited Scope Review",
     summary:
-      "X-ray a CIM in minutes: a Business Quality Assessment, an honest ethic rating, a per-deal valuation, and DSCR / SBA financing fit."
+      "Review a CIM in minutes: a Business Quality Assessment, an honest ethic rating, a per-deal valuation, and DSCR / SBA financing fit."
   },
   {
     step: "03",
@@ -48,7 +48,7 @@ const workflow = [
 
 const products = [
   {
-    name: "Deal X-Ray (BQA)",
+    name: "Limited Scope Review (LSR)",
     summary:
       "A six-segment Business Quality Assessment, Deal Score, valuation, and financing options from a CIM's key figures."
   },
@@ -114,9 +114,9 @@ export default function Home() {
           <p className="eyebrow">Institutional Intelligence for Global Markets</p>
           <h1>Institutional research and deal diligence — without the institutional price.</h1>
           <p className="hero__lead">
-            Screen opportunities, x-ray a CIM, run a CPA-signed Quality of Earnings, and track
-            every deal to close. Multi-asset research and acquisition intelligence, built for
-            independent investors and acquirers.
+            Screen opportunities, run a Limited Scope Review on a CIM, complete a CPA-signed
+            Quality of Earnings, and track every deal to close. Multi-asset research and
+            acquisition intelligence, built for independent investors and acquirers.
           </p>
           <div className="hero__actions">
             <a className="button button--primary" href="#waitlist">
