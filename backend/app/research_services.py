@@ -24,7 +24,10 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 if TYPE_CHECKING:  # avoid an import cycle at runtime (sf1 harness imports this module)
-    from app.research_models import SF1FactorBacktestResult
+    from app.research_models import (
+        SF1ExpandedBacktestResult,
+        SF1FactorBacktestResult,
+    )
 
 from app.db_models import (
     AuditLogDB,
@@ -312,6 +315,68 @@ class ResearchService:
             recent_third_holdout=_seg(result.recent_third_holdout),
             oos_verdict=result.oos_verdict,
             h5_pass=result.h5_pass,
+            interpretation=result.interpretation,
+            caveats=result.caveats,
+            status=result.status,
+            as_of=result.as_of,
+        )
+
+    def sf1_expanded_backtest(
+        self, use_cache: bool = True, min_names: int | None = None, forward_gap: int = 0
+    ) -> "SF1ExpandedBacktestResult":
+        """Expanded, survivorship-free SF1 fundamentals+momentum H5 validation.
+
+        Runs the definitive H5 study on the full US-common-stock SF1 universe (delisted
+        included) with pre-registered momentum blend + sector/size neutralization. Raw
+        SF1 rows stay internal (governance); only derived ICs/spreads/verdict return.
+        Lazily imports the harness to avoid a circular import.
+        """
+        from app.research_models import (
+            SF1ExpandedBacktestResult,
+            SF1ExpandedSegmentMetrics,
+        )
+        from app.sf1_expanded_backtest import (
+            MIN_NAMES_PER_PERIOD,
+            SegmentMetrics,
+            run_expanded_backtest,
+        )
+
+        result = run_expanded_backtest(
+            use_cache=use_cache,
+            min_names=MIN_NAMES_PER_PERIOD if min_names is None else min_names,
+            forward_gap=forward_gap,
+        )
+
+        def _seg(m: SegmentMetrics) -> SF1ExpandedSegmentMetrics:
+            return SF1ExpandedSegmentMetrics(
+                label=m.label, n_periods=m.n_periods, mean_ic=m.mean_ic,
+                ic_t_stat=m.ic_t_stat, hit_rate=m.hit_rate,
+                gross_annualized_long_short=m.gross_annualized_long_short,
+                net_annualized_long_short=m.net_annualized_long_short,
+                avg_turnover=m.avg_turnover, passes=m.passes,
+            )
+
+        return SF1ExpandedBacktestResult(
+            score_definition=result.score_definition,
+            universe_description=result.universe_description,
+            n_universe_requested=result.n_universe_requested,
+            n_delisted_in_universe=result.n_delisted_in_universe,
+            n_assets_evaluated=result.n_assets_evaluated,
+            n_observations=result.n_observations,
+            first_period=result.first_period,
+            last_period=result.last_period,
+            dimension=result.dimension,
+            factor_weights=result.factor_weights,
+            blend_weights=result.blend_weights,
+            cost_bps_per_side=result.cost_bps_per_side,
+            pass_criteria=result.pass_criteria,
+            full_sample=_seg(result.full_sample),
+            in_sample=_seg(result.in_sample),
+            out_of_sample=_seg(result.out_of_sample),
+            recent_third_holdout=_seg(result.recent_third_holdout),
+            oos_verdict=result.oos_verdict,
+            h5_pass=result.h5_pass,
+            line_item_5h_validated=result.line_item_5h_validated,
             interpretation=result.interpretation,
             caveats=result.caveats,
             status=result.status,
