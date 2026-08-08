@@ -3,24 +3,36 @@
 IRR/expected-return consistency, action thresholds, workbook, and resilient degradation.
 All data is injected — no network."""
 
-from types import SimpleNamespace
-
 import pytest
 
 from app import equity_valuation as ev
 from app.equity_valuation_workbook import equity_valuation_workbook
+from app.fundamentals import SOURCE_EDGAR, EquityFundamentals, FundamentalsYear
 
 
 def _install(monkeypatch, *, net_income=1_000_000_000.0, shares=100_000_000.0,
-             rev_first=100.0, rev_last=144.0, name="Acme Corp."):
-    fin = SimpleNamespace(net_income=net_income, entity_name=name)
-    hist = SimpleNamespace(years=[
-        SimpleNamespace(fiscal_year=2022, revenue=rev_first),
-        SimpleNamespace(fiscal_year=2024, revenue=rev_last),
-    ])
-    monkeypatch.setattr(ev.edgar_services, "normalize", lambda t: fin)
-    monkeypatch.setattr(ev.edgar_services, "history", lambda t, max_years=5: hist)
-    monkeypatch.setattr(ev.edgar_services, "latest_shares_outstanding", lambda t: shares)
+             rev_first=100.0, rev_last=144.0, name="Acme Corp.", source=SOURCE_EDGAR):
+    """Inject a normalized fundamentals bundle at the provider boundary (network-free).
+
+    Patching ``fundamentals.equity_fundamentals`` keeps the DCF tests independent of
+    whether SF1 (NASDAQ_DATA_LINK_API_KEY) is configured in the environment.
+    """
+    bundle = EquityFundamentals(
+        ticker="ACME",
+        entity_name=name,
+        source=source,
+        net_income=net_income,
+        revenue=rev_last,
+        stockholders_equity=5_000_000_000.0,
+        operating_margin=0.25,
+        net_margin=0.20,
+        shares_outstanding=shares,
+        years=[
+            FundamentalsYear(fiscal_year=2022, revenue=rev_first),
+            FundamentalsYear(fiscal_year=2024, revenue=rev_last),
+        ],
+    )
+    monkeypatch.setattr(ev.fundamentals, "equity_fundamentals", lambda t, max_years=5: bundle)
 
 
 def test_dcf_structure_and_growth_cap(monkeypatch) -> None:
@@ -66,6 +78,18 @@ def test_non_positive_earnings_raise(monkeypatch) -> None:
     _install(monkeypatch, net_income=-5_000_000.0)
     with pytest.raises(ValueError):
         ev.value_equity("ACME", price=50.0, risk_free=0.04)
+
+
+def test_sources_reflect_fundamentals_provenance(monkeypatch) -> None:
+    from app.fundamentals import SOURCE_SF1
+
+    _install(monkeypatch, source=SOURCE_SF1)
+    v = ev.value_equity("ACME", price=50.0, risk_free=0.04)
+    assert "Sharadar SF1" in v.sources[0]
+
+    _install(monkeypatch, source=SOURCE_EDGAR)
+    v2 = ev.value_equity("ACME", price=50.0, risk_free=0.04)
+    assert "SEC EDGAR" in v2.sources[0]
 
 
 def test_workbook_is_valid_xlsx(monkeypatch) -> None:
