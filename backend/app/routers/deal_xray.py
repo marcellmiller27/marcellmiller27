@@ -17,7 +17,11 @@ _MAX_COMPS = 5
 
 
 def _comp_benchmark(payload: DealInput) -> CompBenchmark | None:
-    """Resolve optional public-comp tickers to a SEC EDGAR margin benchmark (I/O)."""
+    """Resolve optional public-comp tickers to a SEC EDGAR margin benchmark (I/O).
+
+    Governance: this surfaces RAW peer line-items (e.g. ``revenue``) to users, so it
+    intentionally stays on public-domain SEC EDGAR and does NOT use the SF1-primary
+    ``fundamentals`` provider (licensed SF1 raw fields must not be redistributed)."""
     if not payload.comp_tickers:
         return None
     service = EdgarService()

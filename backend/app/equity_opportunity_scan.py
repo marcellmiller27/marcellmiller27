@@ -2,10 +2,12 @@
 """Discovery-driven equity Opportunity Scan for the newsletter.
 
 Formula: **data finds, Ellery writes.** A deterministic value/quality/growth screen
-over a large/mid-cap US universe — grounded in FREE, redistributable **SEC EDGAR**
-fundamentals + live market price — ranks names by a cross-sectional Opportunity Score
-(0-100). The top 5 are surfaced as newsletter items; the editorial layer (E2) elevates
-the *prose* only, fact-locked (every number originates here). Not investment advice.
+over a large/mid-cap US universe — grounded in point-in-time fundamentals (Sharadar
+SF1 primary, SEC EDGAR fallback) + live market price — ranks names by a cross-sectional
+Opportunity Score (0-100). Raw SF1 rows stay internal; only the DERIVED score/factors
+are surfaced (governance). The top 5 are surfaced as newsletter items; the editorial
+layer (E2) elevates the *prose* only, fact-locked (every number originates here). Not
+investment advice.
 
 Value/quality/growth factors (thesis-tilted to cash-flow, durable margins, and
 disciplined multiples):
@@ -19,7 +21,7 @@ from __future__ import annotations
 import time
 from dataclasses import dataclass
 
-from app import edgar_services
+from app import edgar_services, fundamentals
 from app.market_services import MarketDataService
 from app.opportunity_score import _zscore
 
@@ -93,11 +95,17 @@ def _revenue_cagr(hist) -> float | None:
 
 
 def _raw_factors(ticker: str, price: float | None) -> dict[str, float] | None:
-    """Full value/quality/growth factor vector for one name, or None if incomplete."""
+    """Full value/quality/growth factor vector for one name, or None if incomplete.
+
+    Only DERIVED factors (margins, ROE, CAGR, yields) leave this function and reach
+    the score — raw Sharadar SF1 rows stay internal (governance)."""
+    # Skip the (network) fundamentals fetch entirely when there is no live price:
+    # the factor vector needs a market cap, so it would be discarded anyway.
+    if not price:
+        return None
     try:
-        fin = edgar_services.normalize(ticker)
-        hist = edgar_services.history(ticker, max_years=5)
-        shares = edgar_services.latest_shares_outstanding(ticker)
+        # Point-in-time fundamentals: Sharadar SF1 primary, SEC EDGAR fallback.
+        fin = fundamentals.equity_fundamentals(ticker, max_years=5)
     except edgar_services.ProviderError:
         return None
 
@@ -105,7 +113,8 @@ def _raw_factors(ticker: str, price: float | None) -> dict[str, float] | None:
     nm = fin.net_margin
     ni = fin.net_income
     eq = fin.stockholders_equity
-    cagr = _revenue_cagr(hist)
+    shares = fin.shares_outstanding
+    cagr = _revenue_cagr(fin)
     if None in (op, nm, ni, eq, cagr, price, shares) or not eq or eq <= 0 or not price:
         return None
 

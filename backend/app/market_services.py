@@ -351,6 +351,33 @@ def sharadar_sf1_fundamentals(ticker: str, dimension: str = "ARQ") -> dict[str, 
     return dict(zip(columns, rows[0]))
 
 
+def sharadar_sf1_annual(ticker: str, limit: int = 6, dimension: str = "ARY") -> list[dict[str, Any]]:
+    """Multi-year annual Sharadar SF1 rows (Nasdaq Data Link) for one ticker.
+
+    Uses the As-Reported *annual* dimension (``ARY``) by default so figures are
+    point-in-time (as first reported — no look-ahead/restatement bias) and returns
+    up to ``limit`` fiscal years. Each row is a column->value dict.
+
+    GOVERNANCE: these are RAW licensed SF1 rows — for INTERNAL derivation only. See
+    ``app/fundamentals.py``; raw rows/fields must never be surfaced or redistributed.
+    """
+    key = nasdaq_data_link_api_key()
+    if not key:
+        raise ProviderError("NASDAQ_DATA_LINK_API_KEY is not configured.")
+    url = (
+        "https://data.nasdaq.com/api/v3/datatables/SHARADAR/SF1"
+        f"?ticker={urllib.parse.quote(ticker)}&dimension={urllib.parse.quote(dimension)}"
+        f"&qopts.per_page={int(limit)}&api_key={urllib.parse.quote(key)}"
+    )
+    payload = _http_get_json(url)
+    table = payload.get("datatable") or {}
+    rows = table.get("data") or []
+    if not rows:
+        raise ProviderError(f"No Sharadar SF1 annual data for {ticker}.")
+    columns = [c.get("name") for c in (table.get("columns") or [])]
+    return [dict(zip(columns, row)) for row in rows]
+
+
 def bls_cpi_series() -> list[dict[str, Any]]:
     # Registered key -> v2 (500 req/day, 20yr, net/pct changes); keyless -> v1.
     key = bls_api_key()

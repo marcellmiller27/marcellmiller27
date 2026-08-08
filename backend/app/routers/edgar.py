@@ -12,6 +12,10 @@ from app.edgar_workbook import company_workbook
 from app.foundation_models import Principal, SubscriptionPlan
 from app.foundation_services import FoundationService
 
+# Governance: these endpoints surface RAW fundamental line-items (revenue, net income,
+# etc.) and a raw multi-year workbook, so they stay on public-domain SEC EDGAR and do
+# NOT use the SF1-primary `app.fundamentals` provider (licensed Sharadar SF1 raw fields
+# must never be surfaced/redistributed — see app/fundamentals.py).
 router = APIRouter(prefix="/fundamentals/edgar", tags=["edgar-fundamentals"])
 
 _XLSX_MEDIA = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

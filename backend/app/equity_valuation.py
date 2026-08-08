@@ -3,8 +3,10 @@
 
 Phase 1 of the Cross-Asset Valuation & Action Engine covers **equities**. It grounds
 a transparent, disclosed-assumption discounted-cash-flow on **all our data-sets**:
-free SEC EDGAR fundamentals (earnings, equity, revenue history), the live market price,
-and the risk-free rate from the market/FRED feed. It returns an intrinsic value, an
+point-in-time fundamentals (Sharadar SF1 primary, SEC EDGAR fallback — earnings,
+equity, revenue history), the live market price, and the risk-free rate from the
+market/FRED feed. Raw SF1 rows stay internal; only the derived DCF output is
+surfaced (governance). It returns an intrinsic value, an
 implied expected return (IRR), and a fact-locked **Enter / Accumulate / Sideline**
 action write-up for allocators deciding whether to deploy or keep dry powder.
 
@@ -21,7 +23,7 @@ from datetime import UTC, datetime
 
 from pydantic import BaseModel
 
-from app import edgar_services
+from app import edgar_services, fundamentals
 from app.market_services import MarketDataService
 
 logger = logging.getLogger(__name__)
@@ -211,9 +213,11 @@ def value_equity(
     and ValueError when the inputs can't support a meaningful DCF (e.g., non-positive
     earnings, missing shares/price)."""
     ticker = ticker.strip().upper()
-    fin = edgar_services.normalize(ticker)
-    hist = edgar_services.history(ticker, max_years=5)
-    shares = edgar_services.latest_shares_outstanding(ticker)
+    # Point-in-time fundamentals: Sharadar SF1 primary, SEC EDGAR fallback. Only the
+    # DERIVED DCF output below is surfaced — raw SF1 rows stay internal (governance).
+    fin = fundamentals.equity_fundamentals(ticker, max_years=5)
+    hist = fin  # `.years` is duck-compatible with the CAGR helper
+    shares = fin.shares_outstanding
 
     base_fcf = fin.net_income
     if base_fcf is None or base_fcf <= 0:
@@ -289,7 +293,7 @@ def value_equity(
         signal=signal,
         rationale=_rationale(payload),
         sources=[
-            "SEC EDGAR (fundamentals — public domain)",
+            fundamentals.source_label(fin.source),
             "Market price feed",
             "10-year Treasury yield (risk-free, FRED/market feed)",
         ],
