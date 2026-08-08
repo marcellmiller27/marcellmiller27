@@ -18,9 +18,13 @@ from __future__ import annotations
 
 import statistics
 from datetime import datetime, timezone
+from typing import TYPE_CHECKING
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
+
+if TYPE_CHECKING:  # avoid an import cycle at runtime (sf1 harness imports this module)
+    from app.research_models import SF1FactorBacktestResult
 
 from app.db_models import (
     AuditLogDB,
@@ -266,6 +270,52 @@ class ResearchService:
             interpretation=interpretation,
             caveats=caveats,
             as_of=_now(),
+        )
+
+    def sf1_factor_backtest(
+        self, universe: list[str] | None = None, use_cache: bool = True
+    ) -> "SF1FactorBacktestResult":
+        """Point-in-time SF1 FUNDAMENTAL-factor H5 validation (derived metrics only).
+
+        Runs the fundamentals follow-up to the price-only H5 harness on a large/mid-cap
+        equity universe with a pre-registered factor set/weights. Raw SF1 rows stay
+        internal (governance); only derived ICs/spreads/verdict are returned. Lazily
+        imports the harness to avoid a circular import.
+        """
+        # Local imports keep the SF1 harness (which imports this module) decoupled.
+        from app.research_models import SF1FactorBacktestResult, SF1SegmentMetrics
+        from app.sf1_factor_backtest import SegmentMetrics, run_backtest
+
+        result = run_backtest(universe=universe, use_cache=use_cache)
+
+        def _seg(m: SegmentMetrics) -> SF1SegmentMetrics:
+            return SF1SegmentMetrics(
+                label=m.label, n_periods=m.n_periods, mean_ic=m.mean_ic,
+                ic_t_stat=m.ic_t_stat, hit_rate=m.hit_rate,
+                gross_annualized_long_short=m.gross_annualized_long_short,
+                net_annualized_long_short=m.net_annualized_long_short,
+                avg_monthly_turnover=m.avg_monthly_turnover, passes=m.passes,
+            )
+
+        return SF1FactorBacktestResult(
+            score_definition=result.score_definition,
+            universe=result.universe,
+            n_assets=result.n_assets,
+            first_period=result.first_period,
+            last_period=result.last_period,
+            factor_weights=result.factor_weights,
+            cost_bps_per_side=result.cost_bps_per_side,
+            pass_criteria=result.pass_criteria,
+            full_sample=_seg(result.full_sample),
+            in_sample=_seg(result.in_sample),
+            out_of_sample=_seg(result.out_of_sample),
+            recent_third_holdout=_seg(result.recent_third_holdout),
+            oos_verdict=result.oos_verdict,
+            h5_pass=result.h5_pass,
+            interpretation=result.interpretation,
+            caveats=result.caveats,
+            status=result.status,
+            as_of=result.as_of,
         )
 
     def opportunity_score_snapshot(self, universe: list[str] | None = None) -> OpportunityScoreSnapshot:

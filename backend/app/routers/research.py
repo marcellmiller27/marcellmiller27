@@ -14,6 +14,7 @@ from app.research_models import (
     EquityOOSBacktestResult,
     FundamentalsStatus,
     OpportunityScoreSnapshot,
+    SF1FactorBacktestResult,
 )
 from app.research_services import ResearchService
 
@@ -33,6 +34,12 @@ def opportunity_scores() -> OpportunityScoreSnapshot:
 @router.get("/equity-oos-backtest", response_model=EquityOOSBacktestResult)
 def equity_oos_backtest() -> EquityOOSBacktestResult:
     return ResearchService().equity_oos_backtest()
+
+
+@router.get("/sf1-factor-backtest", response_model=SF1FactorBacktestResult)
+def sf1_factor_backtest() -> SF1FactorBacktestResult:
+    """Point-in-time SF1 fundamental-factor H5 validation (derived metrics only)."""
+    return ResearchService().sf1_factor_backtest()
 
 
 @router.get("/fundamentals-status", response_model=FundamentalsStatus)
