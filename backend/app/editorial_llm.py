@@ -123,14 +123,15 @@ def _parse_json_object(text: str) -> dict[str, str]:
     return {str(k): str(v) for k, v in json.loads(text).items()}
 
 
-def _anthropic_draft(payload: dict[str, str], model: str, key: str) -> tuple[dict[str, str], int, int]:
+def _anthropic_draft(payload: dict[str, str], model: str, key: str,
+                     system: str = _SYSTEM) -> tuple[dict[str, str], int, int]:
     import anthropic
 
     client = anthropic.Anthropic(api_key=key)
     msg = client.messages.create(
         model=model,
         max_tokens=MAX_OUTPUT_TOKENS,
-        system=_SYSTEM,
+        system=system,
         messages=[{"role": "user", "content": json.dumps(payload, ensure_ascii=False)}],
     )
     text = "".join(getattr(b, "text", "") for b in msg.content)
@@ -141,7 +142,7 @@ def _anthropic_draft(payload: dict[str, str], model: str, key: str) -> tuple[dic
 
 
 def _bedrock_draft(
-    payload: dict[str, str], model: str, token: str, region: str
+    payload: dict[str, str], model: str, token: str, region: str, system: str = _SYSTEM
 ) -> tuple[dict[str, str], int, int]:
     """Call Claude on Amazon Bedrock via the runtime endpoint using the bearer API key.
 
@@ -153,7 +154,7 @@ def _bedrock_draft(
     body = {
         "anthropic_version": "bedrock-2023-05-31",
         "max_tokens": MAX_OUTPUT_TOKENS,
-        "system": _SYSTEM,
+        "system": system,
         "messages": [{"role": "user", "content": json.dumps(payload, ensure_ascii=False)}],
     }
     resp = httpx.post(
@@ -220,6 +221,34 @@ def _record(db, period: str, model: str, in_tok: int, out_tok: int, cost: float)
     db.commit()
 
 
+def _rag_query(edition: Edition) -> str:
+    """Build a compact retrieval query from the edition's title/intro/section headings.
+
+    Prose only — no figures needed for semantic retrieval — so the query never leaks a
+    licensed row and the retrieved context is used purely to sharpen reasoning."""
+    parts = [edition.title, edition.eyebrow]
+    if edition.intro:
+        parts.append(edition.intro[:400])
+    parts.extend(g.heading for g in edition.groups[:4])
+    return " ".join(p for p in parts if p)
+
+
+def _rag_grounding(edition: Edition) -> tuple[str | None, list[dict]]:
+    """Retrieve cited grounding passages (flag-gated, graceful no-op).
+
+    Returns (grounded_system_prompt_or_None, serializable_citations). When RAG is off
+    or nothing is retrieved, returns (None, []) and the E2 path is unchanged."""
+    from app import editorial_rag
+
+    if not editorial_rag.rag_enabled():
+        return None, []
+    citations = editorial_rag.retrieve(_rag_query(edition))
+    block = editorial_rag.grounding_block(citations)
+    if not block:
+        return None, []
+    return f"{_SYSTEM}\n\n{block}", editorial_rag.citation_meta(citations)
+
+
 def elevate_edition(edition: Edition, db=None, draft_fn: DraftFn | None = None) -> tuple[Edition, dict]:
     """Return (possibly-elevated edition, meta). Never raises; falls back to deterministic."""
     meta: dict = {"used_llm": False, "reason": "disabled", "model": None, "fields_reverted": 0}
@@ -229,20 +258,26 @@ def elevate_edition(edition: Edition, db=None, draft_fn: DraftFn | None = None) 
     model = DEFAULT_MODEL
     period = datetime.now(timezone.utc).strftime("%Y-%m")
 
+    # Editorial RAG (flag-gated): retrieve cited grounding passages to ground the essay.
+    # Graceful no-op until AWS is provisioned → E2/deterministic behavior is unchanged.
+    grounded_system, rag_citations = _rag_grounding(edition)
+    meta["rag"] = {"enabled": bool(grounded_system), "citations": rag_citations}
+    system = grounded_system or _SYSTEM
+
     if draft_fn is None:
         bedrock = _bedrock_creds()
         if bedrock is not None:
             token, region = bedrock
             model = _bedrock_model()  # ensure a Bedrock model/inference-profile id
             meta["provider"] = "bedrock"
-            draft_fn = lambda p: _bedrock_draft(p, model, token, region)  # noqa: E731
+            draft_fn = lambda p: _bedrock_draft(p, model, token, region, system=system)  # noqa: E731
         else:
             key = _valid_key()
             if key is None:
                 meta["reason"] = "invalid_or_missing_api_key"
                 return edition, meta
             meta["provider"] = "anthropic"
-            draft_fn = lambda p: _anthropic_draft(p, model, key)  # noqa: E731
+            draft_fn = lambda p: _anthropic_draft(p, model, key, system=system)  # noqa: E731
 
     if db is not None and _month_spend(db, period) >= DEFAULT_MONTHLY_BUDGET_USD:
         meta["reason"] = "budget_exceeded"
