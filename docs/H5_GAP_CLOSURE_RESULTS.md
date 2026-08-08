@@ -76,3 +76,16 @@ dataset is **materially larger**), and the illiquid-class real-time gap is addre
 with **modeled estimates**. The decisive **H5** gap remains **open** with the honest
 verdict FAIL — now measured rigorously against a pre-registered bar, with a clear,
 no-shortcuts path to actually close it.
+
+## 6. Fundamentals follow-up (SF1) — H5 remains FAIL (narrow OOS miss)
+
+The stated fix above (use point-in-time FUNDAMENTAL inputs on equities) was carried
+out with Sharadar SF1 in `backend/app/sf1_factor_backtest.py`
+(`GET /api/v1/research/sf1-factor-backtest`; script
+`backend/scripts/run_h5_sf1_validation.py`). Pre-registered value/quality/growth
+weights (Value 0.40 / Quality 0.35 / Growth 0.25), point-in-time via SF1 `datekey`,
+41 large/mid-cap equities, 2006-2026. **Out-of-sample it clears mean IC (0.0377 ≥
+0.03) and hit rate (56.7% ≥ 55%) but misses the t-stat (1.82 < 2.0) → verdict FAIL.**
+Materially stronger than this price-only run (~5× the OOS mean IC), but not yet a
+PASS. Full pre-registration, metrics table, and next iteration:
+**`docs/H5_SF1_VALIDATION_RESULTS.md`**.

@@ -59,6 +59,39 @@ class EquityOOSBacktestResult(BaseModel):
     as_of: datetime
 
 
+class SF1SegmentMetrics(BaseModel):
+    label: str
+    n_periods: int
+    mean_ic: float | None
+    ic_t_stat: float | None
+    hit_rate: float | None
+    gross_annualized_long_short: float | None
+    net_annualized_long_short: float | None
+    avg_monthly_turnover: float | None
+    passes: bool
+
+
+class SF1FactorBacktestResult(BaseModel):
+    score_definition: str
+    universe: list[str]
+    n_assets: int
+    first_period: str | None
+    last_period: str | None
+    factor_weights: dict[str, float]
+    cost_bps_per_side: float
+    pass_criteria: str
+    full_sample: SF1SegmentMetrics
+    in_sample: SF1SegmentMetrics
+    out_of_sample: SF1SegmentMetrics
+    recent_third_holdout: SF1SegmentMetrics
+    oos_verdict: str
+    h5_pass: bool
+    interpretation: str
+    caveats: list[str]
+    status: str = "ok"
+    as_of: datetime
+
+
 class FundamentalsStatus(BaseModel):
     available: bool
     provider: str
