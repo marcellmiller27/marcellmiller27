@@ -3,11 +3,49 @@ from uuid import uuid4
 
 from fastapi.testclient import TestClient
 
+from app.equity_opportunity_scan import EquityOpportunity, _rank
 from app.main import app
+from app.market_models import Quote
 from app.market_services import MarketDataService
 from app.newsletter_content import EDITION_SLUGS, NEWSLETTER_SYMBOLS, build_edition
 
 client = TestClient(app)
+
+
+def _q(symbol: str, name: str, price: float, unit: str = "%", asset_class: str = "macro") -> Quote:
+    return Quote(symbol=symbol, name=name, asset_class=asset_class, price=price,
+                 unit=unit, source="fred")
+
+
+def _macro_quotes() -> list[Quote]:
+    """A fixed, network-free quote set covering the newsletter indicators."""
+    return [
+        _q("INFLATION", "US CPI", 3.10),
+        _q("FED_FUNDS", "Fed Funds", 4.50),
+        _q("UST10Y", "10-Year Treasury", 4.20),
+        _q("UNEMPLOYMENT", "Unemployment", 4.10),
+        _q("RETAIL_SALES", "Retail Sales", 700.0, "USD bn"),
+        _q("CONSUMER_SENTIMENT", "Consumer Sentiment", 65.0, "index"),
+        _q("INDUSTRIAL_PRODUCTION", "Industrial Production", 102.0, "index"),
+        _q("GDP", "GDP", 28000.0, "USD bn"),
+        _q("SPX", "S&P 500", 5600.0, "index", "equity"),
+        _q("GOLD", "Gold", 2400.0, "USD/oz", "commodity"),
+        _q("BTC", "Bitcoin", 65000.0, "USD", "crypto"),
+    ]
+
+
+def _fake_picks() -> list[EquityOpportunity]:
+    picks: list[EquityOpportunity] = []
+    for i, t in enumerate(["NVDA", "AAPL", "MSFT", "HD", "COST"]):
+        picks.append(EquityOpportunity(
+            ticker=t, name=f"{t} Inc", score=90.0 - i * 8,
+            operating_margin=0.30 - i * 0.02, net_margin=0.22, roe=0.40,
+            revenue_cagr=0.15 - i * 0.01, earnings_yield=0.05, price=100.0, market_cap=2e12,
+            contributions={"Value": 0.20 - i * 0.04, "Quality": 0.50 - i * 0.05,
+                           "Growth": 0.30 - i * 0.04, "Momentum": 0.25 - i * 0.06},
+            momentum_12_1=0.30 - i * 0.05,
+        ))
+    return picks
 
 
 def _auth_token() -> str:
@@ -130,3 +168,100 @@ def test_insider_brief_theme_selection_is_deterministic() -> None:
     a = build_edition("insider-briefs", quotes, now, full=True)
     b = build_edition("insider-briefs", quotes, now, full=True)
     assert a.title == b.title
+
+
+# ── Phase 2: charts / factor decomposition / disclaimers (network-free) ───────
+def test_economic_brief_carries_a_server_rendered_chart() -> None:
+    now = datetime.now(timezone.utc)
+    full = build_edition("economic-brief", _macro_quotes(), now, full=True)
+    assert len(full.charts) >= 1
+    chart = full.charts[0]
+    # Embedded as a base64 PNG data-URI so the frontend <img> + PDF both capture it.
+    assert chart.image.startswith("data:image/png;base64,")
+    assert len(chart.image) > 1000
+    assert chart.caption and chart.source
+    # Teaser stays lightweight (no heavy exhibits, gates the anonymous path).
+    teaser = build_edition("economic-brief", _macro_quotes(), now, full=False)
+    assert teaser.charts == []
+
+
+def test_charts_are_deterministic() -> None:
+    now = datetime.now(timezone.utc)
+    a = build_edition("economic-brief", _macro_quotes(), now, full=True)
+    b = build_edition("economic-brief", _macro_quotes(), now, full=True)
+    assert a.charts[0].image == b.charts[0].image
+
+
+def test_insider_brief_has_thematic_chart() -> None:
+    full = build_edition("insider-briefs", _macro_quotes(), datetime.now(timezone.utc), full=True)
+    assert len(full.charts) >= 1
+    assert full.charts[0].image.startswith("data:image/png;base64,")
+
+
+def test_opportunity_scan_surfaces_factor_decomposition(monkeypatch) -> None:
+    # Mock the (network) screen so this test is network-free but exercises the real
+    # chart/decomposition wiring in build_edition (which imports top_opportunities lazily).
+    import app.equity_opportunity_scan as eos
+    monkeypatch.setattr(eos, "top_opportunities", lambda n=5, **kw: _fake_picks())
+
+    ed = build_edition("opportunity-scan", _macro_quotes(), datetime.now(timezone.utc), full=True)
+    equity = next(g for g in ed.groups if g.heading == "Top equity opportunities")
+
+    # Two derived charts: ranked scores + factor decomposition.
+    labels = {c.label for c in equity.charts}
+    assert "Top opportunities by score" in labels
+    assert "Factor decomposition" in labels
+    for c in equity.charts:
+        assert c.image.startswith("data:image/png;base64,")
+
+    # Each pick carries a fact-locked factor decomposition + its leading factor tag.
+    first = equity.items[0]
+    assert "Factor contribution —" in first.body
+    assert any(fam in first.tags for fam in ("Value", "Quality", "Growth", "Momentum"))
+    # Governance: the SF1 source is named, never a raw row.
+    assert "Nasdaq Data Link / Sharadar" in (first.source or "")
+
+
+def test_opportunity_scan_methodology_has_attribution_and_disclaimers() -> None:
+    ed = build_edition("opportunity-scan", _macro_quotes(), datetime.now(timezone.utc), full=True)
+    method = ed.methodology
+    assert "Data provided by Nasdaq Data Link / Sharadar." in method
+    assert "derived metrics only" in method
+    assert "past or simulated performance does not guarantee future results" in method
+    assert "pre-registered" in method and "out-of-sample" in method
+
+
+def test_factor_decomposition_sums_and_families() -> None:
+    # _rank is pure (no network): verify the four-family decomposition is exposed and
+    # that momentum is neutralized-and-active when supplied for the cohort.
+    rows = {}
+    for i, t in enumerate(["A", "B", "C", "D", "E", "F"]):
+        rows[t] = {
+            "operating_margin": 0.1 + i * 0.03, "net_margin": 0.08 + i * 0.02,
+            "roe": 0.15 + i * 0.05, "revenue_cagr": 0.05 + i * 0.03,
+            "earnings_yield": 0.03 + i * 0.005, "book_yield": 0.02 + i * 0.004,
+            "_price": 100.0 + i, "_market_cap": 1e11, "_name": f"{t} Inc",
+        }
+    momentum = {"A": 0.2, "B": 0.15, "C": 0.5, "D": 0.1, "E": -0.05, "F": 0.0}
+    ranked = _rank(rows, 5, momentum=momentum)
+    assert ranked and ranked[0].score == 100.0
+    for r in ranked:
+        assert set(r.contributions) == {"Value", "Quality", "Growth", "Momentum"}
+    # With momentum active for the cohort, at least one pick has a non-zero momentum sleeve.
+    assert any(abs(r.contributions["Momentum"]) > 0 for r in ranked)
+
+
+def test_factor_decomposition_degrades_without_momentum() -> None:
+    rows = {}
+    for i, t in enumerate(["A", "B", "C", "D", "E"]):
+        rows[t] = {
+            "operating_margin": 0.1 + i * 0.03, "net_margin": 0.08 + i * 0.02,
+            "roe": 0.15 + i * 0.05, "revenue_cagr": 0.05 + i * 0.03,
+            "earnings_yield": 0.03 + i * 0.005, "book_yield": 0.02 + i * 0.004,
+            "_price": 100.0 + i, "_market_cap": 1e11, "_name": f"{t} Inc",
+        }
+    ranked = _rank(rows, 5, momentum={})  # no momentum history at all
+    # Momentum sleeve is inactive → contribution is zero, but the family is still present.
+    for r in ranked:
+        assert r.contributions["Momentum"] == 0.0
+        assert r.momentum_12_1 is None

@@ -16,7 +16,8 @@ dependencies = [
   "stripe",
   "anthropic",
   "playwright",
-  "boto3"
+  "boto3",
+  "matplotlib"
 ]
 
 [project.optional-dependencies]

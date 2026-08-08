@@ -38,10 +38,25 @@ class Item:
 
 
 @dataclass
+class Chart:
+    """A server-rendered institutional chart, embedded as a base64 ``data:`` URI.
+
+    The image is the DERIVED figure only (levels/scores/contributions) — never a raw
+    licensed row. The frontend shows it as an ``<img>`` and the headless-Chromium PDF
+    captures it automatically (it prints the real page)."""
+
+    label: str
+    image: str          # a data:image/png;base64,... URI
+    caption: str = ""
+    source: str | None = None
+
+
+@dataclass
 class Group:
     heading: str
     blurb: str = ""
     items: list[Item] = field(default_factory=list)
+    charts: list[Chart] = field(default_factory=list)
 
 
 @dataclass
@@ -56,6 +71,7 @@ class Edition:
     disclaimer: str
     methodology: str
     teaser: bool = False
+    charts: list[Chart] = field(default_factory=list)
 
 
 QuoteMap = dict[str, Quote]
@@ -83,6 +99,29 @@ METHODOLOGY = (
     "Commentary is rule-based on disclosed thresholds; figures are shown as last released "
     "(see 'as of'). It is an independent professional read, not a forecast or advice."
 )
+
+# ── Attribution & governance disclaimers ─────────────────────────────────────
+# Surfaced on SF1-derived content (the equity opportunity screen). Only the SOURCE
+# is named and only DERIVED metrics are shown — never raw licensed rows (governance).
+_SF1_ATTRIBUTION = "Data provided by Nasdaq Data Link / Sharadar."
+_DERIVED_ONLY_NOTE = (
+    "Fundamentals-derived figures (scores, factor contributions, margins, yields) are "
+    "computed by Aegira from licensed point-in-time data and are surfaced as derived "
+    "metrics only; no raw underlying data rows are shown or redistributed."
+)
+_BACKTEST_DISCLAIMER = (
+    "Factor rankings reference Aegira's transparent, pre-registered, out-of-sample "
+    "validated factor research. Any performance discussion is model-based and hypothetical; "
+    "past or simulated performance does not guarantee future results."
+)
+
+
+def _methodology_for(slug: str) -> str:
+    """Base methodology, plus the SF1 attribution / derived-only / back-test disclaimers
+    on the SF1-derived edition (the opportunity scan) so attribution rides with the data."""
+    if slug == "opportunity-scan":
+        return " ".join([METHODOLOGY, _SF1_ATTRIBUTION, _DERIVED_ONLY_NOTE, _BACKTEST_DISCLAIMER])
+    return METHODOLOGY
 
 
 def edition_date(now: datetime) -> str:
@@ -334,6 +373,68 @@ def _forward_watch_group(m: QuoteMap) -> Group:
                  body="A durable break in the 10-year resets discount rates across public and "
                       "private valuations and cap rates in real assets."),
         ])
+
+
+# ── Chart/visual layer (server-rendered, resilient) ─────────────────────────
+def _macro_chart(m: QuoteMap) -> list["Chart"]:
+    """A current-vs-reference macro chart for the Economic Brief.
+
+    We poll FRED for *current* levels only (no history feed), so — per governance —
+    we render an honest current-vs-disclosed-reference bar rather than fabricating a
+    time series. Built solely from released levels + the anchors stated in-copy."""
+    cpi, ff, ten = _price(m, "INFLATION"), _price(m, "FED_FUNDS"), _price(m, "UST10Y")
+    labels: list[str] = []
+    current: list[float] = []
+    reference: list[float] = []
+    for level, label, anchor in (
+        (cpi, "CPI", _CPI_TARGET),
+        (ff, "Fed Funds", _NEUTRAL_FUNDS),
+        (ten, "10Y UST", _UST10Y_NORM),
+    ):
+        if level is not None:
+            labels.append(label)
+            current.append(level)
+            reference.append(anchor)
+    if len(labels) < 2:
+        return []
+    try:
+        from app import newsletter_charts as nc
+        img = nc.reference_bar("Policy & inflation vs. reference anchors",
+                               labels, current, reference, unit="%")
+    except Exception:  # noqa: BLE001 - never break newsletter generation
+        return []
+    return [Chart(
+        label="Current levels vs. reference anchors",
+        image=img,
+        caption="Released levels (as of the latest print) against Aegira's disclosed "
+                "reference anchors — the 2.0% CPI target, ~2.5% neutral policy rate, and "
+                "~4.0% post-2000 10-year norm. Levels only; no series is implied.",
+        source="Derived from FRED releases · reference anchors disclosed in-copy.")]
+
+
+def _insider_chart(m: QuoteMap, title: str) -> list["Chart"]:
+    """A thematic rate/real-rate stack supporting the deep-dive."""
+    ff, ten, cpi = _price(m, "FED_FUNDS"), _price(m, "UST10Y"), _price(m, "INFLATION")
+    rr = _real_rate(m)
+    labels: list[str] = []
+    values: list[float] = []
+    for level, label in ((ff, "Fed Funds"), (ten, "10Y UST"), (cpi, "CPI"), (rr, "Real 10Y")):
+        if level is not None:
+            labels.append(label)
+            values.append(level)
+    if len(labels) < 2:
+        return []
+    try:
+        from app import newsletter_charts as nc
+        img = nc.labeled_levels(f"The rate stack — {title}", labels, values, unit="%")
+    except Exception:  # noqa: BLE001
+        return []
+    return [Chart(
+        label="The rate stack",
+        image=img,
+        caption="The nominal policy rate and long end, headline inflation, and the derived "
+                "real 10-year yield (10Y − CPI) — the after-inflation hurdle the brief turns on.",
+        source="Derived from FRED releases (10Y − CPI).")]
 
 
 def _economic_brief(m: QuoteMap, full: bool) -> tuple[str, list[Group]]:
@@ -637,7 +738,8 @@ def _insider_brief(m: QuoteMap, now: datetime, full: bool) -> Edition:
         footer="A rotating deep-dive on the most salient macro theme, built from public data "
                "(FRED · BLS · SEC EDGAR · market feeds) and written in Aegira's independent "
                "professional perspective.",
-        disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full)
+        disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full,
+        charts=_insider_chart(m, title) if full else [])
 
 
 def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> Edition:
@@ -657,7 +759,8 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
             dateline=dateline, intro=intro, groups=groups,
             footer="Sourced from public data — Federal Reserve (FRED), U.S. Bureau of Labor "
                    "Statistics, and market feeds. Figures are as last released.",
-            disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full)
+            disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full,
+            charts=_macro_chart(m) if full else [])
 
     if slug == "red-alerts":
         alerts = _build_alerts(m)
@@ -688,14 +791,48 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
         intro="Where the current regime — restrictive policy, above-target inflation, and a "
               "resilient but softening consumer — is creating opportunity across asset classes.",
         groups=groups,
-        footer="Ideas are generated from public data (FRED · BLS · SEC EDGAR · market feeds), "
-               "written in Aegira's independent professional perspective.",
-        disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full)
+        footer="Ideas are generated from public data (FRED · BLS · SEC EDGAR · market feeds) "
+               "and Aegira's validated factor research; equity fundamentals are derived from "
+               "licensed data (Nasdaq Data Link / Sharadar) and surfaced as derived metrics only. "
+               "Written in Aegira's independent professional perspective.",
+        disclaimer=_DISCLAIMER, methodology=_methodology_for(slug), teaser=not full)
+
+
+def _equity_charts(picks: list) -> list["Chart"]:
+    """Ranked-score bar + per-name Value/Quality/Growth/Momentum decomposition.
+
+    Both charts plot only DERIVED figures (the 0-100 scores and the signed weighted-z
+    factor contributions) — no raw licensed rows."""
+    charts: list[Chart] = []
+    try:
+        from app import newsletter_charts as nc
+        names = [p.ticker for p in picks]
+        scores = [float(p.score) for p in picks]
+        charts.append(Chart(
+            label="Top opportunities by score",
+            image=nc.ranked_scores("Top equity opportunities — Opportunity Score", names, scores),
+            caption="Cross-sectional 0-100 Opportunity Score for the top picks from the "
+                    "validated blended factor model. Derived scores only.",
+            source="Derived: Aegira blended factor model (Value/Quality/Growth + 12-1 momentum)."))
+        contributions = [p.contributions for p in picks if p.contributions]
+        if contributions and len(contributions) == len(names):
+            charts.append(Chart(
+                label="Factor decomposition",
+                image=nc.factor_decomposition(
+                    "What drives each pick — factor contribution", names, contributions),
+                caption="Signed weighted-z contribution of each factor family to the composite "
+                        "score. Positive extends right; it shows which factors earn each name its "
+                        "rank. Derived contributions only.",
+                source="Derived: Aegira blended factor model · Nasdaq Data Link / Sharadar."))
+    except Exception:  # noqa: BLE001 - charts are optional; never break generation
+        return charts
+    return charts
 
 
 def _build_equity_group() -> "Group | None":
-    """Top-5 equity opportunities from the discovery-driven screen (data finds; Ellery
-    writes). Lazy import (heavy deps + network); resilient — returns None on any failure."""
+    """Top-5 equity opportunities from the validated blended factor model (data finds;
+    Ellery writes). Lazy import (heavy deps + network); resilient — returns None on any
+    failure. Surfaces the DERIVED score + per-name factor decomposition (governance)."""
     try:
         from app.equity_opportunity_scan import top_opportunities
         picks = top_opportunities(n=5)
@@ -703,20 +840,26 @@ def _build_equity_group() -> "Group | None":
         return None
     if not picks:
         return None
-    items = [
-        Item(
+    items = []
+    for p in picks:
+        body = p.insight
+        decomp = p.decomposition_str
+        if decomp:
+            body = f"{body} {decomp}."
+        items.append(Item(
             label=p.ticker,
             value=p.value_str,
-            body=p.insight,
-            tags=["Equities"],
-            source=f"SEC EDGAR · market price · {p.name}",
-        )
-        for p in picks
-    ]
+            body=body,
+            tags=["Equities", p.top_factor],
+            source=f"Derived score/factors · {p.name} · Nasdaq Data Link / Sharadar (derived only)",
+        ))
     return Group(
         heading="Top equity opportunities",
-        blurb="Discovery-driven: our value/quality/growth screen ranks large/mid-cap US "
-              "equities by Opportunity Score from free SEC EDGAR fundamentals and live prices — "
-              "the desk surfaces the top five. Research, not investment advice.",
+        blurb="Discovery-driven: Aegira's validated blended factor model — Value, Quality, "
+              "Growth and a 12-1 momentum sleeve, sector/size-aware and pre-registered, "
+              "out-of-sample tested — ranks large/mid-cap US equities by a cross-sectional "
+              "Opportunity Score. Each name is shown with its factor decomposition so the "
+              "read is transparent. Research, not investment advice.",
         items=items,
+        charts=_equity_charts(picks),
     )
