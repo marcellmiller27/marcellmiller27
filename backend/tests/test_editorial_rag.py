@@ -148,5 +148,6 @@ def test_elevate_edition_grounds_when_rag_enabled(monkeypatch) -> None:
     assert meta["rag"]["enabled"] is True
     assert len(meta["rag"]["citations"]) == 2
     assert meta["rag"]["citations"][0]["source"] == "s3://aegira-research/real-rates.md"
-    # Fact-lock unaffected: the deterministic figure is preserved.
-    assert "1.13%" in out.groups[0].items[0].body
+    # Fact-lock unaffected: the numeric value field is never sent to the LLM and is
+    # rendered verbatim from the engine.
+    assert out.groups[0].items[0].value == "1.13%"
