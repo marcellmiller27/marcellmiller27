@@ -18,12 +18,15 @@ disciplined multiples):
 
 from __future__ import annotations
 
+import logging
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from app import edgar_services, fundamentals
 from app.market_services import MarketDataService
 from app.opportunity_score import _zscore
+
+logger = logging.getLogger(__name__)
 
 # Large/mid-cap US equities across sectors (Phase 1 universe; expand later).
 LARGE_MID_CAP_UNIVERSE: list[str] = [
@@ -36,14 +39,30 @@ LARGE_MID_CAP_UNIVERSE: list[str] = [
     "PG", "KO", "PEP",
 ]
 
+# Per-factor weights. Grouped into the four validated factor families
+# (Value / Quality / Growth + a 12-1 price Momentum sleeve) so each pick can be
+# decomposed for the reader. Weights sum to 1.0.
 FACTOR_WEIGHTS = {
-    "operating_margin": 0.15,
-    "net_margin": 0.10,
-    "roe": 0.15,           # quality subtotal 0.40
-    "revenue_cagr": 0.30,  # growth
-    "earnings_yield": 0.20,
-    "book_yield": 0.10,    # value subtotal 0.30
+    "operating_margin": 0.13,
+    "net_margin": 0.09,
+    "roe": 0.13,           # Quality subtotal 0.35
+    "revenue_cagr": 0.20,  # Growth
+    "earnings_yield": 0.17,
+    "book_yield": 0.08,    # Value subtotal 0.25
+    "momentum_12_1": 0.20,  # Momentum (12-1 price momentum, skip last month)
 }
+
+# Map each raw factor to its family for the per-name decomposition surfaced to readers.
+FACTOR_FAMILY = {
+    "operating_margin": "Quality",
+    "net_margin": "Quality",
+    "roe": "Quality",
+    "revenue_cagr": "Growth",
+    "earnings_yield": "Value",
+    "book_yield": "Value",
+    "momentum_12_1": "Momentum",
+}
+FACTOR_FAMILIES = ("Value", "Quality", "Growth", "Momentum")
 
 _SCAN_TTL_SECONDS = 6 * 3600  # heavy (EDGAR + prices); cache the ranked result
 _scan_cache: dict[str, tuple[float, list["EquityOpportunity"]]] = {}
@@ -61,6 +80,10 @@ class EquityOpportunity:
     earnings_yield: float
     price: float
     market_cap: float
+    # Signed weighted-z contribution of each factor family to the composite
+    # (Value / Quality / Growth / Momentum). Derived output only.
+    contributions: dict[str, float] = field(default_factory=dict)
+    momentum_12_1: float | None = None
 
     @property
     def value_str(self) -> str:
@@ -70,12 +93,33 @@ class EquityOpportunity:
         )
 
     @property
+    def top_factor(self) -> str:
+        """The factor family that contributes most to this name's ranking."""
+        if not self.contributions:
+            return "Quality"
+        return max(self.contributions.items(), key=lambda kv: kv[1])[0]
+
+    @property
+    def decomposition_str(self) -> str:
+        """A compact, fact-locked read of the factor contributions (derived numbers)."""
+        if not self.contributions:
+            return ""
+        parts = [f"{fam} {self.contributions[fam]:+.2f}" for fam in FACTOR_FAMILIES
+                 if fam in self.contributions]
+        return "Factor contribution — " + " · ".join(parts)
+
+    @property
     def insight(self) -> str:
+        lead = self.top_factor.lower()
+        mom = ""
+        if self.momentum_12_1 is not None:
+            mom = f" 12-1 price momentum of {self.momentum_12_1 * 100:.1f}% adds a trend tailwind."
         return (
-            f"{self.name} pairs durable operating margins near {self.operating_margin * 100:.1f}% "
-            f"with {self.revenue_cagr * 100:.1f}% revenue growth, offered at a "
-            f"{self.earnings_yield * 100:.1f}% earnings yield — quality at a disciplined multiple. "
-            "Research, not advice."
+            f"{self.name} scores {self.score:.0f}/100, led by its {lead} factor: durable "
+            f"operating margins near {self.operating_margin * 100:.1f}% and "
+            f"{self.revenue_cagr * 100:.1f}% revenue growth, offered at a "
+            f"{self.earnings_yield * 100:.1f}% earnings yield — quality at a disciplined "
+            f"multiple.{mom} Research, not advice."
         )
 
 
@@ -135,13 +179,58 @@ def _raw_factors(ticker: str, price: float | None) -> dict[str, float] | None:
     }
 
 
-def _rank(rows: dict[str, dict[str, float]], n: int) -> list[EquityOpportunity]:
+def _momentum_by_ticker(tickers: list[str]) -> dict[str, float]:
+    """Best-effort 12-1 monthly price momentum (skip the most recent month) per name.
+
+    Cross-sectional trend sleeve for the blend. Network best-effort: any name whose
+    history is missing is simply omitted (the caller neutralizes it), and a total
+    failure degrades the blend to Value/Quality/Growth."""
+    from app.market_services import yahoo_chart_history
+
+    out: dict[str, float] = {}
+    for t in tickers:
+        try:
+            hist = yahoo_chart_history(t, range_="2y", interval="1mo")
+        except Exception:  # noqa: BLE001 - momentum is best-effort, never fatal
+            continue
+        closes = [c for _ts, c in hist if c and c > 0]
+        if len(closes) < 13:
+            continue
+        try:
+            out[t] = closes[-2] / closes[-13] - 1.0  # t-1 over t-12 (skip last month)
+        except (ZeroDivisionError, ValueError):
+            continue
+    return out
+
+
+def _rank(rows: dict[str, dict[str, float]], n: int,
+          momentum: dict[str, float] | None = None) -> list[EquityOpportunity]:
     tickers = list(rows.keys())
+    momentum = momentum or {}
+
+    # Momentum sleeve is active only if at least a few names carry real history; else
+    # its weight is redistributed proportionally across the fundamentals factors.
+    mom_active = len(momentum) >= max(3, len(tickers) // 2)
+    weights = dict(FACTOR_WEIGHTS)
+    if mom_active:
+        mom_mean = sum(momentum.values()) / len(momentum)
+        for t in tickers:
+            rows[t]["momentum_12_1"] = momentum.get(t, mom_mean)  # neutralize missing
+    else:
+        mom_w = weights.pop("momentum_12_1")
+        scale = 1.0 / (1.0 - mom_w)
+        weights = {k: v * scale for k, v in weights.items()}
+
     composite = {t: 0.0 for t in tickers}
-    for factor, weight in FACTOR_WEIGHTS.items():
+    contrib: dict[str, dict[str, float]] = {
+        t: {fam: 0.0 for fam in FACTOR_FAMILIES} for t in tickers
+    }
+    for factor, weight in weights.items():
         zs = _zscore([rows[t][factor] for t in tickers])
+        family = FACTOR_FAMILY[factor]
         for t, z in zip(tickers, zs):
             composite[t] += weight * z
+            contrib[t][family] += weight * z
 
     ordered = sorted(composite.items(), key=lambda kv: kv[1])
     denom = max(len(ordered) - 1, 1)
@@ -156,6 +245,8 @@ def _rank(rows: dict[str, dict[str, float]], n: int) -> list[EquityOpportunity]:
             operating_margin=r["operating_margin"], net_margin=r["net_margin"],
             roe=r["roe"], revenue_cagr=r["revenue_cagr"], earnings_yield=r["earnings_yield"],
             price=r["_price"], market_cap=r["_market_cap"],
+            contributions={fam: round(contrib[t][fam], 4) for fam in FACTOR_FAMILIES},
+            momentum_12_1=(round(momentum[t], 4) if t in momentum else None),
         ))
     return out
 
@@ -187,7 +278,12 @@ def top_opportunities(n: int = 5, universe: list[str] | None = None, force: bool
             if factors is not None:
                 rows[t] = factors
 
-        result = _rank(rows, n) if len(rows) >= 5 else []
+        if len(rows) >= 5:
+            # Momentum only for the ranked candidate set (bounds the extra network).
+            momentum = _momentum_by_ticker(list(rows.keys()))
+            result = _rank(rows, n, momentum=momentum)
+        else:
+            result = []
     except Exception:  # noqa: BLE001 - never break newsletter generation
         result = []
 

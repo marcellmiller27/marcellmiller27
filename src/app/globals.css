@@ -2708,6 +2708,32 @@ li {
   color: var(--muted);
   font-size: var(--fs-2xs);
 }
+/* Server-rendered charts (base64 exhibits; the PDF prints these too) */
+.news__charts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: var(--space-4) 0 var(--space-5);
+}
+.news__chart {
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background-card);
+  padding: var(--space-3) var(--space-3) var(--space-2);
+}
+.news__chart-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+}
+.news__chart-caption {
+  margin: var(--space-2) 0 0;
+  color: var(--muted-strong);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+}
 .news__footer {
   margin-top: var(--space-5);
   border-top: 1px solid var(--border);
@@ -3028,9 +3054,13 @@ li {
   .news__section,
   .news__row,
   .scan-card,
+  .news__chart,
   .alert {
     break-inside: avoid;
     page-break-inside: avoid;
+  }
+  .news__chart {
+    border: 1px solid #d5dee8;
   }
   .news__section h3 {
     font-size: 11pt;

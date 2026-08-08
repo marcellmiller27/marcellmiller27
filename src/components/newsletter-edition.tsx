@@ -10,7 +10,8 @@ import { NewsletterDownloadButton } from "@/components/newsletter-download-butto
 import { UpgradeGate } from "@/components/upgrade-gate";
 
 type Item = { label: string; value: string; body: string; tags: string[]; source: string | null };
-type Group = { heading: string; blurb: string; items: Item[] };
+type Chart = { label: string; image: string; caption: string; source: string | null };
+type Group = { heading: string; blurb: string; items: Item[]; charts?: Chart[] };
 type Edition = {
   slug: string;
   title: string;
@@ -22,12 +23,30 @@ type Edition = {
   disclaimer: string;
   methodology: string;
   teaser: boolean;
+  charts?: Chart[];
 };
 type Payload = { edition: Edition; as_of: string; editorial: string };
 type Variant = "brief" | "alerts" | "scan" | "insider";
 
 // Sectioned editions (thesis/summary + analytical sections + items) share one layout.
 const SECTIONED: Variant[] = ["brief", "insider"];
+
+// Server-rendered charts embedded as base64 data-URIs (the PDF prints these too).
+function ChartFigures({ charts }: { charts?: Chart[] }) {
+  if (!charts || charts.length === 0) return null;
+  return (
+    <div className="news__charts">
+      {charts.map((c) => (
+        <figure className="news__chart" key={c.label}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={c.image} alt={c.label} className="news__chart-img" />
+          {c.caption ? <figcaption className="news__chart-caption">{c.caption}</figcaption> : null}
+          {c.source ? <p className="news__source">{c.source}</p> : null}
+        </figure>
+      ))}
+    </div>
+  );
+}
 
 export function NewsletterEdition({ slug, variant }: { slug: string; variant: Variant }) {
   const [data, setData] = useState<Payload | null>(null);
@@ -69,10 +88,14 @@ export function NewsletterEdition({ slug, variant }: { slug: string; variant: Va
         </section>
       ) : null}
 
+      {/* Edition-level exhibits (e.g. the Economic Brief macro chart). */}
+      <ChartFigures charts={ed.charts} />
+
       {SECTIONED.includes(variant) && ed.groups.map((g) => (
         <section className="news__section" key={g.heading}>
           <h3>{g.heading}</h3>
           {g.blurb ? <p className="news__blurb">{g.blurb}</p> : null}
+          <ChartFigures charts={g.charts} />
           <ul className="news__rows">
             {g.items.map((it) => (
               <li className="news__row" key={it.label}>
@@ -112,17 +135,39 @@ export function NewsletterEdition({ slug, variant }: { slug: string; variant: Va
       )}
 
       {variant === "scan" && (
-        <div className="scan-grid">
-          {ed.groups[0]?.items.map((idea) => (
-            <article className="scan-card" key={idea.label}>
-              <div className="scan-card__head">
-                <span className="scan-card__class">{idea.label}</span>
-                <span className="scan-card__signal">{idea.value}</span>
-              </div>
-              <p className="scan-card__thesis">{idea.body}</p>
-            </article>
+        <>
+          <div className="scan-grid">
+            {ed.groups[0]?.items.map((idea) => (
+              <article className="scan-card" key={idea.label}>
+                <div className="scan-card__head">
+                  <span className="scan-card__class">{idea.label}</span>
+                  <span className="scan-card__signal">{idea.value}</span>
+                </div>
+                <p className="scan-card__thesis">{idea.body}</p>
+              </article>
+            ))}
+          </div>
+          {/* Additional sections (e.g. the SF1-derived top equity opportunities + charts). */}
+          {ed.groups.slice(1).map((g) => (
+            <section className="news__section" key={g.heading}>
+              <h3>{g.heading}</h3>
+              {g.blurb ? <p className="news__blurb">{g.blurb}</p> : null}
+              <ChartFigures charts={g.charts} />
+              <ul className="news__rows">
+                {g.items.map((it) => (
+                  <li className="news__row" key={it.label}>
+                    <div className="news__row-head">
+                      <span className="news__metric">{it.label}</span>
+                      <strong className="news__value">{it.value}</strong>
+                    </div>
+                    <p className="news__note">{it.body}</p>
+                    {it.source ? <p className="news__source">{it.source}</p> : null}
+                  </li>
+                ))}
+              </ul>
+            </section>
           ))}
-        </div>
+        </>
       )}
 
       {ed.teaser ? <UpgradeGate /> : null}

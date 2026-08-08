@@ -17,6 +17,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.platypus import (
+    Image,
     Paragraph,
     SimpleDocTemplate,
     Spacer,
@@ -120,6 +121,41 @@ _ITEM_HEAD = ParagraphStyle("JHIItemHead", parent=_styles["Normal"], fontName="H
                             fontSize=9.5, textColor=_NAVY, spaceBefore=6, spaceAfter=1)
 
 
+def _chart_flowables(charts: list) -> list:
+    """Decode base64 ``data:`` URI charts into reportlab flowables (fallback PDF path).
+
+    Resilient: any chart that fails to decode/render is simply skipped so a download
+    never breaks. The headless-Chromium primary path captures the same charts natively."""
+    import base64 as _b64
+    from io import BytesIO as _BytesIO
+
+    out: list = []
+    for chart in charts or []:
+        uri = getattr(chart, "image", "") or ""
+        if ",base64," not in uri and not uri.startswith("data:"):
+            continue
+        try:
+            raw = _b64.b64decode(uri.split(",", 1)[1])
+            img = Image(_BytesIO(raw))
+            max_w = 6.4 * inch
+            if img.drawWidth > max_w:
+                scale = max_w / img.drawWidth
+                img.drawWidth *= scale
+                img.drawHeight *= scale
+            out.append(Spacer(1, 4))
+            out.append(img)
+            caption = getattr(chart, "caption", "")
+            if caption:
+                out.append(Paragraph(caption, _SMALL))
+            source = getattr(chart, "source", None)
+            if source:
+                out.append(Paragraph(source, _SMALL))
+            out.append(Spacer(1, 4))
+        except Exception:  # noqa: BLE001 - a bad image must never break the PDF
+            continue
+    return out
+
+
 def newsletter_pdf(edition: Edition) -> bytes:
     """Render a normalized editorial Edition to a branded, print-ready PDF.
 
@@ -137,10 +173,14 @@ def newsletter_pdf(edition: Edition) -> bytes:
     if edition.intro:
         flow.append(Paragraph(edition.intro, _LEDE))
 
+    # Edition-level exhibits (e.g. the Economic Brief macro chart).
+    flow.extend(_chart_flowables(getattr(edition, "charts", [])))
+
     for group in edition.groups:
         flow.append(Paragraph(group.heading, _H))
         if group.blurb:
             flow.append(Paragraph(group.blurb, _SMALL))
+        flow.extend(_chart_flowables(getattr(group, "charts", [])))
         if not group.items:
             flow.append(Paragraph("No items in this section for the current edition.", _BODY))
         for item in group.items:
