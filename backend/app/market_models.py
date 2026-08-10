@@ -15,6 +15,11 @@ class Quote(BaseModel):
     as_of: datetime | None = None
     status: str = "ok"
     note: str | None = None
+    # Data Foundation (Phase 1): as-of / cadence / freshness threaded onto every value.
+    cadence: str | None = None            # daily/weekly/monthly/quarterly/annual/irregular
+    observation_date: str | None = None   # actual data date/period the value belongs to
+    freshness: str | None = None          # current / overdue / fetch-failed
+    as_of_label: str | None = None        # e.g. "Monthly · as of Jun 2026"
 
 
 class QuotesResponse(BaseModel):
