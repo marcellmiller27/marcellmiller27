@@ -92,6 +92,47 @@ class SF1FactorBacktestResult(BaseModel):
     as_of: datetime
 
 
+class SF1ExpandedSegmentMetrics(BaseModel):
+    label: str
+    n_periods: int
+    mean_ic: float | None
+    ic_t_stat: float | None
+    hit_rate: float | None
+    gross_annualized_long_short: float | None
+    net_annualized_long_short: float | None
+    avg_turnover: float | None
+    passes: bool
+
+
+class SF1ExpandedBacktestResult(BaseModel):
+    """Derived, governance-safe result of the expanded survivorship-free H5 back-test."""
+
+    score_definition: str
+    universe_description: str
+    n_universe_requested: int
+    n_delisted_in_universe: int
+    n_assets_evaluated: int
+    n_observations: int
+    first_period: str | None
+    last_period: str | None
+    dimension: str
+    factor_weights: dict[str, float]
+    blend_weights: dict[str, float]
+    cost_bps_per_side: float
+    pass_criteria: str
+    full_sample: SF1ExpandedSegmentMetrics
+    in_sample: SF1ExpandedSegmentMetrics
+    out_of_sample: SF1ExpandedSegmentMetrics
+    recent_third_holdout: SF1ExpandedSegmentMetrics
+    oos_verdict: str
+    h5_pass: bool
+    line_item_5h_validated: bool
+    interpretation: str
+    caveats: list[str]
+    status: str = "ok"
+    as_of: datetime
+
+
 class FundamentalsStatus(BaseModel):
     available: bool
     provider: str
