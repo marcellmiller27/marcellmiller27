@@ -19,7 +19,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 
-from app import data_registry as dr
 from app.market_models import Quote
 
 # The full indicator + market set the editions draw from (mirrors newsletter-format.ts).
@@ -36,8 +35,6 @@ class Item:
     body: str = ""
     tags: list[str] = field(default_factory=list)
     source: str | None = None
-    # Data Foundation (Phase 1): "Monthly · as of Jun 2026" cadence/as-of disclosure.
-    as_of_label: str | None = None
 
 
 @dataclass
@@ -202,24 +199,6 @@ def fmt(q: Quote | None) -> str:
 def _price(m: QuoteMap, s: str) -> float | None:
     q = m.get(s)
     return q.price if q else None
-
-
-def _as_of(q: Quote | None) -> str | None:
-    """The value's cadence/as-of disclosure label ("Monthly · as of Jun 2026").
-
-    Falls back to computing it from the registry cadence when the quote predates the
-    Data Foundation fields, so older/cached quotes still disclose honestly."""
-    if q is None:
-        return None
-    if q.as_of_label:
-        return q.as_of_label
-    return dr.as_of_label(q.cadence or dr.cadence_for(q.symbol), q.observation_date)
-
-
-def _pending_label(symbol: str) -> str:
-    """A never-fabricate placeholder for a genuinely missing series: discloses the
-    cadence and that the value is pending the next release (rather than omitting it)."""
-    return f"pending ({dr.cadence_label(dr.cadence_for(symbol))} · next release)"
 
 
 # ── Analytical-facts layer (derived, fact-locked cross-links) ────────────────
@@ -464,9 +443,7 @@ def _macro_chart(m: QuoteMap) -> list["Chart"]:
             labels.append(label)
             current.append(level)
             reference.append(anchor)
-    # Graceful degradation: render with whatever series ARE available; omit only the
-    # missing bar. Never return [] just because one series (e.g. Fed Funds) is missing.
-    if len(labels) < 1:
+    if len(labels) < 2:
         return []
     try:
         from app import newsletter_charts as nc
@@ -493,8 +470,7 @@ def _insider_chart(m: QuoteMap, title: str) -> list["Chart"]:
         if level is not None:
             labels.append(label)
             values.append(level)
-    # Partial-render: draw whatever levels are available rather than an empty exhibit.
-    if len(labels) < 1:
+    if len(labels) < 2:
         return []
     try:
         from app import newsletter_charts as nc
@@ -516,15 +492,10 @@ def _economic_brief(m: QuoteMap, full: bool) -> tuple[str, list[Group]]:
         items: list[Item] = []
         for sym in syms:
             q = m.get(sym)
-            if q is None or q.price is None:
-                # Never omit: disclose the indicator as pending its next release.
-                spec = dr.get_series(sym)
-                items.append(Item(label=spec.name if spec else sym, value=_pending_label(sym),
-                                  body="Awaiting the next release.",
-                                  as_of_label=_as_of(q)))
+            if not q:
                 continue
             items.append(Item(label=q.name, value=fmt(q), body=_commentary(sym, q.price),
-                              source=q.note, as_of_label=_as_of(q)))
+                              source=q.note))
         groups.append(Group(heading=heading, blurb=blurb, items=items))
     if full:
         # Close the analytical arc: synthesis → forward watch.
@@ -653,13 +624,10 @@ def _insider_setup_group(m: QuoteMap) -> Group:
     items: list[Item] = []
     for sym in syms:
         q = m.get(sym)
-        if q is None or q.price is None:
-            spec = dr.get_series(sym)
-            items.append(Item(label=spec.name if spec else sym, value=_pending_label(sym),
-                              body="Awaiting the next release.", as_of_label=_as_of(q)))
+        if not q:
             continue
         items.append(Item(label=q.name, value=fmt(q), body=_commentary(sym, q.price),
-                          source=q.note, as_of_label=_as_of(q)))
+                          source=q.note))
     rr = _real_rate(m)
     if rr is not None:
         items.append(Item(
