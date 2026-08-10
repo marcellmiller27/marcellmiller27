@@ -41,11 +41,19 @@ def newsletter_edition(
     built = build_edition(edition, data.quotes, datetime.now(timezone.utc), full=token is not None)
 
     editorial = "deterministic"
+    citations: list = []
     if llm_enabled():
         built, meta = elevate_edition(built, db=db)
         editorial = "llm" if meta.get("used_llm") else f"deterministic:{meta.get('reason')}"
+        # Editorial RAG (flag-gated): surface grounding citations when retrieval is active.
+        citations = (meta.get("rag") or {}).get("citations") or []
 
-    return {"edition": asdict(built), "as_of": data.as_of.isoformat(), "editorial": editorial}
+    return {
+        "edition": asdict(built),
+        "as_of": data.as_of.isoformat(),
+        "editorial": editorial,
+        "citations": citations,
+    }
 
 
 def _bearer_token(request: Request) -> str | None:
