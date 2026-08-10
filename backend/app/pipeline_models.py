@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field
 
 # Pipeline stages, in order (Screen → BQA → QoE → Financing → Offer → Closed / Passed).
 STAGES: list[str] = ["screen", "analysis", "qoe", "financing", "offer", "closed", "passed"]
-DEAL_TYPES: list[str] = ["deal_xray", "qoe"]
+DEAL_TYPES: list[str] = ["deal_xray", "qoe", "due_diligence"]
 
 
 class DealRecordCreate(BaseModel):
