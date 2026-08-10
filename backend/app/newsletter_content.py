@@ -1138,7 +1138,7 @@ def _msa_teardown_group(profile, snap) -> tuple["Group | None", "object | None"]
              body=(f"On a normalized {_usd(val.normalized_ebitda)} basis at "
                    f"{val.industry_multiple_low:.1f}–{val.industry_multiple_high:.1f}x, cross-checked "
                    f"by a curbed DCF ({_usd(val.dcf_enterprise_value)}). Asking {_usd(val.asking_price)} "
-                   f"reads **{val.verdict}**."),
+                   f"reads {val.verdict}."),
              tags=["Valuation"]),
     ]
     qoe_flags = [q for q in report.diligence_questions if "quality-of-earnings" in q.lower() or "add-back" in q.lower()]
