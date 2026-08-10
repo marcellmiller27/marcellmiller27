@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Query
 
+from app import data_registry as dr
 from app.market_models import (
     InflationResponse,
     ProvidersResponse,
@@ -43,3 +44,39 @@ def symbols() -> SymbolsResponse:
 @router.get("/inflation", response_model=InflationResponse)
 def inflation() -> InflationResponse:
     return MarketDataService().inflation()
+
+
+@router.get("/registry")
+def registry() -> dict:
+    """The series registry: id, source, cadence, unit, and license class for every
+    macro/market/fundamentals series the platform tracks (Data Foundation, Phase 1)."""
+    return {
+        "count": len(dr.all_series()),
+        "series": [
+            {
+                "series_id": spec.series_id,
+                "name": spec.name,
+                "source": spec.source.value,
+                "cadence": spec.cadence.value,
+                "unit": spec.unit,
+                "license_class": spec.license_class.value,
+                "last_release": spec.last_release,
+                "next_release": spec.next_release,
+            }
+            for spec in dr.all_series()
+        ],
+    }
+
+
+@router.post("/refresh")
+def refresh(
+    symbols: Annotated[
+        str | None,
+        Query(description="Optional comma-separated subset; defaults to all registry series."),
+    ] = None,
+) -> dict:
+    """Daily refresh hook: pull all registry sources into the cache + last-good store.
+
+    Lightweight, on-demand entrypoint for a scheduler; the on-demand + last-good path is
+    the priority, so this simply warms the cache and reports per-series freshness."""
+    return MarketDataService().refresh_all(_parse_symbols(symbols))
