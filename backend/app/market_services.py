@@ -29,6 +29,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Callable
 
+from app import data_registry as dr
 from app.market_models import (
     InflationResponse,
     ProviderInfo,
@@ -42,6 +43,9 @@ from app.market_models import (
 USER_AGENT = "JohnHenryInvestments/1.0 (+market-data)"
 HTTP_TIMEOUT = 6.0
 CACHE_TTL_SECONDS = 60
+# Retry policy for transient provider/network failures (Data Foundation, Phase 1).
+RETRY_ATTEMPTS = 3
+RETRY_BASE_DELAY = 0.4  # seconds; exponential backoff (0.4s, 0.8s, ...)
 CPI_SERIES_ID = "CUUR0000SA0"  # CPI-U, US city average, all items, NSA
 YAHOO_HOSTS = ("query1.finance.yahoo.com", "query2.finance.yahoo.com")
 
@@ -193,15 +197,39 @@ def resolve_symbol(symbol: str) -> SymbolSpec:
 
 
 # --------------------------------------------------------------------------- #
-# TTL cache
+# TTL cache + last-good store
 # --------------------------------------------------------------------------- #
 _CACHE: dict[str, tuple[float, Any]] = {}
 _CACHE_LOCK = threading.Lock()
+
+# Last-good store: the most recent SUCCESSFULLY fetched Quote per symbol, kept so a
+# transient upstream failure serves the last-known value (with its own as-of) rather
+# than a hole. Persists across the short TTL cache and is only replaced by a fresh
+# successful fetch — never expired away — so "always deliver" holds under outages.
+_LAST_GOOD: dict[str, Quote] = {}
+_LAST_GOOD_LOCK = threading.Lock()
 
 
 def reset_cache() -> None:
     with _CACHE_LOCK:
         _CACHE.clear()
+
+
+def reset_last_good() -> None:
+    """Clear the last-good store (test isolation only; not used in normal operation)."""
+    with _LAST_GOOD_LOCK:
+        _LAST_GOOD.clear()
+
+
+def _store_last_good(symbol: str, quote: Quote) -> None:
+    with _LAST_GOOD_LOCK:
+        _LAST_GOOD[symbol] = quote.model_copy(deep=True)
+
+
+def _get_last_good(symbol: str) -> Quote | None:
+    with _LAST_GOOD_LOCK:
+        hit = _LAST_GOOD.get(symbol)
+        return hit.model_copy(deep=True) if hit is not None else None
 
 
 def _cached(key: str, ttl: int, producer: Callable[[], Any]) -> Any:
@@ -214,6 +242,26 @@ def _cached(key: str, ttl: int, producer: Callable[[], Any]) -> Any:
     with _CACHE_LOCK:
         _CACHE[key] = (now + ttl, value)
     return value
+
+
+def _retry(
+    producer: Callable[[], Any],
+    attempts: int = RETRY_ATTEMPTS,
+    base_delay: float = RETRY_BASE_DELAY,
+) -> Any:
+    """Call ``producer``, retrying transient :class:`ProviderError`s with exponential
+    backoff. Re-raises the last error if every attempt fails (the caller then falls back
+    to the last-good value). ``base_delay <= 0`` disables sleeping (used in tests)."""
+    last_error: Exception | None = None
+    for attempt in range(max(1, attempts)):
+        try:
+            return producer()
+        except ProviderError as exc:
+            last_error = exc
+            if attempt < attempts - 1 and base_delay > 0:
+                time.sleep(base_delay * (2 ** attempt))
+    assert last_error is not None
+    raise last_error
 
 
 # --------------------------------------------------------------------------- #
@@ -403,8 +451,15 @@ def _now() -> datetime:
 
 
 class MarketDataService:
-    def __init__(self, cache_ttl: int = CACHE_TTL_SECONDS) -> None:
+    def __init__(
+        self,
+        cache_ttl: int = CACHE_TTL_SECONDS,
+        retry_attempts: int = RETRY_ATTEMPTS,
+        retry_delay: float = RETRY_BASE_DELAY,
+    ) -> None:
         self.cache_ttl = cache_ttl
+        self.retry_attempts = retry_attempts
+        self.retry_delay = retry_delay
 
     # -- public API -------------------------------------------------------- #
     def quotes(self, symbols: list[str] | None = None) -> QuotesResponse:
@@ -570,6 +625,7 @@ class MarketDataService:
             return {}
 
     def _quote_for(self, spec: SymbolSpec, crypto_prices: dict[str, dict[str, float]]) -> Quote:
+        cadence = dr.cadence_for(spec.symbol)
         base = Quote(
             symbol=spec.symbol,
             name=spec.name,
@@ -578,7 +634,10 @@ class MarketDataService:
             unit=spec.unit,
             source=spec.provider,
             as_of=_now(),
+            cadence=cadence.value,
         )
+        # The value's actual data date/period (as opposed to the fetched-at time).
+        observation_date: str | None = None
         try:
             if spec.provider == "coingecko":
                 entry = crypto_prices.get(spec.provider_symbol)
@@ -587,9 +646,12 @@ class MarketDataService:
                 base.price = float(entry["usd"])
                 if entry.get("usd_24h_change") is not None:
                     base.change_percent = round(float(entry["usd_24h_change"]), 2)
+                observation_date = base.as_of.strftime("%Y-%m-%d")
             elif spec.provider == "yahoo":
-                if not self._fill_from_vendor(spec, base):
-                    meta = self._cached(
+                if self._fill_from_vendor(spec, base):
+                    observation_date = base.as_of.strftime("%Y-%m-%d")
+                else:
+                    meta = self._fetch(
                         f"yahoo:{spec.provider_symbol}",
                         lambda: yahoo_chart(spec.provider_symbol),
                     )
@@ -603,31 +665,77 @@ class MarketDataService:
                         base.change_percent = round(
                             (float(price) - float(prev)) / float(prev) * 100, 2
                         )
+                    observation_date = self._yahoo_observation_date(meta)
             elif spec.provider == "bls":
                 data = self._cpi_series()
                 yoy, _latest, period = self._cpi_yoy(data)
                 base.price = yoy
+                observation_date = period
                 base.note = f"CPI YoY ({period})."
             elif spec.provider == "fred":
-                value, date = self._cached(
+                value, date = self._fetch(
                     f"fred:{spec.provider_symbol}",
                     lambda: fred_series_latest(spec.provider_symbol),
                 )
                 base.price = value
+                observation_date = date or None
                 base.note = f"FRED {spec.provider_symbol} as of {date}."
             else:
                 raise ProviderError(f"Unknown provider '{spec.provider}'.")
         except (ProviderError, ValueError, KeyError, IndexError, TypeError) as exc:
-            base.status = "unavailable"
-            base.note = f"{spec.provider} fetch failed: {exc}"
+            return self._degrade(spec, cadence, exc)
+
+        base.observation_date = observation_date
+        base.freshness = dr.classify_freshness(cadence, observation_date, base.as_of)
+        base.as_of_label = dr.as_of_label(cadence, observation_date)
+        _store_last_good(spec.symbol, base)
         return base
+
+    def _degrade(self, spec: SymbolSpec, cadence: "dr.Cadence", exc: Exception) -> Quote:
+        """Never omit / never fabricate: on a fetch failure, serve the last-good value
+        (with its own as-of, flagged ``fetch-failed``) if we have one; otherwise return an
+        honest ``unavailable`` placeholder — never a fabricated number."""
+        last_good = _get_last_good(spec.symbol)
+        if last_good is not None and last_good.price is not None:
+            last_good.status = "ok"
+            last_good.freshness = dr.FRESH_FAILED
+            last_good.as_of_label = dr.as_of_label(cadence, last_good.observation_date)
+            last_good.note = (
+                f"Live {spec.provider} fetch failed ({exc}); showing last-good value "
+                f"from {last_good.as_of_label}."
+            )
+            return last_good
+        return Quote(
+            symbol=spec.symbol,
+            name=spec.name,
+            asset_class=spec.asset_class,
+            currency="USD",
+            unit=spec.unit,
+            source=spec.provider,
+            as_of=_now(),
+            cadence=cadence.value,
+            status="unavailable",
+            freshness=dr.FRESH_FAILED,
+            note=f"{spec.provider} fetch failed: {exc}",
+        )
+
+    @staticmethod
+    def _yahoo_observation_date(meta: dict[str, Any]) -> str:
+        """Trading date behind a Yahoo quote (from ``regularMarketTime`` when present)."""
+        ts = meta.get("regularMarketTime")
+        if ts:
+            try:
+                return datetime.fromtimestamp(int(ts), tz=timezone.utc).strftime("%Y-%m-%d")
+            except (ValueError, OSError, OverflowError):
+                pass
+        return _now().strftime("%Y-%m-%d")
 
     def _fill_from_vendor(self, spec: SymbolSpec, base: Quote) -> bool:
         """Try the licensed vendor first when configured; return True on success."""
         if not twelvedata_api_key() or not spec.vendor_symbol:
             return False
         try:
-            data = self._cached(
+            data = self._fetch(
                 f"twelvedata:{spec.vendor_symbol}",
                 lambda: twelvedata_quote(spec.vendor_symbol),
             )
@@ -642,7 +750,7 @@ class MarketDataService:
         return True
 
     def _cpi_series(self) -> list[dict[str, Any]]:
-        return self._cached("bls:cpi", bls_cpi_series)
+        return self._fetch("bls:cpi", bls_cpi_series)
 
     @staticmethod
     def _cpi_yoy(data: list[dict[str, Any]]) -> tuple[float, float, str]:
@@ -665,3 +773,56 @@ class MarketDataService:
         if self.cache_ttl <= 0:
             return producer()
         return _cached(key, self.cache_ttl, producer)
+
+    def _fetch(self, key: str, producer: Callable[[], Any]) -> Any:
+        """Cache-aware fetch with transient-failure retries. On a cache miss the producer
+        is retried with backoff before the error surfaces (and the caller degrades to
+        last-good)."""
+        retrying = lambda: _retry(producer, self.retry_attempts, self.retry_delay)  # noqa: E731
+        return self._cached(key, retrying)
+
+    # -- daily refresh hook ------------------------------------------------ #
+    def refresh_all(self, symbols: list[str] | None = None) -> dict[str, Any]:
+        """Pull every registry-backed series into the cache / last-good store.
+
+        The scheduled-refresh entrypoint (see ``scripts/refresh_data_cache.py`` and
+        ``POST /market/refresh``). Bypasses the TTL cache so it always hits upstream, then
+        primes last-good. Real scheduler wiring can be minimal — the on-demand + last-good
+        path is the priority, and this simply warms it. Returns a per-symbol summary.
+        """
+        requested = symbols if symbols else self._refreshable_symbols()
+        fresh = MarketDataService(cache_ttl=0, retry_attempts=self.retry_attempts,
+                                  retry_delay=self.retry_delay)
+        response = fresh.quotes(requested)
+        summary: dict[str, Any] = {
+            "refreshed_at": _now().isoformat(),
+            "requested": len(requested),
+            "current": 0,
+            "overdue": 0,
+            "fetch_failed": 0,
+            "unavailable": 0,
+            "series": [],
+        }
+        for q in response.quotes:
+            if q.status != "ok":
+                summary["unavailable"] += 1
+            elif q.freshness == dr.FRESH_FAILED:
+                summary["fetch_failed"] += 1
+            elif q.freshness == dr.FRESH_OVERDUE:
+                summary["overdue"] += 1
+            else:
+                summary["current"] += 1
+            summary["series"].append({
+                "symbol": q.symbol,
+                "status": q.status,
+                "freshness": q.freshness,
+                "as_of": q.as_of_label,
+            })
+        return summary
+
+    @staticmethod
+    def _refreshable_symbols() -> list[str]:
+        """Registry series that map to a live fetch path (excludes derived-only /
+        filing series like SF1 and EDGAR, which are pulled by their own harnesses)."""
+        skip = {dr.Source.SF1, dr.Source.EDGAR}
+        return [spec.series_id for spec in dr.all_series() if spec.source not in skip]
