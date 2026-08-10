@@ -11,8 +11,10 @@ client = TestClient(app)
 @pytest.fixture(autouse=True)
 def _clear_cache():
     market_services.reset_cache()
+    market_services.reset_last_good()
     yield
     market_services.reset_cache()
+    market_services.reset_last_good()
 
 
 def _fake_coingecko(ids):
