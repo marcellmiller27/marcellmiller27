@@ -115,6 +115,51 @@ def newsletter_email_html(edition: Edition) -> str:
 </table></body></html>"""
 
 
+def broadcast_editions(recipients: list[str], editions: list[Edition]) -> list[dict]:
+    """Send (or dry-run) a batch of editions to the same recipient list.
+
+    Used by the cadence broadcast: each edition is sent independently so one failure
+    (or a dry-run) doesn't block the others. Dry-run remains the default when SES is
+    unconfigured — nothing is emailed by accident.
+    """
+    return [send_newsletter_email(recipients, edition) for edition in editions]
+
+
+def broadcast_by_cadence(
+    cadence: str,
+    recipients: list[str] | None = None,
+    now=None,
+    quotes=None,
+) -> dict:
+    """Generate every edition on a cadence and broadcast it to confirmed subscribers.
+
+    ``recipients`` defaults to the confirmed subscriber list for the cadence. ``quotes`` may
+    be injected to keep callers/tests network-free. Live send still requires the SES gate;
+    otherwise each edition returns a dry-run preview.
+    """
+    from app.newsletter_content import generate_scheduled_editions  # lazy: avoid import cycle
+
+    if recipients is None:
+        from app.newsletter_subscriptions import confirmed_recipients
+        recipients = confirmed_recipients(cadence)
+
+    editions = generate_scheduled_editions(cadence, now=now, quotes=quotes, full=True)
+    sends = broadcast_editions(recipients, editions) if recipients else []
+    return {
+        "cadence": cadence,
+        "editions": [e.slug for e in editions],
+        "recipient_count": len(recipients),
+        "live": email_send_enabled(),
+        "results": [{k: v for k, v in s.items() if k != "html"} for s in sends],
+        "note": (
+            "No confirmed recipients on this cadence — generated editions only."
+            if not recipients else
+            ("Broadcast sent via SES." if email_send_enabled()
+             else "Dry-run: SES not configured, so no email was sent.")
+        ),
+    }
+
+
 def send_newsletter_email(recipients: list[str], edition: Edition) -> dict:
     """Send (or dry-run) an edition to recipients. Never raises to the caller on a
     config gap — returns a status dict. Real SES errors propagate so callers see them."""

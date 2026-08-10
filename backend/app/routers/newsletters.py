@@ -11,17 +11,82 @@ from pydantic import BaseModel
 
 from app.database import get_db
 from app.editorial_llm import elevate_edition, llm_enabled
-from app.email_service import send_newsletter_email
+from app.email_service import broadcast_by_cadence, send_newsletter_email
 from app.foundation_models import Principal
 from app.market_services import MarketDataService
-from app.newsletter_content import EDITION_SLUGS, NEWSLETTER_SYMBOLS, build_edition
+from app.newsletter_content import (
+    CADENCES,
+    EDITION_SLUGS,
+    NEWSLETTER_SYMBOLS,
+    build_edition,
+    editions_for_cadence,
+)
 from app.newsletter_render import render_newsletter_pdf
+from app.newsletter_subscriptions import confirm as confirm_subscription
+from app.newsletter_subscriptions import stats as subscription_stats
+from app.newsletter_subscriptions import subscribe as subscribe_free
 from app.pdf_export import newsletter_pdf
 from app.rbac import require_staff
 from app.security import decode_access_token
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/newsletters", tags=["newsletters"])
+
+
+# ── Distribution cadence + free-subscriber capture (double opt-in stub) ───────
+class SubscribeRequest(BaseModel):
+    email: str
+    cadence: str | None = "weekly-pulse"
+
+
+class BroadcastRequest(BaseModel):
+    cadence: str
+    recipients: list[str] | None = None
+
+
+@router.get("/cadences")
+def list_cadences() -> dict:
+    """The distribution cadences and which editions broadcast on each."""
+    return {"cadences": [{"cadence": c, "editions": editions_for_cadence(c)} for c in CADENCES]}
+
+
+@router.post("/subscribe")
+def subscribe(payload: SubscribeRequest) -> dict:
+    """Capture a free subscriber (double opt-in stub — no email is sent live)."""
+    result = subscribe_free(payload.email, payload.cadence)
+    if result.get("status") == "invalid":
+        raise HTTPException(status_code=422, detail=result["message"])
+    return result
+
+
+@router.get("/subscribe/confirm")
+def confirm(token: str) -> dict:
+    """Confirm a pending subscription via its double-opt-in token."""
+    result = confirm_subscription(token)
+    if result.get("status") == "invalid":
+        raise HTTPException(status_code=404, detail=result["message"])
+    return result
+
+
+@router.post("/broadcast")
+def broadcast(
+    payload: BroadcastRequest,
+    staff: Annotated[Principal, Depends(require_staff)],
+) -> dict:
+    """Staff-only: generate + broadcast every edition on a cadence to confirmed subscribers.
+
+    Safe by default: when SES is unconfigured this is a dry-run (nothing is emailed). This is
+    the callable behind the scheduled-generation hook (weekly-pulse / monthly-deep-dive).
+    """
+    if payload.cadence not in CADENCES:
+        raise HTTPException(status_code=422, detail=f"Unknown cadence. Use one of: {', '.join(CADENCES)}.")
+    return broadcast_by_cadence(payload.cadence, recipients=payload.recipients)
+
+
+@router.get("/subscribers/stats")
+def subscribers_stats(staff: Annotated[Principal, Depends(require_staff)]) -> dict:
+    """Staff-only: confirmed/pending counts for the free-subscriber list."""
+    return subscription_stats()
 
 
 @router.get("/{edition}")

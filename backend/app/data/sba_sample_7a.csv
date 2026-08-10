@@ -1,0 +1,41 @@
+AsOfDate,Program,BorrName,BorrState,NaicsCode,NaicsDescription,ApprovalFiscalYear,GrossApproval,SBAGuaranteedApproval,TermInMonths,BankName,JobsSupported,BusinessType
+2023-09-30,7a,Sample Borrower 01,TX,238220,"Plumbing, Heating, and Air-Conditioning Contractors",2021,725000,543750,120,Live Oak Banking Company,14,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 02,FL,238220,"Plumbing, Heating, and Air-Conditioning Contractors",2022,1150000,862500,120,Huntington National Bank,22,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 03,OH,238220,"Plumbing, Heating, and Air-Conditioning Contractors",2023,960000,720000,120,The Huntington National Bank,18,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 04,CA,238220,"Plumbing, Heating, and Air-Conditioning Contractors",2023,1425000,1068750,120,Live Oak Banking Company,26,Change of Ownership
+2023-09-30,7a,Sample Borrower 05,AZ,238210,Electrical Contractors and Other Wiring Installation Contractors,2021,540000,405000,120,Newtek Small Business Finance,9,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 06,GA,238210,Electrical Contractors and Other Wiring Installation Contractors,2022,880000,660000,120,Byline Bank,15,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 07,NC,238210,Electrical Contractors and Other Wiring Installation Contractors,2023,1075000,806250,120,Live Oak Banking Company,19,Change of Ownership
+2023-09-30,7a,Sample Borrower 08,WA,561730,Landscaping Services,2021,310000,232500,84,Newtek Small Business Finance,7,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 09,CO,561730,Landscaping Services,2022,415000,311250,84,Readycap Lending LLC,10,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 10,OR,561730,Landscaping Services,2023,505000,378750,84,Byline Bank,11,Change of Ownership
+2023-09-30,7a,Sample Borrower 11,NY,722511,Full-Service Restaurants,2021,285000,213750,120,Newtek Small Business Finance,16,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 12,IL,722511,Full-Service Restaurants,2022,340000,255000,120,Byline Bank,19,New Business or 2 years or less
+2023-09-30,7a,Sample Borrower 13,TX,722511,Full-Service Restaurants,2023,395000,296250,120,Celtic Bank Corporation,21,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 14,FL,621340,Offices of Physical/Occupational and Speech Therapists,2021,650000,487500,120,Live Oak Banking Company,12,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 15,PA,621340,Offices of Physical/Occupational and Speech Therapists,2022,910000,682500,120,Live Oak Banking Company,17,Change of Ownership
+2023-09-30,7a,Sample Borrower 16,MA,621340,Offices of Physical/Occupational and Speech Therapists,2023,1280000,960000,120,Huntington National Bank,23,Change of Ownership
+2023-09-30,7a,Sample Borrower 17,MI,811111,General Automotive Repair,2021,470000,352500,120,Byline Bank,8,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 18,TN,811111,General Automotive Repair,2022,560000,420000,120,Celtic Bank Corporation,10,Change of Ownership
+2023-09-30,7a,Sample Borrower 19,IN,811111,General Automotive Repair,2023,635000,476250,120,Readycap Lending LLC,12,Change of Ownership
+2023-09-30,7a,Sample Borrower 20,VA,541330,Engineering Services,2021,820000,615000,120,Live Oak Banking Company,11,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 21,CA,541330,Engineering Services,2022,1340000,1005000,120,Huntington National Bank,18,Change of Ownership
+2023-09-30,7a,Sample Borrower 22,TX,541330,Engineering Services,2023,1560000,1170000,120,Live Oak Banking Company,21,Change of Ownership
+2023-09-30,7a,Sample Borrower 23,OH,484110,"General Freight Trucking, Local",2021,395000,296250,84,Newtek Small Business Finance,9,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 24,GA,484110,"General Freight Trucking, Local",2022,480000,360000,84,Readycap Lending LLC,12,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 25,IL,484110,"General Freight Trucking, Local",2023,545000,408750,84,Celtic Bank Corporation,13,Change of Ownership
+2023-09-30,7a,Sample Borrower 26,FL,812112,Beauty Salons,2021,190000,142500,84,Newtek Small Business Finance,6,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 27,NV,812112,Beauty Salons,2022,235000,176250,84,Celtic Bank Corporation,8,New Business or 2 years or less
+2023-09-30,7a,Sample Borrower 28,AZ,812112,Beauty Salons,2023,265000,198750,84,Byline Bank,9,Change of Ownership
+2023-09-30,7a,Sample Borrower 29,NC,236220,Commercial and Institutional Building Construction,2021,1180000,885000,120,Huntington National Bank,20,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 30,TX,236220,Commercial and Institutional Building Construction,2022,1620000,1215000,120,Live Oak Banking Company,27,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 31,CO,236220,Commercial and Institutional Building Construction,2023,1875000,1406250,120,Live Oak Banking Company,31,Change of Ownership
+2023-09-30,7a,Sample Borrower 32,WA,238220,"Plumbing, Heating, and Air-Conditioning Contractors",2021,690000,517500,120,Byline Bank,13,Change of Ownership
+2023-09-30,7a,Sample Borrower 33,GA,238220,"Plumbing, Heating, and Air-Conditioning Contractors",2022,1015000,761250,120,Readycap Lending LLC,20,Change of Ownership
+2023-09-30,7a,Sample Borrower 34,PA,238210,Electrical Contractors and Other Wiring Installation Contractors,2023,995000,746250,120,Huntington National Bank,17,Change of Ownership
+2023-09-30,7a,Sample Borrower 35,MN,621340,Offices of Physical/Occupational and Speech Therapists,2022,760000,570000,120,Byline Bank,14,Existing or more than 2 years old
+2023-09-30,7a,Sample Borrower 36,TX,811111,General Automotive Repair,2023,590000,442500,120,Live Oak Banking Company,11,Change of Ownership
+2023-09-30,7a,Sample Borrower 37,CA,561730,Landscaping Services,2023,560000,420000,84,Live Oak Banking Company,12,Change of Ownership
+2023-09-30,7a,Sample Borrower 38,FL,722511,Full-Service Restaurants,2023,360000,270000,120,Newtek Small Business Finance,20,Change of Ownership
+2023-09-30,7a,Sample Borrower 39,VA,541330,Engineering Services,2023,1490000,1117500,120,Huntington National Bank,20,Change of Ownership
+2023-09-30,7a,Sample Borrower 40,OH,484110,"General Freight Trucking, Local",2023,520000,390000,84,Byline Bank,12,Change of Ownership

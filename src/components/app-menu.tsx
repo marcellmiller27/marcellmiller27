@@ -7,6 +7,7 @@ import {
   BarChart3,
   Briefcase,
   Calculator,
+  Compass,
   Download,
   FileSearch,
   FileText,
@@ -20,6 +21,7 @@ import {
   Scale,
   Search,
   Sparkles,
+  Store,
   UserCircle,
   Workflow,
   X,
@@ -55,6 +57,7 @@ const toc: TocGroup[] = [
   {
     section: "Diligence a Target",
     items: [
+      { href: "/framework", label: "Framework", icon: Compass, access: "free" },
       { href: "/deal-xray", label: "Scope", icon: ScanSearch, access: "subscriber" },
       { href: "/diligence-suite", label: "Earnings", icon: Calculator, access: "subscriber" },
       { href: "/due-diligence", label: "Document Review", icon: FileSearch, access: "subscriber" }
@@ -71,6 +74,7 @@ const toc: TocGroup[] = [
     section: "Outputs & AI",
     items: [
       { href: "/newsletters", label: "Newsletter", icon: Newspaper, access: "free" },
+      { href: "/newsletters/main-street-acquirer", label: "Main St. Acquirer", icon: Store, access: "free" },
       { href: "/assistant", label: "Ask Aegira", icon: Sparkles, access: "subscriber" },
       { href: "/downloads", label: "Documents", icon: Download, access: "subscriber" }
     ]

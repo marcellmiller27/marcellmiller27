@@ -17,7 +17,7 @@ Economic Brief is structured as an analytical arc — executive thesis → analy
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app import data_registry as dr
 from app.market_models import Quote
@@ -75,11 +75,44 @@ class Edition:
     methodology: str
     teaser: bool = False
     charts: list[Chart] = field(default_factory=list)
+    cadence: str = "recurring"
 
 
 QuoteMap = dict[str, Quote]
 
-EDITION_SLUGS = ("economic-brief", "red-alerts", "opportunity-scan", "insider-briefs")
+EDITION_SLUGS = (
+    "economic-brief",
+    "red-alerts",
+    "opportunity-scan",
+    "insider-briefs",
+    "main-street-acquirer",
+)
+
+# ── Distribution cadence metadata ────────────────────────────────────────────
+# Two broadcast rhythms drive the scheduled-generation hook and SES broadcast:
+#   • "weekly-pulse"      — a lighter, time-sensitive weekly send
+#   • "monthly-deep-dive" — the full flagship edition
+# The Main Street Acquirer ships both: a weekly pulse and a monthly deep-dive.
+EDITION_CADENCE: dict[str, tuple[str, ...]] = {
+    "economic-brief": ("weekly-pulse",),
+    "red-alerts": ("weekly-pulse",),
+    "opportunity-scan": ("monthly-deep-dive",),
+    "insider-briefs": ("monthly-deep-dive",),
+    "main-street-acquirer": ("weekly-pulse", "monthly-deep-dive"),
+}
+
+CADENCES = ("weekly-pulse", "monthly-deep-dive")
+
+
+def editions_for_cadence(cadence: str) -> list[str]:
+    """Return the edition slugs that broadcast on the given cadence."""
+    return [slug for slug, cads in EDITION_CADENCE.items() if cadence in cads]
+
+
+def cadence_for(slug: str) -> str:
+    """The primary (first) cadence label for an edition — used as edition metadata."""
+    cads = EDITION_CADENCE.get(slug, ("recurring",))
+    return cads[0]
 
 # ── Disclosed reference levels for the level-vs-history / vs-target reads ─────
 # These are stated in-copy so the analysis is transparent and auditable (not a
@@ -119,11 +152,26 @@ _BACKTEST_DISCLAIMER = (
 )
 
 
+_SBA_ATTRIBUTION = (
+    "SBA lending figures are derived from the U.S. Small Business Administration's public "
+    "7(a)/504 FOIA loan-level data; only aggregated, derived metrics are shown — never a "
+    "borrower-level row."
+)
+_INDUSTRY_ATTRIBUTION = (
+    "Industry recession-resilience and boomer-succession scores are computed by Aegira from "
+    "disclosed, weighted sub-factors grounded in public data (U.S. Bureau of Labor Statistics, "
+    "U.S. Census Bureau, and BEA). Multiples and margins are derived reference ranges, not "
+    "quotes, appraisals, or advice."
+)
+
+
 def _methodology_for(slug: str) -> str:
-    """Base methodology, plus the SF1 attribution / derived-only / back-test disclaimers
-    on the SF1-derived edition (the opportunity scan) so attribution rides with the data."""
+    """Base methodology, plus source-specific attribution / derived-only disclaimers so
+    attribution always rides with the data on each data-derived edition."""
     if slug == "opportunity-scan":
         return " ".join([METHODOLOGY, _SF1_ATTRIBUTION, _DERIVED_ONLY_NOTE, _BACKTEST_DISCLAIMER])
+    if slug == "main-street-acquirer":
+        return " ".join([METHODOLOGY, _SBA_ATTRIBUTION, _INDUSTRY_ATTRIBUTION, _DERIVED_ONLY_NOTE])
     return METHODOLOGY
 
 
@@ -771,7 +819,482 @@ def _insider_brief(m: QuoteMap, now: datetime, full: bool) -> Edition:
                "(FRED · BLS · SEC EDGAR · market feeds) and written in Aegira's independent "
                "professional perspective.",
         disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full,
-        charts=_insider_chart(m, title) if full else [])
+        charts=_insider_chart(m, title) if full else [],
+        cadence=cadence_for("insider-briefs"))
+
+
+# ── The Main Street Acquirer ─────────────────────────────────────────────────
+# A newsletter for SMB / search-fund / ETA acquirers. Every figure is DERIVED from
+# public data (FRED macro · SBA 7(a) FOIA · BLS/Census/BEA industry) and fact-locked.
+# Engines are imported lazily and wrapped so a data gap never breaks generation.
+
+_MSA_PLAYBOOKS: list[tuple[str, str, list[tuple[str, str]]]] = [
+    (
+        "Sourcing off-market deals",
+        "The best main-street deals rarely hit a marketplace. A disciplined acquirer builds "
+        "proprietary flow rather than bidding against a crowd on brokered listings.",
+        [
+            ("Direct-to-owner outreach", "Target owners aged 55+ in resilient trades (the "
+             "succession wave) with a respectful, specific thesis — not a generic mailer."),
+            ("Intermediary relationships", "Cultivate accountants, wealth advisors, and "
+             "trade-association contacts who meet retiring owners first."),
+            ("Buy-box discipline", "Write a one-page buy box (industry, size, geography, "
+             "owner-transition profile) and disqualify fast to protect your time."),
+        ],
+    ),
+    (
+        "Reading a CIM without getting fooled",
+        "A confident-looking CIM is a sales document. The acquirer's job is to separate "
+        "durable, transferable cash flow from owner-dependent, one-time, or dressed-up EBITDA.",
+        [
+            ("Normalize the add-backs", "Discount aggressive add-backs and re-underwrite to "
+             "a defensible SDE/EBITDA before you anchor on a price."),
+            ("Test owner-dependence", "If the owner is the top rainmaker or master "
+             "technician, price and structure for a real transition, not a clean handoff."),
+            ("Insist on a QoE", "For anything financeable, a quality-of-earnings review pays "
+             "for itself by catching the numbers that don't reconcile to the bank statements."),
+        ],
+    ),
+    (
+        "Structuring the transition",
+        "The deal doesn't end at close — the first 100 days determine whether the cash flow "
+        "you underwrote actually shows up. Structure the transition into the deal.",
+        [
+            ("Seller note + earnout", "Align the seller through a note and a modest earnout so "
+             "incentives survive the handoff — and DSCR has a cushion."),
+            ("Retain the bench", "Identify and lock in the key employees before close; their "
+             "relationships are often the real asset."),
+            ("Transition services", "Negotiate a paid, time-boxed consulting period so "
+             "customer and vendor relationships transfer deliberately."),
+        ],
+    ),
+    (
+        "Underwriting to DSCR, not to a multiple",
+        "In a positive-real-rate world, the multiple is downstream of the debt math. The "
+        "binding constraint on a leveraged main-street deal is debt-service coverage.",
+        [
+            ("Solve for coverage first", "Back into the price that keeps DSCR comfortably "
+             "above the lender's floor after a realistic capex and owner-salary load."),
+            ("Stress the downside", "Underwrite a revenue-decline scenario; if coverage "
+             "breaks below 1.0x in a mild downturn, the structure is too tight."),
+            ("Right-size the equity", "More equity or a larger seller note strengthens DSCR "
+             "and lender appetite — and buys negotiating room on price."),
+        ],
+    ),
+]
+
+
+def _usd(value: float | None) -> str:
+    if value is None:
+        return "—"
+    if abs(value) >= 1_000_000:
+        return f"${value / 1_000_000:.1f}M"
+    if abs(value) >= 1_000:
+        return f"${value / 1_000:.0f}K"
+    return f"${value:,.0f}"
+
+
+# Map an industry-resilience key to the Deal X-Ray industry vocabulary.
+_MSA_INDUSTRY_MAP = {
+    "hvac": "hvac", "electrical": "electrical", "landscaping": "landscaping",
+    "restaurant": "restaurant", "healthcare_services": "healthcare_services",
+    "professional_services": "professional_services", "logistics": "logistics",
+    "auto_repair": "general",
+}
+
+
+def _msa_thesis(m: QuoteMap) -> str:
+    """Acquirer-framed executive thesis — the macro read through the SBA/DSCR lens."""
+    ff, rr = _price(m, "FED_FUNDS"), _real_rate(m)
+    ten = _price(m, "UST10Y")
+    parts = [
+        "For the main-street acquirer, the macro backdrop is not an abstraction — it sets the "
+        "cost of the debt that funds the deal and the discipline the multiple must respect."
+    ]
+    if ff is not None:
+        prime = ff + 3.0  # prime ≈ policy rate + ~3 points
+        parts.append(
+            f"With the federal funds rate at {ff:.2f}%, prime sits near {prime:.2f}% and a "
+            "typical SBA 7(a) acquisition loan (prime + a spread) is expensive — so debt-service "
+            "coverage, not the headline multiple, is the binding constraint on every offer.")
+    if rr is not None and ten is not None:
+        parts.append(
+            f"A real 10-year yield around {rr:.2f}% (10Y {ten:.2f}% − CPI) rewards patient buyers "
+            "of cash-flowing businesses bought at disciplined multiples over levered bets on "
+            "multiple expansion.")
+    parts.append(
+        "This edition pairs that macro read with the SBA lending picture, a recession-resilient "
+        "industry in the succession wave, a working acquisition playbook, and a fact-locked deal "
+        "teardown — all from public data, all derived, none of it advice.")
+    return " ".join(parts)
+
+
+def _msa_sba_group(full: bool) -> tuple["Group | None", list["Chart"]]:
+    """SBA Lending Intelligence — derived funding/lender/trend reads + charts."""
+    try:
+        from app import sba_intelligence as sba
+        intel = sba.intelligence(top_n=8)
+    except Exception:  # noqa: BLE001 - never break generation
+        return None, []
+
+    fy = intel.fiscal_years
+    span = f"FY{fy[0]}–FY{fy[-1]}" if fy else "recent fiscal years"
+    items: list[Item] = []
+    latest = intel.yearly_trends[-1] if intel.yearly_trends else None
+    if latest:
+        items.append(Item(
+            label=f"7(a) volume, {span}", value=f"{intel.loan_count:,} loans · {_usd(intel.total_gross_approval)}",
+            body=(f"Across the tracked main-street trades, FY{latest.fiscal_year} saw {latest.loan_count:,} "
+                  f"approvals averaging {_usd(latest.avg_gross_approval)} — the acquisition-financing "
+                  "pipeline SMB buyers actually draw on."),
+            source=intel.source))
+    top = intel.by_industry[0] if intel.by_industry else None
+    if top:
+        items.append(Item(
+            label="Best-funded trade", value=f"{top.naics_description}",
+            body=(f"{top.loan_count:,} loans totalling {_usd(top.total_gross_approval)}; median deal "
+                  f"{_usd(top.median_gross_approval)}, with {top.change_of_ownership_pct:.0f}% financing a "
+                  "change of ownership — a direct read on where SBA capital backs acquisitions."),
+            tags=["SBA 7(a)", f"NAICS {top.naics_code}"]))
+    if intel.active_lenders:
+        top_lenders = ", ".join(f"{le.bank_name} ({le.loan_count})" for le in intel.active_lenders[:3])
+        items.append(Item(
+            label="Most active lenders", value=f"{len(intel.active_lenders)} banks",
+            body=f"By approval count in the sample: {top_lenders}. These are the desks that "
+                 "understand main-street acquisition credit and move fastest.",
+            source="Derived from SBA 7(a) FOIA (aggregated by lender)."))
+    for note in intel.notes:
+        items.append(Item(label="Data note", value="", body=note))
+
+    charts: list[Chart] = []
+    if full:
+        charts = _msa_sba_charts(intel)
+    group = Group(
+        heading="SBA Lending Intelligence",
+        blurb="Where SBA 7(a) capital is actually flowing across main-street trades — funding "
+              "volume, typical deal sizes, the most active lenders, and the acquisition "
+              "(change-of-ownership) share. Derived from the SBA's public FOIA loan-level data.",
+        items=items, charts=charts)
+    return group, charts
+
+
+def _msa_sba_charts(intel) -> list["Chart"]:
+    charts: list[Chart] = []
+    try:
+        from app import newsletter_charts as nc
+        if intel.yearly_trends:
+            years = [f"FY{t.fiscal_year}" for t in intel.yearly_trends]
+            totals = [t.total_gross_approval for t in intel.yearly_trends]
+            charts.append(Chart(
+                label="SBA 7(a) volume by fiscal year",
+                image=nc.labeled_levels("SBA 7(a) gross approval by fiscal year ($M)",
+                                        years, [v / 1_000_000 for v in totals], unit="M"),
+                caption="Total SBA 7(a) gross loan approvals across the tracked main-street trades, "
+                        "by fiscal year. Derived aggregate of public FOIA loan-level records.",
+                source=intel.source))
+        top = intel.by_industry[:6]
+        if top:
+            labels = [i.naics_description[:28] for i in top]
+            meds = [i.median_gross_approval for i in top]
+            charts.append(Chart(
+                label="Median SBA loan by trade",
+                image=nc.horizontal_bars("Median SBA 7(a) loan by trade ($K)", labels, meds,
+                                         value_suffix="K", xlabel="Median gross approval ($K)",
+                                         scale=1_000.0),
+                caption="Median SBA 7(a) gross approval per loan by trade — a proxy for typical "
+                        "financeable deal size. Derived medians only.",
+                source=intel.source))
+    except Exception:  # noqa: BLE001
+        return charts
+    return charts
+
+
+def _msa_industry_group(profile, snap, full: bool) -> Group:
+    """Recession-Resilient Industry Spotlight — one industry per issue."""
+    from app import industry_resilience as ir  # local import for weights disclosure
+    items: list[Item] = [
+        Item(label="Recession resilience", value=f"{profile.recession_resilience:.0f}/100",
+             body="Composite of essential-service demand, BLS employment stability through "
+                  "downturns, and recurring-revenue tendency (disclosed weights "
+                  f"{int(ir.RESILIENCE_WEIGHTS['essential_service']*100)}/"
+                  f"{int(ir.RESILIENCE_WEIGHTS['demand_stability']*100)}/"
+                  f"{int(ir.RESILIENCE_WEIGHTS['recurring_contract']*100)}).",
+             tags=["Resilience"]),
+        Item(label="Succession opportunity", value=f"{profile.succession_opportunity:.0f}/100",
+             body="Composite of the owner-age-55+ share (the succession wave), market "
+                  "fragmentation, and SBA financeability — how deep and bankable the acquisition "
+                  "pool is.",
+             tags=["Succession"]),
+        Item(label="Typical valuation range",
+             value=f"{profile.typical_multiple_low:.1f}–{profile.typical_multiple_high:.1f}x SDE/EBITDA",
+             body=f"Derived reference range (base ~{profile.typical_multiple_base:.1f}x) with a "
+                  f"typical EBITDA margin near {profile.typical_ebitda_margin*100:.0f}%. Reference "
+                  "only — not a quote or appraisal.",
+             tags=["Valuation"]),
+    ]
+    if profile.pros:
+        items.append(Item(label="Why acquirers like it", value="",
+                          body=" ".join(f"• {p}" for p in profile.pros)))
+    if profile.cons:
+        items.append(Item(label="What to watch", value="",
+                          body=" ".join(f"• {c}" for c in profile.cons)))
+    if profile.red_flags:
+        items.append(Item(label="Red flags", value="",
+                          body=" ".join(f"• {r}" for r in profile.red_flags)))
+    if snap is not None:
+        items.append(Item(
+            label="SBA financing read", value=_usd(snap.median_gross_approval) + " median loan",
+            body=(f"In the SBA data, this trade shows {snap.loan_count:,} loans with a "
+                  f"{snap.change_of_ownership_pct:.0f}% change-of-ownership share and an average "
+                  f"term near {snap.avg_term_months/12:.0f} years — a financeable, acquisition-"
+                  "active corner of main street."),
+            source="Derived from SBA 7(a) FOIA (aggregated for this trade)."))
+
+    charts: list[Chart] = []
+    if full:
+        try:
+            from app import newsletter_charts as nc
+            charts.append(Chart(
+                label="Resilience vs. succession",
+                image=nc.labeled_levels(
+                    f"{profile.name} — acquirer score",
+                    ["Recession resilience", "Succession opportunity"],
+                    [profile.recession_resilience, profile.succession_opportunity],
+                    unit=""),
+                caption="Aegira's derived composite scores for the spotlight industry, from "
+                        "disclosed, weighted public-data sub-factors. Scores only.",
+                source="Derived: Aegira industry-resilience model (BLS · Census · BEA)."))
+        except Exception:  # noqa: BLE001
+            charts = []
+    return Group(
+        heading=f"Recession-Resilient Industry Spotlight — {profile.name}",
+        blurb="One industry per issue, scored for recession resilience and boomer-succession "
+              "opportunity, with derived multiples/margins, the acquirer's pros and cons, and the "
+              "red flags to underwrite against.",
+        items=items, charts=charts)
+
+
+def _msa_playbook_group(now: datetime) -> Group:
+    """Rotating Acquisition Playbook — one tactical chapter per issue."""
+    idx = (int(now.strftime("%U")) + now.year * 53) % len(_MSA_PLAYBOOKS)
+    title, blurb, plays = _MSA_PLAYBOOKS[idx]
+    return Group(
+        heading=f"Acquisition Playbook — {title}",
+        blurb=blurb,
+        items=[Item(label=label, value="", body=body) for label, body in plays])
+
+
+def _msa_teardown_group(profile, snap) -> tuple["Group | None", "object | None"]:
+    """Deal Teardown — run the Deal X-Ray + valuation lens on a representative deal
+    sized to the SBA data and the spotlight industry's derived economics."""
+    try:
+        from app.deal_xray import analyze
+        from app.deal_xray_models import DealInput
+    except Exception:  # noqa: BLE001
+        return None, None
+
+    median_loan = (snap.median_gross_approval if snap else 900_000.0) or 900_000.0
+    asking = round(median_loan / 0.85)  # SBA loan ≈ 85% of price → implied enterprise value
+    ebitda = asking / max(profile.typical_multiple_base, 0.5)
+    margin = max(profile.typical_ebitda_margin, 0.05)
+    revenue = ebitda / margin
+    industry_key = _MSA_INDUSTRY_MAP.get(profile.key, "general")
+
+    deal = DealInput(
+        business_name=f"Representative {profile.name} target",
+        industry=industry_key,
+        revenue=round(revenue),
+        revenue_prior=round(revenue * 0.94),
+        reported_ebitda=round(ebitda * 1.12),  # seller-presented (with add-backs)
+        addbacks=round(ebitda * 0.18),
+        earnings_history=[round(ebitda * 1.12), round(ebitda * 1.02), round(ebitda * 0.95)],
+        employees=max(8, int(revenue / 200_000)),
+        owner_involvement="owner_operated",
+        customer_concentration_pct=18.0,
+        recurring_revenue_pct=40.0,
+        asking_price=asking,
+        down_payment_pct=10.0,
+        seller_note_pct=10.0,
+        loan_term_years=10,
+    )
+    try:
+        report = analyze(deal)
+    except Exception:  # noqa: BLE001
+        return None, None
+
+    val = report.valuation
+    items = [
+        Item(label="Representative target",
+             value=f"{_usd(deal.revenue)} rev · {_usd(deal.reported_ebitda)} EBITDA (as presented)",
+             body=(f"A representative {profile.name.lower()} deal, sized to the SBA median loan and "
+                   f"the trade's ~{profile.typical_multiple_base:.1f}x reference multiple. Illustrative "
+                   "and derived — not a real listing.")),
+        Item(label="Deal X-Ray score",
+             value=f"{report.deal_score}/100 · {report.recommendation}",
+             body=f"Credibility/ethic rating {report.ethic_rating}/100. {report.ethic_note}",
+             tags=["Deal X-Ray"]),
+        Item(label="Valuation lens",
+             value=f"{_usd(val.multiple_value_low)}–{_usd(val.multiple_value_high)} (fair ~{_usd(val.multiple_value_base)})",
+             body=(f"On a normalized {_usd(val.normalized_ebitda)} basis at "
+                   f"{val.industry_multiple_low:.1f}–{val.industry_multiple_high:.1f}x, cross-checked "
+                   f"by a curbed DCF ({_usd(val.dcf_enterprise_value)}). Asking {_usd(val.asking_price)} "
+                   f"reads {val.verdict}."),
+             tags=["Valuation"]),
+    ]
+    qoe_flags = [q for q in report.diligence_questions if "quality-of-earnings" in q.lower() or "add-back" in q.lower()]
+    items.append(Item(
+        label="Quality-of-earnings watch",
+        value=f"add-backs {report.key_metrics.get('Add-back ratio', 'n/a')}",
+        body=(qoe_flags[0] if qoe_flags else "Re-underwrite the seller-presented EBITDA to a "
+              "defensible basis and confirm each add-back against source documents before anchoring "
+              "on price."),
+        tags=["QoE"]))
+    return Group(
+        heading="Deal Teardown",
+        blurb="The Deal X-Ray engine, a quality-of-earnings lens, and Aegira's valuation view "
+              "applied to a representative, fact-locked deal — how a disciplined acquirer would "
+              "read it.",
+        items=items), report
+
+
+def _msa_financing_group(report) -> Group:
+    """Financing Corner — SBA/DSCR structures from the teardown's financing options."""
+    items: list[Item] = []
+    if report is not None:
+        for opt in report.financing_options:
+            dscr = f"DSCR {opt.dscr:.2f}" if opt.dscr is not None else "DSCR n/a"
+            fit = " · SBA-fit" if opt.sba_fit else ""
+            items.append(Item(
+                label=opt.label, value=f"{dscr}{fit}",
+                body=(f"Equity {_usd(opt.equity_required)}, seller note {_usd(opt.seller_note)}, "
+                      f"loan {_usd(opt.loan_amount)}; annual debt service {_usd(opt.annual_debt_service)}. "
+                      f"{opt.note}"),
+                tags=["Financing"]))
+    items.append(Item(
+        label="The rule of thumb", value="target DSCR ≥ 1.25x",
+        body="Lenders want debt-service coverage comfortably above 1.0x; 1.25x+ after a realistic "
+             "owner salary and maintenance capex is the durable target. Solve for the price that "
+             "holds coverage in a downturn, then negotiate."))
+    return Group(
+        heading="Financing Corner — SBA & DSCR structures",
+        blurb="How the same deal pencils under different capital structures — the SBA 7(a) 90/10 "
+              "with a seller note versus a more conservative down payment — read through debt-"
+              "service coverage. Derived from the teardown; not a financing offer.",
+        items=items)
+
+
+def _msa_metric_group(now: datetime, m: QuoteMap, profile, snap) -> Group:
+    """Metric of the issue — a single rotating, fact-locked number worth internalizing."""
+    rr = _real_rate(m)
+    candidates: list[tuple[str, str, str]] = []
+    if snap is not None:
+        candidates.append((
+            "Change-of-ownership share of SBA lending",
+            f"{snap.change_of_ownership_pct:.0f}%",
+            f"Of SBA 7(a) loans in {profile.name.lower()} (in the sample), this share financed an "
+            "acquisition rather than expansion — a direct gauge of how bankable buying this "
+            "business is."))
+        candidates.append((
+            "Median SBA acquisition loan",
+            _usd(snap.median_gross_approval),
+            f"The median SBA 7(a) loan in {profile.name.lower()} — a practical anchor for the "
+            "financeable size of a main-street deal in this trade."))
+    candidates.append((
+        f"Recession-resilience score — {profile.name}",
+        f"{profile.recession_resilience:.0f}/100",
+        "Aegira's derived composite of essential-service demand, employment stability, and "
+        "recurring revenue for the spotlight industry."))
+    if rr is not None:
+        candidates.append((
+            "The real cost of capital",
+            f"{rr:.2f}%",
+            "The real 10-year yield (10Y − CPI) — the after-inflation hurdle every acquisition "
+            "must clear. When capital isn't free, price discipline is the edge."))
+    idx = (int(now.strftime("%U")) + now.year * 53) % len(candidates)
+    label, value, body = candidates[idx]
+    return Group(
+        heading="Metric of the Issue",
+        blurb="One number, fact-locked, worth carrying into your next conversation with a "
+              "seller or a lender.",
+        items=[Item(label=label, value=value, body=body)])
+
+
+def _main_street_acquirer(m: QuoteMap, now: datetime, full: bool) -> Edition:
+    dateline = f"Edition of {edition_date(now)}"
+    intro = _msa_thesis(m)
+
+    groups: list[Group] = []
+
+    # Charts live at the group level (the "brief" renderer shows both edition- and
+    # group-level charts, so keeping them per-group avoids double-rendering).
+    sba_group, _ = _msa_sba_group(full)
+    if sba_group is not None:
+        groups.append(sba_group)
+
+    # Spotlight industry + its SBA snapshot (deterministic per-week rotation).
+    profile = None
+    snap = None
+    try:
+        from app import industry_resilience as ir
+        profile = ir.spotlight_for(now)
+    except Exception:  # noqa: BLE001
+        profile = None
+    if profile is not None:
+        try:
+            from app import sba_intelligence as sba
+            snap = sba.industry_snapshot(sba.intelligence(top_n=20), profile.naics_prefixes)
+        except Exception:  # noqa: BLE001
+            snap = None
+        groups.append(_msa_industry_group(profile, snap, full))
+
+    report = None
+    if full:
+        groups.append(_msa_playbook_group(now))
+        if profile is not None:
+            teardown_group, report = _msa_teardown_group(profile, snap)
+            if teardown_group is not None:
+                groups.append(teardown_group)
+            groups.append(_msa_financing_group(report))
+        groups.append(_msa_metric_group(now, m, profile, snap) if profile is not None
+                      else Group(heading="Metric of the Issue", items=[]))
+
+    return Edition(
+        slug="main-street-acquirer", title="The Main Street Acquirer",
+        eyebrow="Main Street Acquirer",
+        dateline=dateline, intro=intro, groups=groups,
+        footer="Built for SMB, search-fund, and ETA acquirers from public data — Federal Reserve "
+               "(FRED), the SBA's 7(a)/504 FOIA loan-level data, and BLS/Census/BEA industry "
+               "series. Figures are derived and shown as last released; no marketplace data is "
+               "scraped or used.",
+        disclaimer=_DISCLAIMER, methodology=_methodology_for("main-street-acquirer"),
+        teaser=not full, charts=[],
+        cadence=cadence_for("main-street-acquirer"))
+
+
+def generate_scheduled_editions(
+    cadence: str,
+    now: datetime | None = None,
+    quotes: list[Quote] | None = None,
+    full: bool = True,
+) -> list[Edition]:
+    """Scheduled-generation hook: build every edition on a given cadence.
+
+    Callable from a scheduler/cron (weekly-pulse vs. monthly-deep-dive). ``quotes`` may be
+    injected to keep callers/tests network-free; otherwise the live market feed is polled.
+    Resilient: a single edition failure never aborts the batch.
+    """
+    now = now or datetime.now(timezone.utc)
+    slugs = editions_for_cadence(cadence)
+    if quotes is None:
+        from app.market_services import MarketDataService  # lazy: avoid import at module load
+        quotes = MarketDataService().quotes(NEWSLETTER_SYMBOLS).quotes
+    editions: list[Edition] = []
+    for slug in slugs:
+        try:
+            editions.append(build_edition(slug, quotes, now, full=full))
+        except Exception:  # noqa: BLE001 - never let one edition abort the scheduled batch
+            continue
+    return editions
 
 
 def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> Edition:
@@ -780,6 +1303,9 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
         raise KeyError(slug)
     m: QuoteMap = {q.symbol: q for q in quotes}
     dateline = f"Edition of {edition_date(now)}"
+
+    if slug == "main-street-acquirer":
+        return _main_street_acquirer(m, now, full)
 
     if slug == "insider-briefs":
         return _insider_brief(m, now, full)
@@ -792,7 +1318,8 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
             footer="Sourced from public data — Federal Reserve (FRED), U.S. Bureau of Labor "
                    "Statistics, and market feeds. Figures are as last released.",
             disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full,
-            charts=_macro_chart(m) if full else [])
+            charts=_macro_chart(m) if full else [],
+            cadence=cadence_for(slug))
 
     if slug == "red-alerts":
         alerts = _build_alerts(m)
@@ -805,7 +1332,8 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
             intro=intro, groups=[Group(heading="Triggered alerts", items=shown)] if shown else [],
             footer="Triggered from public data (FRED · BLS · market feeds). Thresholds are "
                    "indicative, not trading signals.",
-            disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full)
+            disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full,
+            cadence=cadence_for(slug))
 
     # opportunity-scan
     ideas = _build_scan(m)
@@ -827,7 +1355,8 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
                "and Aegira's validated factor research; equity fundamentals are derived from "
                "licensed data (Nasdaq Data Link / Sharadar) and surfaced as derived metrics only. "
                "Written in Aegira's independent professional perspective.",
-        disclaimer=_DISCLAIMER, methodology=_methodology_for(slug), teaser=not full)
+        disclaimer=_DISCLAIMER, methodology=_methodology_for(slug), teaser=not full,
+        cadence=cadence_for(slug))
 
 
 def _equity_charts(picks: list) -> list["Chart"]:
