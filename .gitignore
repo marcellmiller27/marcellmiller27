@@ -22,6 +22,9 @@ pnpm-debug.log*
 # Internal SF1 back-test cache — raw licensed Sharadar rows stay internal (governance)
 backend/.sf1_cache/
 
+# SBA FOIA loan-level cache — large public downloads stay out of version control
+backend/.sba_cache/
+
 # Domain registration — never commit registrant PII or generated request payloads
 scripts/domains/contact.json
 scripts/domains/*.register.json

@@ -7,6 +7,13 @@ type Edition = { href: string; name: string; cadence: string; blurb: string; rea
 
 const EDITIONS: Edition[] = [
   {
+    href: "/newsletters/main-street-acquirer",
+    name: "The Main Street Acquirer",
+    cadence: "Weekly pulse / monthly deep-dive",
+    blurb: "For SMB, search-fund, and ETA buyers: SBA lending intelligence, a recession-resilient industry spotlight, a rotating acquisition playbook, a deal teardown, and a financing corner — public data only.",
+    ready: true
+  },
+  {
     href: "/newsletters/economic-brief",
     name: "The Economic Brief",
     cadence: "Recurring update",

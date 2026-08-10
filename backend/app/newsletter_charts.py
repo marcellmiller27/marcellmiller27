@@ -208,6 +208,39 @@ def factor_decomposition(
     return _to_data_uri(fig)
 
 
+def horizontal_bars(
+    title: str,
+    labels: list[str],
+    values: list[float],
+    value_suffix: str = "",
+    xlabel: str = "",
+    scale: float = 1.0,
+) -> str:
+    """A generic horizontal bar for derived dollar/count aggregates (e.g. SBA volume).
+
+    ``scale`` divides the raw values for display (e.g. 1e6 to show $millions); the bar
+    lengths and the printed labels both use the scaled value so the axis is readable.
+    """
+    scaled = [v / scale for v in values]
+    fig = Figure(figsize=(6.8, 0.5 * len(labels) + 1.4))
+    ax = fig.add_subplot(111)
+    y = list(range(len(labels)))[::-1]  # first (largest) at the top
+    ax.barh(y, scaled, color=NAVY, edgecolor=NAVY, height=0.62, zorder=3)
+    span = max(scaled) if scaled else 1.0
+    for i, v in zip(y, scaled):
+        ax.text(v + span * 0.01, i, f"{v:,.1f}{value_suffix}", va="center", ha="left",
+                fontsize=9, color=GOLD, fontfamily=_FONT)
+    ax.set_yticks(y)
+    ax.set_yticklabels(labels, fontsize=9, color=INK, fontfamily=_FONT)
+    ax.set_xlim(0, span * 1.18)
+    if xlabel:
+        ax.set_xlabel(xlabel, fontsize=9, color=MUTED, fontfamily=_FONT)
+    ax.set_title(title, fontsize=12, fontfamily=_FONT, pad=10, loc="left")
+    ax.grid(axis="x", color=GRID, linewidth=0.6, zorder=0)
+    _base_style(fig)
+    return _to_data_uri(fig)
+
+
 def labeled_levels(title: str, labels: list[str], values: list[float],
                    unit: str = "%", note: str | None = None) -> str:
     """A single-series labeled bar for a thematic deep-dive (e.g. rate stack)."""
