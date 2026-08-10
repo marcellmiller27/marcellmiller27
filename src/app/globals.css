@@ -2708,6 +2708,14 @@ li {
   color: var(--muted);
   font-size: var(--fs-2xs);
 }
+/* Cadence / as-of disclosure on each value (e.g. "Monthly · as of Jun 2026") */
+.news__asof {
+  margin: 0.1rem 0 0.2rem;
+  color: var(--muted);
+  font-size: var(--fs-2xs);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
 /* Server-rendered charts (base64 exhibits; the PDF prints these too) */
 .news__charts {
   display: flex;

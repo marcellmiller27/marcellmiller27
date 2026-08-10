@@ -9,7 +9,14 @@ import { EditorialByline } from "@/components/editorial-byline";
 import { NewsletterDownloadButton } from "@/components/newsletter-download-button";
 import { UpgradeGate } from "@/components/upgrade-gate";
 
-type Item = { label: string; value: string; body: string; tags: string[]; source: string | null };
+type Item = {
+  label: string;
+  value: string;
+  body: string;
+  tags: string[];
+  source: string | null;
+  as_of_label?: string | null;
+};
 type Chart = { label: string; image: string; caption: string; source: string | null };
 type Group = { heading: string; blurb: string; items: Item[]; charts?: Chart[] };
 type Edition = {
@@ -103,6 +110,7 @@ export function NewsletterEdition({ slug, variant }: { slug: string; variant: Va
                   <span className="news__metric">{it.label}</span>
                   <strong className="news__value">{it.value}</strong>
                 </div>
+                {it.as_of_label ? <p className="news__asof">{it.as_of_label}</p> : null}
                 <p className="news__note">{it.body}</p>
                 {it.source ? <p className="news__source">{it.source}</p> : null}
               </li>
@@ -160,6 +168,7 @@ export function NewsletterEdition({ slug, variant }: { slug: string; variant: Va
                       <span className="news__metric">{it.label}</span>
                       <strong className="news__value">{it.value}</strong>
                     </div>
+                    {it.as_of_label ? <p className="news__asof">{it.as_of_label}</p> : null}
                     <p className="news__note">{it.body}</p>
                     {it.source ? <p className="news__source">{it.source}</p> : null}
                   </li>
