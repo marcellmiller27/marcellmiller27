@@ -55,6 +55,30 @@ def equity_valuation_workbook(v: EquityValuation) -> bytes:
         note="Discount rate that equates DCF value to today's price")
     row += 2
 
+    xl._subhead(ws, row, "Valuation 2.0 (innovator-fair view)")
+    row += 1
+    _kv(ws, row, "Archetype (calibration)", v.archetype,
+        note=f"Growth cap {v.growth_cap_used:.0%} · R&D treated as investment")
+    row += 1
+    _kv(ws, row, "Innovation & Moat score", v.innovation_moat_score, "0.0",
+        note="0–100: R&D intensity + growth, margin & revenue durability, ROIC")
+    row += 1
+    _kv(ws, row, "Adjusted owner-earnings", v.adjusted_owner_earnings, _USD, note=v.rnd_treatment)
+    row += 1
+    _kv(ws, row, "ROIC", v.roic if v.roic is not None else "n/a",
+        _PCT if v.roic is not None else None,
+        note=f"vs cost of capital {v.cost_of_capital:.1%}")
+    row += 1
+    _kv(ws, row, "High-growth fade (years)", v.high_growth_years,
+        note="Longer when ROIC > cost of capital (durable value creation)")
+    row += 1
+    _kv(ws, row, "Blended margin of safety", v.composite_margin, _PCT,
+        note="Intrinsic upside + Innovation/Moat credit")
+    row += 1
+    _kv(ws, row, "Classic (prior) value / share", v.classic_intrinsic_per_share, _USD2,
+        note=f"Conservative net-income DCF · {v.classic_signal} ({v.classic_upside_pct:.1%})")
+    row += 2
+
     xl._subhead(ws, row, "Market")
     row += 1
     _kv(ws, row, "Market price", v.price, _USD2)
