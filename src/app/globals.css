@@ -2755,6 +2755,129 @@ li {
   font-style: italic;
 }
 
+/* ── The Main Street Acquirer — a distinct deal/opportunity letter skin ──────────
+   Deliberately does NOT look like the Economic Brief: a bronze/emerald "deal desk"
+   masthead, a product badge, and signature sections rendered as accented cards with
+   per-section color coding. Token-based, so dark mode + the print/PDF path inherit it. */
+.news--acquirer {
+  --acq-ink: var(--text);
+  border-color: var(--gold-soft);
+  box-shadow: var(--shadow);
+}
+.news--acquirer .news__masthead {
+  border-bottom: 3px solid var(--gold);
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  margin: 0 calc(-1 * var(--space-6)) var(--space-5);
+  border-top: 4px solid var(--growth-strong);
+  background: linear-gradient(180deg, var(--gold-soft), transparent 85%);
+}
+.acq-badge {
+  display: inline-block;
+  margin: 0 0 0.5rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+  background: var(--growth-strong);
+  color: #fff;
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.news--acquirer .news__masthead h2 {
+  color: var(--acq-ink);
+  font-size: var(--fs-4xl);
+}
+.acq-tagline {
+  margin: 0.35rem 0 0;
+  color: var(--gold);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.01em;
+}
+
+/* Signature sections: an accent stripe + a distinct card (per-section color). */
+.acq-section {
+  --acq-accent: var(--muted-strong);
+  display: flex;
+  gap: 0;
+  margin-bottom: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background-soft);
+  overflow: hidden;
+}
+.acq-section--sba { --acq-accent: var(--trust); }
+.acq-section--spotlight { --acq-accent: var(--growth-strong); }
+.acq-section--playbook { --acq-accent: var(--gold); }
+.acq-section--teardown { --acq-accent: var(--trust-strong); }
+.acq-section--financing { --acq-accent: var(--growth); }
+.acq-section--metric { --acq-accent: var(--gold); }
+.acq-section__bar {
+  flex: 0 0 6px;
+  background: var(--acq-accent);
+}
+.acq-section__body {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--space-4);
+}
+.acq-section__kicker {
+  margin: 0 0 0.2rem;
+  color: var(--acq-accent);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.acq-section__title {
+  margin: 0 0 0.4rem;
+  font-size: var(--fs-xl);
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.acq-rows {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.news--acquirer li { padding-left: 0; }
+.news--acquirer li::before { content: none; }
+.acq-row {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--acq-accent);
+  border-radius: var(--radius-sm);
+  background: var(--background-card);
+  padding: var(--space-3);
+}
+.acq-row__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.acq-row__label {
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+.acq-row__value {
+  font-size: var(--fs-lg);
+  color: var(--acq-accent);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.acq-row__note {
+  margin: 0.3rem 0 0;
+  color: var(--muted-strong);
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+}
+.acq-row .output-tags {
+  margin-top: var(--space-2);
+}
+
 /* Red Alerts */
 .alert-list {
   list-style: none;
@@ -3062,10 +3185,21 @@ li {
   .news__section,
   .news__row,
   .scan-card,
+  .acq-section,
+  .acq-row,
   .news__chart,
   .alert {
     break-inside: avoid;
     page-break-inside: avoid;
+  }
+  /* The acquirer letter keeps its distinct skin in the PDF (deal desk, not the brief). */
+  .news--acquirer .news__masthead {
+    margin: 0 0 1.1rem;
+    border-top: 3pt solid var(--growth-strong);
+    border-bottom: 3pt solid var(--gold);
+  }
+  .acq-section {
+    border: 1px solid #d5dee8;
   }
   .news__chart {
     border: 1px solid #d5dee8;

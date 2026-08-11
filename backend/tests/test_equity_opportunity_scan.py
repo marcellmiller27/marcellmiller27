@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from types import SimpleNamespace
 
 from app import equity_opportunity_scan as scan
+from app.fundamentals import SOURCE_EDGAR, SOURCE_SF1
 from app.newsletter_content import build_edition
 
 
@@ -30,6 +31,34 @@ def test_rank_scores_and_orders_best_first() -> None:
     assert 0.0 <= out[-1].score <= 100.0 and out[0].score >= out[1].score
     # value string carries the numbers (fact-lock lives in `value`, not prose)
     assert "Score" in out[0].value_str and "%" in out[0].value_str
+
+
+def test_rank_propagates_actual_per_ticker_source() -> None:
+    rows = {
+        "SF1CO": {**_factors(0.35, 0.28, 0.40, 0.20, 0.06, 0.10, "SF1 Co"), "_source": SOURCE_SF1},
+        "EDGARCO": {**_factors(0.15, 0.10, 0.15, 0.07, 0.04, 0.06, "Edgar Co"), "_source": SOURCE_EDGAR},
+        "NASRC": {**_factors(0.08, 0.04, 0.08, 0.02, 0.03, 0.04, "No Src Co")},  # no _source
+    }
+    out = {o.ticker: o for o in scan._rank(rows, n=3)}
+    assert out["SF1CO"].source == SOURCE_SF1
+    assert out["EDGARCO"].source == SOURCE_EDGAR
+    assert out["NASRC"].source == ""
+
+
+def test_ticker_source_disclosure_reflects_actual_source(monkeypatch) -> None:
+    # SF1 -> primary; EDGAR -> fallback; neither -> attempted source + "no data available".
+    sf1 = scan.ticker_source_disclosure(SOURCE_SF1)
+    assert "Sharadar SF1 (Nasdaq Data Link)" in sf1 and "primary" in sf1
+    edgar = scan.ticker_source_disclosure(SOURCE_EDGAR)
+    assert "SEC EDGAR (fallback)" in edgar and "Sharadar SF1" not in edgar
+
+    # No data, key present -> attempted SF1 then EDGAR.
+    monkeypatch.setattr(scan.fundamentals, "nasdaq_data_link_api_key", lambda: "key")
+    no_data = scan.ticker_source_disclosure("")
+    assert no_data == "Sharadar SF1 → SEC EDGAR — no data available"
+    # No data, no key -> only EDGAR was attempted.
+    monkeypatch.setattr(scan.fundamentals, "nasdaq_data_link_api_key", lambda: None)
+    assert scan.ticker_source_disclosure(None) == "SEC EDGAR — no data available"
 
 
 def test_revenue_cagr() -> None:

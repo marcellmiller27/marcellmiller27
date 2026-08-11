@@ -815,8 +815,9 @@ def _insider_brief(m: QuoteMap, now: datetime, full: bool) -> Edition:
     return Edition(
         slug="insider-briefs", title=f"Insider Brief — {title}", eyebrow="Insider Briefs",
         dateline=dateline, intro=thesis, groups=groups,
-        footer="A rotating deep-dive on the most salient macro theme, built from public data "
-               "(FRED · BLS · SEC EDGAR · market feeds) and written in Aegira's independent "
+        footer="A rotating deep-dive on the most salient macro theme, built from public data: "
+               "Sharadar SF1 (Nasdaq Data Link) — point-in-time fundamentals (primary) · SEC "
+               "EDGAR (fallback) · FRED · BLS · market feeds. Written in Aegira's independent "
                "professional perspective.",
         disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full,
         charts=_insider_chart(m, title) if full else [],
@@ -1351,9 +1352,10 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
         intro="Where the current regime — restrictive policy, above-target inflation, and a "
               "resilient but softening consumer — is creating opportunity across asset classes.",
         groups=groups,
-        footer="Ideas are generated from public data (FRED · BLS · SEC EDGAR · market feeds) "
-               "and Aegira's validated factor research; equity fundamentals are derived from "
-               "licensed data (Nasdaq Data Link / Sharadar) and surfaced as derived metrics only. "
+        footer="Ideas are generated from Sharadar SF1 (Nasdaq Data Link) — point-in-time "
+               "fundamentals (primary) · SEC EDGAR (fallback) · FRED · BLS · market feeds. "
+               "Combined with Aegira's validated factor research; equity fundamentals are "
+               "surfaced as derived metrics only (raw licensed rows stay internal). "
                "Written in Aegira's independent professional perspective.",
         disclaimer=_DISCLAIMER, methodology=_methodology_for(slug), teaser=not full,
         cadence=cadence_for(slug))
@@ -1407,12 +1409,17 @@ def _build_equity_group() -> "Group | None":
         decomp = p.decomposition_str
         if decomp:
             body = f"{body} {decomp}."
+        # Per-ticker provenance reflects the ACTUAL source used for THAT name
+        # (Sharadar SF1 primary vs SEC EDGAR fallback), read from the fundamentals
+        # provider. NOTE: the raw-line-item EDGAR Fundamentals export and the Deal
+        # X-Ray public-comp benchmark intentionally stay on public-domain SEC EDGAR
+        # (Nasdaq license) — only this DERIVED scan uses the SF1-primary source.
         items.append(Item(
             label=p.ticker,
             value=p.value_str,
             body=body,
             tags=["Equities", p.top_factor],
-            source=f"Derived score/factors · {p.name} · Nasdaq Data Link / Sharadar (derived only)",
+            source=f"Derived score/factors · {p.name} · {p.source_disclosure}",
         ))
     return Group(
         heading="Top equity opportunities",

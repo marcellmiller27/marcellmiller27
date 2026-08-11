@@ -64,6 +64,27 @@ FACTOR_FAMILY = {
 }
 FACTOR_FAMILIES = ("Value", "Quality", "Growth", "Momentum")
 
+
+def ticker_source_disclosure(source: str | None) -> str:
+    """Human-readable per-ticker provenance for the newsletter disclosure.
+
+    Names the ACTUAL source used for a ticker (Sharadar SF1 primary vs SEC EDGAR
+    fallback); for a ticker with no fundamentals it names the ATTEMPTED source(s)
+    plus "no data available". Safe to surface — it discloses the SOURCE only, never
+    raw licensed rows (governance).
+
+    NOTE: This SF1-primary provenance is for the DERIVED opportunity scan only. The
+    raw-line-item EDGAR Fundamentals export and the Deal X-Ray public-comp benchmark
+    intentionally stay on public-domain SEC EDGAR (Nasdaq license) and never use SF1.
+    """
+    if source == fundamentals.SOURCE_SF1:
+        return "Sharadar SF1 (Nasdaq Data Link) — point-in-time fundamentals (primary); derived metrics only"
+    if source == fundamentals.SOURCE_EDGAR:
+        return "SEC EDGAR (fallback) — public-domain fundamentals; derived metrics only"
+    attempted = ("Sharadar SF1 → SEC EDGAR" if fundamentals.nasdaq_data_link_api_key()
+                 else "SEC EDGAR")
+    return f"{attempted} — no data available"
+
 _SCAN_TTL_SECONDS = 6 * 3600  # heavy (EDGAR + prices); cache the ranked result
 _scan_cache: dict[str, tuple[float, list["EquityOpportunity"]]] = {}
 
@@ -80,10 +101,22 @@ class EquityOpportunity:
     earnings_yield: float
     price: float
     market_cap: float
+    # Provider key for the source ACTUALLY used for THIS ticker's fundamentals
+    # (``fundamentals.SOURCE_SF1`` / ``SOURCE_EDGAR``). Drives the per-ticker
+    # provenance disclosure surfaced in the newsletter (SF1 primary vs EDGAR fallback).
+    source: str = ""
     # Signed weighted-z contribution of each factor family to the composite
     # (Value / Quality / Growth / Momentum). Derived output only.
     contributions: dict[str, float] = field(default_factory=dict)
     momentum_12_1: float | None = None
+
+    @property
+    def source_disclosure(self) -> str:
+        """Honest per-ticker provenance for THIS name (safe to surface — names the
+        SOURCE, never raw licensed rows). Reflects the ACTUAL source used; for a
+        ticker whose fundamentals could not be sourced it returns the attempted
+        source + 'no data available'."""
+        return ticker_source_disclosure(self.source)
 
     @property
     def value_str(self) -> str:
@@ -176,6 +209,8 @@ def _raw_factors(ticker: str, price: float | None) -> dict[str, float] | None:
         "_price": price,
         "_market_cap": market_cap,
         "_name": fin.entity_name,
+        # Actual source used for THIS ticker (SF1 vs EDGAR) — surfaced per-ticker.
+        "_source": fin.source,
     }
 
 
@@ -245,6 +280,7 @@ def _rank(rows: dict[str, dict[str, float]], n: int,
             operating_margin=r["operating_margin"], net_margin=r["net_margin"],
             roe=r["roe"], revenue_cagr=r["revenue_cagr"], earnings_yield=r["earnings_yield"],
             price=r["_price"], market_cap=r["_market_cap"],
+            source=str(r.get("_source", "")),
             contributions={fam: round(contrib[t][fam], 4) for fam in FACTOR_FAMILIES},
             momentum_12_1=(round(momentum[t], 4) if t in momentum else None),
         ))

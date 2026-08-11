@@ -13,7 +13,7 @@ export default function MainStreetAcquirerPage() {
       <p className="rec-crumb">
         <Link href="/newsletters">Newsletters</Link> <span aria-hidden>›</span> The Main Street Acquirer
       </p>
-      <NewsletterEdition slug="main-street-acquirer" variant="brief" />
+      <NewsletterEdition slug="main-street-acquirer" variant="acquirer" />
     </AppShell>
   );
 }

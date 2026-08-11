@@ -4,6 +4,7 @@ from uuid import uuid4
 from fastapi.testclient import TestClient
 
 from app.equity_opportunity_scan import EquityOpportunity, _rank
+from app.fundamentals import SOURCE_EDGAR, SOURCE_SF1
 from app.main import app
 from app.market_models import Quote
 from app.market_services import MarketDataService
@@ -35,12 +36,16 @@ def _macro_quotes() -> list[Quote]:
 
 
 def _fake_picks() -> list[EquityOpportunity]:
+    # Mix of actual sources so the per-ticker provenance disclosure is exercised:
+    # SF1 primary for the first three, EDGAR fallback for the last two.
+    sources = [SOURCE_SF1, SOURCE_SF1, SOURCE_SF1, SOURCE_EDGAR, SOURCE_EDGAR]
     picks: list[EquityOpportunity] = []
     for i, t in enumerate(["NVDA", "AAPL", "MSFT", "HD", "COST"]):
         picks.append(EquityOpportunity(
             ticker=t, name=f"{t} Inc", score=90.0 - i * 8,
             operating_margin=0.30 - i * 0.02, net_margin=0.22, roe=0.40,
             revenue_cagr=0.15 - i * 0.01, earnings_yield=0.05, price=100.0, market_cap=2e12,
+            source=sources[i],
             contributions={"Value": 0.20 - i * 0.04, "Quality": 0.50 - i * 0.05,
                            "Growth": 0.30 - i * 0.04, "Momentum": 0.25 - i * 0.06},
             momentum_12_1=0.30 - i * 0.05,
@@ -218,8 +223,31 @@ def test_opportunity_scan_surfaces_factor_decomposition(monkeypatch) -> None:
     first = equity.items[0]
     assert "Factor contribution —" in first.body
     assert any(fam in first.tags for fam in ("Value", "Quality", "Growth", "Momentum"))
-    # Governance: the SF1 source is named, never a raw row.
-    assert "Nasdaq Data Link / Sharadar" in (first.source or "")
+    # Per-ticker provenance reflects the ACTUAL source used for THAT name (SF1 vs
+    # EDGAR), read from the fundamentals provider — governance names the SOURCE only.
+    assert "Sharadar SF1 (Nasdaq Data Link)" in (first.source or "")
+    assert "primary" in (first.source or "")
+    # A ticker sourced from the EDGAR fallback discloses SEC EDGAR (fallback), not SF1.
+    edgar_item = next(it for it in equity.items if it.label == "HD")
+    assert "SEC EDGAR (fallback)" in (edgar_item.source or "")
+    assert "Sharadar SF1" not in (edgar_item.source or "")
+
+
+_SOURCE_ATTRIBUTION = (
+    "Sharadar SF1 (Nasdaq Data Link) — point-in-time fundamentals (primary) · "
+    "SEC EDGAR (fallback) · FRED · BLS · market feeds."
+)
+
+
+def test_opportunity_scan_footer_leads_with_sf1_attribution() -> None:
+    # SF1 is now the PRIMARY fundamentals source; the footer must say so (not "SEC EDGAR").
+    ed = build_edition("opportunity-scan", _macro_quotes(), datetime.now(timezone.utc), full=True)
+    assert _SOURCE_ATTRIBUTION in ed.footer
+
+
+def test_insider_brief_footer_leads_with_sf1_attribution() -> None:
+    ed = build_edition("insider-briefs", _macro_quotes(), datetime.now(timezone.utc), full=True)
+    assert _SOURCE_ATTRIBUTION in ed.footer
 
 
 def test_opportunity_scan_methodology_has_attribution_and_disclaimers() -> None:
