@@ -11,26 +11,39 @@ from app.fundamentals import SOURCE_EDGAR, EquityFundamentals, FundamentalsYear
 
 
 def _install(monkeypatch, *, net_income=1_000_000_000.0, shares=100_000_000.0,
-             rev_first=100.0, rev_last=144.0, name="Acme Corp.", source=SOURCE_EDGAR):
+             rev_first=100.0, rev_last=144.0, name="Acme Corp.", source=SOURCE_EDGAR,
+             revenue=None, gross_margin=None, rnd=None, roic=None, capex=None,
+             rnd_first=None, rnd_last=None, years=None):
     """Inject a normalized fundamentals bundle at the provider boundary (network-free).
 
     Patching ``fundamentals.equity_fundamentals`` keeps the DCF tests independent of
-    whether SF1 (NASDAQ_DATA_LINK_API_KEY) is configured in the environment.
+    whether SF1 (NASDAQ_DATA_LINK_API_KEY) is configured in the environment. The
+    Valuation 2.0 knobs (``rnd``/``roic``/``gross_margin``/…) default to ``None`` so
+    the classic-reduction behaviour of the legacy tests is preserved.
     """
+    if years is None:
+        years = [
+            FundamentalsYear(fiscal_year=2022, revenue=rev_first,
+                             rnd=rnd_first, gross_margin=gross_margin),
+            FundamentalsYear(fiscal_year=2024, revenue=rev_last,
+                             rnd=rnd_last if rnd_last is not None else rnd,
+                             gross_margin=gross_margin),
+        ]
     bundle = EquityFundamentals(
         ticker="ACME",
         entity_name=name,
         source=source,
         net_income=net_income,
-        revenue=rev_last,
+        revenue=revenue if revenue is not None else rev_last,
         stockholders_equity=5_000_000_000.0,
+        gross_margin=gross_margin,
         operating_margin=0.25,
         net_margin=0.20,
         shares_outstanding=shares,
-        years=[
-            FundamentalsYear(fiscal_year=2022, revenue=rev_first),
-            FundamentalsYear(fiscal_year=2024, revenue=rev_last),
-        ],
+        rnd=rnd,
+        capex=capex,
+        roic=roic,
+        years=years,
     )
     monkeypatch.setattr(ev.fundamentals, "equity_fundamentals", lambda t, max_years=5: bundle)
 
@@ -98,3 +111,122 @@ def test_workbook_is_valid_xlsx(monkeypatch) -> None:
     data = equity_valuation_workbook(v)
     assert data[:2] == b"PK"  # xlsx is a zip archive
     assert len(data) > 2000
+
+
+# ── Valuation Framework 2.0 ──────────────────────────────────────────────────
+def test_reduces_to_classic_without_innovation_data(monkeypatch) -> None:
+    # No R&D and no ROIC ⇒ the 2.0 path must collapse EXACTLY onto the classic DCF.
+    _install(monkeypatch)
+    v = ev.value_equity("ACME", price=50.0, risk_free=0.04)
+    assert v.roic is None
+    assert v.high_growth_years == ev.PROJECTION_YEARS
+    assert len(v.growth_path) == ev.PROJECTION_YEARS
+    assert all(abs(g - v.growth_path[0]) < 1e-12 for g in v.growth_path)  # flat
+    assert v.adjusted_owner_earnings == v.base_fcf == v.classic_base_fcf  # net income
+    assert abs(v.intrinsic_per_share - v.classic_intrinsic_per_share) < 1e-6
+    assert v.archetype == "Classic (industry/value)"
+    assert v.growth_cap_used == ev.GROWTH_CAP
+
+
+def test_rnd_capitalized_lifts_owner_earnings(monkeypatch) -> None:
+    # Rising R&D ⇒ positive add-back ⇒ adjusted owner-earnings above raw net income,
+    # so a heavy-R&D innovator is not penalized for expensing its investment.
+    _install(monkeypatch, net_income=1_000_000_000.0,
+             rnd=400_000_000.0, rnd_first=150_000_000.0, rnd_last=400_000_000.0,
+             revenue=4_000_000_000.0, gross_margin=0.6, roic=0.25, capex=200_000_000.0)
+    v = ev.value_equity("ACME", price=50.0, risk_free=0.04)
+    assert v.adjusted_owner_earnings > v.classic_base_fcf
+    assert v.rnd_asset > 0
+    assert "Capitalized R&D" in v.rnd_treatment
+    # Owner-earnings uplift lifts the 2.0 intrinsic above the classic value.
+    assert v.intrinsic_per_share > v.classic_intrinsic_per_share
+
+
+def test_flat_rnd_is_roughly_neutral_on_earnings(monkeypatch) -> None:
+    # Steady-state R&D over a full amortization life ⇒ add-back ≈ 0 (no free lunch
+    # from capitalization alone; the current spend equals the amortization charge).
+    flat = [
+        FundamentalsYear(fiscal_year=y, revenue=5_000_000_000.0, rnd=300_000_000.0)
+        for y in range(2020, 2025)
+    ]
+    _install(monkeypatch, net_income=1_000_000_000.0, rnd=300_000_000.0,
+             revenue=5_000_000_000.0, years=flat)
+    v = ev.value_equity("ACME", price=50.0, risk_free=0.04)
+    assert abs(v.adjusted_owner_earnings - v.classic_base_fcf) < 1e-6
+
+
+def test_roic_above_cost_of_capital_extends_fade(monkeypatch) -> None:
+    high = ev.value_equity  # alias for readability
+    _install(monkeypatch, roic=0.30, revenue=5_000_000_000.0)
+    v = high("ACME", price=50.0, risk_free=0.04)
+    assert v.roic == 0.30
+    assert v.roic > v.cost_of_capital
+    assert v.high_growth_years > ev.PROJECTION_YEARS
+    assert len(v.growth_path) == v.high_growth_years
+    # Fade is monotonically decreasing toward the terminal rate.
+    assert all(a >= b for a, b in zip(v.growth_path, v.growth_path[1:]))
+    assert abs(v.growth_path[-1] - ev.TERMINAL_GROWTH) < 1e-9
+
+
+def test_low_roic_does_not_extend_fade(monkeypatch) -> None:
+    _install(monkeypatch, roic=0.05)  # ~ at/below cost of capital
+    v = ev.value_equity("ACME", price=50.0, risk_free=0.04)
+    assert v.high_growth_years == ev.PROJECTION_YEARS
+
+
+def test_archetype_and_growth_cap(monkeypatch) -> None:
+    _install(monkeypatch, rnd=800_000_000.0, revenue=5_000_000_000.0, gross_margin=0.65)
+    innovator = ev.value_equity("ACME", price=50.0, risk_free=0.04)
+    assert innovator.archetype == "R&D-intensive innovator"
+    assert innovator.growth_cap_used == ev.INNOVATOR_GROWTH_CAP
+
+    _install(monkeypatch, rnd=None, gross_margin=0.30)
+    classic = ev.value_equity("ACME", price=50.0, risk_free=0.04)
+    assert classic.archetype == "Classic (industry/value)"
+    assert classic.growth_cap_used == ev.GROWTH_CAP
+
+
+def test_moat_score_bounds_and_components(monkeypatch) -> None:
+    _install(monkeypatch, net_income=1_000_000_000.0,
+             rnd=900_000_000.0, rnd_first=300_000_000.0, rnd_last=900_000_000.0,
+             revenue=5_000_000_000.0, gross_margin=0.70, roic=0.35, capex=300_000_000.0)
+    v = ev.value_equity("ACME", price=50.0, risk_free=0.04)
+    assert 0.0 <= v.innovation_moat_score <= 100.0
+    assert v.innovation_moat_score > 50.0  # strong innovator on every lens
+    expected_keys = {
+        "rnd_intensity", "rnd_growth", "gross_margin_durability",
+        "revenue_growth_durability", "reinvestment_efficiency",
+    }
+    assert set(v.innovation_moat_components) == expected_keys
+    assert abs(sum(v.innovation_moat_components.values()) - v.innovation_moat_score) < 0.5
+
+
+def test_blend_gives_innovator_a_fairer_read(monkeypatch) -> None:
+    # A high-moat innovator whose raw upside sits just under the Enter bar gets the
+    # moat credit that tips the blended call to Enter — while the classic view is
+    # kept as a disclosed component (both shown).
+    _install(monkeypatch, net_income=1_000_000_000.0,
+             rnd=900_000_000.0, rnd_first=300_000_000.0, rnd_last=900_000_000.0,
+             revenue=5_000_000_000.0, gross_margin=0.70, roic=0.35, capex=300_000_000.0)
+    fair = ev.value_equity("ACME", price=50.0, risk_free=0.04)
+    # Price the name so raw upside is just below +20% but the moat credit clears it.
+    price = fair.intrinsic_per_share / (1.0 + (ev.ENTER_UPSIDE - 0.05))
+    v = ev.value_equity("ACME", price=price, risk_free=0.04)
+    assert v.upside_pct < ev.ENTER_UPSIDE                      # raw margin below bar
+    assert v.composite_margin >= ev.ENTER_UPSIDE              # moat credit clears it
+    assert v.signal == "Enter"
+    assert v.classic_signal in {"Enter", "Accumulate", "Sideline"}  # disclosed component present
+    assert v.composite_margin > v.upside_pct                  # credit is additive
+
+
+def test_notes_and_sources_disclose_assumptions(monkeypatch) -> None:
+    _install(monkeypatch, rnd=800_000_000.0, revenue=5_000_000_000.0,
+             gross_margin=0.65, roic=0.30, capex=200_000_000.0)
+    v = ev.value_equity("ACME", price=50.0, risk_free=0.04)
+    blob = " ".join(v.notes).lower()
+    assert "archetype" in blob
+    assert "r&d" in blob
+    assert "moat" in blob
+    assert "roic" in blob
+    assert any("research, not investment advice" in n.lower() for n in v.notes)
+    assert v.sources and "SEC EDGAR" in v.sources[0]

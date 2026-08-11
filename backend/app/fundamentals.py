@@ -62,6 +62,12 @@ SOURCE_LABELS: dict[str, str] = {
 #   opinc    -> operating_income (operating_margin = opinc / revenue)
 #   gp       -> gross_profit    (gross_margin = gp / revenue)
 #   sharesbas / shwa -> shares outstanding (prefer period-end basic shares)
+#   rnd      -> research_and_development expense (Valuation 2.0: R&D-as-investment)
+#   fcf      -> free_cash_flow  (cash-flow-statement based)
+#   capex    -> capital expenditure
+#   ebitda   -> ebitda
+#   roic     -> return on invested capital (reinvestment-driven growth trigger)
+#   roe      -> return on equity (roic proxy when roic is absent)
 
 
 @dataclass
@@ -73,6 +79,8 @@ class FundamentalsYear:
     net_income: float | None = None
     operating_income: float | None = None
     stockholders_equity: float | None = None
+    rnd: float | None = None  # research & development expense (for R&D-growth trend)
+    gross_margin: float | None = None
 
 
 @dataclass
@@ -98,6 +106,13 @@ class EquityFundamentals:
     operating_margin: float | None = None
     net_margin: float | None = None
     shares_outstanding: float | None = None
+    # Valuation Framework 2.0 inputs (SF1-rich; None when the source lacks them).
+    rnd: float | None = None                # research & development expense
+    free_cash_flow: float | None = None     # SF1 fcf (cash-flow-statement based)
+    capex: float | None = None              # capital expenditure (SF1 sign preserved)
+    ebitda: float | None = None
+    roic: float | None = None               # return on invested capital
+    roe: float | None = None                # return on equity
     years: list[FundamentalsYear] = field(default_factory=list)
     as_of: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -150,6 +165,13 @@ def _from_sf1(ticker: str, max_years: int) -> EquityFundamentals | None:
     operating_income = _pick(latest, "opinc")
     gross_profit = _pick(latest, "gp")
     shares = _pick(latest, "sharesbas", "shwa")
+    # Valuation 2.0 inputs (leave None when SF1 omits them — engine degrades safely).
+    rnd = _pick(latest, "rnd")
+    fcf = _pick(latest, "fcf")
+    capex = _pick(latest, "capex")
+    ebitda = _pick(latest, "ebitda")
+    roic = _pick(latest, "roic")
+    roe = _pick(latest, "roe")
 
     # SF1 must supply the core income-statement fields to be considered usable;
     # otherwise fall back to EDGAR rather than emit a half-populated bundle.
@@ -161,13 +183,16 @@ def _from_sf1(ticker: str, max_years: int) -> EquityFundamentals | None:
         fy = _row_year(row)
         if fy is None:
             continue
+        row_rev = _pick(row, "revenue")
         years.append(
             FundamentalsYear(
                 fiscal_year=fy,
-                revenue=_pick(row, "revenue"),
+                revenue=row_rev,
                 net_income=_pick(row, "netinc"),
                 operating_income=_pick(row, "opinc"),
                 stockholders_equity=_pick(row, "equity"),
+                rnd=_pick(row, "rnd"),
+                gross_margin=_safe_ratio(_pick(row, "gp"), row_rev),
             )
         )
 
@@ -186,6 +211,12 @@ def _from_sf1(ticker: str, max_years: int) -> EquityFundamentals | None:
         operating_margin=_safe_ratio(operating_income, revenue),
         net_margin=_safe_ratio(net_income, revenue),
         shares_outstanding=shares if (shares and shares > 0) else None,
+        rnd=rnd,
+        free_cash_flow=fcf,
+        capex=capex,
+        ebitda=ebitda,
+        roic=roic,
+        roe=roe if roe is not None else _safe_ratio(net_income, equity),
         years=years,
     )
 
@@ -220,6 +251,8 @@ def _from_edgar(ticker: str, max_years: int) -> EquityFundamentals:
         operating_margin=fin.operating_margin,
         net_margin=fin.net_margin,
         shares_outstanding=shares if (shares and shares > 0) else None,
+        # EDGAR does not expose SF1-rich fields; derive ROE where the inputs allow.
+        roe=_safe_ratio(fin.net_income, fin.stockholders_equity),
         years=years,
     )
 
