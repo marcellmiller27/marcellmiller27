@@ -33,10 +33,25 @@ type Edition = {
   charts?: Chart[];
 };
 type Payload = { edition: Edition; as_of: string; editorial: string };
-type Variant = "brief" | "alerts" | "scan" | "insider";
+type Variant = "brief" | "alerts" | "scan" | "insider" | "acquirer";
 
 // Sectioned editions (thesis/summary + analytical sections + items) share one layout.
 const SECTIONED: Variant[] = ["brief", "insider"];
+
+// The Main Street Acquirer is a distinct *deal/opportunity letter* — not the Economic
+// Brief. Its signature sections get a dedicated "kind" so each renders with its own
+// accent, kicker, and card treatment (see `.news--acquirer` / `.acq-*` in globals.css).
+type AcquirerSection = { kind: string; kicker: string };
+function acquirerSection(heading: string): AcquirerSection {
+  const h = heading.toLowerCase();
+  if (h.startsWith("sba")) return { kind: "sba", kicker: "Lending Intelligence" };
+  if (h.includes("industry spotlight")) return { kind: "spotlight", kicker: "Industry Spotlight" };
+  if (h.startsWith("acquisition playbook")) return { kind: "playbook", kicker: "The Playbook" };
+  if (h.startsWith("deal teardown")) return { kind: "teardown", kicker: "Deal Teardown" };
+  if (h.startsWith("financing corner")) return { kind: "financing", kicker: "Financing Corner" };
+  if (h.startsWith("metric of the issue")) return { kind: "metric", kicker: "Metric of the Issue" };
+  return { kind: "default", kicker: "" };
+}
 
 // Server-rendered charts embedded as base64 data-URIs (the PDF prints these too).
 function ChartFigures({ charts }: { charts?: Chart[] }) {
@@ -74,22 +89,33 @@ export function NewsletterEdition({ slug, variant }: { slug: string; variant: Va
   if (!data) return <p className="rec-empty">Generating the latest edition from live data…</p>;
 
   const ed = data.edition;
+  const isAcquirer = variant === "acquirer";
 
   return (
-    <article className="news">
+    <article className={isAcquirer ? "news news--acquirer" : "news"}>
       <NewsletterDownloadButton slug={slug} />
 
       <header className="news__masthead">
+        {isAcquirer ? <p className="acq-badge">Deal &amp; Opportunity Letter</p> : null}
         <p className="eyebrow">Aegira · {ed.eyebrow}</p>
         <h2>{ed.title}</h2>
         <p className="news__edition">{ed.dateline}</p>
+        {isAcquirer ? (
+          <p className="acq-tagline">For SMB, search-fund &amp; ETA buyers · SBA · DSCR · deal teardowns</p>
+        ) : null}
         <EditorialByline />
       </header>
 
       {ed.intro ? (
         <section className="news__lede">
-          {SECTIONED.includes(variant) ? (
-            <h3>{variant === "insider" ? "Thesis" : "Executive summary"}</h3>
+          {SECTIONED.includes(variant) || isAcquirer ? (
+            <h3>
+              {variant === "insider"
+                ? "Thesis"
+                : isAcquirer
+                  ? "The acquirer's read"
+                  : "Executive summary"}
+            </h3>
           ) : null}
           <p>{ed.intro}</p>
         </section>
@@ -178,6 +204,41 @@ export function NewsletterEdition({ slug, variant }: { slug: string; variant: Va
           ))}
         </>
       )}
+
+      {isAcquirer && ed.groups.map((g) => {
+        const { kind, kicker } = acquirerSection(g.heading);
+        return (
+          <section className={`acq-section acq-section--${kind}`} key={g.heading}>
+            <div className="acq-section__bar" aria-hidden />
+            <div className="acq-section__body">
+              {kicker ? <p className="acq-section__kicker">{kicker}</p> : null}
+              <h3 className="acq-section__title">{g.heading}</h3>
+              {g.blurb ? <p className="news__blurb">{g.blurb}</p> : null}
+              <ChartFigures charts={g.charts} />
+              <ul className="acq-rows">
+                {g.items.map((it) => (
+                  <li className="acq-row" key={it.label}>
+                    <div className="acq-row__head">
+                      <span className="acq-row__label">{it.label}</span>
+                      {it.value ? <strong className="acq-row__value">{it.value}</strong> : null}
+                    </div>
+                    {it.as_of_label ? <p className="news__asof">{it.as_of_label}</p> : null}
+                    <p className="acq-row__note">{it.body}</p>
+                    {it.tags && it.tags.length > 0 ? (
+                      <div className="output-tags">
+                        {it.tags.map((t) => (
+                          <span className="tag" key={t}>{t}</span>
+                        ))}
+                      </div>
+                    ) : null}
+                    {it.source ? <p className="news__source">{it.source}</p> : null}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        );
+      })}
 
       {ed.teaser ? <UpgradeGate /> : null}
 
