@@ -23,9 +23,12 @@ from app import data_registry as dr
 from app.market_models import Quote
 
 # The full indicator + market set the editions draw from (mirrors newsletter-format.ts).
+# Crypto majors (ETH/SOL/XRP/XLM) and M2 liquidity are pulled for the Crypto
+# Intelligence edition; they degrade gracefully when a provider/key is unavailable.
 NEWSLETTER_SYMBOLS: list[str] = [
     "GDP", "FED_FUNDS", "UNEMPLOYMENT", "RETAIL_SALES", "CONSUMER_SENTIMENT",
-    "INDUSTRIAL_PRODUCTION", "INFLATION", "SPX", "GOLD", "UST10Y", "BTC",
+    "INDUSTRIAL_PRODUCTION", "INFLATION", "SPX", "GOLD", "UST10Y",
+    "BTC", "ETH", "SOL", "XRP", "XLM", "M2",
 ]
 
 
@@ -86,6 +89,8 @@ EDITION_SLUGS = (
     "opportunity-scan",
     "insider-briefs",
     "main-street-acquirer",
+    "crypto-intelligence",
+    "dividend-opportunities",
 )
 
 # ── Distribution cadence metadata ────────────────────────────────────────────
@@ -99,6 +104,11 @@ EDITION_CADENCE: dict[str, tuple[str, ...]] = {
     "opportunity-scan": ("monthly-deep-dive",),
     "insider-briefs": ("monthly-deep-dive",),
     "main-street-acquirer": ("weekly-pulse", "monthly-deep-dive"),
+    # Crypto Intelligence is a lighter, time-sensitive biweekly read → weekly-pulse
+    # bucket (there is no separate biweekly broadcast rhythm); Dividend Opportunities
+    # is the monthly income flagship → monthly-deep-dive.
+    "crypto-intelligence": ("weekly-pulse",),
+    "dividend-opportunities": ("monthly-deep-dive",),
 }
 
 CADENCES = ("weekly-pulse", "monthly-deep-dive")
@@ -125,6 +135,15 @@ _UST10Y_NORM = 4.0     # post-2000 nominal 10-year reference level
 _DISCLAIMER = (
     "For research and educational purposes only. Not investment, legal, tax, or "
     "accounting advice. Written in Aegira's independent professional perspective."
+)
+
+# Digital assets carry outsized volatility/regulatory risk — the crypto edition adds
+# an explicit risk note on top of the standing disclaimer.
+_CRYPTO_DISCLAIMER = (
+    "For research and educational purposes only. Not investment, legal, tax, or "
+    "accounting advice. Digital assets are highly volatile and speculative and can "
+    "lose value rapidly; size any exposure to that risk. Written in Aegira's "
+    "independent professional perspective."
 )
 
 # Methodology disclosure — the institutional standard from docs/EDITORIAL_STYLE_GUIDE.md (E1).
@@ -165,6 +184,19 @@ _INDUSTRY_ATTRIBUTION = (
 )
 
 
+_CRYPTO_ATTRIBUTION = (
+    "Crypto spot prices and 24-hour moves are from CoinGecko's public feed; the M2 "
+    "money-supply liquidity read is from the Federal Reserve (FRED). Figures are shown "
+    "as last released; no exchange order-book or fund-flow data is scraped."
+)
+_DIVIDEND_ATTRIBUTION = (
+    "Dividend, income, and balance-sheet-quality figures are DERIVED by Aegira from "
+    "point-in-time fundamentals (Sharadar SF1 primary · SEC EDGAR fallback) and public "
+    "SEC EDGAR cash-flow filings, combined with live market price. Only derived metrics "
+    "(yields, payout, coverage, margins, ROE) are shown — never raw licensed rows."
+)
+
+
 def _methodology_for(slug: str) -> str:
     """Base methodology, plus source-specific attribution / derived-only disclaimers so
     attribution always rides with the data on each data-derived edition."""
@@ -172,6 +204,10 @@ def _methodology_for(slug: str) -> str:
         return " ".join([METHODOLOGY, _SF1_ATTRIBUTION, _DERIVED_ONLY_NOTE, _BACKTEST_DISCLAIMER])
     if slug == "main-street-acquirer":
         return " ".join([METHODOLOGY, _SBA_ATTRIBUTION, _INDUSTRY_ATTRIBUTION, _DERIVED_ONLY_NOTE])
+    if slug == "crypto-intelligence":
+        return " ".join([METHODOLOGY, _CRYPTO_ATTRIBUTION])
+    if slug == "dividend-opportunities":
+        return " ".join([METHODOLOGY, _DIVIDEND_ATTRIBUTION, _DERIVED_ONLY_NOTE])
     return METHODOLOGY
 
 
@@ -1272,6 +1308,354 @@ def _main_street_acquirer(m: QuoteMap, now: datetime, full: bool) -> Edition:
         cadence=cadence_for("main-street-acquirer"))
 
 
+# ── Crypto Intelligence ──────────────────────────────────────────────────────
+# A biweekly digital-asset read: the Bitcoin/crypto cycle, price action across the
+# majors, and the liquidity & adoption backdrop (M2 money supply + the real-rate
+# regime). Built from the existing crypto quote adapter (CoinGecko) + FRED — no new
+# vendor. Every figure is shown as last released; nothing is fabricated.
+_CRYPTO_MAJORS: list[str] = ["BTC", "ETH", "SOL", "XRP", "XLM"]
+
+
+def _crypto_commentary(symbol: str, q: Quote) -> str:
+    chg = q.change_percent
+    trend = ""
+    if chg is not None:
+        if abs(chg) < 0.5:
+            trend = " Little changed over the session — consolidating."
+        else:
+            trend = (f" {'Up' if chg > 0 else 'Down'} {abs(chg):.1f}% on the session, a "
+                     f"{'risk-on' if chg > 0 else 'risk-off'} tell.")
+    base = {
+        "BTC": "The reserve asset of the space and the anchor of the cycle — a high-beta "
+               "read on global liquidity and institutional adoption.",
+        "ETH": "The largest smart-contract network — a proxy for on-chain activity, "
+               "staking demand, and the app/L2 economy.",
+        "SOL": "A high-throughput L1 — a beta-on-beta read on speculative appetite and "
+               "developer/retail flows.",
+        "XRP": "A payments-focused token — sensitive to regulatory clarity and "
+               "cross-border settlement adoption.",
+        "XLM": "A payments/settlement network — a small-cap read on the adoption theme.",
+    }.get(symbol, "A digital-asset read on liquidity and risk appetite.")
+    return base + trend
+
+
+def _crypto_majors_group(m: QuoteMap) -> Group:
+    items: list[Item] = []
+    for sym in _CRYPTO_MAJORS:
+        q = m.get(sym)
+        if q is None or q.price is None:
+            spec = dr.get_series(sym)
+            items.append(Item(label=spec.name if spec else sym, value=_pending_label(sym),
+                              body="Awaiting the next quote from the crypto feed.",
+                              as_of_label=_as_of(q)))
+            continue
+        items.append(Item(label=q.name, value=fmt(q), body=_crypto_commentary(sym, q),
+                          source=q.note, as_of_label=_as_of(q)))
+    return Group(
+        heading="Majors — price & 24-hour action",
+        blurb="Spot price and the 24-hour move across the majors — Bitcoin as the cycle "
+              "anchor, then the large-cap alts. Levels are shown as last released.",
+        items=items)
+
+
+def _crypto_liquidity_group(m: QuoteMap) -> Group:
+    """Liquidity & adoption signals: M2 money supply (the liquidity tide crypto rides),
+    the policy/real-rate backdrop, and the ETF/price-action read (proxied honestly by
+    spot action + liquidity — no fabricated fund-flow numbers)."""
+    items: list[Item] = []
+    m2 = m.get("M2")
+    if m2 is not None and m2.price is not None:
+        items.append(Item(
+            label="M2 money supply", value=fmt(m2),
+            body="The broad-money tide crypto has historically ridden: expanding liquidity "
+                 "is a tailwind for scarce, high-beta assets; contracting liquidity is a "
+                 "headwind. This is the single most important macro input for the cycle.",
+            source=m2.note, as_of_label=_as_of(m2)))
+    else:
+        items.append(Item(
+            label="M2 money supply", value=_pending_label("M2"),
+            body="Liquidity read pending the next FRED release (set FRED_API_KEY to "
+                 "activate the live series).", as_of_label=_as_of(m2)))
+    rr = _real_rate(m)
+    if rr is not None:
+        items.append(Item(
+            label="Real rates backdrop", value=f"{rr:.2f}% (10Y − CPI)",
+            body=("Positive real yields are a headwind for non-yielding assets like crypto — "
+                  "the opportunity cost of holding is real."
+                  if rr >= 1 else
+                  "Only modestly positive real yields lower the opportunity cost of holding "
+                  "non-yielding assets — a less punishing backdrop for crypto."),
+            source="Derived: 10-year Treasury − headline CPI (FRED)."))
+    ff = m.get("FED_FUNDS")
+    if ff is not None and ff.price is not None:
+        items.append(Item(
+            label="Policy stance", value=fmt(ff),
+            body="Restrictive policy drains liquidity and caps speculative risk appetite; the "
+                 "first cuts historically re-open the risk window for digital assets.",
+            source=ff.note, as_of_label=_as_of(ff)))
+    btc = m.get("BTC")
+    if btc is not None and btc.price is not None:
+        items.append(Item(
+            label="ETF / price-action read", value="spot-led",
+            body=(f"With Bitcoin at {fmt(btc)}, the desk reads adoption and spot-ETF demand "
+                  "through price action and liquidity rather than any single fund-flow print — "
+                  "sustained strength above prior ranges is the cleanest tell that institutional "
+                  "demand is absorbing supply."),
+            tags=["Adoption", "ETF"]))
+    return Group(
+        heading="Liquidity & adoption signals",
+        blurb="What actually drives the cycle: the money-supply tide (M2), the real-rate "
+              "opportunity cost, the policy stance, and the spot/ETF adoption read.",
+        items=items)
+
+
+def _crypto_lens_group(m: QuoteMap) -> Group:
+    """Positioning lens — how the desk frames digital assets for allocators."""
+    return Group(
+        heading="The Aegira lens",
+        blurb="How the desk frames digital assets — interpretation, not a forecast or advice.",
+        items=[
+            Item(label="Position sizing", value="satellite, sized to volatility",
+                 body="Treat crypto as a high-beta satellite, not a core holding, until policy "
+                      "eases and liquidity turns. Size to the drawdown you can tolerate, not the "
+                      "upside you hope for."),
+            Item(label="Quality within the space", value="BTC/ETH core",
+                 body="Concentration in the two largest, most liquid networks (Bitcoin, "
+                      "Ethereum) carries less idiosyncratic risk than the long tail of alts; "
+                      "treat small-caps as speculative options."),
+            Item(label="The cycle trigger", value="liquidity inflection",
+                 body="The clearest catalyst is a liquidity inflection — a durable M2 "
+                      "re-expansion and/or the start of the cutting cycle. Watch the tide, not "
+                      "the headlines."),
+        ])
+
+
+def _crypto_chart(m: QuoteMap) -> list["Chart"]:
+    """A 24-hour move bar across the majors — plotted only from released % changes."""
+    labels: list[str] = []
+    values: list[float] = []
+    for sym in _CRYPTO_MAJORS:
+        q = m.get(sym)
+        if q is not None and q.change_percent is not None:
+            labels.append(sym)
+            values.append(q.change_percent)
+    if len(labels) < 1:
+        return []
+    try:
+        from app import newsletter_charts as nc
+        img = nc.labeled_levels("Crypto majors — 24-hour move", labels, values, unit="%")
+    except Exception:  # noqa: BLE001 - never break newsletter generation
+        return []
+    return [Chart(
+        label="Crypto majors — 24-hour move",
+        image=img,
+        caption="The session move across the crypto majors, as last released by the spot "
+                "feed. Levels only; no series is implied.",
+        source="Derived from CoinGecko spot 24-hour changes.")]
+
+
+def _crypto_intelligence(m: QuoteMap, now: datetime, full: bool) -> Edition:
+    dateline = f"Edition of {edition_date(now)}"
+
+    btc, eth = m.get("BTC"), m.get("ETH")
+    m2 = _price(m, "M2")
+    rr = _real_rate(m)
+    parts: list[str] = []
+    if btc is not None and btc.price is not None:
+        move = ""
+        if btc.change_percent is not None:
+            move = (f", {'up' if btc.change_percent > 0 else 'down'} "
+                    f"{abs(btc.change_percent):.1f}% on the session")
+        parts.append(
+            f"Bitcoin trades at {fmt(btc)}{move} — the anchor of the digital-asset cycle "
+            "and a high-beta read on global liquidity and institutional adoption.")
+    if eth is not None and eth.price is not None:
+        parts.append(
+            f"Ethereum at {fmt(eth)} tracks on-chain activity and the app/L2 economy, the "
+            "second read on whether risk appetite is broadening beyond Bitcoin.")
+    if m2 is not None:
+        parts.append(
+            "The cycle ultimately rides the liquidity tide: crypto has historically "
+            "advanced when broad money (M2) is expanding and struggled when it contracts.")
+    if rr is not None:
+        parts.append(
+            f"With the real 10-year yield near {rr:.2f}%, the opportunity cost of holding a "
+            "non-yielding asset is "
+            f"{'real — a headwind that keeps crypto a satellite' if rr >= 1 else 'modest — a less punishing backdrop'} "
+            "until policy eases.")
+    parts.append(
+        "This edition reads the majors, the liquidity and adoption backdrop, and how the "
+        "desk frames position sizing — interpretation from public data, not advice.")
+    intro = " ".join(parts)
+
+    groups: list[Group] = [_crypto_majors_group(m), _crypto_liquidity_group(m)]
+    if full:
+        groups.append(_crypto_lens_group(m))
+
+    return Edition(
+        slug="crypto-intelligence", title="Crypto Intelligence", eyebrow="Crypto Intelligence",
+        dateline=dateline, intro=intro, groups=groups,
+        footer="Built from public data — CoinGecko spot prices (Bitcoin, Ethereum, and the "
+               "large-cap alts) and the Federal Reserve's M2 money-supply series (FRED). "
+               "Figures are derived and shown as last released; no exchange order-book or "
+               "fund-flow data is scraped or redistributed.",
+        disclaimer=_CRYPTO_DISCLAIMER, methodology=_methodology_for("crypto-intelligence"),
+        teaser=not full, charts=_crypto_chart(m) if full else [],
+        cadence=cadence_for("crypto-intelligence"))
+
+
+# ── Dividend Opportunities ───────────────────────────────────────────────────
+# A monthly income read: dividend growth + balance-sheet quality + income ideas,
+# DERIVED from point-in-time fundamentals (SF1 primary · EDGAR fallback) and public
+# SEC EDGAR cash-flow filings, combined with live price. Only derived metrics are
+# surfaced (yields, payout, coverage, margins, ROE) — never raw licensed rows.
+def _dividend_income_group(full: bool) -> tuple["Group | None", list["Chart"]]:
+    """The screened income ideas — dividend yield, payout, coverage, and quality.
+
+    Lazy import (heavy: EDGAR + prices) and resilient — returns (None, []) on any
+    failure so the edition still ships (Always-Deliver)."""
+    try:
+        from app.dividend_opportunities import top_dividend_ideas
+        ideas = top_dividend_ideas(n=6)
+    except Exception:  # noqa: BLE001 - never break newsletter generation
+        return None, []
+    if not ideas:
+        return None, []
+
+    items: list[Item] = []
+    for idea in ideas:
+        items.append(Item(
+            label=idea.ticker, value=idea.value_str, body=idea.insight,
+            tags=["Dividends", idea.quality_tag],
+            source=f"Derived income/quality · {idea.name} · {idea.source_disclosure}"))
+
+    charts: list[Chart] = []
+    if full:
+        try:
+            from app import newsletter_charts as nc
+            names = [i.ticker for i in ideas]
+            yields = [i.dividend_yield * 100 for i in ideas if i.dividend_yield is not None]
+            if len(yields) == len(names) and names:
+                charts.append(Chart(
+                    label="Dividend yield by idea",
+                    image=nc.horizontal_bars("Dividend yield by income idea (%)", names,
+                                             [i.dividend_yield * 100 for i in ideas],
+                                             value_suffix="%", xlabel="Trailing dividend yield (%)"),
+                    caption="Derived trailing dividend yield (dividends paid ÷ shares ÷ price) "
+                            "for the screened income ideas. Derived metrics only.",
+                    source="Derived from SEC EDGAR dividends + live price."))
+            scores = [float(i.score) for i in ideas]
+            charts.append(Chart(
+                label="Income-quality score",
+                image=nc.ranked_scores("Income ideas — dividend-quality score", names, scores),
+                caption="Cross-sectional 0–100 dividend-quality score blending yield, payout "
+                        "coverage, and balance-sheet quality. Derived scores only.",
+                source="Derived: Aegira dividend-quality screen (fundamentals + price)."))
+        except Exception:  # noqa: BLE001 - charts are optional
+            charts = []
+
+    group = Group(
+        heading="Income ideas — dividend growth & quality",
+        blurb="A derived screen of dividend payers ranked by a blend of yield, payout "
+              "coverage, and balance-sheet quality — dividends that are covered by cash "
+              "flow and backed by durable margins. Research, not investment advice.",
+        items=items, charts=charts)
+    return group, charts
+
+
+def _dividend_context_group(m: QuoteMap) -> Group:
+    """Why income now — the macro case for dividends against the rate backdrop."""
+    items: list[Item] = []
+    ten = m.get("UST10Y")
+    if ten is not None and ten.price is not None:
+        items.append(Item(
+            label="The bond alternative", value=f"10Y {fmt(ten)}",
+            body="Income investing competes with the risk-free rate. A high 10-year sets a "
+                 "high bar: an equity income idea must offer growth and coverage the bond "
+                 "cannot, not just a comparable headline yield.",
+            source=ten.note, as_of_label=_as_of(ten)))
+    rr = _real_rate(m)
+    if rr is not None:
+        items.append(Item(
+            label="Real rates & payout discipline", value=f"{rr:.2f}% (10Y − CPI)",
+            body="Positive real rates reward realized cash flow over promised growth — "
+                 "precisely the regime that favors covered, growing dividends from "
+                 "quality balance sheets over high-yield 'value traps.'",
+            source="Derived: 10-year Treasury − headline CPI (FRED)."))
+    items.append(Item(
+        label="What we screen for", value="covered growth, not headline yield",
+        body="The trap in income investing is a high yield that is not covered by cash flow. "
+             "The screen prioritizes payout coverage (cash flow vs. the dividend), "
+             "balance-sheet quality (ROE, margins), and dividend-supporting growth over the "
+             "highest nominal yield."))
+    return Group(
+        heading="Why income now — the rate backdrop",
+        blurb="The macro case for a disciplined income sleeve in a positive-real-rate world.",
+        items=items)
+
+
+def _dividend_lens_group() -> Group:
+    return Group(
+        heading="The Aegira lens",
+        blurb="How the desk frames a durable income sleeve — interpretation, not advice.",
+        items=[
+            Item(label="Coverage before yield", value="cash flow first",
+                 body="Underwrite the payout: a dividend covered by free cash flow with room "
+                      "to grow beats a higher yield that is one bad quarter from a cut."),
+            Item(label="Quality compounders", value="ROE + margins",
+                 body="Durable operating margins and high returns on equity are what let a "
+                      "company raise the dividend through a cycle — the difference between "
+                      "income and a melting ice cube."),
+            Item(label="Diversify the sleeve", value="across sectors",
+                 body="Spread income ideas across sectors so a single-industry shock (energy, "
+                      "banks, staples) does not take the whole payout with it."),
+        ])
+
+
+def _dividend_opportunities(m: QuoteMap, now: datetime, full: bool) -> Edition:
+    dateline = f"Edition of {edition_date(now)}"
+    ten = _price(m, "UST10Y")
+    rr = _real_rate(m)
+    parts = [
+        "For the income investor, the job is not to chase the highest headline yield — it is "
+        "to own dividends that are covered by cash flow, backed by durable margins, and able "
+        "to grow through a cycle."
+    ]
+    if ten is not None:
+        parts.append(
+            f"With the 10-year Treasury near {ten:.2f}%, an equity income idea has to clear a "
+            "higher bar than it did in the zero-rate era: it must offer coverage and growth the "
+            "risk-free rate cannot.")
+    if rr is not None:
+        parts.append(
+            f"A real 10-year yield around {rr:.2f}% rewards realized cash flow over promised "
+            "growth — the regime that favors quality, covered, growing dividends.")
+    parts.append(
+        "This edition screens dividend payers on a derived blend of yield, payout coverage, "
+        "and balance-sheet quality, then frames the macro case — all from public data, all "
+        "derived, none of it advice.")
+    intro = " ".join(parts)
+
+    groups: list[Group] = []
+    income_group, _ = _dividend_income_group(full)
+    if income_group is not None:
+        groups.append(income_group)
+    groups.append(_dividend_context_group(m))
+    if full:
+        groups.append(_dividend_lens_group())
+
+    return Edition(
+        slug="dividend-opportunities", title="Dividend Opportunities",
+        eyebrow="Dividend Opportunities",
+        dateline=dateline, intro=intro, groups=groups,
+        footer="Built from public data — point-in-time fundamentals (Sharadar SF1 primary · "
+               "SEC EDGAR fallback), public SEC EDGAR cash-flow filings for dividends, and live "
+               "market price. Yields, payout, coverage, margins, and ROE are DERIVED and shown "
+               "as last released; no raw licensed rows are surfaced or redistributed.",
+        disclaimer=_DISCLAIMER, methodology=_methodology_for("dividend-opportunities"),
+        teaser=not full, charts=[], cadence=cadence_for("dividend-opportunities"))
+
+
 def generate_scheduled_editions(
     cadence: str,
     now: datetime | None = None,
@@ -1310,6 +1694,12 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
 
     if slug == "insider-briefs":
         return _insider_brief(m, now, full)
+
+    if slug == "crypto-intelligence":
+        return _crypto_intelligence(m, now, full)
+
+    if slug == "dividend-opportunities":
+        return _dividend_opportunities(m, now, full)
 
     if slug == "economic-brief":
         intro, groups = _economic_brief(m, full)

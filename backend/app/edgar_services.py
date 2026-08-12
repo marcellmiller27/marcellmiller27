@@ -321,6 +321,28 @@ def latest_shares_outstanding(ticker: str) -> float | None:
     return None
 
 
+def latest_annual_dividends_paid(ticker: str) -> float | None:
+    """Most recent annual common-stock dividends paid (absolute USD), from the cash
+    flow statement.
+
+    Reads the ``PaymentsOfDividendsCommonStock`` / ``PaymentsOfDividends`` XBRL
+    concepts (reported as a cash outflow, so the sign is normalized to a positive
+    magnitude). Returns ``None`` for a non-payer (no dividend concept) or when the
+    company reports zero. Public-domain SEC data — used only to compute DERIVED
+    income metrics (yield, payout, coverage)."""
+    cik10, _ = ticker_to_cik(ticker)
+    facts = _cached(f"edgar:facts:{cik10}", FACTS_TTL_SECONDS, lambda: company_facts(cik10))
+    hit = _latest_annual(
+        facts,
+        ["PaymentsOfDividendsCommonStock", "PaymentsOfDividends"],
+    )
+    if hit is None:
+        return None
+    val, _fy, _end = hit
+    magnitude = abs(val)
+    return magnitude if magnitude > 0 else None
+
+
 class EdgarService:
     """Thin service wrapper (parity with other JHI services)."""
 
