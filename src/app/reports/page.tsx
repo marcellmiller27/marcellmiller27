@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
+import { ModuleFooter } from "@/components/module-footer";
 import { intelligenceReports, marketSignals } from "@/lib/platform-data";
 
 export default function ReportsPage() {
@@ -45,6 +46,8 @@ export default function ReportsPage() {
           ))}
         </div>
       </section>
+
+      <ModuleFooter module="reports" />
     </AppShell>
   );
 }

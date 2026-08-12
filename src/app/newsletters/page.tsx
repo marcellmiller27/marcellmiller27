@@ -1,6 +1,7 @@
 // JHI-SIG: 69M2705M | Newsletters index | JHI Research & Analytics Firm, Inc. (proprietary)
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
+import { ModuleFooter } from "@/components/module-footer";
 import { NewsletterSubscribe } from "@/components/newsletter-subscribe";
 
 type Edition = { href: string; name: string; cadence: string; blurb: string; ready: boolean };
@@ -75,6 +76,8 @@ export default function NewslettersPage() {
       <section className="app-section">
         <NewsletterSubscribe />
       </section>
+
+      <ModuleFooter module="newsletters" />
     </AppShell>
   );
 }

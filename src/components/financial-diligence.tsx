@@ -126,7 +126,7 @@ export function FinancialDiligence() {
           tier: "qoe",
           target_ebitda: report.adjusted_ebitda || report.reported_ebitda,
           state: "",
-          contact_email: "subscriber@johnhenry.example"
+          contact_email: "subscriber@aegira.example"
         })
       });
       if (!resp.ok) throw new Error(`Engagement request failed (${resp.status}).`);

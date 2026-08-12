@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/app-shell";
+import { ModuleFooter } from "@/components/module-footer";
 import { portfolioHoldings } from "@/lib/platform-data";
 
 const scenarioMetrics = [
@@ -45,6 +46,8 @@ export default function PortfolioPage() {
           ))}
         </div>
       </section>
+
+      <ModuleFooter module="portfolio" />
     </AppShell>
   );
 }
