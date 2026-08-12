@@ -17,6 +17,7 @@ from app.routers import (
     edgar,
     equity_valuation,
     financial_diligence,
+    firm_documents,
     framework,
     integrations,
     leads,
@@ -72,6 +73,7 @@ app.include_router(equity_valuation.router, prefix="/api/v1")
 app.include_router(deal_xray.router, prefix="/api/v1")
 app.include_router(edgar.router, prefix="/api/v1")
 app.include_router(financial_diligence.router, prefix="/api/v1")
+app.include_router(firm_documents.router, prefix="/api/v1")
 app.include_router(framework.router, prefix="/api/v1")
 app.include_router(pipeline.router, prefix="/api/v1")
 app.include_router(support.router, prefix="/api/v1")
