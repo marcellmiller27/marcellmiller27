@@ -1,109 +1,52 @@
-// JHI-SIG: 69M2705M | Firm Documents / Downloads | JHI Research & Analytics Firm, Inc. (proprietary)
+// JHI-SIG: 69M2705M | Firm Documents / Downloads (staff-only) | JHI Research & Analytics Firm, Inc. (proprietary)
+// Server-side STAFF gate. Middleware (src/proxy.ts) only proves a login token is present;
+// it cannot tell staff from a subscriber. So this page (a server component) verifies
+// staff via the backend `/auth/me` `is_staff` flag and redirects non-staff away before
+// any confidential document metadata is rendered. The files themselves are streamed by a
+// separate staff-gated backend endpoint (see src/components/firm-documents.tsx).
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
+import { FirmDocuments } from "@/components/firm-documents";
+import { TOKEN_COOKIE } from "@/lib/auth";
 
-type DocItem = {
-  title: string;
-  description: string;
-  href: string;
-  kind: string;
-};
+export const dynamic = "force-dynamic";
 
-const documents: DocItem[] = [
-  {
-    title: "Sales Commission & EBITDA Model",
-    description:
-      "Editable workbook: 24-month commission schedule, Year-1 by mix, a monthly EBITDA & operating-cost statement, and the prepaid-MSA salesperson-bonus sheet (bonus = 10% of EBITDA).",
-    href: "/downloads/Aegira_Sales_Commission_EBITDA_Model.xlsx",
-    kind: "Excel workbook (.xlsx)"
-  },
-  {
-    title: "Competitor Deep-Dive & Reverse-Engineering Audit",
-    description:
-      "Mergr, S&P Global (Capital IQ Pro), and CB Insights: per-competitor teardown, synthesis matrix, the \u201cdiamond in the rough\u201d thesis, cost/risk/reward, verified pricing, and a board recommendation.",
-    href: "/downloads/Aegira_Competitor_Deep_Dive_Mergr_SPGlobal_CBInsights.docx",
-    kind: "Word document (.docx)"
-  },
-  {
-    title: "Data-Sources Comparison",
-    description:
-      "Breakdown of 11 market & economic data sources (Nasdaq Data Link, Twelve Data, FRED, SEC EDGAR, BLS, BEA, Treasury, Federal Reserve, IMF, OECD, World Bank) by coverage, cost, and \u2014 critically \u2014 redistribution rights to subscribers. Includes a FRED datasets sheet and a redistribution-rights matrix.",
-    href: "/downloads/Aegira_Data_Sources_Comparison.xlsx",
-    kind: "Excel workbook (.xlsx)"
-  },
-  {
-    title: "5-Year Consolidated Projections",
-    description:
-      "Audited-realistic three-statement model: monthly P&L, Cash Flow, and Balance Sheet with cohort-based renewals, EBITDA-gated staffing, and full reconciliation toward the growth plan.",
-    href: "/downloads/Aegira_5yr_Consolidated_Projections.xlsx",
-    kind: "Excel workbook (.xlsx)"
-  },
-  {
-    title: "Sales Commission — Prepaid MSA",
-    description:
-      "Commission model for the prepaid-MSA structure (15% upfront + year-end MSA bonus), with the schedule, Year-1 by mix, and the salesperson-bonus sheet.",
-    href: "/downloads/Aegira_Sales_Commission_Prepaid_MSA.xlsx",
-    kind: "Excel workbook (.xlsx)"
-  },
-  {
-    title: "Company Book — Policy · Procedures · Processes",
-    description:
-      "The firm's operating handbook: governance, policies, standard procedures, and core processes across the platform and back office.",
-    href: "/downloads/Aegira_Company_Book_Policy_Procedures_Processes.docx",
-    kind: "Word document (.docx)"
+// Server-side calls hit the backend directly (the same-origin /api/v1 rewrite target).
+const BACKEND_BASE = process.env.API_PROXY_TARGET || "http://localhost:8000";
+
+async function isStaffRequest(token: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${BACKEND_BASE}/api/v1/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store"
+    });
+    if (!res.ok) return false;
+    const me = await res.json();
+    return Boolean(me?.is_staff);
+  } catch {
+    return false;
   }
-];
+}
 
-const cardStyle = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  gap: "1rem",
-  flexWrap: "wrap" as const,
-  marginBottom: "0.9rem"
-};
+export default async function DownloadsPage() {
+  const token = (await cookies()).get(TOKEN_COOKIE)?.value;
+  if (!token) {
+    redirect("/login?next=/downloads");
+  }
+  const staff = await isStaffRequest(token);
+  if (!staff) {
+    // Non-staff (subscribers, free) are not authorized for the firm's internal documents.
+    redirect("/home");
+  }
 
-const btnStyle = {
-  display: "inline-block",
-  padding: "0.6rem 1.2rem",
-  borderRadius: "999px",
-  background: "var(--growth, #1f7a4d)",
-  color: "#fff",
-  fontWeight: 800,
-  fontSize: "var(--fs-base)",
-  textDecoration: "none",
-  whiteSpace: "nowrap" as const
-};
-
-export default function DownloadsPage() {
   return (
     <AppShell
       eyebrow="Firm operations"
       title="Documents"
-      description="Download the firm's models and reports. Files open in Excel / Numbers / Google Sheets (.xlsx) or Word / Pages / Google Docs (.docx)."
+      description="Confidential firm models and reports — staff only. Files open in Excel / Numbers / Google Sheets (.xlsx) or Word / Pages / Google Docs (.docx)."
     >
-      <section className="app-section">
-        <div className="app-section__heading">
-          <p className="eyebrow">Downloads</p>
-          <h2>Models &amp; reports</h2>
-        </div>
-        {documents.map((doc) => (
-          <article className="app-card" key={doc.href} style={cardStyle}>
-            <div style={{ flex: 1, minWidth: "240px" }}>
-              <strong style={{ fontSize: "var(--fs-lg)" }}>{doc.title}</strong>
-              <p style={{ color: "var(--muted)", fontSize: "var(--fs-xs)", fontWeight: 800, textTransform: "uppercase", margin: "0.2rem 0" }}>
-                {doc.kind}
-              </p>
-              <p style={{ color: "var(--muted)", fontSize: "var(--fs-base)", margin: 0 }}>{doc.description}</p>
-            </div>
-            <a href={doc.href} download style={btnStyle}>
-              Download
-            </a>
-          </article>
-        ))}
-        <p style={{ color: "var(--muted)", fontSize: "var(--fs-sm)", marginTop: "0.5rem" }}>
-          Confidential — for internal use. Provenance: JHI-SIG 69M2705M.
-        </p>
-      </section>
+      <FirmDocuments />
     </AppShell>
   );
 }

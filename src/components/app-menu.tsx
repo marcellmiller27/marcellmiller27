@@ -76,7 +76,7 @@ const toc: TocGroup[] = [
       { href: "/newsletters", label: "Newsletter", icon: Newspaper, access: "free" },
       { href: "/newsletters/main-street-acquirer", label: "Main St. Acquirer", icon: Store, access: "free" },
       { href: "/assistant", label: "Ask Aegira", icon: Sparkles, access: "subscriber" },
-      { href: "/downloads", label: "Documents", icon: Download, access: "subscriber" }
+      { href: "/downloads", label: "Documents", icon: Download, access: "staff" }
     ]
   },
   {
