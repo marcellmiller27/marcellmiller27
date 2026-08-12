@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/app-shell";
+import { ModuleFooter } from "@/components/module-footer";
 import { dueDiligenceQueue } from "@/lib/platform-data";
 
 const uploadTypes = ["Tax returns", "P&L statements", "Balance sheets", "Bank statements"];
@@ -47,6 +48,8 @@ export default function DueDiligencePage() {
           ))}
         </div>
       </section>
+
+      <ModuleFooter module="due-diligence" />
     </AppShell>
   );
 }

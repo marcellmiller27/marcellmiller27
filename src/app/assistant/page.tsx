@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/app-shell";
+import { ModuleFooter } from "@/components/module-footer";
 import { assistantWorkflows } from "@/lib/platform-data";
 
 export default function AssistantPage() {
@@ -33,6 +34,8 @@ export default function AssistantPage() {
           ))}
         </div>
       </section>
+
+      <ModuleFooter module="assistant" />
     </AppShell>
   );
 }

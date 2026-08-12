@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
+import { ModuleFooter } from "@/components/module-footer";
 import { opportunities, scoreCategories } from "@/lib/platform-data";
 
 export default function OpportunitiesPage() {
@@ -58,6 +59,8 @@ export default function OpportunitiesPage() {
           ))}
         </div>
       </section>
+
+      <ModuleFooter module="opportunities" />
     </AppShell>
   );
 }

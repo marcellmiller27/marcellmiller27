@@ -1,5 +1,6 @@
 import { LiveMacro } from "@/components/live-macro";
 import { AppShell } from "@/components/app-shell";
+import { ModuleFooter } from "@/components/module-footer";
 
 export default function MacroPage() {
   return (
@@ -15,6 +16,8 @@ export default function MacroPage() {
         </div>
         <LiveMacro />
       </section>
+
+      <ModuleFooter module="macro" />
     </AppShell>
   );
 }

@@ -1,6 +1,7 @@
 // JHI-SIG: 69M2705M | Home — the Aegira story | JHI Research & Analytics Firm, Inc. (proprietary)
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
+import { ModuleFooter } from "@/components/module-footer";
 import { TeamShowcase } from "@/components/team-showcase";
 
 // Home is the narrative front page: what Aegira is, what it does, who builds it.
@@ -146,6 +147,8 @@ export default function HomePage() {
           Aegira is a product of JHI Research &amp; Analytics Firm, Inc. · JHI-SIG: 69M2705M.
         </p>
       </section>
+
+      <ModuleFooter module="home" />
     </AppShell>
   );
 }

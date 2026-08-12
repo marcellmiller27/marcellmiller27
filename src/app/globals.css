@@ -4195,3 +4195,68 @@ li {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* ── Module footer: consistent "what to do next" CTAs at the bottom of each
+   module page. Institutional/minimal — monochrome, dense, no flourish. ── */
+.module-footer {
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border);
+}
+.module-footer__eyebrow {
+  margin: 0 0 var(--space-3);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.module-footer__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-3);
+}
+.module-footer__cta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background-card);
+  text-decoration: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+.module-footer__cta:hover {
+  border-color: var(--text);
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+}
+.module-footer__label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.module-footer__label svg {
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+.module-footer__cta:hover .module-footer__label svg {
+  color: var(--text);
+  transform: translateX(2px);
+}
+.module-footer__hint {
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  color: var(--muted-strong);
+}
+@media (max-width: 720px) {
+  .module-footer__grid {
+    grid-template-columns: 1fr;
+  }
+}

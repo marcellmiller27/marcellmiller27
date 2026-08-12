@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { LiveMarket } from "@/components/live-market";
+import { ModuleFooter } from "@/components/module-footer";
 import {
   coverageStats,
   dashboardLaunchpad,
@@ -116,6 +117,8 @@ export default function DashboardPage() {
           </section>
         </aside>
       </div>
+
+      <ModuleFooter module="dashboard" />
     </AppShell>
   );
 }
