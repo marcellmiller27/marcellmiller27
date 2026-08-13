@@ -6,8 +6,12 @@ from fastapi import APIRouter, HTTPException, Query, Response
 from app import edgar_services
 from app.equity_valuation import EquityValuation, value_equity, value_universe
 from app.equity_valuation_workbook import equity_valuation_workbook
+from app.market_services import ProviderError as MarketProviderError
+from app.ticker_workbook import build_ticker_workbook
 
 router = APIRouter(prefix="/valuation", tags=["valuation"])
+
+_XLSX_MEDIA = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
 
 @router.get("/equity", response_model=list[EquityValuation])
@@ -43,6 +47,30 @@ def valuation_workbook(ticker: str) -> Response:
     filename = f"Aegira_{report.ticker}_DCF_Valuation_{now:%Y-%m-%d}.xlsx"
     return Response(
         content=equity_valuation_workbook(report),
-        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        media_type=_XLSX_MEDIA,
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.get("/equity/{ticker}/workbook.xlsx")
+def ticker_workbook(ticker: str) -> Response:
+    """Download the comprehensive institutional per-ticker workbook.
+
+    Multi-sheet, branded, deterministic: Cover/Summary, Technicals (Daily + Weekly)
+    with trade setups, Options context, full Fundamental Ratios, DCF Valuation, and
+    Legal & Provenance. OHLC from the shared market feed; fundamentals SF1/EDGAR.
+    """
+    try:
+        content, data = build_ticker_workbook(ticker)
+    except (edgar_services.ProviderError, MarketProviderError) as exc:
+        raise HTTPException(status_code=404, detail=f"No market data for '{ticker}': {exc}") from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+    now = datetime.now(UTC)
+    filename = f"Aegira_{data.ticker}_Institutional_Workbook_{now:%Y-%m-%d}.xlsx"
+    return Response(
+        content=content,
+        media_type=_XLSX_MEDIA,
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )

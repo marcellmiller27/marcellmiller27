@@ -29,10 +29,11 @@ def _kv(ws, row: int, label: str, value, fmt: str | None = None, note: str = "")
         ws.cell(row=row, column=3, value=note).font = xl._MUTED
 
 
-def equity_valuation_workbook(v: EquityValuation) -> bytes:
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "DCF Valuation"
+def write_valuation_sheet(ws, v: EquityValuation) -> None:
+    """Populate an existing worksheet with the full DCF valuation view.
+
+    Extracted so the standalone valuation workbook and the institutional per-ticker
+    workbook render the IDENTICAL DCF/IRR/signal sheet (single source of truth)."""
     ws.column_dimensions["A"].width = 30
     ws.column_dimensions["B"].width = 20
     ws.column_dimensions["C"].width = 20
@@ -147,5 +148,12 @@ def equity_valuation_workbook(v: EquityValuation) -> bytes:
     ws.cell(row=row, column=1).alignment = Alignment(wrap_text=True, vertical="top")
 
     xl._watermark(ws)
+
+
+def equity_valuation_workbook(v: EquityValuation) -> bytes:
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "DCF Valuation"
+    write_valuation_sheet(ws, v)
     xl._legal_sheet(wb)
     return xl._finalize(wb)

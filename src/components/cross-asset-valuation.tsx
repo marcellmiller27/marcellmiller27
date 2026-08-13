@@ -79,14 +79,15 @@ export function CrossAssetValuation() {
 
   async function downloadWorkbook() {
     if (!data) return;
+    setErr("");
     try {
-      const r = await apiFetch(`/valuation/equity/${encodeURIComponent(data.ticker)}/xlsx`);
+      const r = await apiFetch(`/valuation/equity/${encodeURIComponent(data.ticker)}/workbook.xlsx`);
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const blob = await r.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `Aegira_${data.ticker}_DCF_Valuation.xlsx`;
+      a.download = `Aegira_${data.ticker}_Institutional_Workbook.xlsx`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -195,7 +196,7 @@ export function CrossAssetValuation() {
 
           <div className="val-card__actions">
             <button type="button" className="button button--primary" onClick={downloadWorkbook}>
-              Download Excel workbook
+              Download institutional workbook (Excel)
             </button>
           </div>
           <p className="news__source">{data.disclaimer}</p>
