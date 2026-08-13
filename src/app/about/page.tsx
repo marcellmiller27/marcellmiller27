@@ -53,21 +53,21 @@ export default function AboutPage() {
   return (
     <StorefrontShell
       eyebrow="About · Aegira"
-      title="We are a team of operators augmented by AI."
-      description="At Aegira, we combine a lean team of skilled operators with advanced AI to deliver the capabilities and output of a much larger firm. Rather than competing with technology, we leverage it to maximize our efficiency and results."
+      title="See what Wall Street sees."
+      description="Institutional-grade market, economic, and deal intelligence — for the independent investor and acquirer."
     >
       <section className="app-section">
         <div className="app-section__heading">
-          <p className="eyebrow">Why we exist</p>
+          <p className="eyebrow">What we do</p>
           <h2>Institutional research shouldn&rsquo;t be locked behind a $30,000 contract.</h2>
         </div>
         <p style={bodyStyle}>
-          Diligence data is often fragmented and expensive, and the initial review of a CIM can
-          consume days of senior leadership&rsquo;s time — frequently on deals that do not move
-          forward. We built Aegira to provide independent investors and acquirers with
-          institutional-grade research and diligence that is clear, transparent, and grounded in
-          real data. We offer this at a fraction of the traditional cost, with a genuine trial
-          period and no contract lock-in.
+          Aegira pulls live economic, market, and company data — the Fed, the Treasury, SEC
+          filings, and prices across stocks, crypto, commodities, and forex — and turns it into
+          decision-ready output: valuations, opportunity screens, technical trade setups, and
+          branded research briefings. It&rsquo;s the capability hedge funds and PE firms pay six
+          figures for, delivered to independent investors and acquirers by subscription. Named for
+          the aegis — the shield.
         </p>
       </section>
 
