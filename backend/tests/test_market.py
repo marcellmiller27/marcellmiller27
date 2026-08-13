@@ -160,6 +160,25 @@ def test_fred_macro_symbol_gated_without_key(monkeypatch) -> None:
     assert "fred" in quote["note"].lower()
 
 
+def test_api_keys_are_whitespace_stripped(monkeypatch) -> None:
+    # Dashboard-pasted secrets can carry a stray leading/trailing newline;
+    # the getters must strip so a padded key isn't silently rejected by providers.
+    monkeypatch.setenv("FRED_API_KEY", "\nabcdef0123456789abcdef0123456789 ")
+    assert market_services.fred_api_key() == "abcdef0123456789abcdef0123456789"
+
+    monkeypatch.setenv("NASDAQ_DATA_LINK_API_KEY", "  nasdaq-key\n")
+    assert market_services.nasdaq_data_link_api_key() == "nasdaq-key"
+
+    monkeypatch.delenv("BLS_API_KEY", raising=False)
+    monkeypatch.setenv("BLS_REGISTRATION_KEY", " bls-fallback ")
+    assert market_services.bls_api_key() == "bls-fallback"
+
+
+def test_blank_api_key_treated_as_absent(monkeypatch) -> None:
+    monkeypatch.setenv("FRED_API_KEY", "   ")
+    assert market_services.fred_api_key() is None
+
+
 def test_licensed_vendor_used_as_primary_when_keyed(monkeypatch, patched_providers) -> None:
     market_services.reset_cache()
     monkeypatch.setenv("TWELVEDATA_API_KEY", "vendor-key")

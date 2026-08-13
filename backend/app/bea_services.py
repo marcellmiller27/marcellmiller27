@@ -39,7 +39,15 @@ class ProviderError(RuntimeError):
 
 
 def bea_api_key() -> str | None:
-    return os.getenv("BEA_API_KEY") or os.getenv("BEA_USER_ID")
+    # Strip stray whitespace (dashboard-pasted secrets can carry a leading/
+    # trailing newline) so a present-but-padded key isn't silently rejected.
+    for name in ("BEA_API_KEY", "BEA_USER_ID"):
+        raw = os.getenv(name)
+        if raw is not None:
+            cleaned = raw.strip()
+            if cleaned:
+                return cleaned
+    return None
 
 
 # --------------------------------------------------------------------------- #
