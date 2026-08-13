@@ -497,7 +497,11 @@ main {
 /* ---- AI team profiles ---- */
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  /* Cap the column width so a short row (e.g. 2 leadership cards) renders at the
+     same size as a full row of support agents — keeps every card's photo crop
+     and layout identical regardless of how many cards are in the row. */
+  grid-template-columns: repeat(auto-fit, minmax(260px, 300px));
+  justify-content: start;
   gap: 1.25rem;
 }
 
