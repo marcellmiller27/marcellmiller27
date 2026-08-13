@@ -50,25 +50,42 @@ CPI_SERIES_ID = "CUUR0000SA0"  # CPI-U, US city average, all items, NSA
 YAHOO_HOSTS = ("query1.finance.yahoo.com", "query2.finance.yahoo.com")
 
 
+def _env_key(*names: str) -> str | None:
+    """First non-empty environment value among ``names``, whitespace-stripped.
+
+    Secrets pasted through a dashboard often pick up a stray leading/trailing
+    newline or space. Providers like FRED reject a key that isn't exactly the
+    expected length, so we defensively strip here to avoid a whole class of
+    silent "key present but rejected" failures.
+    """
+    for name in names:
+        raw = os.getenv(name)
+        if raw is not None:
+            cleaned = raw.strip()
+            if cleaned:
+                return cleaned
+    return None
+
+
 def fred_api_key() -> str | None:
-    return os.getenv("FRED_API_KEY")
+    return _env_key("FRED_API_KEY")
 
 
 def twelvedata_api_key() -> str | None:
     """Licensed-vendor API key (Twelve Data). When set, it becomes the primary
     quote source for equities/FX with Yahoo as fallback."""
-    return os.getenv("TWELVEDATA_API_KEY")
+    return _env_key("TWELVEDATA_API_KEY")
 
 
 def nasdaq_data_link_api_key() -> str | None:
     """Point-in-time fundamentals key (Nasdaq Data Link / Sharadar SF1)."""
-    return os.getenv("NASDAQ_DATA_LINK_API_KEY") or os.getenv("FUNDAMENTALS_API_KEY")
+    return _env_key("NASDAQ_DATA_LINK_API_KEY", "FUNDAMENTALS_API_KEY")
 
 
 def bls_api_key() -> str | None:
     """BLS registration key. When set, unlocks the v2 API (higher daily limits,
     more series per request, longer history). Keyless falls back to v1."""
-    return os.getenv("BLS_API_KEY") or os.getenv("BLS_REGISTRATION_KEY")
+    return _env_key("BLS_API_KEY", "BLS_REGISTRATION_KEY")
 
 
 class ProviderError(RuntimeError):
