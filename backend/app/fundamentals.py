@@ -72,7 +72,7 @@ SOURCE_LABELS: dict[str, str] = {
 
 @dataclass
 class FundamentalsYear:
-    """One fiscal year of the fields used for trend/CAGR derivation (internal)."""
+    """One fiscal year of the fields used for trend/CAGR + ratio derivation (internal)."""
 
     fiscal_year: int
     revenue: float | None = None
@@ -81,6 +81,13 @@ class FundamentalsYear:
     stockholders_equity: float | None = None
     rnd: float | None = None  # research & development expense (for R&D-growth trend)
     gross_margin: float | None = None
+    # Ratio-trend inputs (SF1-rich; None when the source lacks them).
+    eps: float | None = None                 # diluted EPS preferred, else basic
+    ebitda: float | None = None
+    free_cash_flow: float | None = None
+    operating_margin: float | None = None
+    net_margin: float | None = None
+    period_end: str | None = None
 
 
 @dataclass
@@ -113,6 +120,21 @@ class EquityFundamentals:
     ebitda: float | None = None
     roic: float | None = None               # return on invested capital
     roe: float | None = None                # return on equity
+    # Balance-sheet / ratio inputs (SF1-rich; EDGAR fills a subset; None otherwise).
+    cost_of_revenue: float | None = None
+    gross_profit: float | None = None
+    ebit: float | None = None
+    interest_expense: float | None = None
+    total_assets: float | None = None
+    total_liabilities: float | None = None
+    total_debt: float | None = None
+    current_assets: float | None = None
+    current_liabilities: float | None = None
+    inventory: float | None = None
+    cash_and_equivalents: float | None = None
+    eps: float | None = None                # diluted EPS preferred, else basic
+    eps_basic: float | None = None
+    dividends_per_share: float | None = None
     years: list[FundamentalsYear] = field(default_factory=list)
     as_of: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -172,6 +194,20 @@ def _from_sf1(ticker: str, max_years: int) -> EquityFundamentals | None:
     ebitda = _pick(latest, "ebitda")
     roic = _pick(latest, "roic")
     roe = _pick(latest, "roe")
+    # Balance-sheet / ratio inputs.
+    cost_of_revenue = _pick(latest, "cor")
+    ebit = _pick(latest, "ebit")
+    interest_expense = _pick(latest, "intexp")
+    total_assets = _pick(latest, "assets")
+    total_liabilities = _pick(latest, "liabilities")
+    total_debt = _pick(latest, "debt")
+    current_assets = _pick(latest, "assetsc")
+    current_liabilities = _pick(latest, "liabilitiesc")
+    inventory = _pick(latest, "inventory")
+    cash = _pick(latest, "cashneq")
+    eps_dil = _pick(latest, "epsdil")
+    eps_basic = _pick(latest, "eps")
+    dps = _pick(latest, "dps")
 
     # SF1 must supply the core income-statement fields to be considered usable;
     # otherwise fall back to EDGAR rather than emit a half-populated bundle.
@@ -184,15 +220,23 @@ def _from_sf1(ticker: str, max_years: int) -> EquityFundamentals | None:
         if fy is None:
             continue
         row_rev = _pick(row, "revenue")
+        row_ni = _pick(row, "netinc")
+        row_oi = _pick(row, "opinc")
         years.append(
             FundamentalsYear(
                 fiscal_year=fy,
                 revenue=row_rev,
-                net_income=_pick(row, "netinc"),
-                operating_income=_pick(row, "opinc"),
+                net_income=row_ni,
+                operating_income=row_oi,
                 stockholders_equity=_pick(row, "equity"),
                 rnd=_pick(row, "rnd"),
                 gross_margin=_safe_ratio(_pick(row, "gp"), row_rev),
+                eps=_pick(row, "epsdil", "eps"),
+                ebitda=_pick(row, "ebitda"),
+                free_cash_flow=_pick(row, "fcf"),
+                operating_margin=_safe_ratio(row_oi, row_rev),
+                net_margin=_safe_ratio(row_ni, row_rev),
+                period_end=str(row.get("reportperiod") or row.get("calendardate") or "") or None,
             )
         )
 
@@ -217,6 +261,20 @@ def _from_sf1(ticker: str, max_years: int) -> EquityFundamentals | None:
         ebitda=ebitda,
         roic=roic,
         roe=roe if roe is not None else _safe_ratio(net_income, equity),
+        cost_of_revenue=cost_of_revenue,
+        gross_profit=gross_profit,
+        ebit=ebit,
+        interest_expense=interest_expense,
+        total_assets=total_assets,
+        total_liabilities=total_liabilities,
+        total_debt=total_debt,
+        current_assets=current_assets,
+        current_liabilities=current_liabilities,
+        inventory=inventory,
+        cash_and_equivalents=cash,
+        eps=eps_dil if eps_dil is not None else eps_basic,
+        eps_basic=eps_basic,
+        dividends_per_share=dps,
         years=years,
     )
 
@@ -234,6 +292,14 @@ def _from_edgar(ticker: str, max_years: int) -> EquityFundamentals:
             net_income=getattr(row, "net_income", None),
             operating_income=getattr(row, "operating_income", None),
             stockholders_equity=getattr(row, "stockholders_equity", None),
+            gross_margin=getattr(row, "gross_margin", None),
+            operating_margin=getattr(row, "operating_margin", None),
+            net_margin=getattr(row, "net_margin", None),
+            eps=(
+                _safe_ratio(getattr(row, "net_income", None), shares)
+                if (shares and shares > 0)
+                else None
+            ),
         )
         for row in getattr(hist, "years", [])
     ]
@@ -253,6 +319,14 @@ def _from_edgar(ticker: str, max_years: int) -> EquityFundamentals:
         shares_outstanding=shares if (shares and shares > 0) else None,
         # EDGAR does not expose SF1-rich fields; derive ROE where the inputs allow.
         roe=_safe_ratio(fin.net_income, fin.stockholders_equity),
+        cost_of_revenue=getattr(fin, "cost_of_revenue", None),
+        gross_profit=getattr(fin, "gross_profit", None),
+        total_assets=getattr(fin, "total_assets", None),
+        total_liabilities=getattr(fin, "total_liabilities", None),
+        cash_and_equivalents=getattr(fin, "cash_and_equivalents", None),
+        eps=(
+            _safe_ratio(fin.net_income, shares) if (shares and shares > 0) else None
+        ),
         years=years,
     )
 

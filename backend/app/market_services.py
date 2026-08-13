@@ -376,6 +376,53 @@ def yahoo_chart_history(
     return series
 
 
+def yahoo_chart_ohlc(
+    provider_symbol: str, range_: str = "2y", interval: str = "1d"
+) -> list[dict[str, Any]]:
+    """Return daily OHLC(V) bars from Yahoo Finance (no key).
+
+    Each bar is ``{"ts": unix_ts, "date": "YYYY-MM-DD", "open", "high", "low",
+    "close", "volume"}``. Bars with a missing OHLC field are skipped so downstream
+    deterministic technicals never see partial candles. Reuses the same Yahoo chart
+    adapter as the rest of the platform — NO new vendor.
+    """
+    payload = _yahoo_get(provider_symbol, f"interval={interval}&range={range_}")
+    result = (payload.get("chart") or {}).get("result") or []
+    if not result:
+        raise ProviderError(f"No Yahoo OHLC data for {provider_symbol}.")
+    node = result[0]
+    timestamps = node.get("timestamp") or []
+    quote = ((node.get("indicators") or {}).get("quote") or [{}])[0]
+    opens = quote.get("open") or []
+    highs = quote.get("high") or []
+    lows = quote.get("low") or []
+    closes = quote.get("close") or []
+    volumes = quote.get("volume") or []
+    bars: list[dict[str, Any]] = []
+    for i, ts in enumerate(timestamps):
+        try:
+            o, h, low_, c = opens[i], highs[i], lows[i], closes[i]
+        except IndexError:
+            continue
+        if ts is None or None in (o, h, low_, c):
+            continue
+        vol = volumes[i] if i < len(volumes) and volumes[i] is not None else 0
+        bars.append(
+            {
+                "ts": int(ts),
+                "date": datetime.fromtimestamp(int(ts), tz=timezone.utc).strftime("%Y-%m-%d"),
+                "open": float(o),
+                "high": float(h),
+                "low": float(low_),
+                "close": float(c),
+                "volume": float(vol),
+            }
+        )
+    if not bars:
+        raise ProviderError(f"Empty Yahoo OHLC history for {provider_symbol}.")
+    return bars
+
+
 def sharadar_sf1_fundamentals(ticker: str, dimension: str = "ARQ") -> dict[str, Any]:
     """Point-in-time fundamentals for one ticker from Sharadar SF1 (Nasdaq Data Link).
 
