@@ -66,20 +66,21 @@ export default function HomePage() {
   return (
     <AppShell
       eyebrow="The Aegira Story"
-      title="Institutional intelligence for global markets."
-      description="Aegira is an operating system for economic and deal intelligence — built so independent investors and acquirers can see further, and act with conviction."
+      title="See what Wall Street sees."
+      description="Institutional-grade market, economic, and deal intelligence — for the independent investor and acquirer."
     >
       <section className="app-section">
         <div className="app-section__heading">
-          <p className="eyebrow">What Aegira is</p>
-          <h2>One platform for the whole decision — research through diligence.</h2>
+          <p className="eyebrow">What we do</p>
+          <h2>The tools hedge funds pay six figures for — by subscription.</h2>
         </div>
         <p style={bodyStyle}>
-          Institutional-grade research and diligence have long been locked behind five- and
-          six-figure contracts. Aegira brings that capability to independent investors and
-          acquirers: live economic data, cross-asset market intelligence, fundamentals screening,
-          and acquisition diligence — clear, transparent, grounded in real data, and delivered on a
-          fixed, honest cadence. Two connected pillars carry the work.
+          Aegira pulls live economic, market, and company data — the Fed, the Treasury, SEC
+          filings, and prices across stocks, crypto, commodities, and forex — and turns it into
+          decision-ready output: valuations, opportunity screens, technical trade setups, and
+          branded research briefings. It&rsquo;s the capability hedge funds and PE firms pay six
+          figures for, delivered to independent investors and acquirers by subscription. Named for
+          the aegis — the shield.
         </p>
       </section>
 

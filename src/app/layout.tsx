@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { RoleProvider } from "@/components/role-provider";
+import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
 
 // Canonical/OG base for the Aegira platform domain. Overridable via NEXT_PUBLIC_SITE_URL
@@ -37,7 +38,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
-        <RoleProvider>{children}</RoleProvider>
+        <RoleProvider>
+          {children}
+          <SiteFooter />
+        </RoleProvider>
       </body>
     </html>
   );
