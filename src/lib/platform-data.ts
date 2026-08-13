@@ -79,6 +79,11 @@ export type IntelligenceReport = {
   cadence: string;
   audience: string;
   highlights: string[];
+  // The live newsletter edition this report maps to (on-screen read + PDF export).
+  // Data-driven so the Reports page links each card to its edition without any
+  // hard-coded title matching — no dead ends, no inert buttons.
+  editionSlug: string;
+  href: string;
 };
 
 export type AssistantWorkflow = {
@@ -533,25 +538,33 @@ export const intelligenceReports: IntelligenceReport[] = [
     title: "Aegira Weekly Economics Report",
     cadence: "Weekly",
     audience: "All paid subscribers",
-    highlights: ["Federal Reserve policy", "Treasury liquidity", "Inflation outlook"]
+    highlights: ["Federal Reserve policy", "Treasury liquidity", "Inflation outlook"],
+    editionSlug: "economic-brief",
+    href: "/newsletters/economic-brief"
   },
   {
     title: "Business Acquisition Report",
     cadence: "Weekly",
     audience: "Professional and Enterprise",
-    highlights: ["SBA deal screens", "Valuation trends", "Debt-service analysis"]
+    highlights: ["SBA deal screens", "Valuation trends", "Debt-service analysis"],
+    editionSlug: "main-street-acquirer",
+    href: "/newsletters/main-street-acquirer"
   },
   {
     title: "Crypto Intelligence Report",
     cadence: "Biweekly",
     audience: "Consumer and Professional",
-    highlights: ["Bitcoin cycle", "ETF flows", "Liquidity and adoption signals"]
+    highlights: ["Bitcoin cycle", "ETF flows", "Liquidity and adoption signals"],
+    editionSlug: "crypto-intelligence",
+    href: "/newsletters/crypto-intelligence"
   },
   {
     title: "Dividend Opportunities Report",
     cadence: "Monthly",
     audience: "All paid subscribers",
-    highlights: ["Dividend growth", "Balance-sheet quality", "Income portfolio ideas"]
+    highlights: ["Dividend growth", "Balance-sheet quality", "Income portfolio ideas"],
+    editionSlug: "dividend-opportunities",
+    href: "/newsletters/dividend-opportunities"
   }
 ];
 

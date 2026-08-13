@@ -36,6 +36,20 @@ const EDITIONS: Edition[] = [
     ready: true
   },
   {
+    href: "/newsletters/crypto-intelligence",
+    name: "Crypto Intelligence",
+    cadence: "Biweekly",
+    blurb: "The Bitcoin/crypto cycle read — price action across the majors, plus the liquidity (M2) and adoption backdrop that drives the cycle. Public data only (CoinGecko spot + FRED).",
+    ready: true
+  },
+  {
+    href: "/newsletters/dividend-opportunities",
+    name: "Dividend Opportunities",
+    cadence: "Monthly",
+    blurb: "Income ideas screened for dividend growth, payout coverage, and balance-sheet quality — derived from point-in-time fundamentals (SF1 · SEC EDGAR) plus live price.",
+    ready: true
+  },
+  {
     href: "/newsletters/insider-briefs",
     name: "Insider Briefs",
     cadence: "As-warranted",

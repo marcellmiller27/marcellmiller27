@@ -26,7 +26,9 @@ export default function ReportsPage() {
                 <li key={highlight}>{highlight}</li>
               ))}
             </ul>
-            <button type="button">Generate report preview</button>
+            <Link className="opportunity-card__link" href={report.href}>
+              Generate / read →
+            </Link>
           </article>
         ))}
       </section>
