@@ -74,7 +74,7 @@ export function SiteFooter() {
       </div>
       <div className="site-footer__legal">
         <p className="site-footer__copyright">
-          © {year} Aegira — a product of JHI Research &amp; Analytics Firm, Inc.
+          {`© ${year} Aegira — a product of JHI Research & Analytics Firm, Inc.`}
         </p>
         <p className="site-footer__disclaimer">
           Research and analytics are informational only and are not investment
