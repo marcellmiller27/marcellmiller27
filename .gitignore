@@ -29,3 +29,7 @@ backend/.sba_cache/
 scripts/domains/contact.json
 scripts/domains/*.register.json
 scripts/domains/operations.log
+
+# Auto-loaded Compose override is a sandbox-only DNS hack; never commit it.
+# The reusable sandbox helper lives in docker-compose.sandbox.yml (explicit -f).
+docker-compose.override.yml

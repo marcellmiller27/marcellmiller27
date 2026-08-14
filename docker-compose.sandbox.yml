@@ -1,0 +1,35 @@
+# SANDBOX-ONLY HELPER — do NOT use on a normal Docker host (Mac/Windows/Linux
+# Docker Desktop or a server). It works around the docker-in-docker embedded-DNS
+# quirk found only in the Cursor cloud sandbox (containers there can't resolve the
+# 'db' service name), by pinning Postgres to a static IP on a fixed subnet.
+#
+# This file is intentionally NOT named docker-compose.override.yml, so Compose does
+# NOT auto-load it. On a normal host just run `docker compose up` (service names
+# resolve fine, subnets auto-assign — no overlap). ONLY in the sandbox, opt in with:
+#   docker compose -f docker-compose.yml -f docker-compose.sandbox.yml up
+#
+# Pinning a fixed subnet (172.28.0.0/16) auto-globally would collide across compose
+# projects on the same machine ("invalid pool request: Pool overlaps"), which is why
+# it must never be auto-applied.
+services:
+  db:
+    networks:
+      jhinet:
+        ipv4_address: 172.28.5.2
+
+  backend:
+    environment:
+      DATABASE_URL: postgresql+psycopg://jhi:jhi@172.28.5.2:5432/jhi
+    networks:
+      - jhinet
+
+  frontend:
+    networks:
+      - jhinet
+
+networks:
+  jhinet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
