@@ -66,6 +66,47 @@ class Group:
 
 
 @dataclass
+class PersonaPath:
+    """One reader-journey path in the editor's letter (the 42Macro "persona routing").
+
+    ``label`` and ``href`` are structural (never LLM-elevated); ``blurb`` is prose and is
+    eligible for fact-locked editorial elevation. ``gated`` marks a path that points at a
+    subscriber-gated module so the renderer can show a subtle upgrade nudge (never hide it).
+    """
+
+    label: str
+    blurb: str
+    href: str
+    gated: bool = False
+
+
+@dataclass
+class CTA:
+    label: str
+    href: str
+
+
+@dataclass
+class EditorLetter:
+    """The 42Macro-style "editor's letter" (a.k.a. lede) — an ENHANCEMENT layer that leads
+    the edition without replacing any charts/data below it.
+
+    Structure: a branded greeting → a consensus-challenging narrative lede (2-3 sentences)
+    → three sharp teaser questions grounded in tracked data/entities → a "process over
+    prediction" philosophy line → two persona-routing paths → a single clear CTA. Assembled
+    deterministically from the edition's already-computed real themes/data, then elevated
+    (prose only, fact-locked) through the E2 editorial LLM in Ellery Vance's voice.
+    """
+
+    greeting: str
+    narrative: str
+    questions: list[str] = field(default_factory=list)
+    philosophy: str = ""
+    persona_paths: list[PersonaPath] = field(default_factory=list)
+    cta: CTA | None = None
+
+
+@dataclass
 class Edition:
     slug: str
     title: str
@@ -79,6 +120,10 @@ class Edition:
     teaser: bool = False
     charts: list[Chart] = field(default_factory=list)
     cadence: str = "recurring"
+    # Optional 42Macro-style editor's letter that LEADS the edition (additive; the groups,
+    # charts, and data below are unchanged). Any edition can opt in — the flagship Insider
+    # Briefs carries the full letter; the Economic Brief carries a lighter lede.
+    editor_letter: EditorLetter | None = None
 
 
 QuoteMap = dict[str, Quote]
@@ -829,6 +874,145 @@ def _insider_theme_content(key: str, m: QuoteMap) -> tuple[str, list[Item], list
     return thesis, why, lens
 
 
+# ── The editor's letter (42Macro-style lede) — an additive enhancement layer ─────
+# The narrative letter LEADS and threads the piece; the graphs, tables, ratios, factor
+# screens and cross-asset data below still CARRY the body. Assembled here from the
+# edition's ALREADY-COMPUTED real data so every teaser question references a series we
+# actually track; the prose is then elevated (fact-locked) by the E2 editorial LLM.
+_PHILOSOPHY = (
+    "Markets will always hand you something to worry about; the edge is a repeatable "
+    "process, not a prediction."
+)
+
+# The standing persona routing. Both paths render for every reader; the "Act on the
+# Signals" path points at the gated modules (a subtle upgrade nudge for non-subscribers
+# is added in the renderer — the path is never hidden).
+_CORE_READ_BLURB = (
+    "Know what's changing. Stay with the standing macro read and this month's thesis, "
+    "then carry the through-line into every decision."
+)
+_ACT_SIGNALS_BLURB = (
+    "Stay on offense. Take the read into the Cross-Asset Opportunity Scan and Aegira's "
+    "Valuation signals to turn the macro call into positioning."
+)
+
+
+def _persona_paths() -> list[PersonaPath]:
+    return [
+        PersonaPath(label="The Core Read", blurb=_CORE_READ_BLURB, href="#news-summary"),
+        PersonaPath(label="Act on the Signals", blurb=_ACT_SIGNALS_BLURB,
+                    href="/opportunities", gated=True),
+    ]
+
+
+def _insider_editor_letter(key: str, m: QuoteMap) -> EditorLetter:
+    """The FULL editor's letter for the flagship (Insider Briefs → "The Aegira Monthly").
+
+    Greeting → consensus-challenging narrative → three teaser questions grounded in the
+    series this edition tracks → philosophy → two persona paths → one CTA. Numbers are
+    reused verbatim from the edition's own data, so the fact-lock whitelist covers them.
+    """
+    ff, cpi, un = fmt(m.get("FED_FUNDS")), fmt(m.get("INFLATION")), fmt(m.get("UNEMPLOYMENT"))
+    rr = _real_rate(m)
+    rr_s = f"{rr:.2f}%" if rr is not None else "positive"
+    gold = fmt(m.get("GOLD"))
+
+    lede_by_theme = {
+        "real-cost-of-capital": (
+            "This month the data pushed back on a few things the Street takes for granted. "
+            f"With the real 10-year yield near {rr_s}, the after-inflation cost of capital — "
+            "not the headline level of rates — is quietly resetting the price of every asset, "
+            "deal, and valuation. The consensus is still trading the first cut; the structural "
+            "shift is that positive real rates now pay you to prefer realized cash flow over "
+            "promised growth."),
+        "last-mile-disinflation": (
+            "This month the data pushed back on the easy disinflation story. With CPI at "
+            f"{cpi} against the 2% target and the funds rate still {ff}, the last mile is "
+            "concentrated in the stickiest components — the part the market keeps assuming "
+            "away. The structural read the Street may be under-pricing: persistence, not the "
+            "level, is what keeps policy restrictive."),
+        "labor-at-the-margin": (
+            "This month the data pushed back on the soft-landing consensus. At "
+            f"{un} unemployment the labor market is still the pivot, but the margin is where "
+            "cycles turn — and it is the swing factor for the consumer, for credit, and for "
+            "the Fed's hand. The shift worth watching is not the level of jobs but the "
+            "direction of the marginal one."),
+        "safe-haven-bid": (
+            f"This month the data pushed back on a tidy narrative. Gold at {gold} is rallying "
+            f"with real rates still near {rr_s} — a combination that usually does not happen, "
+            "and one the Street tends to explain away. The structural signal underneath: a "
+            "hedge against fiscal risk and debasement, not a bet on deflation."),
+    }
+    questions_by_theme = {
+        "real-cost-of-capital": [
+            (f"If the real 10-year yield holds near {rr_s}, which valuations still clear the "
+             "hurdle — and which are living on borrowed time?"),
+            (f"With Fed Funds at {ff}, is the levered-buyout math the market still underwrites "
+             "even solvent?"),
+            ("When capital is no longer free, does the tape pay up for realized cash flow "
+             "before it pays for a promise?"),
+        ],
+        "last-mile-disinflation": [
+            (f"Is the market pricing the last mile of disinflation, or the cut it wants at "
+             f"CPI {cpi}?"),
+            (f"With the funds rate at {ff}, how much patience is really left in the "
+             "reaction function?"),
+            ("If services and shelter stay sticky, where does the pain land first — duration "
+             "or growth equity?"),
+        ],
+        "labor-at-the-margin": [
+            f"At {un} unemployment, is the consumer still the engine or the risk?",
+            "Does credit performance follow the marginal job before the headline turns?",
+            ("When the dual mandate tilts toward employment, how far forward does the first "
+             "cut really pull?"),
+        ],
+        "safe-haven-bid": [
+            f"Why is gold bid at {gold} while real rates sit near {rr_s}?",
+            "Is the haven trade pricing deflation, or fiscal debasement?",
+            ("If the Fed is forced to ease into sticky inflation, what actually protects "
+             "purchasing power?"),
+        ],
+    }
+    narrative = lede_by_theme.get(key, lede_by_theme["real-cost-of-capital"])
+    questions = questions_by_theme.get(key, questions_by_theme["real-cost-of-capital"])
+    return EditorLetter(
+        greeting="Welcome to The Aegira Monthly.",
+        narrative=narrative,
+        questions=questions,
+        philosophy=_PHILOSOPHY,
+        persona_paths=_persona_paths(),
+        cta=CTA(label="Explore Aegira Research", href="/reports"),
+    )
+
+
+def _economic_editor_letter(m: QuoteMap) -> EditorLetter:
+    """A LIGHTER lede for the Economic Brief: greeting + narrative + one teaser question +
+    both persona paths + a CTA. Numbers are drawn from the brief's own thesis/data."""
+    ff, cpi = fmt(m.get("FED_FUNDS")), fmt(m.get("INFLATION"))
+    rr = _real_rate(m)
+    rr_s = f"{rr:.2f}%" if rr is not None else "positive"
+
+    parts = ["This week the data pushed back on the easy consensus."]
+    if ff != "—" and cpi != "—":
+        parts.append(
+            f"With the policy rate at {ff} and inflation at {cpi} against the 2% target, the "
+            "last mile of disinflation — not growth — still governs the timing of relief.")
+    if rr is not None:
+        parts.append(
+            f"A real 10-year yield near {rr_s} keeps the hurdle high and rewards patience "
+            "over hope.")
+    narrative = " ".join(parts)
+
+    return EditorLetter(
+        greeting="Welcome to The Economic Brief.",
+        narrative=narrative,
+        questions=["Is the market pricing the last mile of disinflation, or the cut it wants?"],
+        philosophy=_PHILOSOPHY,
+        persona_paths=_persona_paths(),
+        cta=CTA(label="Explore Aegira Research", href="/newsletters"),
+    )
+
+
 def _insider_brief(m: QuoteMap, now: datetime, full: bool) -> Edition:
     key = _insider_theme_key(m)
     title = _INSIDER_TITLES[key]
@@ -857,7 +1041,8 @@ def _insider_brief(m: QuoteMap, now: datetime, full: bool) -> Edition:
                "professional perspective.",
         disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full,
         charts=_insider_chart(m, title) if full else [],
-        cadence=cadence_for("insider-briefs"))
+        cadence=cadence_for("insider-briefs"),
+        editor_letter=_insider_editor_letter(key, m))
 
 
 # ── The Main Street Acquirer ─────────────────────────────────────────────────
@@ -1710,7 +1895,8 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
                    "Statistics, and market feeds. Figures are as last released.",
             disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full,
             charts=_macro_chart(m) if full else [],
-            cadence=cadence_for(slug))
+            cadence=cadence_for(slug),
+            editor_letter=_economic_editor_letter(m))
 
     if slug == "red-alerts":
         alerts = _build_alerts(m)

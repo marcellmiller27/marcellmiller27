@@ -2759,6 +2759,111 @@ li {
   font-style: italic;
 }
 
+/* ── The editor's letter (42Macro-style lede) — the narrative that LEADS the edition ──
+   Institutional, monochrome, readable. It sits above the existing groups/charts as an
+   enhancement layer; the data below is unchanged. Token-based so dark mode + the PDF
+   (headless print) inherit it. */
+.editor-letter {
+  margin: 0 0 var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--text);
+  border-radius: var(--radius-md);
+  background: var(--background-soft);
+}
+.editor-letter__greeting {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-serif, Georgia, "Times New Roman", serif);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.editor-letter__narrative {
+  margin: 0 0 var(--space-3);
+  font-size: var(--fs-md);
+  line-height: 1.65;
+  color: var(--text);
+}
+.editor-letter__questions {
+  list-style: none;
+  margin: 0 0 var(--space-3);
+  padding: 0 0 0 var(--space-3);
+  border-left: 2px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.editor-letter__questions li {
+  margin: 0;
+  padding-left: 0;
+  font-style: italic;
+  font-size: var(--fs-md);
+  line-height: 1.5;
+  color: var(--muted-strong);
+}
+.editor-letter__questions li::before {
+  content: none;
+}
+.editor-letter__philosophy {
+  margin: 0 0 var(--space-4);
+  font-size: var(--fs-md);
+  line-height: 1.6;
+  color: var(--text);
+  font-weight: var(--fw-medium);
+}
+.editor-letter__paths {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+}
+.editor-letter__path {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--background-card);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.editor-letter__path:hover {
+  border-color: var(--text);
+  box-shadow: var(--shadow);
+}
+.editor-letter__path-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: 0.25rem;
+}
+.editor-letter__path-label {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-md);
+  color: var(--text);
+}
+.editor-letter__nudge {
+  font-size: var(--fs-2xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
+.editor-letter__path-blurb {
+  display: block;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--muted-strong);
+}
+.editor-letter__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 /* ── The Main Street Acquirer — a distinct deal/opportunity letter skin ──────────
    Deliberately does NOT look like the Economic Brief: a bronze/emerald "deal desk"
    masthead, a product badge, and signature sections rendered as accented cards with
@@ -3192,9 +3297,27 @@ li {
   .acq-section,
   .acq-row,
   .news__chart,
+  .editor-letter,
+  .editor-letter__path,
   .alert {
     break-inside: avoid;
     page-break-inside: avoid;
+  }
+  /* The editor's letter leads the printed edition too. Its CTA is otherwise a `.button`,
+     which the print rules hide — keep the CTA as visible text (no interactive chrome) so
+     the lede reads complete in the PDF. */
+  .editor-letter {
+    border: 1px solid #d5dee8;
+    background: #f4f7fb;
+  }
+  .editor-letter__cta.button {
+    display: inline-flex !important;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #0c1f33;
+    font-weight: 700;
+    box-shadow: none;
   }
   /* The acquirer letter keeps its distinct skin in the PDF (deal desk, not the brief). */
   .news--acquirer .news__masthead {

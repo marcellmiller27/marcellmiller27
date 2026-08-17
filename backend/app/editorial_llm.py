@@ -105,11 +105,24 @@ def _allowed_numbers(edition: Edition) -> set[str]:
         allowed |= _numbers(g.blurb)
         for it in g.items:
             allowed |= _numbers(it.label) | _numbers(it.value) | _numbers(it.body)
+    # The editor's letter (lede) is assembled deterministically from the same engine data,
+    # so its numbers are engine-produced and belong on the whitelist too.
+    el = getattr(edition, "editor_letter", None)
+    if el is not None:
+        allowed |= _numbers(el.greeting) | _numbers(el.narrative) | _numbers(el.philosophy)
+        for q in el.questions:
+            allowed |= _numbers(q)
+        for p in el.persona_paths:
+            allowed |= _numbers(p.blurb)
     return allowed
 
 
 def _collect_prose(edition: Edition) -> dict[str, str]:
-    """Only prose fields are eligible for rephrasing — never numeric/value fields."""
+    """Only prose fields are eligible for rephrasing — never numeric/value fields.
+
+    Includes the editor's-letter prose (narrative, teaser questions, philosophy, persona
+    blurbs) so the lede is elevated in Ellery's voice. Structural fields — the greeting, the
+    persona labels/hrefs, and the CTA — are NEVER sent (they are fixed brand/navigation)."""
     prose: dict[str, str] = {}
     if edition.intro:
         prose["intro"] = edition.intro
@@ -119,6 +132,18 @@ def _collect_prose(edition: Edition) -> dict[str, str]:
         for ii, it in enumerate(g.items):
             if it.body:
                 prose[f"g{gi}.i{ii}.body"] = it.body
+    el = getattr(edition, "editor_letter", None)
+    if el is not None:
+        if el.narrative:
+            prose["el.narrative"] = el.narrative
+        if el.philosophy:
+            prose["el.philosophy"] = el.philosophy
+        for qi, q in enumerate(el.questions):
+            if q:
+                prose[f"el.q{qi}"] = q
+        for pi, p in enumerate(el.persona_paths):
+            if p.blurb:
+                prose[f"el.p{pi}.blurb"] = p.blurb
     return prose
 
 
@@ -204,7 +229,24 @@ def _apply(edition: Edition, elevated: dict[str, str], allowed: set[str]) -> tup
             new_body = keep(f"g{gi}.i{ii}.body", it.body) if it.body else it.body
             new_items.append(replace(it, body=new_body))
         new_groups.append(replace(g, blurb=new_blurb, items=new_items))
-    return replace(edition, intro=new_intro, groups=new_groups), reverted
+
+    new_letter = edition.editor_letter
+    if new_letter is not None:
+        el = new_letter
+        new_questions = [keep(f"el.q{qi}", q) if q else q for qi, q in enumerate(el.questions)]
+        new_paths = [
+            replace(p, blurb=keep(f"el.p{pi}.blurb", p.blurb) if p.blurb else p.blurb)
+            for pi, p in enumerate(el.persona_paths)
+        ]
+        new_letter = replace(
+            el,
+            narrative=keep("el.narrative", el.narrative) if el.narrative else el.narrative,
+            philosophy=keep("el.philosophy", el.philosophy) if el.philosophy else el.philosophy,
+            questions=new_questions,
+            persona_paths=new_paths,
+        )
+    return replace(edition, intro=new_intro, groups=new_groups,
+                   editor_letter=new_letter), reverted
 
 
 def _month_spend(db, period: str) -> float:

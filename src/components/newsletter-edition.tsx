@@ -3,11 +3,14 @@
 // Renders an edition from the backend content API (deterministic build + E2 LLM
 // elevation, fact-locked). Single source of truth for on-screen, the PDF (which
 // prints this page), and future email. Per-variant styling preserves each edition's look.
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { EditorialByline } from "@/components/editorial-byline";
 import { NewsletterDownloadButton } from "@/components/newsletter-download-button";
 import { UpgradeGate } from "@/components/upgrade-gate";
+import { useRole } from "@/components/role-provider";
+import { canFullNewsletter } from "@/lib/roles";
 
 type Item = {
   label: string;
@@ -19,6 +22,16 @@ type Item = {
 };
 type Chart = { label: string; image: string; caption: string; source: string | null };
 type Group = { heading: string; blurb: string; items: Item[]; charts?: Chart[] };
+type PersonaPath = { label: string; blurb: string; href: string; gated?: boolean };
+type CTA = { label: string; href: string };
+type EditorLetter = {
+  greeting: string;
+  narrative: string;
+  questions: string[];
+  philosophy: string;
+  persona_paths: PersonaPath[];
+  cta: CTA | null;
+};
 type Edition = {
   slug: string;
   title: string;
@@ -31,6 +44,7 @@ type Edition = {
   methodology: string;
   teaser: boolean;
   charts?: Chart[];
+  editor_letter?: EditorLetter | null;
 };
 type Payload = { edition: Edition; as_of: string; editorial: string };
 type Variant = "brief" | "alerts" | "scan" | "insider" | "acquirer";
@@ -70,6 +84,54 @@ function ChartFigures({ charts }: { charts?: Chart[] }) {
   );
 }
 
+// The 42Macro-style editor's letter (a.k.a. lede). An ENHANCEMENT layer that LEADS the
+// edition — the greeting, consensus-challenging narrative, three italic teaser questions,
+// a "process over prediction" philosophy line, two persona-routing paths, and one CTA.
+// It renders ABOVE the existing groups/charts, which are unchanged. Both persona paths
+// show for everyone; the gated "Act on the Signals" path adds a subtle upgrade nudge for
+// non-subscribers rather than hiding it.
+function EditorLetter({ letter }: { letter: EditorLetter }) {
+  const { role } = useRole();
+  const isSubscriber = canFullNewsletter(role);
+  return (
+    <section className="editor-letter" aria-label="Editor's letter">
+      {letter.greeting ? <p className="editor-letter__greeting">{letter.greeting}</p> : null}
+      {letter.narrative ? <p className="editor-letter__narrative">{letter.narrative}</p> : null}
+      {letter.questions && letter.questions.length > 0 ? (
+        <ul className="editor-letter__questions">
+          {letter.questions.map((q) => (
+            <li key={q}>{q}</li>
+          ))}
+        </ul>
+      ) : null}
+      {letter.philosophy ? <p className="editor-letter__philosophy">{letter.philosophy}</p> : null}
+      {letter.persona_paths && letter.persona_paths.length > 0 ? (
+        <div className="editor-letter__paths">
+          {letter.persona_paths.map((p) => {
+            const showNudge = Boolean(p.gated) && !isSubscriber;
+            return (
+              <Link className="editor-letter__path" href={p.href} key={p.label}>
+                <span className="editor-letter__path-head">
+                  <span className="editor-letter__path-label">{p.label}</span>
+                  {showNudge ? (
+                    <span className="editor-letter__nudge">Subscriber · upgrade to unlock</span>
+                  ) : null}
+                </span>
+                <span className="editor-letter__path-blurb">{p.blurb}</span>
+              </Link>
+            );
+          })}
+        </div>
+      ) : null}
+      {letter.cta ? (
+        <Link className="button button--primary editor-letter__cta" href={letter.cta.href}>
+          {letter.cta.label} <span aria-hidden>→</span>
+        </Link>
+      ) : null}
+    </section>
+  );
+}
+
 export function NewsletterEdition({ slug, variant }: { slug: string; variant: Variant }) {
   const [data, setData] = useState<Payload | null>(null);
   const [error, setError] = useState("");
@@ -106,8 +168,12 @@ export function NewsletterEdition({ slug, variant }: { slug: string; variant: Va
         <EditorialByline />
       </header>
 
+      {/* The editor's letter LEADS the edition (additive enhancement layer). The existing
+          executive summary, groups, charts, tables and data all render unchanged below. */}
+      {ed.editor_letter ? <EditorLetter letter={ed.editor_letter} /> : null}
+
       {ed.intro ? (
-        <section className="news__lede">
+        <section className="news__lede" id="news-summary">
           {SECTIONED.includes(variant) || isAcquirer ? (
             <h3>
               {variant === "insider"
