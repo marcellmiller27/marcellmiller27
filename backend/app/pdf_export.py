@@ -117,6 +117,44 @@ _EYEBROW = ParagraphStyle("JHIEyebrow", parent=_styles["Normal"], fontSize=8,
                           textColor=_MUTED, spaceAfter=1)
 _LEDE = ParagraphStyle("JHILede", parent=_styles["Normal"], fontSize=10, leading=15,
                        textColor=_NAVY, spaceAfter=6)
+# Editor's-letter styles (the 42Macro-style lede that leads the edition).
+_EL_GREETING = ParagraphStyle("JHIElGreeting", parent=_styles["Normal"], fontName="Times-Bold",
+                              fontSize=12, textColor=_NAVY, spaceAfter=3)
+_EL_NARR = ParagraphStyle("JHIElNarr", parent=_styles["Normal"], fontSize=10, leading=15,
+                          textColor=_NAVY, spaceAfter=4)
+_EL_Q = ParagraphStyle("JHIElQ", parent=_styles["Normal"], fontName="Times-Italic",
+                       fontSize=9.5, leading=14, textColor=_MUTED, leftIndent=10, spaceAfter=1)
+_EL_PHIL = ParagraphStyle("JHIElPhil", parent=_styles["Normal"], fontSize=9.5, leading=14,
+                          textColor=_NAVY, spaceBefore=4, spaceAfter=4)
+_EL_PATH = ParagraphStyle("JHIElPath", parent=_styles["Normal"], fontSize=9, leading=13,
+                          textColor=_MUTED, spaceAfter=1)
+_EL_CTA = ParagraphStyle("JHIElCta", parent=_styles["Normal"], fontName="Helvetica-Bold",
+                         fontSize=9.5, textColor=_NAVY, spaceBefore=4, spaceAfter=6)
+
+
+def _editor_letter_flowables(edition: Edition) -> list:
+    """The editor's letter as reportlab flowables (fallback PDF path). Additive: it leads
+    the edition; every existing section still renders below it. Resilient to a missing letter."""
+    el = getattr(edition, "editor_letter", None)
+    if el is None:
+        return []
+    out: list = []
+    if el.greeting:
+        out.append(Paragraph(el.greeting, _EL_GREETING))
+    if el.narrative:
+        out.append(Paragraph(el.narrative, _EL_NARR))
+    for q in el.questions:
+        if q:
+            out.append(Paragraph(q, _EL_Q))
+    if el.philosophy:
+        out.append(Paragraph(el.philosophy, _EL_PHIL))
+    for p in el.persona_paths:
+        label = p.label + (" — subscriber" if getattr(p, "gated", False) else "")
+        out.append(Paragraph(f"<b>{label}.</b> {p.blurb}", _EL_PATH))
+    if el.cta is not None and el.cta.label:
+        out.append(Paragraph(f"&rarr; {el.cta.label}", _EL_CTA))
+    out.append(Spacer(1, 6))
+    return out
 _ITEM_HEAD = ParagraphStyle("JHIItemHead", parent=_styles["Normal"], fontName="Helvetica-Bold",
                             fontSize=9.5, textColor=_NAVY, spaceBefore=6, spaceAfter=1)
 
@@ -169,6 +207,10 @@ def newsletter_pdf(edition: Edition) -> bytes:
         Paragraph(f"By {_BYLINE}", _META),
         Spacer(1, 8),
     ]
+
+    # The editor's letter (42Macro-style lede) LEADS the edition — additive, above the
+    # existing executive summary / sections / charts (which are unchanged below).
+    flow.extend(_editor_letter_flowables(edition))
 
     if edition.intro:
         flow.append(Paragraph(edition.intro, _LEDE))

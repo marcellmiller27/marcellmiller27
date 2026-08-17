@@ -166,6 +166,96 @@ def test_insider_brief_is_a_themed_deepdive() -> None:
     assert len(full.groups) > len(teaser.groups)
 
 
+# ── The editor's letter (42Macro-style lede) — additive enhancement layer ────
+def test_insider_brief_carries_full_editor_letter() -> None:
+    # The flagship presents as "The Aegira Monthly" with the FULL editor's letter on top —
+    # greeting, narrative, three teaser questions, philosophy, two persona paths, and a CTA.
+    ed = build_edition("insider-briefs", _macro_quotes(), datetime.now(timezone.utc), full=True)
+    el = ed.editor_letter
+    assert el is not None
+    assert el.greeting == "Welcome to The Aegira Monthly."
+    assert el.narrative
+    assert len(el.questions) == 3
+    assert el.philosophy
+    # Two persona paths render for everyone; exactly one is gated (Act on the Signals).
+    assert len(el.persona_paths) == 2
+    labels = [p.label for p in el.persona_paths]
+    assert "The Core Read" in labels and "Act on the Signals" in labels
+    gated = [p for p in el.persona_paths if p.gated]
+    assert len(gated) == 1 and gated[0].href in ("/opportunities", "/valuation")
+    assert el.cta is not None and el.cta.label and el.cta.href
+    # ADDITIVE: the letter leads, but all existing groups/charts still carry the body.
+    assert len(ed.groups) >= 1
+    headings = [g.heading for g in ed.groups]
+    assert headings[0].startswith("The setup")
+    assert len(ed.charts) >= 1
+
+
+def test_economic_brief_carries_lighter_lede() -> None:
+    # The Economic Brief opts into a LIGHTER lede: greeting + narrative + fewer teaser
+    # questions + persona paths + CTA — and every existing section is unchanged below it.
+    ed = build_edition("economic-brief", _macro_quotes(), datetime.now(timezone.utc), full=True)
+    el = ed.editor_letter
+    assert el is not None
+    assert el.greeting == "Welcome to The Economic Brief."
+    assert el.narrative
+    assert len(el.questions) == 1  # lighter than the flagship's three
+    assert el.cta is not None
+    # The full analytical arc (5 sections + cross-asset + forward watch) is untouched.
+    assert len(ed.groups) == 7
+    assert len(ed.charts) >= 1
+
+
+def test_editor_letter_is_deterministic() -> None:
+    now = datetime.now(timezone.utc)
+    a = build_edition("insider-briefs", _macro_quotes(), now, full=True)
+    b = build_edition("insider-briefs", _macro_quotes(), now, full=True)
+    assert a.editor_letter == b.editor_letter
+
+
+def test_editor_letter_numbers_are_fact_locked() -> None:
+    # Every number that appears in the deterministic letter must trace to an engine figure
+    # already shown in the edition (the fact-lock whitelist), so the LLM layer never has to
+    # invent one. This guards against a lede that drifts from the data.
+    from app.editorial_llm import _allowed_numbers, _numbers
+
+    for slug in ("insider-briefs", "economic-brief"):
+        ed = build_edition(slug, _macro_quotes(), datetime.now(timezone.utc), full=True)
+        el = ed.editor_letter
+        assert el is not None
+        allowed = _allowed_numbers(ed)
+        letter_numbers: set[str] = set()
+        letter_numbers |= _numbers(el.narrative) | _numbers(el.philosophy)
+        for q in el.questions:
+            letter_numbers |= _numbers(q)
+        for p in el.persona_paths:
+            letter_numbers |= _numbers(p.blurb)
+        # "2" (the CPI target) etc. are all disclosed in the edition body → whitelisted.
+        assert letter_numbers <= allowed, (slug, letter_numbers - allowed)
+
+
+def test_editor_letter_is_opt_in_per_edition() -> None:
+    # Only the two opted-in editions carry a letter for now; the field is designed so any
+    # edition can opt in later, but the others must stay unchanged (None).
+    now = datetime.now(timezone.utc)
+    for slug in ("red-alerts", "opportunity-scan", "crypto-intelligence",
+                 "main-street-acquirer", "dividend-opportunities"):
+        ed = build_edition(slug, _macro_quotes(), now, full=True)
+        assert ed.editor_letter is None, slug
+
+
+def test_edition_with_letter_still_builds_a_reportlab_pdf() -> None:
+    # The reportlab fallback must pick up the editor's letter and still emit a valid PDF
+    # (the headless path prints the page, which renders the same block).
+    from app.pdf_export import newsletter_pdf
+
+    for slug in ("insider-briefs", "economic-brief"):
+        ed = build_edition(slug, _macro_quotes(), datetime.now(timezone.utc), full=True)
+        pdf = newsletter_pdf(ed)
+        assert pdf[:4] == b"%PDF", slug
+        assert len(pdf) > 1000, slug
+
+
 def test_insider_brief_theme_selection_is_deterministic() -> None:
     # Same data → same brief (stable theme selection + tie-break).
     quotes = MarketDataService().quotes(NEWSLETTER_SYMBOLS).quotes

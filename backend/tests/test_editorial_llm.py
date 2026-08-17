@@ -1,5 +1,5 @@
 from app.editorial_llm import _bedrock_creds, _valid_key, elevate_edition
-from app.newsletter_content import Edition, Group, Item
+from app.newsletter_content import CTA, Edition, EditorLetter, Group, Item, PersonaPath
 
 
 def test_bedrock_creds_detected(monkeypatch) -> None:
@@ -80,3 +80,68 @@ def test_factlock_reverts_injected_number(monkeypatch) -> None:
     # The invented number must NOT appear — reverted to deterministic text.
     assert "99" not in out.intro
     assert out.intro == ed.intro  # this field fell back
+
+
+def _sample_with_letter() -> Edition:
+    ed = _sample()
+    ed.editor_letter = EditorLetter(
+        greeting="Welcome to The Aegira Monthly.",
+        narrative="Policy remains restrictive with inflation at 3.53%, still above the 2% target.",
+        questions=["Is the market pricing the last mile of disinflation, or the cut it wants?"],
+        philosophy="The edge is a repeatable process, not a prediction.",
+        persona_paths=[
+            PersonaPath(label="The Core Read", blurb="Stay with the standing macro read.",
+                        href="#news-summary"),
+            PersonaPath(label="Act on the Signals", blurb="Take the read into the scan.",
+                        href="/opportunities", gated=True),
+        ],
+        cta=CTA(label="Explore Aegira Research", href="/reports"),
+    )
+    return ed
+
+
+def test_editor_letter_prose_is_elevated(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_LLM_EDITORIAL", "1")
+    ed = _sample_with_letter()
+
+    def draft(payload):
+        # A faithful rephrase (prefix marker) that preserves every figure.
+        return {k: "[E] " + v for k, v in payload.items()}, 120, 60
+
+    out, meta = elevate_edition(ed, draft_fn=draft)
+    assert meta["used_llm"] is True and meta["fields_reverted"] == 0
+    el = out.editor_letter
+    # Prose fields are elevated ...
+    assert el.narrative.startswith("[E] ")
+    assert el.questions[0].startswith("[E] ")
+    assert el.persona_paths[0].blurb.startswith("[E] ")
+    assert el.philosophy.startswith("[E] ")
+    # ... figures preserved, and structural brand/nav fields are NEVER sent/changed.
+    assert "3.53%" in el.narrative
+    assert el.greeting == "Welcome to The Aegira Monthly."
+    assert el.persona_paths[0].label == "The Core Read"
+    assert el.persona_paths[1].href == "/opportunities" and el.persona_paths[1].gated is True
+    assert el.cta == ed.editor_letter.cta
+
+
+def test_editor_letter_factlock_reverts_injected_number(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_LLM_EDITORIAL", "1")
+    ed = _sample_with_letter()
+
+    def draft(payload):
+        return {k: v + " We target 99 by year-end." for k, v in payload.items()}, 100, 60
+
+    out, meta = elevate_edition(ed, draft_fn=draft)
+    assert meta["used_llm"] is True and meta["fields_reverted"] >= 1
+    el = out.editor_letter
+    assert "99" not in el.narrative
+    assert el.narrative == ed.editor_letter.narrative  # fell back to deterministic
+    assert "99" not in el.questions[0]
+
+
+def test_editor_letter_flag_off_is_unchanged(monkeypatch) -> None:
+    monkeypatch.delenv("ENABLE_LLM_EDITORIAL", raising=False)
+    ed = _sample_with_letter()
+    out, meta = elevate_edition(ed, draft_fn=lambda p: ({}, 0, 0))
+    assert out is ed and meta["used_llm"] is False
+    assert out.editor_letter is ed.editor_letter
