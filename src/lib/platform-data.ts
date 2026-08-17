@@ -618,7 +618,7 @@ export const dashboardLaunchpad: LaunchGroup[] = [
       },
       {
         href: "/diligence-suite",
-        label: "Earnings",
+        label: "Acquisitions",
         blurb: "Quality-of-earnings style normalization: add-backs, DSCR and cash-flow bridges.",
         meta: "Normalized EBITDA"
       },

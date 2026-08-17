@@ -59,7 +59,7 @@ const toc: TocGroup[] = [
     items: [
       { href: "/framework", label: "Framework", icon: Compass, access: "free" },
       { href: "/deal-xray", label: "Scope", icon: ScanSearch, access: "subscriber" },
-      { href: "/diligence-suite", label: "Earnings", icon: Calculator, access: "subscriber" },
+      { href: "/diligence-suite", label: "Acquisitions", icon: Calculator, access: "subscriber" },
       { href: "/due-diligence", label: "Document Review", icon: FileSearch, access: "subscriber" }
     ]
   },
