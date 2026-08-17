@@ -3310,7 +3310,8 @@ li {
     border: 1px solid #d5dee8;
     background: #f4f7fb;
   }
-  .editor-letter__cta.button {
+  .news a.button.editor-letter__cta,
+  .news .button.editor-letter__cta {
     display: inline-flex !important;
     padding: 0;
     border: 0;
