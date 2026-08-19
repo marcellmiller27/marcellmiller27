@@ -13,6 +13,7 @@ from app.routers import (
     billing,
     crm,
     dashboards,
+    data_gov,
     deal_xray,
     edgar,
     equity_valuation,
@@ -67,6 +68,7 @@ app.include_router(market.router, prefix="/api/v1")
 app.include_router(newsletters.router, prefix="/api/v1")
 app.include_router(bea.router, prefix="/api/v1")
 app.include_router(public_macro.router, prefix="/api/v1")
+app.include_router(data_gov.router, prefix="/api/v1")
 app.include_router(research.router, prefix="/api/v1")
 app.include_router(valuations.router, prefix="/api/v1")
 app.include_router(equity_valuation.router, prefix="/api/v1")

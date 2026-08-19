@@ -29,6 +29,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Callable
 
+from app import data_gov_services as dgs
 from app import data_registry as dr
 from app.market_models import (
     InflationResponse,
@@ -638,6 +639,42 @@ class MarketDataService:
                     ),
                 ),
                 ProviderInfo(
+                    key="us_treasury_fiscal",
+                    name="US Treasury (Fiscal Data)",
+                    asset_classes=["macro", "rate"],
+                    status="live",
+                    requires_key=False,
+                    notes=(
+                        "Keyless public API. Debt to the penny + average interest rates on "
+                        "marketable Treasury securities. Surfaced in the Economics module "
+                        "(GET /api/v1/macro/gov/treasury-fiscal)."
+                    ),
+                ),
+                ProviderInfo(
+                    key="fdic_bankfind",
+                    name="FDIC BankFind Suite",
+                    asset_classes=["macro", "fundamentals"],
+                    status="live",
+                    requires_key=False,
+                    notes=(
+                        "Keyless public API. FDIC-insured institution count + per-institution "
+                        "financial health (assets, deposits, net income, ROA/ROE) for the "
+                        "acquisition/financials work (GET /api/v1/macro/gov/banking)."
+                    ),
+                ),
+                ProviderInfo(
+                    key="eia",
+                    name="US Energy Information Administration (EIA)",
+                    asset_classes=["commodity", "macro"],
+                    status=dgs.eia_provider_status(),
+                    requires_key=True,
+                    notes=(
+                        "WTI crude, Henry Hub natural gas, and US retail electricity price. "
+                        "EIA accepts the shared api.data.gov key; set DATA_GOV_API_KEY (or a "
+                        "dedicated EIA_API_KEY) to activate (GET /api/v1/macro/gov/energy)."
+                    ),
+                ),
+                ProviderInfo(
                     key="bloomberg",
                     name="Bloomberg",
                     asset_classes=["index", "equity", "commodity", "rate", "fx"],
@@ -886,7 +923,9 @@ class MarketDataService:
 
     @staticmethod
     def _refreshable_symbols() -> list[str]:
-        """Registry series that map to a live fetch path (excludes derived-only /
-        filing series like SF1 and EDGAR, which are pulled by their own harnesses)."""
-        skip = {dr.Source.SF1, dr.Source.EDGAR}
+        """Registry series that map to a live quote fetch path (excludes derived-only /
+        filing series like SF1 and EDGAR, and the government-data feeds served by
+        ``DataGovService`` — all pulled by their own harnesses)."""
+        skip = {dr.Source.SF1, dr.Source.EDGAR, dr.Source.TREASURY, dr.Source.FDIC,
+                dr.Source.EIA}
         return [spec.series_id for spec in dr.all_series() if spec.source not in skip]
