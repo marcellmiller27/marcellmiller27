@@ -46,6 +46,9 @@ class Source(str, Enum):
     EDGAR = "edgar"
     SF1 = "sf1"          # Sharadar SF1 (Nasdaq Data Link) — licensed, derived-only
     PRICES = "prices"    # market price feeds (Yahoo / Twelve Data / CoinGecko)
+    TREASURY = "treasury"  # US Treasury Fiscal Data (keyless / public)
+    FDIC = "fdic"          # FDIC BankFind Suite (keyless / public)
+    EIA = "eia"            # US Energy Information Administration (api.data.gov key)
 
 
 class LicenseClass(str, Enum):
@@ -167,6 +170,29 @@ _SPECS: list[SeriesSpec] = [
     SeriesSpec("RETAIL_SALES", "US Retail Sales", Source.FRED, Cadence.MONTHLY, "USD mn", LicenseClass.PUBLIC),
     SeriesSpec("CONSUMER_SENTIMENT", "US Consumer Sentiment (UMich)", Source.FRED, Cadence.MONTHLY, "index", LicenseClass.PUBLIC),
     SeriesSpec("INDUSTRIAL_PRODUCTION", "US Industrial Production", Source.FRED, Cadence.MONTHLY, "index", LicenseClass.PUBLIC),
+    # ── US Treasury Fiscal Data (keyless / public) ────────────────────────────
+    SeriesSpec("TREASURY_TOTAL_DEBT", "Total public debt outstanding", Source.TREASURY,
+               Cadence.DAILY, "USD", LicenseClass.PUBLIC),
+    SeriesSpec("TREASURY_DEBT_HELD_PUBLIC", "Debt held by the public", Source.TREASURY,
+               Cadence.DAILY, "USD", LicenseClass.PUBLIC),
+    SeriesSpec("TREASURY_AVG_RATE_MARKETABLE", "Avg interest rate · total marketable",
+               Source.TREASURY, Cadence.MONTHLY, "%", LicenseClass.PUBLIC),
+    SeriesSpec("TREASURY_AVG_RATE_TBILLS", "Avg interest rate · Treasury Bills",
+               Source.TREASURY, Cadence.MONTHLY, "%", LicenseClass.PUBLIC),
+    SeriesSpec("TREASURY_AVG_RATE_TNOTES", "Avg interest rate · Treasury Notes",
+               Source.TREASURY, Cadence.MONTHLY, "%", LicenseClass.PUBLIC),
+    SeriesSpec("TREASURY_AVG_RATE_TBONDS", "Avg interest rate · Treasury Bonds",
+               Source.TREASURY, Cadence.MONTHLY, "%", LicenseClass.PUBLIC),
+    # ── FDIC BankFind Suite (keyless / public) ────────────────────────────────
+    SeriesSpec("FDIC_INSURED_INSTITUTIONS", "FDIC-insured institutions (active)",
+               Source.FDIC, Cadence.QUARTERLY, "count", LicenseClass.PUBLIC),
+    # ── EIA energy / commodities (api.data.gov key) ───────────────────────────
+    SeriesSpec("EIA_WTI", "WTI crude oil spot", Source.EIA, Cadence.DAILY, "USD/bbl",
+               LicenseClass.PUBLIC),
+    SeriesSpec("EIA_HENRY_HUB", "Henry Hub natural gas spot", Source.EIA, Cadence.DAILY,
+               "USD/MMBtu", LicenseClass.PUBLIC),
+    SeriesSpec("EIA_ELECTRICITY_PRICE", "US retail electricity price (all sectors)",
+               Source.EIA, Cadence.MONTHLY, "cents/kWh", LicenseClass.PUBLIC),
     # ── Fundamentals (Sharadar SF1) — quarterly, licensed / derived-only ──────
     SeriesSpec("SF1_FUNDAMENTALS", "Point-in-time fundamentals (Sharadar SF1)", Source.SF1,
                Cadence.QUARTERLY, "derived", LicenseClass.LICENSED_DERIVED_ONLY),
