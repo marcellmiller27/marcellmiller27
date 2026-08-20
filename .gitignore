@@ -25,6 +25,9 @@ backend/.sf1_cache/
 # SBA FOIA loan-level cache — large public downloads stay out of version control
 backend/.sba_cache/
 
+# Document Review uploads — sensitive user tax/bank docs stay out of version control
+backend/app/data/document_review/
+
 # Domain registration — never commit registrant PII or generated request payloads
 scripts/domains/contact.json
 scripts/domains/*.register.json
