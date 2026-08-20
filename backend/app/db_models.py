@@ -320,6 +320,35 @@ class VendorBillDB(Base):
     imported_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
 
 
+class DocumentReviewDB(Base):
+    """A persisted Document Review — a real acquisition document uploaded to the
+    Document Review module, its extraction/analysis status, and the risk-scored
+    result (0-100 risk score + flags + generated diligence questions).
+
+    Scoped to the uploading user so the queue returns only the caller's own reviews.
+    """
+
+    __tablename__ = "document_reviews"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    # One of: tax_returns | pnl | balance_sheet | bank_statements.
+    doc_type: Mapped[str] = mapped_column(String(40), nullable=False, index=True)
+    filename: Mapped[str] = mapped_column(String(255), nullable=False)
+    # Bare, sanitized name of the stored file on disk (inside the per-review dir).
+    stored_name: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    content_type: Mapped[str] = mapped_column(String(120), nullable=False, default="")
+    size_bytes: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    uploaded_by: Mapped[str] = mapped_column(String(320), nullable=False, index=True)
+    organization_id: Mapped[str | None] = mapped_column(String, nullable=True, index=True)
+    # analyzed | manual_review_required
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="analyzed")
+    risk_score: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    summary: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    flags_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    questions_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    uploaded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+
 class LLMUsageDB(Base):
     """Editorial LLM (E2) spend ledger — enforces the monthly budget cap and feeds
     Contribution-Margin fixed-cost tracking. One row per model invocation."""

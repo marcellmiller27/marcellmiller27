@@ -15,6 +15,7 @@ from app.routers import (
     dashboards,
     data_gov,
     deal_xray,
+    document_review,
     edgar,
     equity_valuation,
     financial_diligence,
@@ -73,6 +74,7 @@ app.include_router(research.router, prefix="/api/v1")
 app.include_router(valuations.router, prefix="/api/v1")
 app.include_router(equity_valuation.router, prefix="/api/v1")
 app.include_router(deal_xray.router, prefix="/api/v1")
+app.include_router(document_review.router, prefix="/api/v1")
 app.include_router(edgar.router, prefix="/api/v1")
 app.include_router(financial_diligence.router, prefix="/api/v1")
 app.include_router(firm_documents.router, prefix="/api/v1")

@@ -5,11 +5,13 @@ description = "FastAPI backend for John Henry Investments accounting, audit, fin
 requires-python = ">=3.11"
 dependencies = [
   "fastapi",
+  "python-multipart",
   "sqlalchemy",
   "uvicorn[standard]",
   "pydantic",
   "psycopg[binary]",
   "openpyxl",
+  "pypdf",
   "reportlab",
   "cryptography",
   "PyJWT",
