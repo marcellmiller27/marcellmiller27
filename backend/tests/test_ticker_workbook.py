@@ -8,7 +8,7 @@ from io import BytesIO
 
 from openpyxl import load_workbook
 
-from app import equity_ratios, equity_technicals as t, ticker_workbook as tw
+from app import equity_ratios, equity_technicals as t, ticker_charts, ticker_workbook as tw
 from app.fundamentals import SOURCE_EDGAR, SOURCE_SF1, EquityFundamentals, FundamentalsYear
 
 
@@ -136,11 +136,12 @@ def test_ratios_degrade_gracefully_on_sparse_edgar() -> None:
 
 
 # ── Full workbook ────────────────────────────────────────────────────────────
-def _assemble_data(with_valuation: bool = True) -> tw.TickerWorkbookData:
+def _assemble_data(with_valuation: bool = True, with_bars: bool = True) -> tw.TickerWorkbookData:
     bars = _synthetic_bars(450, drift=0.0012)
     db = t.to_bars(bars)
+    weekly_bars = t.aggregate_weekly(db)
     daily = t.compute_technicals(db, "SYN", "Daily", window=252)
-    weekly = t.compute_technicals(t.aggregate_weekly(db), "SYN", "Weekly", window=52)
+    weekly = t.compute_technicals(weekly_bars, "SYN", "Weekly", window=52)
     oc = t.options_context(daily, weekly)
     fin = _rich_fundamentals()
     ratios = equity_ratios.compute_ratios(fin, price=daily.price)
@@ -164,6 +165,8 @@ def _assemble_data(with_valuation: bool = True) -> tw.TickerWorkbookData:
         price=daily.price,
         market_cap=daily.price * fin.shares_outstanding,
         name=fin.entity_name,
+        daily_bars=db if with_bars else [],
+        weekly_bars=weekly_bars if with_bars else [],
     )
 
 
@@ -222,3 +225,67 @@ def test_ratios_sheet_has_trend_table() -> None:
     assert "Multi-period trend" in text
     assert "Debt-to-equity" in text
     assert "Return on equity (ROE)" in text
+
+
+# ── Visual chart layer (embedded PNG images + native Excel charts) ────────────
+def test_price_technical_chart_returns_valid_png() -> None:
+    bars = t.to_bars(_synthetic_bars(400, drift=0.0012))
+    read = t.compute_technicals(bars, "SYN", "Daily", window=252)
+    png = ticker_charts.price_technical_chart(bars, "Daily", read)
+    assert isinstance(png, bytes)
+    assert png[:8] == b"\x89PNG\r\n\x1a\n"  # PNG magic number
+    assert len(png) > 5000
+    # Thumbnail variant also renders a valid PNG.
+    thumb = ticker_charts.price_technical_chart(bars, "Daily", read, thumbnail=True)
+    assert isinstance(thumb, bytes) and thumb[:8] == b"\x89PNG\r\n\x1a\n"
+
+
+def test_price_technical_chart_degrades_when_ohlc_missing() -> None:
+    read = t.compute_technicals(
+        t.to_bars(_synthetic_bars(60)), "SYN", "Daily", window=252
+    )
+    # No / too-few bars → None (never a fabricated picture), no exception.
+    assert ticker_charts.price_technical_chart([], "Daily", read) is None
+    assert ticker_charts.price_technical_chart(
+        t.to_bars(_synthetic_bars(60))[:3], "Daily", read
+    ) is None
+
+
+def test_workbook_embeds_technical_images() -> None:
+    data = _assemble_data(with_valuation=True, with_bars=True)
+    content = tw.render_workbook(data)
+    wb = load_workbook(BytesIO(content))
+    # Embedded PNGs (method A) — the cross-app reliability anchor — on both Technicals
+    # sheets and a thumbnail on the Cover.
+    for name in ("Technicals — Daily", "Technicals — Weekly", "Cover & Summary"):
+        assert len(wb[name]._images) >= 1, f"expected an embedded chart image on {name}"
+
+
+def test_workbook_has_native_charts() -> None:
+    data = _assemble_data(with_valuation=True, with_bars=True)
+    content = tw.render_workbook(data)
+    wb = load_workbook(BytesIO(content))
+    # Native, editable Excel charts (method B) on the ratio-trend and DCF sheets.
+    assert len(wb["Fundamental Ratios"]._charts) >= 1
+    assert len(wb["DCF Valuation"]._charts) >= 1
+
+
+def test_workbook_degrades_without_bars_keeps_tables() -> None:
+    # No OHLC bars available at build time → no crash, no embedded technical images,
+    # and the existing numeric tables remain fully intact.
+    data = _assemble_data(with_valuation=True, with_bars=False)
+    content = tw.render_workbook(data)
+    wb = load_workbook(BytesIO(content))
+    assert wb.sheetnames == [
+        "Cover & Summary",
+        "Technicals — Daily",
+        "Technicals — Weekly",
+        "Options context",
+        "Fundamental Ratios",
+        "DCF Valuation",
+        "Legal & Provenance",
+    ]
+    daily = wb["Technicals — Daily"]
+    assert len(daily._images) == 0  # graceful: no fabricated visual
+    text = " ".join(str(c.value) for col in daily.iter_cols() for c in col if c.value is not None)
+    assert "Trade setups" in text and "RSI (14)" in text  # table preserved
