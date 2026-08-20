@@ -33,6 +33,9 @@ type Quote = {
 const MACRO_PANELS = [
   { path: "/macro/bea", title: "US National Accounts · BEA" },
   { path: "/macro/treasury", title: "US Treasury · Fiscal" },
+  { path: "/macro/gov/treasury-fiscal", title: "US Treasury · Debt & Rates" },
+  { path: "/macro/gov/banking", title: "US Banking · FDIC" },
+  { path: "/macro/gov/energy", title: "US Energy · EIA" },
   { path: "/macro/world-bank", title: "World Bank · WDI (US)" },
   { path: "/macro/imf", title: "IMF · WEO (US)" },
   { path: "/macro/oecd", title: "OECD · Leading Indicator (US)" },
