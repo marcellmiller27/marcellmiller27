@@ -132,6 +132,45 @@ _EL_CTA = ParagraphStyle("JHIElCta", parent=_styles["Normal"], fontName="Helveti
                          fontSize=9.5, textColor=_NAVY, spaceBefore=4, spaceAfter=6)
 
 
+# Hero-masthead styles (the deterministic typographic hero that leads the visual layer).
+_HERO_WORDMARK = ParagraphStyle("JHIHeroWord", parent=_styles["Title"], fontName="Times-Bold",
+                                fontSize=20, textColor=_NAVY, spaceAfter=1, alignment=0)
+_HERO_META = ParagraphStyle("JHIHeroMeta", parent=_styles["Normal"], fontSize=8,
+                            textColor=_MUTED, spaceAfter=2)
+_HERO_BADGE = ParagraphStyle("JHIHeroBadge", parent=_styles["Normal"], fontName="Helvetica-Bold",
+                             fontSize=9, textColor=_NAVY, spaceAfter=3)
+_HERO_THESIS = ParagraphStyle("JHIHeroThesis", parent=_styles["Normal"], fontName="Times-Italic",
+                              fontSize=11, leading=15, textColor=_NAVY, spaceAfter=6)
+
+
+def _hero_flowables(edition: Edition) -> list:
+    """The per-edition hero masthead as reportlab flowables (fallback PDF path).
+
+    Additive: it leads the edition, above the editor's letter. Resilient to a missing hero
+    or missing regime read (graceful degradation)."""
+    vl = getattr(edition, "visual_layer", None)
+    hero = getattr(vl, "hero", None) if vl is not None else None
+    if hero is None:
+        return []
+    out: list = []
+    if hero.wordmark:
+        out.append(Paragraph(hero.wordmark, _HERO_WORDMARK))
+    meta_bits = [b for b in (hero.dateline, hero.byline) if b]
+    if hero.as_of:
+        meta_bits.append(f"As of {hero.as_of}")
+    if meta_bits:
+        out.append(Paragraph("  &middot;  ".join(meta_bits), _HERO_META))
+    if hero.regime_label:
+        badge = f"Regime: <b>{hero.regime_label}</b>"
+        if hero.regime_caption:
+            badge += f" &mdash; {hero.regime_caption}"
+        out.append(Paragraph(badge, _HERO_BADGE))
+    if hero.thesis:
+        out.append(Paragraph(hero.thesis, _HERO_THESIS))
+    out.append(Spacer(1, 6))
+    return out
+
+
 def _editor_letter_flowables(edition: Edition) -> list:
     """The editor's letter as reportlab flowables (fallback PDF path). Additive: it leads
     the edition; every existing section still renders below it. Resilient to a missing letter."""
@@ -208,9 +247,18 @@ def newsletter_pdf(edition: Edition) -> bytes:
         Spacer(1, 8),
     ]
 
-    # The editor's letter (42Macro-style lede) LEADS the edition — additive, above the
+    # The additive "visual layer" LEADS the edition: the typographic hero at the very top,
+    # then the editor's letter, then the regime quadrant + signal heat map — all above the
     # existing executive summary / sections / charts (which are unchanged below).
+    flow.extend(_hero_flowables(edition))
+
+    # The editor's letter (42Macro-style lede) — additive, above the existing body.
     flow.extend(_editor_letter_flowables(edition))
+
+    # The regime quadrant + signal heat map exhibits (visual layer), after the letter.
+    vl = getattr(edition, "visual_layer", None)
+    if vl is not None:
+        flow.extend(_chart_flowables(getattr(vl, "charts", [])))
 
     if edition.intro:
         flow.append(Paragraph(edition.intro, _LEDE))

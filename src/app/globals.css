@@ -2864,6 +2864,95 @@ li {
   gap: 0.4rem;
 }
 
+/* ── The newsletter "visual layer" — hero masthead + regime/heat-map exhibits ────
+   An additive, deterministic band that LEADS the edition (above the editor's letter).
+   Institutional, monochrome, print-friendly. Token-based so dark mode + the PDF
+   (headless print) inherit it. */
+.edition-hero {
+  margin: 0 0 var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--text);
+  border-radius: var(--radius-md);
+  background: var(--background-soft);
+}
+.edition-hero--light {
+  border-top-width: 2px;
+  background: var(--background-card);
+}
+.edition-hero__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+.edition-hero__wordmark {
+  margin: 0;
+  font-family: var(--font-serif, Georgia, "Times New Roman", serif);
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--text);
+}
+.edition-hero--light .edition-hero__wordmark {
+  font-size: var(--fs-2xl);
+}
+.edition-hero__regime {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--text);
+  border-radius: var(--radius-sm);
+  background: var(--text);
+  color: var(--background);
+  min-width: 130px;
+}
+.edition-hero__regime-eyebrow {
+  font-size: var(--fs-2xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+.edition-hero__regime-label {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+}
+.edition-hero__regime-caption {
+  font-size: var(--fs-2xs);
+  opacity: 0.85;
+}
+.edition-hero__thesis {
+  margin: var(--space-3) 0 0;
+  font-family: var(--font-serif, Georgia, "Times New Roman", serif);
+  font-size: var(--fs-lg);
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--text);
+  max-width: 60ch;
+}
+.edition-hero__meta {
+  margin: var(--space-3) 0 0;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.01em;
+}
+.edition-hero__asof {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+/* The regime quadrant + signal heat map sit right after the editor's letter. */
+.news__visual-exhibits {
+  margin: 0 0 var(--space-5);
+}
+.news__visual-exhibits .news__charts {
+  margin: 0;
+}
+
 /* ── The Main Street Acquirer — a distinct deal/opportunity letter skin ──────────
    Deliberately does NOT look like the Economic Brief: a bronze/emerald "deal desk"
    masthead, a product badge, and signature sections rendered as accented cards with
@@ -3299,9 +3388,24 @@ li {
   .news__chart,
   .editor-letter,
   .editor-letter__path,
+  .edition-hero,
   .alert {
     break-inside: avoid;
     page-break-inside: avoid;
+  }
+  /* The visual-layer hero leads the printed edition too; keep the dark regime badge
+     (print-color-adjust) so the macro read survives the PDF. */
+  .edition-hero {
+    border: 1px solid #d5dee8;
+    border-top: 3pt solid #0c1f33;
+    background: #f4f7fb;
+  }
+  .edition-hero__regime {
+    background: #0c1f33 !important;
+    color: #fff !important;
+    border-color: #0c1f33;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
   /* The editor's letter leads the printed edition too. Its CTA is otherwise a `.button`,
      which the print rules hide — keep the CTA as visible text (no interactive chrome) so

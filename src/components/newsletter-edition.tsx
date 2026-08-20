@@ -32,6 +32,17 @@ type EditorLetter = {
   persona_paths: PersonaPath[];
   cta: CTA | null;
 };
+type Hero = {
+  wordmark: string;
+  dateline: string;
+  byline: string;
+  thesis: string;
+  regime_label: string | null;
+  regime_caption: string | null;
+  as_of: string | null;
+  variant: string;
+};
+type VisualLayer = { hero: Hero | null; charts: Chart[] };
 type Edition = {
   slug: string;
   title: string;
@@ -45,6 +56,7 @@ type Edition = {
   teaser: boolean;
   charts?: Chart[];
   editor_letter?: EditorLetter | null;
+  visual_layer?: VisualLayer | null;
 };
 type Payload = { edition: Edition; as_of: string; editorial: string };
 type Variant = "brief" | "alerts" | "scan" | "insider" | "acquirer";
@@ -81,6 +93,43 @@ function ChartFigures({ charts }: { charts?: Chart[] }) {
         </figure>
       ))}
     </div>
+  );
+}
+
+// The per-edition HERO masthead — a deterministic, typographic (NOT AI-image) band that
+// LEADS the visual layer at the very top of the edition. It carries the edition wordmark,
+// dateline + byline, a one-line thesis (reused from the editor's letter), the current
+// macro-REGIME BADGE (from the Regime Quadrant), and the as-of timestamp. Rendered in
+// HTML/CSS so it is crisp on screen and in the printed PDF (which prints this page).
+function EditionHero({ hero }: { hero: Hero }) {
+  const light = hero.variant === "light";
+  return (
+    <header className={`edition-hero${light ? " edition-hero--light" : ""}`} aria-label="Edition hero">
+      <div className="edition-hero__top">
+        <p className="edition-hero__wordmark">{hero.wordmark}</p>
+        {hero.regime_label ? (
+          <span className="edition-hero__regime" title={hero.regime_caption ?? undefined}>
+            <span className="edition-hero__regime-eyebrow">Macro Regime</span>
+            <span className="edition-hero__regime-label">{hero.regime_label}</span>
+            {hero.regime_caption ? (
+              <span className="edition-hero__regime-caption">{hero.regime_caption}</span>
+            ) : null}
+          </span>
+        ) : null}
+      </div>
+      {hero.thesis ? <p className="edition-hero__thesis">{hero.thesis}</p> : null}
+      <p className="edition-hero__meta">
+        <span>{hero.dateline}</span>
+        <span aria-hidden> · </span>
+        <span>{hero.byline}</span>
+        {hero.as_of ? (
+          <>
+            <span aria-hidden> · </span>
+            <span className="edition-hero__asof">As of {hero.as_of}</span>
+          </>
+        ) : null}
+      </p>
+    </header>
   );
 }
 
@@ -168,9 +217,21 @@ export function NewsletterEdition({ slug, variant }: { slug: string; variant: Va
         <EditorialByline />
       </header>
 
+      {/* The additive VISUAL LAYER leads the edition: the typographic hero at the top, then
+          the editor's letter, then the regime quadrant + signal heat map — all ABOVE the
+          existing executive summary, groups, charts, tables and data (unchanged below). */}
+      {ed.visual_layer?.hero ? <EditionHero hero={ed.visual_layer.hero} /> : null}
+
       {/* The editor's letter LEADS the edition (additive enhancement layer). The existing
           executive summary, groups, charts, tables and data all render unchanged below. */}
       {ed.editor_letter ? <EditorLetter letter={ed.editor_letter} /> : null}
+
+      {/* Regime Quadrant + Signal Heat Map — the visual-layer exhibits, above the body. */}
+      {ed.visual_layer?.charts && ed.visual_layer.charts.length > 0 ? (
+        <div className="news__visual-exhibits">
+          <ChartFigures charts={ed.visual_layer.charts} />
+        </div>
+      ) : null}
 
       {ed.intro ? (
         <section className="news__lede" id="news-summary">
