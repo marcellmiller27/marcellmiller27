@@ -28,6 +28,8 @@ import math
 from dataclasses import dataclass, field
 from datetime import date, datetime
 
+from app.price_format import format_price
+
 # ── Bar model ────────────────────────────────────────────────────────────────
 
 
@@ -502,7 +504,8 @@ def _build_setups(read: TechnicalsRead, bars: list[Bar]) -> list[TradeSetup]:
                     target=target,
                     risk_reward=rr,
                     rationale=(
-                        f"RSI {read.rsi14:.0f} (oversold) into support {trigger}: a reclaim "
+                        f"RSI {read.rsi14:.0f} (oversold) into support "
+                        f"{format_price(trigger, asset_class='equity')}: a reclaim "
                         f"offers an intraday bounce, one ATR stop, +1.5 ATR target."
                     ),
                 )
@@ -522,7 +525,8 @@ def _build_setups(read: TechnicalsRead, bars: list[Bar]) -> list[TradeSetup]:
                     target=target,
                     risk_reward=rr,
                     rationale=(
-                        f"RSI {read.rsi14:.0f} (overbought) into resistance {trigger}: a "
+                        f"RSI {read.rsi14:.0f} (overbought) into resistance "
+                        f"{format_price(trigger, asset_class='equity')}: a "
                         f"rejection offers an intraday fade, one ATR stop, −1.5 ATR target."
                     ),
                 )

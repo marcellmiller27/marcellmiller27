@@ -38,6 +38,7 @@ from matplotlib.gridspec import GridSpec  # noqa: E402
 
 from app import equity_technicals  # noqa: E402
 from app.equity_technicals import Bar, TechnicalsRead  # noqa: E402
+from app.price_format import format_price  # noqa: E402
 
 # ── Aegira palette (navy / gold), tuned for print on white ────────────────────
 NAVY = "#0C1F33"
@@ -276,11 +277,13 @@ def price_technical_chart(
     if technicals is not None:
         for lvl in technicals.resistances:
             ax_price.axhline(lvl, color=DOWN, linestyle="--", linewidth=0.7, zorder=2)
-            ax_price.text(n_plot - 1, lvl, f" R {lvl:,.2f}", va="center", ha="left",
+            ax_price.text(n_plot - 1, lvl, f" R {format_price(lvl, asset_class='equity')}",
+                          va="center", ha="left",
                           fontsize=6.5, color=DOWN, fontfamily=_FONT)
         for lvl in technicals.supports:
             ax_price.axhline(lvl, color=NAVY_SOFT, linestyle="--", linewidth=0.7, zorder=2)
-            ax_price.text(n_plot - 1, lvl, f" S {lvl:,.2f}", va="center", ha="left",
+            ax_price.text(n_plot - 1, lvl, f" S {format_price(lvl, asset_class='equity')}",
+                          va="center", ha="left",
                           fontsize=6.5, color=NAVY_SOFT, fontfamily=_FONT)
         # 52-week / window high & low
         ax_price.axhline(technicals.range_high, color=GOLD, linewidth=0.8, alpha=0.6, zorder=1)

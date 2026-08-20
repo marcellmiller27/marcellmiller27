@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatQuoteValue } from "@/lib/format";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api/v1";
@@ -10,22 +11,12 @@ type Quote = {
   name: string;
   price: number | null;
   unit: string;
+  asset_class: string;
   change_percent: number | null;
   source: string;
   as_of: string | null;
   status: string;
 };
-
-function formatPrice(quote: Quote): string {
-  if (quote.price === null) return "—";
-  const value = quote.price;
-  if (quote.unit === "%") return `${value.toFixed(2)}%`;
-  if (Math.abs(value) >= 1000) {
-    return value.toLocaleString("en-US", { maximumFractionDigits: 0 });
-  }
-  if (Math.abs(value) >= 1) return value.toFixed(2);
-  return value.toFixed(4);
-}
 
 export function LiveMarket({ symbols }: { symbols: string }) {
   const [quotes, setQuotes] = useState<Quote[]>([]);
@@ -77,7 +68,7 @@ export function LiveMarket({ symbols }: { symbols: string }) {
                 <span>
                   {quote.symbol} · {quote.source}
                 </span>
-                <strong>{formatPrice(quote)}</strong>
+                <strong>{formatQuoteValue(quote)}</strong>
               </div>
               <p>
                 {quote.status !== "ok" ? (

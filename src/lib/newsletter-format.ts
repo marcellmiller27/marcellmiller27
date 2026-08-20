@@ -2,6 +2,8 @@
 // Shared fetch + formatting for the editorial editions (Economic Brief, Red Alerts,
 // Opportunity Scan). All read the same live /market/quotes feed via the same-origin proxy.
 
+import { formatQuoteValue } from "@/lib/format";
+
 export const NEWSLETTER_API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api/v1";
 
 // The full indicator + market set the editions draw from.
@@ -13,6 +15,7 @@ export type Quote = {
   name: string;
   price: number | null;
   unit: string;
+  asset_class?: string | null;
   change_percent: number | null;
   status: string;
   note: string | null;
@@ -21,24 +24,12 @@ export type Quote = {
 
 export type QuoteMap = Record<string, Quote>;
 
+// Consolidated onto the canonical magnitude-aware formatter (src/lib/format.ts) so a
+// price renders identically here, in the live ticker, and in the backend twin. Prices
+// route through the standard; non-price readings (rates, macro levels) keep their
+// unit-appropriate rendering inside `formatQuoteValue`.
 export function fmt(q: Quote | undefined): string {
-  if (!q || q.price === null || q.price === undefined) return "—";
-  const v = q.price;
-  switch (q.unit) {
-    case "%":
-      return `${v.toFixed(2)}%`;
-    case "index":
-      return v.toFixed(1);
-    case "USD bn":
-      return v >= 1000 ? `$${(v / 1000).toFixed(2)}T` : `$${v.toFixed(1)}B`;
-    case "USD mn":
-      return v >= 1000 ? `$${(v / 1000).toFixed(2)}B` : `$${v.toFixed(1)}M`;
-    case "USD/oz":
-    case "USD":
-      return `$${v.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
-    default:
-      return v.toLocaleString("en-US", { maximumFractionDigits: 2 });
-  }
+  return formatQuoteValue(q ?? null);
 }
 
 export async function fetchQuotes(

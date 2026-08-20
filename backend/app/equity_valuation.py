@@ -25,6 +25,7 @@ from pydantic import BaseModel
 
 from app import edgar_services, fundamentals
 from app.market_services import MarketDataService
+from app.price_format import format_price
 
 logger = logging.getLogger(__name__)
 
@@ -145,6 +146,11 @@ def _fmt_usd(x: float) -> str:
     if abs(x) >= 1e6:
         return f"${x / 1e6:.1f}M"
     return f"${x:,.2f}"
+
+
+def _fmt_share(x: float) -> str:
+    """Per-share prices use the canonical magnitude-aware price standard."""
+    return format_price(x, asset_class="equity")
 
 
 def risk_free_rate() -> float:
@@ -346,13 +352,13 @@ def _rationale(v: dict) -> str:
     high_years = v["high_growth_years"]
     lead = (
         f"Valuation 2.0 tags {name} ({ticker}) as a {archetype.lower()} (Innovation & Moat "
-        f"{moat:.0f}/100) and puts its intrinsic value at {_fmt_usd(intrinsic)}/share versus a "
-        f"market price of {_fmt_usd(price)} — a {_fmt_pct(upside)} margin of safety "
+        f"{moat:.0f}/100) and puts its intrinsic value at {_fmt_share(intrinsic)}/share versus a "
+        f"market price of {_fmt_share(price)} — a {_fmt_pct(upside)} margin of safety "
         f"({_fmt_pct(composite)} after the moat credit). We start from R&D-adjusted owner-earnings, "
         f"fade a {_fmt_pct(g)} growth path over {high_years} years at a {_fmt_pct(r)} cost of "
         f"capital to a {_fmt_pct(TERMINAL_GROWTH)} terminal, implying an expected return of about "
         f"{_fmt_pct(er)}. The prior conservative (classic) DCF valued it at "
-        f"{_fmt_usd(classic_val)}/share ({_fmt_pct(classic_up)} margin) — shown as a disclosed "
+        f"{_fmt_share(classic_val)}/share ({_fmt_pct(classic_up)} margin) — shown as a disclosed "
         f"lower-bound component."
     )
     if signal == "Enter":
