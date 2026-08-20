@@ -18,18 +18,25 @@ Yahoo chart adapter (no new vendor); fundamentals from the SF1-primary/EDGAR pro
 from __future__ import annotations
 
 import logging
+from io import BytesIO
 
 from openpyxl import Workbook
+from openpyxl.chart import BarChart, LineChart, Reference
+from openpyxl.drawing.image import Image as XLImage
 from openpyxl.styles import Alignment
 
 from app import edgar_services, equity_ratios, equity_technicals, excel_export as xl, fundamentals
-from app import market_services
+from app import market_services, ticker_charts
 from app.equity_ratios import FundamentalRatios, RatioMetric
-from app.equity_technicals import OptionsContext, TechnicalsRead
+from app.equity_technicals import Bar, OptionsContext, TechnicalsRead
 from app.equity_valuation import EquityValuation, value_equity
 from app.equity_valuation_workbook import write_valuation_sheet
 
 logger = logging.getLogger(__name__)
+
+# Excel's default row height is ~15pt ≈ 20px; used to reserve vertical space so an
+# embedded chart sits ABOVE the numeric table rather than overlapping it.
+_PX_PER_ROW = 20
 
 _PCT = "0.0%"
 _PCT2 = "0.00%"
@@ -93,6 +100,106 @@ def _fmt_usd(x: float | None) -> str:
     return f"${x:,.2f}"
 
 
+# ── Visual chart helpers (embedded PNG images + native Excel charts) ──────────
+def _embed_image(ws, png: bytes | None, anchor: str) -> int:
+    """Embed a PNG at ``anchor`` and return the number of Excel rows it occupies.
+
+    Returns 0 when there is no image (graceful degradation — the caller then keeps
+    the numeric table exactly where it was)."""
+    if not png:
+        return 0
+    img = XLImage(BytesIO(png))
+    ws.add_image(img, anchor)
+    return int(img.height / _PX_PER_ROW) + 2
+
+
+def _price_chart_png(bars: list[Bar], read: TechnicalsRead, *, thumbnail: bool = False):
+    """Render the technical chart, never letting a plotting edge-case break the workbook."""
+    if not bars:
+        return None
+    try:
+        return ticker_charts.price_technical_chart(
+            bars, read.timeframe, read, thumbnail=thumbnail
+        )
+    except Exception:  # noqa: BLE001 - a chart is a visual bonus; never fail the workbook for it
+        logger.debug("technical chart render failed for %s (%s)", read.ticker, read.timeframe,
+                     exc_info=True)
+        return None
+
+
+def _native_line_chart(
+    ws, title: str, y_title: str, hdr_row: int, data_start: int, data_end: int,
+    cols: list[int], anchor: str, y_fmt: str | None = None,
+) -> None:
+    """Add a native (editable) Excel LineChart wired to cells already in the sheet.
+
+    ``cols`` are 1-based column indices; the series name is taken from ``hdr_row`` so
+    the chart legend matches the on-sheet header. Categories come from column 1 (the
+    fiscal-year labels). Native charts stay live: a subscriber can retune inputs and
+    Excel/Numbers redraws them."""
+    chart = LineChart()
+    chart.title = title
+    chart.style = 10
+    chart.y_axis.title = y_title
+    chart.x_axis.title = "Fiscal year"
+    chart.height = 7.0
+    chart.width = 15.0
+    if y_fmt:
+        chart.y_axis.number_format = y_fmt
+        chart.y_axis.majorGridlines = None
+    for col in cols:
+        ref = Reference(ws, min_col=col, min_row=hdr_row, max_row=data_end)
+        chart.add_data(ref, titles_from_data=True)
+    cats = Reference(ws, min_col=1, min_row=data_start, max_row=data_end)
+    chart.set_categories(cats)
+    ws.add_chart(chart, anchor)
+
+
+def _dcf_fcf_range(ws) -> tuple[int, int, int] | None:
+    """Locate the DCF projection block written by ``write_valuation_sheet``.
+
+    Returns ``(header_row, data_start, data_end)`` for the ``Year / Projected FCF /
+    Present value`` table, or ``None`` if it is not present (graceful degradation)."""
+    header_row = None
+    for r in range(1, ws.max_row + 1):
+        if ws.cell(row=r, column=2).value == "Projected FCF":
+            header_row = r
+            break
+    if header_row is None:
+        return None
+    data_start = header_row + 1
+    r = data_start
+    while isinstance(ws.cell(row=r, column=1).value, str) and str(
+        ws.cell(row=r, column=1).value
+    ).startswith("Year "):
+        r += 1
+    data_end = r - 1
+    if data_end < data_start:
+        return None
+    return header_row, data_start, data_end
+
+
+def _add_dcf_fcf_chart(ws) -> None:
+    """Add a native bar chart of projected FCF (and PV) by year to the DCF sheet."""
+    found = _dcf_fcf_range(ws)
+    if not found:
+        return
+    header_row, data_start, data_end = found
+    chart = BarChart()
+    chart.type = "col"
+    chart.title = "DCF — projected free cash flow by year"
+    chart.y_axis.title = "USD"
+    chart.x_axis.title = "Projection year"
+    chart.height = 8.0
+    chart.width = 16.0
+    # Projected FCF (col 2) and its present value (col 3) — same USD scale.
+    ref = Reference(ws, min_col=2, max_col=3, min_row=header_row, max_row=data_end)
+    chart.add_data(ref, titles_from_data=True)
+    cats = Reference(ws, min_col=1, min_row=data_start, max_row=data_end)
+    chart.set_categories(cats)
+    ws.add_chart(chart, "F5")
+
+
 # ── Data assembly ────────────────────────────────────────────────────────────
 class TickerWorkbookData:
     """Assembled inputs for the workbook (fetched once, reused across sheets)."""
@@ -110,6 +217,8 @@ class TickerWorkbookData:
         price: float | None,
         market_cap: float | None,
         name: str,
+        daily_bars: list[Bar] | None = None,
+        weekly_bars: list[Bar] | None = None,
     ) -> None:
         self.ticker = ticker
         self.daily = daily
@@ -121,6 +230,11 @@ class TickerWorkbookData:
         self.price = price
         self.market_cap = market_cap
         self.name = name
+        # Raw OHLC bars retained so the visual chart layer can render deterministically
+        # at workbook-build time (no re-fetch, no new vendor). Optional: when absent the
+        # workbook still builds — charts simply degrade to the existing numeric tables.
+        self.daily_bars: list[Bar] = daily_bars or []
+        self.weekly_bars: list[Bar] = weekly_bars or []
 
 
 def _resolve_symbol(ticker: str) -> str:
@@ -178,6 +292,8 @@ def assemble(ticker: str, price: float | None = None) -> TickerWorkbookData:
         price=live_price,
         market_cap=market_cap,
         name=name,
+        daily_bars=daily_bars,
+        weekly_bars=weekly_bars,
     )
 
 
@@ -221,7 +337,7 @@ def _headline(data: TickerWorkbookData) -> tuple[str, str, str]:
     return tech, fund, opp
 
 
-def _cover_sheet(wb: Workbook, data: TickerWorkbookData) -> None:
+def _cover_sheet(wb: Workbook, data: TickerWorkbookData, thumb_png: bytes | None = None) -> None:
     ws = wb.active
     ws.title = "Cover & Summary"
     ws.column_dimensions["A"].width = 30
@@ -232,6 +348,10 @@ def _cover_sheet(wb: Workbook, data: TickerWorkbookData) -> None:
         subtitle=f"Institutional Ticker Workbook — {data.name} ({data.ticker})",
         business="Portfolio · per-ticker technicals + fundamentals",
     )
+
+    # Visual layer: a compact daily price-snapshot thumbnail beside the summary text
+    # (anchored to the right of the A–D text columns so it never overlaps the copy).
+    _embed_image(ws, thumb_png, "F5")
 
     row = 5
     xl._subhead(ws, row, "Snapshot")
@@ -303,7 +423,10 @@ def _setups_block(ws, row: int, read: TechnicalsRead) -> int:
     return row + 1
 
 
-def _technicals_sheet(wb: Workbook, read: TechnicalsRead, title: str, extra_note: str = "") -> None:
+def _technicals_sheet(
+    wb: Workbook, read: TechnicalsRead, title: str, extra_note: str = "",
+    chart_png: bytes | None = None,
+) -> None:
     ws = wb.create_sheet(title)
     ws.column_dimensions["A"].width = 30
     for col in ("B", "C", "D", "E", "F"):
@@ -315,6 +438,15 @@ def _technicals_sheet(wb: Workbook, read: TechnicalsRead, title: str, extra_note
     )
 
     row = 5
+    # Visual layer: the multi-panel technical chart sits ABOVE the numeric table so
+    # subscribers get the "written AND visual" read. Degrades to table-only if absent.
+    if chart_png:
+        xl._subhead(
+            ws, row, f"Technical chart ({read.timeframe}) — candles · MAs · S/R · RSI · MACD"
+        )
+        row += 1
+        chart_rows = _embed_image(ws, chart_png, f"A{row}")
+        row += chart_rows
     xl._subhead(ws, row, "Market structure")
     row += 1
     _kv(ws, row, "Trend", read.trend)
@@ -461,8 +593,10 @@ def _ratios_sheet(wb: Workbook, r: FundamentalRatios) -> None:
     if r.trend:
         xl._subhead(ws, row, "Multi-period trend")
         row += 1
+        trend_hdr_row = row
         _hdr(ws, row, ["Fiscal year", "Revenue", "Rev YoY", "Net income", "EPS", "Gross %", "Op %", "Net %"])
         row += 1
+        trend_data_start = row
         for t in r.trend:
             ws.cell(row=row, column=1, value=t.fiscal_year)
             ws.cell(row=row, column=2, value=t.revenue if t.revenue is not None else _NA).number_format = _USD
@@ -475,6 +609,22 @@ def _ratios_sheet(wb: Workbook, r: FundamentalRatios) -> None:
             row += 1
         row += 1
 
+        # Native, editable Excel charts for the multi-period trend cells above.
+        trend_data_end = trend_data_start + len(r.trend) - 1
+        if len(r.trend) >= 2:
+            _native_line_chart(
+                ws, "Revenue & net income trend", "USD", trend_hdr_row, trend_data_start,
+                trend_data_end, [2, 4], "E5",
+            )
+            _native_line_chart(
+                ws, "Margin trend (gross / operating / net)", "Margin", trend_hdr_row,
+                trend_data_start, trend_data_end, [6, 7, 8], "E21", y_fmt=_PCT,
+            )
+            _native_line_chart(
+                ws, "EPS trend", "EPS (USD)", trend_hdr_row, trend_data_start, trend_data_end,
+                [5], "E37", y_fmt=_USD2,
+            )
+
     xl._subhead(ws, row, "Sources & notes")
     row += 1
     for n in r.notes:
@@ -486,6 +636,7 @@ def _valuation_sheet(wb: Workbook, data: TickerWorkbookData) -> None:
     ws = wb.create_sheet("DCF Valuation")
     if data.valuation is not None:
         write_valuation_sheet(ws, data.valuation)
+        _add_dcf_fcf_chart(ws)
         return
     # Graceful degradation — a labeled placeholder, never a fabricated valuation.
     ws.column_dimensions["A"].width = 30
@@ -520,9 +671,19 @@ def build_ticker_workbook(ticker: str, price: float | None = None) -> tuple[byte
 
 
 def render_workbook(data: TickerWorkbookData) -> bytes:
-    """Render the workbook from already-assembled data (network-free — testable)."""
+    """Render the workbook from already-assembled data (network-free — testable).
+
+    The visual layer (embedded technical PNGs + native Excel charts) is additive and
+    degrades gracefully: when OHLC bars are absent the technical charts are skipped and
+    the existing numeric tables render exactly as before."""
     wb = Workbook()
-    _cover_sheet(wb, data)
+
+    # Render the deterministic technical charts once from the retained OHLC bars.
+    daily_png = _price_chart_png(data.daily_bars, data.daily)
+    weekly_png = _price_chart_png(data.weekly_bars, data.weekly)
+    thumb_png = _price_chart_png(data.daily_bars, data.daily, thumbnail=True)
+
+    _cover_sheet(wb, data, thumb_png=thumb_png)
     _technicals_sheet(
         wb,
         data.daily,
@@ -532,6 +693,7 @@ def render_workbook(data: TickerWorkbookData) -> bytes:
             + ("aligned (higher conviction)." if data.daily.trend == data.weekly.trend
                else "diverging (lower conviction; defer to the higher timeframe).")
         ),
+        chart_png=daily_png,
     )
     _technicals_sheet(
         wb,
@@ -541,6 +703,7 @@ def render_workbook(data: TickerWorkbookData) -> bytes:
             f"Weekly trend {data.weekly.trend}; daily trend {data.daily.trend} — "
             + ("aligned." if data.daily.trend == data.weekly.trend else "diverging.")
         ),
+        chart_png=weekly_png,
     )
     _options_sheet(wb, data.options, data.ticker)
     _ratios_sheet(wb, data.ratios)
