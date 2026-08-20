@@ -107,6 +107,40 @@ class EditorLetter:
 
 
 @dataclass
+class Hero:
+    """A deterministic, typographic per-edition hero masthead (NOT an AI-generated image).
+
+    Rendered in HTML/CSS by the frontend (crisp on screen + in the printed PDF), it carries
+    the edition wordmark, dateline, byline, a one-line thesis (reused from the editor's
+    letter so it inherits the fact-lock whitelist), the current macro-regime badge, and the
+    as-of timestamp. ``variant`` lets an edition opt into a FULL or a LIGHTER hero.
+    """
+
+    wordmark: str
+    dateline: str
+    byline: str
+    thesis: str = ""
+    regime_label: str | None = None      # e.g. "Stagflation" (from the Regime Quadrant)
+    regime_caption: str | None = None    # e.g. "Growth decelerating · Inflation hot"
+    as_of: str | None = None
+    variant: str = "full"                # "full" | "light"
+
+
+@dataclass
+class VisualLayer:
+    """The additive newsletter "visual layer" that sits ABOVE the existing content.
+
+    A typographic hero, plus deterministic exhibits — a macro Regime Quadrant and a
+    cross-asset Signal Heat Map — computed from data we already pull (FRED/BLS/BEA/market
+    feeds), as-of dated and fact-locked. Purely additive: the editor's letter and every
+    existing group/chart/data point render unchanged below it. Any edition can opt in.
+    """
+
+    hero: Hero | None = None
+    charts: list[Chart] = field(default_factory=list)  # regime quadrant + signal heat map
+
+
+@dataclass
 class Edition:
     slug: str
     title: str
@@ -124,6 +158,10 @@ class Edition:
     # charts, and data below are unchanged). Any edition can opt in — the flagship Insider
     # Briefs carries the full letter; the Economic Brief carries a lighter lede.
     editor_letter: EditorLetter | None = None
+    # Optional additive "visual layer" (hero masthead + regime quadrant + signal heat map)
+    # that LEADS the edition, above the editor's letter's existing content. Deterministic,
+    # fact-locked, as-of dated. Any edition can opt in; everything below stays unchanged.
+    visual_layer: VisualLayer | None = None
 
 
 QuoteMap = dict[str, Quote]
@@ -590,6 +628,177 @@ def _insider_chart(m: QuoteMap, title: str) -> list["Chart"]:
         source="Derived from FRED releases (10Y − CPI).")]
 
 
+# ── The "visual layer" (hero + regime quadrant + signal heat map) ────────────
+# Additive, deterministic, fact-locked exhibits that LEAD the edition (above the editor's
+# letter's existing content). Built ONLY from released levels the engine already tracks.
+
+def _first_sentence(text: str) -> str:
+    """The first sentence of a narrative (for the hero's one-line thesis).
+
+    Reused verbatim from the editor's letter, so every number it contains is already on
+    the fact-lock whitelist. Never fabricates."""
+    if not text:
+        return ""
+    for end in (". ", "? ", "! "):
+        idx = text.find(end)
+        if idx != -1:
+            return text[: idx + 1].strip()
+    return text.strip()
+
+
+# Cross-asset universe for the heat map: whatever subset of NEWSLETTER_SYMBOLS + FRED/BLS
+# macro series we actually have quotes for (SPX · 10Y UST · Gold · BTC · ETH · Fed Funds ·
+# CPI · Unemployment). Rows for briefly-missing series are simply dropped (graceful degrade).
+_HEATMAP_ORDER = ("SPX", "UST10Y", "GOLD", "BTC", "ETH", "FED_FUNDS", "INFLATION", "UNEMPLOYMENT")
+
+
+def _sev(x: float) -> float:
+    """Clamp a computed severity magnitude into the [0, 1] shading range."""
+    return max(0.0, min(1.0, x))
+
+
+def _heatmap_posture(symbol: str, q: Quote) -> tuple[str, float]:
+    """(posture text, severity 0..1) for one cross-asset row — risk-on/off or over/under
+    vs a simple, disclosed threshold. Deterministic and fact-locked (level/period only)."""
+    v = q.price
+    chg = q.change_percent
+    if v is None:
+        return "—", 0.0
+    if symbol == "SPX":
+        return ("Risk-on" if (chg or 0) >= 0 else "Risk-off"), _sev(abs(chg or 0) / 3 + 0.2)
+    if symbol in ("BTC", "ETH"):
+        return ("Risk-on" if (chg or 0) >= 0 else "Risk-off"), _sev(abs(chg or 0) / 6 + 0.2)
+    if symbol == "GOLD":
+        return ("Haven bid" if (chg or 0) >= 0 else "Haven soft"), _sev(abs(chg or 0) / 3 + 0.2)
+    if symbol == "UST10Y":
+        posture = "Elevated" if v >= 4.5 else "Easing" if v < 4.0 else "Near norm"
+        return posture, _sev(abs(v - _UST10Y_NORM) / 1.5 + 0.2)
+    if symbol == "FED_FUNDS":
+        posture = ("Restrictive" if v >= 4 else "Mod. restrictive" if v >= 2.5
+                   else "Accommodative")
+        return posture, _sev(abs(v - _NEUTRAL_FUNDS) / 2.5 + 0.2)
+    if symbol == "INFLATION":
+        posture = "Hot" if v > 4 else "Above target" if v > 2.5 else "Near target"
+        return posture, _sev(abs(v - _CPI_TARGET) / 2.5 + 0.2)
+    if symbol == "UNEMPLOYMENT":
+        posture = "Firm" if v < 4.5 else "Softening" if v <= 5.5 else "Weak"
+        return posture, _sev(abs(v - _FULL_EMPLOYMENT) / 2.0 + 0.2)
+    return "—", 0.0
+
+
+def _heatmap_rows(m: QuoteMap) -> list[dict]:
+    """Build the Signal Heat Map rows (Level · Momentum/Trend · Posture) from the quotes.
+
+    Level = released as-of value; Momentum = the period change where a feed supplies it
+    (macro series that publish only a level show "—", never a fabricated delta); Posture =
+    risk-on/off or over/under vs a disclosed threshold. Each cell carries a monochrome
+    severity magnitude for shading. Missing series are dropped (graceful degradation)."""
+    rows: list[dict] = []
+    for symbol in _HEATMAP_ORDER:
+        q = m.get(symbol)
+        if q is None or q.price is None or q.status == "unavailable":
+            continue
+        chg = q.change_percent
+        mom_text = f"{chg:+.2f}%" if chg is not None else "—"
+        mom_sev = _sev(abs(chg) / 4) if chg is not None else 0.0
+        posture_text, posture_sev = _heatmap_posture(symbol, q)
+        rows.append({
+            "label": q.name if len(q.name) <= 18 else symbol,
+            "cells": [
+                {"text": fmt(q), "severity": min(0.45, posture_sev * 0.6)},
+                {"text": mom_text, "severity": mom_sev},
+                {"text": posture_text, "severity": posture_sev},
+            ],
+        })
+    return rows
+
+
+def _visual_layer_charts(m: QuoteMap, assessment) -> list["Chart"]:
+    """The regime-quadrant + signal-heat-map exhibits (both optional, both resilient)."""
+    charts: list[Chart] = []
+    try:
+        from app import newsletter_charts as nc
+    except Exception:  # noqa: BLE001 - never break newsletter generation
+        return charts
+
+    # 1) Regime Quadrant — only when the current marker can be honestly placed.
+    if assessment is not None and assessment.available and assessment.regime is not None:
+        try:
+            g_cap = assessment.growth.components[0] if assessment.growth.components else ""
+            i_cap = assessment.inflation.components[0] if assessment.inflation.components else ""
+            img = nc.regime_quadrant_chart(
+                assessment.growth.score, assessment.inflation.score,
+                assessment.regime.label, trail=assessment.trail, as_of=assessment.as_of,
+                growth_caption=g_cap, inflation_caption=i_cap)
+            charts.append(Chart(
+                label="Macro Regime Quadrant",
+                image=img,
+                caption=(f"Aegira's own macro-regime read: {assessment.regime.label} — "
+                         f"{assessment.regime.caption}. {assessment.regime.blurb} Growth is "
+                         "derived from labor + demand vs. reference; inflation from CPI vs. a "
+                         "~2.5% reference (2% target + tolerance). Aegira computation, not a forecast."),
+                source="Derived from FRED/BLS releases (unemployment · consumer sentiment · "
+                       "industrial production · CPI); references disclosed in-copy."))
+        except Exception:  # noqa: BLE001
+            pass
+
+    # 2) Signal Heat Map — render whatever cross-asset rows are available.
+    rows = _heatmap_rows(m)
+    if rows:
+        try:
+            as_of = assessment.as_of if assessment is not None else None
+            img = nc.signal_heatmap_chart(rows, as_of=as_of)
+            charts.append(Chart(
+                label="Cross-Asset Signal Heat Map",
+                image=img,
+                caption="At-a-glance cross-asset posture: Level (as-of), Momentum/Trend (the "
+                        "period change where a feed supplies it), and Posture (risk-on/off or "
+                        "over/under vs. a disclosed threshold). Cells shaded by Aegira's "
+                        "monochrome severity — darker is a stronger signal. Levels/period only.",
+                source="Derived from market feeds + FRED/BLS releases; thresholds disclosed in-copy."))
+        except Exception:  # noqa: BLE001
+            pass
+    return charts
+
+
+def _build_visual_layer(
+    m: QuoteMap, now: datetime, wordmark: str, thesis: str,
+    variant: str, full: bool,
+) -> "VisualLayer | None":
+    """Assemble the additive visual layer (hero + regime quadrant + signal heat map).
+
+    The hero is always built (lightweight, typographic); the exhibits are attached only on
+    the FULL edition (mirrors the existing chart gating that keeps the teaser lean). Any
+    edition can opt in by calling this. Resilient: never raises."""
+    try:
+        from app import macro_regime as mr
+        assessment = mr.assess_regime(m)
+    except Exception:  # noqa: BLE001 - never break newsletter generation
+        assessment = None
+
+    regime_label = None
+    regime_caption = None
+    as_of = None
+    if assessment is not None:
+        as_of = assessment.as_of
+        if assessment.available and assessment.regime is not None:
+            regime_label = assessment.regime.label
+            regime_caption = assessment.regime.caption
+
+    hero = Hero(
+        wordmark=wordmark,
+        dateline=f"Edition of {edition_date(now)}",
+        byline="Ellery Vance · VP of Editorial, Aegira (AI)",
+        thesis=thesis,
+        regime_label=regime_label,
+        regime_caption=regime_caption,
+        as_of=as_of,
+        variant=variant,
+    )
+    charts = _visual_layer_charts(m, assessment) if full else []
+    return VisualLayer(hero=hero, charts=charts)
+
+
 def _economic_brief(m: QuoteMap, full: bool) -> tuple[str, list[Group]]:
     sections = _SECTIONS if full else _SECTIONS[:1]
     groups: list[Group] = []
@@ -1032,6 +1241,14 @@ def _insider_brief(m: QuoteMap, now: datetime, full: bool) -> Edition:
             blurb="How the desk frames the theme for allocators and acquirers.",
             items=lens_items))
 
+    editor_letter = _insider_editor_letter(key, m)
+    # The flagship presents as "The Aegira Monthly" with the FULL visual layer (hero +
+    # regime quadrant + signal heat map) leading, above the editor's letter. The hero's
+    # one-line thesis is reused from the letter's narrative (so it inherits the fact-lock).
+    visual_layer = _build_visual_layer(
+        m, now, wordmark="The Aegira Monthly",
+        thesis=_first_sentence(editor_letter.narrative), variant="full", full=full)
+
     return Edition(
         slug="insider-briefs", title=f"Insider Brief — {title}", eyebrow="Insider Briefs",
         dateline=dateline, intro=thesis, groups=groups,
@@ -1042,7 +1259,8 @@ def _insider_brief(m: QuoteMap, now: datetime, full: bool) -> Edition:
         disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full,
         charts=_insider_chart(m, title) if full else [],
         cadence=cadence_for("insider-briefs"),
-        editor_letter=_insider_editor_letter(key, m))
+        editor_letter=editor_letter,
+        visual_layer=visual_layer)
 
 
 # ── The Main Street Acquirer ─────────────────────────────────────────────────
@@ -1888,6 +2106,11 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
 
     if slug == "economic-brief":
         intro, groups = _economic_brief(m, full)
+        economic_letter = _economic_editor_letter(m)
+        # The Economic Brief opts into the quadrant + heat map with a LIGHTER hero.
+        economic_visual = _build_visual_layer(
+            m, now, wordmark="The Economic Brief",
+            thesis=_first_sentence(economic_letter.narrative), variant="light", full=full)
         return Edition(
             slug=slug, title="The Economic Brief", eyebrow="Economic Tracking",
             dateline=dateline, intro=intro, groups=groups,
@@ -1896,7 +2119,8 @@ def build_edition(slug: str, quotes: list[Quote], now: datetime, full: bool) -> 
             disclaimer=_DISCLAIMER, methodology=METHODOLOGY, teaser=not full,
             charts=_macro_chart(m) if full else [],
             cadence=cadence_for(slug),
-            editor_letter=_economic_editor_letter(m))
+            editor_letter=economic_letter,
+            visual_layer=economic_visual)
 
     if slug == "red-alerts":
         alerts = _build_alerts(m)
