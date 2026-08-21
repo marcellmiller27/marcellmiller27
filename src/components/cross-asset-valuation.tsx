@@ -4,6 +4,7 @@
 // ticker and the large/mid-cap screen. Downloads the branded Excel workbook.
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
+import { formatPrice } from "@/lib/format";
 
 type Valuation = {
   ticker: string;
@@ -34,8 +35,11 @@ type Valuation = {
 };
 
 const pct = (x: number) => `${(x * 100).toFixed(1)}%`;
+// Aggregate magnitudes (market cap, FCF, terminal value) keep the abbreviated $T/$B/$M
+// form. Per-SHARE prices go through the canonical magnitude-aware price formatter.
 const usd = (x: number) =>
   x >= 1e12 ? `$${(x / 1e12).toFixed(2)}T` : x >= 1e9 ? `$${(x / 1e9).toFixed(2)}B` : x >= 1e6 ? `$${(x / 1e6).toFixed(1)}M` : `$${x.toFixed(2)}`;
+const perShare = (x: number) => formatPrice(x, { assetClass: "equity" });
 const signalClass = (s: string) =>
   s === "Enter" ? "val-signal--enter" : s === "Sideline" ? "val-signal--sideline" : "val-signal--hold";
 
@@ -130,7 +134,7 @@ export function CrossAssetValuation() {
                 {data.name} <span className="val-card__tkr">{data.ticker}</span>
               </h3>
               <p className="val-card__sub">
-                Price {usd(data.price)} · Intrinsic {usd(data.intrinsic_per_share)}/share · Market cap{" "}
+                Price {perShare(data.price)} · Intrinsic {perShare(data.intrinsic_per_share)}/share · Market cap{" "}
                 {usd(data.market_cap)}
               </p>
             </div>
@@ -227,8 +231,8 @@ export function CrossAssetValuation() {
                 <tr key={u.ticker} onClick={() => { setTicker(u.ticker); run(u.ticker); }} className="val-row">
                   <td><strong>{u.ticker}</strong></td>
                   <td>{u.name}</td>
-                  <td>{usd(u.price)}</td>
-                  <td>{usd(u.intrinsic_per_share)}</td>
+                  <td>{perShare(u.price)}</td>
+                  <td>{perShare(u.intrinsic_per_share)}</td>
                   <td className={u.upside_pct >= 0 ? "val-pos" : "val-neg"}>{pct(u.upside_pct)}</td>
                   <td><span className={`val-signal val-signal--sm ${signalClass(u.signal)}`}>{u.signal}</span></td>
                 </tr>
