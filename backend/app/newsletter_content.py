@@ -21,6 +21,7 @@ from datetime import datetime, timezone
 
 from app import data_registry as dr
 from app.market_models import Quote
+from app.price_format import format_quote
 
 # The full indicator + market set the editions draw from (mirrors newsletter-format.ts).
 # Crypto majors (ETH/SOL/XRP/XLM) and M2 liquidity are pulled for the Crypto
@@ -300,22 +301,15 @@ def edition_date(now: datetime) -> str:
 
 
 def fmt(q: Quote | None) -> str:
-    """Mirror of newsletter-format.ts `fmt`."""
-    if q is None or q.price is None:
-        return "—"
-    v = q.price
-    unit = q.unit
-    if unit == "%":
-        return f"{v:.2f}%"
-    if unit == "index":
-        return f"{v:.1f}"
-    if unit == "USD bn":
-        return f"${v / 1000:.2f}T" if v >= 1000 else f"${v:.1f}B"
-    if unit == "USD mn":
-        return f"${v / 1000:.2f}B" if v >= 1000 else f"${v:.1f}M"
-    if unit in ("USD/oz", "USD"):
-        return f"${v:,.0f}"
-    return f"{v:,.2f}"
+    """Format a quote via the canonical magnitude-aware price standard.
+
+    Consolidated onto ``app.price_format.format_quote`` (twin of
+    ``formatQuoteValue`` in ``src/lib/format.ts``) so a price renders identically in the
+    newsletter (on-screen + PDF), the live ticker, and every other surface. Prices route
+    through the standard; non-price readings (rates, macro levels) keep their
+    unit-appropriate rendering.
+    """
+    return format_quote(q)
 
 
 def _price(m: QuoteMap, s: str) -> float | None:

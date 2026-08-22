@@ -31,6 +31,7 @@ from app.equity_ratios import FundamentalRatios, RatioMetric
 from app.equity_technicals import Bar, OptionsContext, TechnicalsRead
 from app.equity_valuation import EquityValuation, value_equity
 from app.equity_valuation_workbook import write_valuation_sheet
+from app.price_format import format_price
 
 logger = logging.getLogger(__name__)
 
@@ -82,6 +83,11 @@ def _hdr(ws, row: int, headers: list[str]) -> None:
         c = ws.cell(row=row, column=col, value=text)
         c.font = xl._WHITE
         c.fill = xl._NAVY_FILL
+
+
+def _price(x: float) -> str:
+    """A price level via the canonical magnitude-aware standard ($ + magnitude)."""
+    return format_price(x, asset_class="equity")
 
 
 def _fmt_pct(x: float | None) -> str:
@@ -498,10 +504,12 @@ def _technicals_sheet(
     xl._subhead(ws, row, "Support / resistance")
     row += 1
     _kv(ws, row, "Resistance (nearest → far)", None)
-    ws.cell(row=row, column=2, value=", ".join(f"{x:,.2f}" for x in read.resistances) or _NA)
+    ws.cell(row=row, column=2,
+            value=", ".join(_price(x) for x in read.resistances) or _NA)
     row += 1
     _kv(ws, row, "Support (nearest → far)", None)
-    ws.cell(row=row, column=2, value=", ".join(f"{x:,.2f}" for x in read.supports) or _NA)
+    ws.cell(row=row, column=2,
+            value=", ".join(_price(x) for x in read.supports) or _NA)
     row += 2
 
     row = _setups_block(ws, row, read)
