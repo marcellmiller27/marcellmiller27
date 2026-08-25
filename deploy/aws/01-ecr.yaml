@@ -1,0 +1,151 @@
+# JHI-SIG: 69M2705M | Build & Deploy | JHI Research & Analytics Firm, Inc. (proprietary)
+# ---------------------------------------------------------------------------
+# Aegira — Private Amazon ECR image repositories (backend + frontend).
+#
+# Security mitigation (closes: "public/anonymous image pull" risk):
+#   * Repositories are PRIVATE (default for ECR) — only principals granted the
+#     scoped deploy role (see 02-github-oidc-deploy-role.yaml) and the App Runner
+#     access role (see 06-apprunner-services.yaml) can push/pull.
+#   * ScanOnPush = true surfaces CVEs in every pushed image.
+#   * A lifecycle policy expires untagged layers so the repo does not grow
+#     unbounded (cost + attack-surface hygiene).
+#
+# NOTE: long-form intrinsic functions (Ref:/Fn::Sub:) are used on purpose so the
+# templates parse under a plain YAML loader (yaml.safe_load) AND cfn-lint.
+# ---------------------------------------------------------------------------
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  Aegira private ECR repositories for the backend (FastAPI) and frontend
+  (Next.js) container images. Deploy once per AWS account (shared across envs).
+
+Parameters:
+  BackendRepoName:
+    Type: String
+    Default: aegira/backend
+    Description: Name of the private ECR repository for the backend image.
+  FrontendRepoName:
+    Type: String
+    Default: aegira/frontend
+    Description: Name of the private ECR repository for the frontend image.
+  ImageTagMutability:
+    Type: String
+    Default: MUTABLE
+    AllowedValues:
+      - MUTABLE
+      - IMMUTABLE
+    Description: >-
+      IMMUTABLE prevents overwriting an existing tag (recommended for prod
+      promotion by digest/tag). MUTABLE is simpler for staging's :latest flow.
+
+Resources:
+  BackendRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName:
+        Ref: BackendRepoName
+      ImageTagMutability:
+        Ref: ImageTagMutability
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      EncryptionConfiguration:
+        EncryptionType: AES256
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Expire untagged images after 14 days",
+                "selection": {
+                  "tagStatus": "untagged",
+                  "countType": "sinceImagePushed",
+                  "countUnit": "days",
+                  "countNumber": 14
+                },
+                "action": { "type": "expire" }
+              },
+              {
+                "rulePriority": 2,
+                "description": "Keep only the 30 most recent tagged images",
+                "selection": {
+                  "tagStatus": "any",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 30
+                },
+                "action": { "type": "expire" }
+              }
+            ]
+          }
+
+  FrontendRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName:
+        Ref: FrontendRepoName
+      ImageTagMutability:
+        Ref: ImageTagMutability
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      EncryptionConfiguration:
+        EncryptionType: AES256
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Expire untagged images after 14 days",
+                "selection": {
+                  "tagStatus": "untagged",
+                  "countType": "sinceImagePushed",
+                  "countUnit": "days",
+                  "countNumber": 14
+                },
+                "action": { "type": "expire" }
+              },
+              {
+                "rulePriority": 2,
+                "description": "Keep only the 30 most recent tagged images",
+                "selection": {
+                  "tagStatus": "any",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 30
+                },
+                "action": { "type": "expire" }
+              }
+            ]
+          }
+
+Outputs:
+  BackendRepositoryUri:
+    Description: URI to use as the backend image push/pull target.
+    Value:
+      Fn::GetAtt:
+        - BackendRepository
+        - RepositoryUri
+    Export:
+      Name: aegira-ecr-backend-uri
+  FrontendRepositoryUri:
+    Description: URI to use as the frontend image push/pull target.
+    Value:
+      Fn::GetAtt:
+        - FrontendRepository
+        - RepositoryUri
+    Export:
+      Name: aegira-ecr-frontend-uri
+  BackendRepositoryArn:
+    Description: ARN of the backend repository (for scoping IAM policies).
+    Value:
+      Fn::GetAtt:
+        - BackendRepository
+        - Arn
+    Export:
+      Name: aegira-ecr-backend-arn
+  FrontendRepositoryArn:
+    Description: ARN of the frontend repository (for scoping IAM policies).
+    Value:
+      Fn::GetAtt:
+        - FrontendRepository
+        - Arn
+    Export:
+      Name: aegira-ecr-frontend-arn

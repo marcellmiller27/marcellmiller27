@@ -1,0 +1,244 @@
+# JHI-SIG: 69M2705M | Build & Deploy | JHI Research & Analytics Firm, Inc. (proprietary)
+# ---------------------------------------------------------------------------
+# Aegira — CI/CD: build both images -> push to ECR -> deploy App Runner.
+#
+#   * push to main            -> build + push + deploy STAGING (always-on)
+#   * workflow_dispatch / tag -> PROMOTE to PRODUCTION (manual approval gate via
+#                                the "production" GitHub Environment)
+#
+# Auth is via GitHub OIDC (aws-actions/configure-aws-credentials with
+# role-to-assume) — NO long-lived AWS keys are stored in GitHub. All account-
+# specific values come from GitHub secrets/vars (documented in
+# docs/AWS_DEPLOYMENT_CONSTRUCT.md). Action versions are pinned.
+# ---------------------------------------------------------------------------
+name: deploy
+
+on:
+  # Staging: every merge to main auto-ships.
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  # Production: explicit, gated promotion.
+  workflow_dispatch:
+    inputs:
+      image_sha:
+        description: >-
+          Git SHA of the already-staged build to promote to production
+          (defaults to the current commit).
+        required: false
+        type: string
+
+# OIDC needs id-token: write; contents: read to check out the code.
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  # Non-secret defaults; account/region come from GitHub vars at runtime.
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  ECR_REGISTRY: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
+  BACKEND_REPO: ${{ vars.ECR_BACKEND_REPO }}
+  FRONTEND_REPO: ${{ vars.ECR_FRONTEND_REPO }}
+
+jobs:
+  # =========================================================================
+  # STAGING — runs on push to main. Build both images, push, roll App Runner.
+  # =========================================================================
+  deploy-staging:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency:
+      # Never overlap staging deploys; cancel a superseded one.
+      group: deploy-staging
+      cancel-in-progress: true
+    steps:
+      # Check out the exact commit being deployed.
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Assume the least-privilege deploy role via OIDC (no static keys).
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Authenticate Docker to the private ECR registry.
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Build + push the BACKEND image (context = repo root, backend/Dockerfile).
+      # The backend image is environment-agnostic (config via runtime secrets),
+      # so the same artifact is promotable by digest later.
+      - name: Build & push backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          push: true
+          provenance: false
+          tags: |
+            ${{ env.ECR_REGISTRY }}/${{ env.BACKEND_REPO }}:staging
+            ${{ env.ECR_REGISTRY }}/${{ env.BACKEND_REPO }}:${{ github.sha }}
+
+      # Resolve the STAGING backend service URL. Next.js bakes the /api/v1 proxy
+      # target at build time, so the frontend image must be built with the
+      # backend URL as a build arg (the frontend<->backend wiring gotcha).
+      - name: Resolve staging backend URL
+        id: backend_url
+        run: |
+          URL=$(aws apprunner describe-service \
+            --service-arn "${{ vars.APPRUNNER_BACKEND_SERVICE_ARN_STAGING }}" \
+            --query 'Service.ServiceUrl' --output text)
+          echo "url=https://${URL}" >> "$GITHUB_OUTPUT"
+          echo "Staging backend URL: https://${URL}"
+
+      # Build + push the FRONTEND image with the required build args. These map
+      # 1:1 to the ARGs in the root Dockerfile / next.config.mjs rewrites.
+      - name: Build & push frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          provenance: false
+          build-args: |
+            NEXT_PUBLIC_API_BASE_URL=/api/v1
+            API_PROXY_TARGET=${{ steps.backend_url.outputs.url }}
+            NEXT_PUBLIC_SITE_URL=${{ vars.NEXT_PUBLIC_SITE_URL_STAGING }}
+          tags: |
+            ${{ env.ECR_REGISTRY }}/${{ env.FRONTEND_REPO }}:staging
+            ${{ env.ECR_REGISTRY }}/${{ env.FRONTEND_REPO }}:${{ github.sha }}
+
+      # Trigger App Runner to pull + roll the new images (auto-deploy also fires;
+      # this makes the deploy explicit and lets us wait on it).
+      - name: Deploy backend (staging)
+        run: |
+          aws apprunner start-deployment \
+            --service-arn "${{ vars.APPRUNNER_BACKEND_SERVICE_ARN_STAGING }}"
+
+      - name: Deploy frontend (staging)
+        run: |
+          aws apprunner start-deployment \
+            --service-arn "${{ vars.APPRUNNER_FRONTEND_SERVICE_ARN_STAGING }}"
+
+      # Post-deploy smoke check: backend /health and frontend / must answer 200.
+      - name: Verify staging health
+        run: |
+          FRONT=$(aws apprunner describe-service \
+            --service-arn "${{ vars.APPRUNNER_FRONTEND_SERVICE_ARN_STAGING }}" \
+            --query 'Service.ServiceUrl' --output text)
+          echo "Waiting for services to settle..."
+          for i in $(seq 1 30); do
+            back_ok=$(curl -fsS "${{ steps.backend_url.outputs.url }}/health" >/dev/null 2>&1 && echo yes || echo no)
+            front_ok=$(curl -fsS "https://${FRONT}/" >/dev/null 2>&1 && echo yes || echo no)
+            if [ "$back_ok" = "yes" ] && [ "$front_ok" = "yes" ]; then
+              echo "Staging healthy (backend + frontend)."; exit 0
+            fi
+            echo "attempt $i: backend=$back_ok frontend=$front_ok; retrying in 20s"; sleep 20
+          done
+          echo "Staging health check did not pass in time."; exit 1
+
+  # =========================================================================
+  # PRODUCTION — manual/tag promotion behind the "production" Environment gate.
+  # The backend is promoted by DIGEST (the exact staged artifact). The frontend
+  # is REBUILT for prod because its proxy target is baked at build time and the
+  # prod backend URL differs from staging.
+  # =========================================================================
+  promote-production:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    steps:
+      - name: Resolve source image SHA
+        id: src
+        run: |
+          SHA="${{ github.event.inputs.image_sha }}"
+          if [ -z "$SHA" ]; then SHA="${{ github.sha }}"; fi
+          echo "sha=${SHA}" >> "$GITHUB_OUTPUT"
+          echo "Promoting build: ${SHA}"
+
+      - name: Checkout (for the frontend rebuild)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.src.outputs.sha }}
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Promote the tested BACKEND artifact by copying the :<sha> manifest to the
+      # :production tag (no rebuild -> byte-identical to what staging verified).
+      - name: Promote backend by digest
+        run: |
+          docker buildx imagetools create \
+            -t "${{ env.ECR_REGISTRY }}/${{ env.BACKEND_REPO }}:production" \
+            "${{ env.ECR_REGISTRY }}/${{ env.BACKEND_REPO }}:${{ steps.src.outputs.sha }}"
+
+      # Resolve the PRODUCTION backend URL for the frontend build arg.
+      - name: Resolve production backend URL
+        id: backend_url
+        run: |
+          URL=$(aws apprunner describe-service \
+            --service-arn "${{ vars.APPRUNNER_BACKEND_SERVICE_ARN_PRODUCTION }}" \
+            --query 'Service.ServiceUrl' --output text)
+          echo "url=https://${URL}" >> "$GITHUB_OUTPUT"
+          echo "Production backend URL: https://${URL}"
+
+      # Rebuild the FRONTEND for production with the prod backend URL baked in.
+      - name: Build & push production frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          provenance: false
+          build-args: |
+            NEXT_PUBLIC_API_BASE_URL=/api/v1
+            API_PROXY_TARGET=${{ steps.backend_url.outputs.url }}
+            NEXT_PUBLIC_SITE_URL=${{ vars.NEXT_PUBLIC_SITE_URL_PRODUCTION }}
+          tags: |
+            ${{ env.ECR_REGISTRY }}/${{ env.FRONTEND_REPO }}:production
+            ${{ env.ECR_REGISTRY }}/${{ env.FRONTEND_REPO }}:prod-${{ steps.src.outputs.sha }}
+
+      - name: Deploy backend (production)
+        run: |
+          aws apprunner start-deployment \
+            --service-arn "${{ vars.APPRUNNER_BACKEND_SERVICE_ARN_PRODUCTION }}"
+
+      - name: Deploy frontend (production)
+        run: |
+          aws apprunner start-deployment \
+            --service-arn "${{ vars.APPRUNNER_FRONTEND_SERVICE_ARN_PRODUCTION }}"
+
+      - name: Verify production health
+        run: |
+          FRONT=$(aws apprunner describe-service \
+            --service-arn "${{ vars.APPRUNNER_FRONTEND_SERVICE_ARN_PRODUCTION }}" \
+            --query 'Service.ServiceUrl' --output text)
+          echo "Waiting for services to settle..."
+          for i in $(seq 1 30); do
+            back_ok=$(curl -fsS "${{ steps.backend_url.outputs.url }}/health" >/dev/null 2>&1 && echo yes || echo no)
+            front_ok=$(curl -fsS "https://${FRONT}/" >/dev/null 2>&1 && echo yes || echo no)
+            if [ "$back_ok" = "yes" ] && [ "$front_ok" = "yes" ]; then
+              echo "Production healthy (backend + frontend)."; exit 0
+            fi
+            echo "attempt $i: backend=$back_ok frontend=$front_ok; retrying in 20s"; sleep 20
+          done
+          echo "Production health check did not pass in time."; exit 1
