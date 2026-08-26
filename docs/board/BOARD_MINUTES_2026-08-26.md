@@ -1,6 +1,6 @@
 # Board Minutes — JHI Research & Analytics Firm, Inc.
 
-**Meeting date:** 2026-08-26 · **Type:** Founder directive — product build blueprint (financial ratios + PE/search-fund workbook toolkit) · **Recorder:** Cy Henry (VP, Software Engineering — Cloud Agent)
+**Meeting date:** 2026-08-26 · **Type:** Founder directive — product build blueprint (financial ratios + PE/search-fund workbook toolkit + financial dashboards) · **Recorder:** Cy Henry (VP, Software Engineering — Cloud Agent)
 **Product:** Aegira · **Publisher:** JHI Research & Analytics Firm, Inc.
 **Present:** Founder (Galen Marcellus Miller).
 
@@ -260,4 +260,110 @@ The Peer_Comparison + composite score + benchmarks become the **Peers sheet + a 
 
 ---
 
-*Recorded by Cy Henry, VP Software Engineering (AI). JHI-SIG: 69M2705M. This blueprint is adopted of record as the target for Aegira's financial-analysis deliverables. How we do anything is how we do everything. TeamWork makes the DreamWork.*
+## 8. Financial dashboards — build specification (adopted verbatim)
+
+*(Founder addendum — Investopedia reference on financial dashboards. Capture every detail. Governs the Dashboard sheet of every Aegira ratio/QoE/institutional workbook and — by mapping — the on-screen executive dashboards inside the platform.)*
+
+### 8.1 Key takeaways (non-negotiable framing)
+1. A **financial dashboard** is a concise view of business financial performance **for decision-making** — not a data dump.
+2. **Choose metrics from specific business goals**, not a generic list of every available measure.
+3. **Core measures typically cover:** revenue, profitability, cash flow, liquidity, debt, and operating efficiency.
+4. **Add targets, prior-period comparisons, and trend views** to make results actionable (numbers alone are not).
+5. **Keep dashboards focused** and **update metrics as business conditions and priorities change** — a dashboard is a living instrument, not a static artifact.
+
+### 8.2 Definition & purpose
+A financial dashboard is a **visual, decision-oriented report** that brings key financial and operating measures into one place. Its purpose is to help **executives, managers, investors, or operators** quickly:
+- **assess performance,**
+- **compare it with goals, and**
+- **identify where action may be needed.**
+
+As Julie Young explains in *Understanding Metrics: Key to Performance Tracking and Analysis*, **"Managers typically build a dashboard of key performance indicators (KPIs)."**
+
+### 8.3 Key metrics to include (six-area canonical map)
+The exact mix should reflect the company's **goals, sector, and business model**. A broadly useful dashboard commonly includes the following six areas:
+
+| Area | Example measures | Why it matters |
+|---|---|---|
+| **Growth** | Revenue, revenue growth, sales by segment or customer | Shows whether demand and top-line performance are expanding or contracting. |
+| **Profitability** | Gross profit, gross margin, operating profit or margin, EBITDA, net income | Reveals how much revenue remains after direct, operating, financing, and other costs. |
+| **Cash flow** | Operating cash flow, free cash flow, cash balance, cash conversion | Tests whether accounting profits translate into cash available for operations, debt service, or investment. |
+| **Liquidity & leverage** | Current ratio, debt-to-equity, interest coverage, net debt | Shows short-term payment capacity and financial risk from borrowing. |
+| **Efficiency** | Accounts-receivable days, inventory turnover, asset turnover, working-capital trend | Identifies how effectively the company converts resources into sales and cash. |
+| **Returns & valuation** | ROA, ROE, ROIC or CROCI; EV/EBITDA or P/E for public companies | Measures returns earned on assets and capital, and — where relevant — market valuation. |
+
+**Operating-company emphasis:** for an operating company, **revenue growth, margins, and cost trends** are especially important because **strong sales growth does not necessarily translate into stronger profits when costs rise faster**. **Earnings per share, quarterly revenue growth, and margins/cost trends** are among the financial results most closely watched in earnings reporting.
+
+### 8.4 Essential dashboard features (all five must be present)
+
+**1. Goals, targets, and variance.** Show each KPI's:
+- **actual result,**
+- **budget or target,**
+- **prior-period result, and**
+- **variance in dollars *and* percentages.**
+Select KPIs **only after establishing the decision goal**, then set targets that are **integrated with business decisions** (not decorative).
+
+**2. Time comparisons and trends.** Include:
+- **Month-to-date (MTD)**
+- **Quarter-to-date (QTD)** — tracks performance from the quarter's start through the current point, helping management assess whether it remains on pace for quarterly targets and adjust early if needed.
+- **Year-to-date (YTD)**
+- **Prior-year** views as appropriate.
+
+**3. Drill-downs and segmentation.** Let users move from a **company-level number** into **business unit, product, geography, customer, or cost-category detail**. For instance, **gross margin by geography** can reveal whether profitability and pricing differ materially across regions.
+
+**4. Focused design.** **Avoid presenting every possible metric on one page.** Separate dashboards or report tabs by **objective** — such as:
+- executive overview,
+- cash and debt,
+- commercial performance, or
+- operations —
+because **too many KPIs can obscure what requires attention.**
+
+**5. Relevant benchmarks and context.** Compare results with **historical performance, budget, and suitable peer or sector benchmarks**. **Ratios are most informative when viewed alongside peers**, since appropriate levels differ by **industry and capital structure**.
+
+### 8.5 A useful layout — one-page executive dashboard (canonical template)
+
+| Row | Content | Purpose |
+|---|---|---|
+| **Top row** | **Revenue, EBITDA, net income, operating cash flow, cash balance, net debt** — each with **actual, target, and prior-year** comparisons | Instant health snapshot: are we hitting plan on the six numbers that matter most? |
+| **Middle row** | **Revenue and margin trends** + a **cash-flow or working-capital chart** | Direction of travel: is the trajectory improving, deteriorating, or seasonal? |
+| **Bottom row** | **Liquidity and leverage ratios, operating KPIs, risks, and a short list of management actions** | Risk & action layer: what could break, and what is being done about it? |
+
+**Sector variant — banks/lenders:** replace the standard industrial-company metric set with **net interest margin, return on assets, return on equity, credit-loss provisions, and solvency/liquidity measures**. Never apply an industrial dashboard to a financial institution unchanged.
+
+### 8.6 Mapping to Aegira (implementation contract)
+
+**A. Workbook — Dashboard sheet (added to every ratio/QoE/institutional workbook per §4 and §7).**
+- **Top row (KPI strip, 6 tiles):** Revenue · EBITDA · Net income · Operating cash flow · Cash balance · Net debt. Each tile shows **Actual | Target | Prior-year | Variance $ | Variance %**. Direction-aware color (green/red) applied per §7.7.
+- **Middle row (trend panel):** three server-rendered charts (matplotlib PNG embedded, or native Excel chart where linked) — (i) revenue & YoY growth, (ii) margin ladder (gross → operating → EBITDA → net), (iii) operating cash flow / free cash flow / working-capital trend.
+- **Bottom row (risk & action panel):** liquidity & leverage tile (current ratio, D/E, interest coverage, DSCR, net-debt/EBITDA), operating KPIs tile (DSO, DIO, DPO, cash-conversion cycle, inventory turnover), **Risks** callout list (populated by audit-control flags from §7.9), and **Management actions** — short prioritized list (from 100-day plan / value-creation tracker in §2.6 when available; otherwise blank with placeholder).
+- **Focused design rule:** dashboard is **one page**. Depth lives on the **Ratios / Trends / Peers / Sensitivity** sheets. Any metric that does not drive a decision is pushed off the dashboard.
+- **Sector switch:** for banks/lenders/BDCs, swap in the §8.5 variant (NIM, ROA, ROE, credit-loss provisions, solvency/liquidity) via a `SectorProfile` selector on the Inputs sheet.
+- **Cadence & context:** every tile carries an **as-of date, source, currency, and unit scale** (aligns with the data-foundation doctrine — *Always-Deliver · Cadence-Aware · As-Of-Disclosed*).
+
+**B. Platform — on-screen executive dashboards (Aegira app modules).**
+- **Dashboard module** — mirror the same three-row canonical layout across the launchpad-level view.
+- **Per-company / per-ticker (Portfolio, Diligence a Target, Valuation, Reports)** — the same one-page pattern with drill-downs into segment/product/geography where the data exists.
+- **Founder/staff (God-Eye) views** — dashboards for **executive overview, cash and debt, commercial performance, and operations** are separate tabs (per §8.4-4) — not stacked on one screen.
+
+**C. Data plumbing (already in place, reused).**
+- Growth / profitability / cash flow / liquidity / leverage / efficiency / returns metrics: **derived from SEC EDGAR + SF1 (public) or Inputs sheet (private/QoE)** — no fabrication.
+- Peer benchmarks: **SEC EDGAR sector + SF1 industry aggregates** (median-preferred per §7.4).
+- Macro / rates context: **FRED, Treasury Fiscal Data, FDIC BankFind, EIA** (via the DATA_GOV adapter).
+
+**D. Non-negotiable compliance layer (unchanged).**
+- Dashboards are **decision-support / research, informational only — not investment, valuation, audit, or CPA advice**.
+- Numbers are **derived/deterministic and fact-locked**; every value carries an **as-of date and source**.
+- Provenance: `JHI-SIG: 69M2705M` on every output.
+
+### 8.7 Governance & change control
+Dashboards **must be reviewed at least quarterly** and updated as **business conditions and priorities change** — this is doctrine, not a suggestion. Ratio/KPI definitions live in a single **canonical registry** (extend `backend/app/data_registry.py`) so the dashboard, the ratio workbook, the peer-comparison sheet, and any external report share **one definition per metric** — no drift across surfaces.
+
+### 8.8 Action items (§8 addendum to §6)
+1. **Add the Dashboard sheet spec above** to the P1 QoE/ratio workbook build and to the institutional per-ticker workbook. *(Cy → tested PR.)*
+2. **Ship the on-screen Executive Dashboard** in the Aegira app (Dashboard module + per-company/ticker views) using the same three-row canonical layout. *(Cy → tested PR, sequenced after P1 workbook.)*
+3. **Extend the metric registry** so the Dashboard sheet, Ratios sheet, Peers sheet, and platform dashboards all pull from **one definition per metric** (no drift). *(Cy.)*
+4. **Sector variants** — implement the bank/lender variant as the first alternate sector profile; expand as we take on financials-sector work. *(Cy.)*
+5. Keep the **derived-only, fact-locked, research-not-advice, as-of-dated** posture on every dashboard surface. *(Ongoing.)*
+
+---
+
+*Recorded by Cy Henry, VP Software Engineering (AI). JHI-SIG: 69M2705M. This blueprint — §§1–8 — is adopted of record as the target for Aegira's financial-analysis deliverables. How we do anything is how we do everything. TeamWork makes the DreamWork.*
