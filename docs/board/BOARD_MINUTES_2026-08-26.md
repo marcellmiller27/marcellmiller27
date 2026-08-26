@@ -199,4 +199,65 @@ Chain: **purchase price → sources & uses → operating forecast → free cash 
 
 ---
 
+## 7. Peer-comparison workbook, composite scoring & audit controls (extends §4)
+
+*(Founder addendum — the peer-comparison methodology to build alongside the ratio suite. Capture in full.)*
+
+### 7.1 Workbook structure (five sheets)
+1. **Raw_Data** — company financial-statement inputs by year (one row per company-year).
+2. **Ratios** — profitability, liquidity, leverage, efficiency, valuation metrics.
+3. **Peer_Comparison** — one selected year compared across companies + industry benchmarks.
+4. **Trends** — multi-year charts + YoY changes.
+5. **Dashboard** — summary scores, rankings, key flags.
+Keep raw data separate from calculations and outputs. Use several ratios (each tests a distinct aspect of health).
+
+### 7.2 Data tables & rules
+- Format inputs as an Excel Table (`Ctrl+T`) named **`tblFinancials`**, one row per company-year; add fields for cash, marketable securities, AR, interest expense, operating cash flow, capex, preferred dividends. (Marketable securities count in current assets for liquidity.)
+- **Data-quality rules:** same currency/units for every company; align comparable fiscal years; distinguish **annual vs. trailing-twelve-month**; flag comparisons across different accounting conventions/business models; ratios are most meaningful **against similar industry peers**.
+- Build a multi-year **`tblRatios`** (one row per company-year); pull raw values with **`XLOOKUP`** matching company + fiscal year (or compute in one table). Wrap in `IFERROR`; format % as percent, turnover/coverage/P-E as numbers/multiples. Use **average balances** for asset/inventory/receivable/working-capital ratios.
+
+### 7.3 Peer_Comparison grid
+- Selector cells at top: **metric, fiscal year, industry**.
+- Columns: current-year metric, prior-year, YoY change, industry average/median, variance-to-peer, rank, percentile.
+- Example formulas:
+  - Current-year ROE: `=XLOOKUP(1,(tblRatios[Company]=$A8)*(tblRatios[Fiscal Year]=$B$2),tblRatios[ROE],"")`
+  - Prior-year ROE: `=XLOOKUP(1,(tblRatios[Company]=$A8)*(tblRatios[Fiscal Year]=$B$2-1),tblRatios[ROE],"")`
+  - YoY change: `=IFERROR(B8-C8,"")`
+  - Peer average: `=AVERAGEIFS($B$8:$B$20,$D$8:$D$20,$B$3)`
+  - Variance to peer average: `=B8-E8`
+
+### 7.4 Industry benchmarks
+- Separate **`tblBenchmarks`**: industry, year, metric, **median, average, 25th, 75th percentile**.
+- Retrieve median: `=XLOOKUP(1,(tblBenchmarks[Industry]=$B$3)*(tblBenchmarks[Year]=$B$2)*(tblBenchmarks[Metric]=B$7),tblBenchmarks[Median],"")`; then `Selected Ratio − Industry Median`.
+- **Prefer median** (outlier-robust); compare profitability only against suitable industry peers (sectors have structurally different margins).
+
+### 7.5 Rankings & percentiles (direction-aware — critical)
+- **Higher-is-better** (ROE, interest coverage, current ratio): Rank `=RANK.EQ(B8,$B$8:$B$20,0)`; Percentile `=PERCENTRANK.INC($B$8:$B$20,B8)`.
+- **Lower-is-better** (debt-to-assets, P/E): Rank `=RANK.EQ(B8,$B$8:$B$20,1)`; Percentile `=1-PERCENTRANK.INC($B$8:$B$20,B8)`.
+- **Do NOT rank all metrics in the same direction** — lower debt = lower risk; higher coverage = better; interpretation stays industry-specific.
+
+### 7.6 Composite score (screening aid, not a verdict)
+- Assign a percentile score per ratio → `AVERAGE`, or **weighted**:
+  `=0.30*ProfitabilityScore + 0.25*LiquidityScore + 0.25*SolvencyScore + 0.20*EfficiencyScore`
+- Keep weights **visible and editable**. The score is a screening aid — not a substitute for analysis of business quality, accounting adjustments, and industry economics.
+
+### 7.7 Conditional formatting & trends
+- Apply **direction-aware** rules to the peer grid (not one universal color scale); e.g. top-quartile `=B8>=QUARTILE.INC($B$8:$B$20,3)`. Formatting must communicate the direction of economic strength (high debt ≠ high profitability); a current ratio < 1 flags short-term pressure.
+- **Trends sheet:** line charts (revenue growth, net margin, ROA, ROE; and current ratio, D/E, interest coverage), a bar chart of latest vs. peer median, and a **DuPont bridge** (net margin × asset turnover × equity multiplier) to explain *why* ROE moved.
+
+### 7.8 Illustrative peer snapshot (drug manufacturers, Aug 26 2026)
+NVO / LLY / PFE — same industry (more relevant peers): **NVO** lowest trailing P/E; **LLY** strongest ROA & ROE; **PFE** lowest profitability but lowest forward P/E. Lesson: one ranking is insufficient — valuation, current profitability, projected earnings, and market performance can point in different directions.
+
+### 7.9 Audit controls (on every main output sheet)
+- Ratio completeness: `=COUNTBLANK(RatioRange)`
+- Duplicate company-year: `=COUNTIFS(tblRatios[Company],[@Company],tblRatios[Fiscal Year],[@[Fiscal Year]])`
+- Balance-sheet check: `=Total Assets-(Total Liabilities+Equity)` → 0
+- Outlier flag: `=IF(ABS(VarianceVsIndustry)>Threshold,"Review","OK")`
+- Data timestamp: filing date, market-price date, currency, unit scale, source.
+
+### 7.10 Mapping to Aegira
+The Peer_Comparison + composite score + benchmarks become the **Peers sheet + a 0–100 quality/opportunity score + benchmarking layer** in our ratio workbook (ties to the existing Opportunity Score). Benchmarks are sourced from **SEC EDGAR sector data + SF1**; direction-aware ranking and median-preference are built in; audit-control checks ship on every output sheet. Derived-only, fact-locked, dated, `JHI-SIG: 69M2705M`.
+
+---
+
 *Recorded by Cy Henry, VP Software Engineering (AI). JHI-SIG: 69M2705M. This blueprint is adopted of record as the target for Aegira's financial-analysis deliverables. How we do anything is how we do everything. TeamWork makes the DreamWork.*
