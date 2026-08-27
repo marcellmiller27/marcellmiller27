@@ -1,6 +1,6 @@
 # Board Minutes — JHI Research & Analytics Firm, Inc.
 
-**Meeting date:** 2026-08-26 (living document — extended 2026-08-27) · **Type:** Founder directive — institutional product build blueprint (financial ratios + PE/search-fund workbook toolkit + institutional financial dashboards + ratio-dashboard build guide + audit reference) · **Recorder:** Cy Henry (VP, Software Engineering — Cloud Agent)
+**Meeting date:** 2026-08-26 (living document — extended 2026-08-27) · **Type:** Founder directive — institutional product build blueprint (financial ratios + PE/search-fund workbook toolkit + institutional financial dashboards + ratio-dashboard build guide + audit reference + EBITDA/QoE normalization) · **Recorder:** Cy Henry (VP, Software Engineering — Cloud Agent)
 **Product:** Aegira · **Publisher:** JHI Research & Analytics Firm, Inc.
 **Present:** Founder (Galen Marcellus Miller).
 
@@ -683,6 +683,162 @@ This work supports a conclusion about whether **legal exposures are appropriatel
 
 ---
 
-*Recorded by Cy Henry, VP Software Engineering (AI). JHI-SIG: 69M2705M. This blueprint — §§1–10 — is adopted of record as the target for Aegira's institutional financial-analysis deliverables (Tier 1 & 2 PE / search-fund / operator-buyer audience). Reference write-ups from the Founder will continue to be appended as they arrive (see standing directive above). How we do anything is how we do everything. TeamWork makes the DreamWork.*
+---
+
+## 11. EBITDA / QoE normalization — doctrine + adjustment library (adopted)
+
+*(Founder-provided research 2026-08-27 — Investopedia sources on QoE and EBITDA adjustments + Cy-authored practitioner-common library. Where Investopedia legitimately did not prescribe an operational rule — owner-comp bands, related-party normalization, discontinued-ops treatment, minimum category count — the doctrine layer is captured verbatim from the Founder's research, and the operational library is built from first principles + free public accounting standards, sourced per adjustment.)*
+
+### 11.1 Doctrine (captured verbatim from Founder research)
+
+**A. EBITDA definition (canonical).**
+- `EBITDA = net income + taxes + interest + depreciation + amortization`
+- Equivalently: `EBITDA = operating income + depreciation + amortization`
+- Designed to facilitate comparisons of **operating profitability** across differing depreciation assumptions and financing choices.
+
+**B. Normalized-earnings framework.**
+Apply **sustainable operating margins across a cycle** to **sustainable revenue**, then make **documented adjustments** for material items — including **restructuring charges, unconsolidated subsidiaries, and pricing power** — rather than accepting reported operating earnings at face value.
+
+**C. Recurring-vs-one-time test (buyer-side rule).**
+A QoE adjustment must be supported by **evidence** that the cost or revenue item is **unusual and not expected to continue.** **If the same item persists or recurs, it stays in normalized EBITDA — regardless of what management calls it.** Buyers and sellers **may disagree** on what qualifies as one-time; every adjustment therefore requires **clear evidence and explanation.**
+
+**D. Owner-compensation doctrine.**
+For closely-held businesses: **include the owner's total compensation, then adjust to market value** by subtracting **the amount required to pay an employee to perform the same services.** Post-acquisition EBITDA must bear a **reasonable replacement cost** for operational work the seller previously performed. **Labor assumptions post-close matter** — buyer and seller may expect to contribute different levels of work after closing.
+
+**E. Run-rate doctrine (Daniel Liberto, *Owner Earnings Run Rate Explained*).**
+Run-rate annualization is a **forecast assumption — not proof of sustainable EBITDA.**
+
+> *"The owner earnings run rate is flawed when applied to companies whose financial performance fluctuates from quarter to quarter."* — Liberto
+
+Distortion sources: **seasonality, new-product-release-driven sales surges, large one-time sales.** A defensible QoE bridge shows the **underlying monthly or quarterly trend** and explains **why the selected period is representative** before annualizing it. **Validate against a longer historical period** and **distinguish durable operating changes from temporary revenue or margin effects.**
+
+**F. Adjustment-discipline invariants.**
+- Each add-back or deduction is a **separately reconciled, evidence-based adjustment to reported EBITDA.**
+- **Distinguish a one-time item from an ongoing operating requirement.**
+- **Avoid equating an isolated recent period with sustainable performance.**
+- **No published source prescribes a minimum number of adjustment categories** — practitioner convention only; the library below reflects that convention.
+
+**G. Scope reminder (from §10 — non-negotiable).**
+Aegira's QoE bridge is **decision-support / research — not an audit, not a formal QoE opinion.** Formal QoE opinions come from a licensed partner CPA who engages the target. Every bridge output carries this reservation + `JHI-SIG: 69M2705M`.
+
+### 11.2 Practitioner-common adjustment library (20 categories)
+
+*(Categories authored from first principles + free public accounting standards. Each has: definition · detection rule · computation rule · required evidence · recurrence test · authoritative reference. This is the operational library the QoE bridge engine implements.)*
+
+**Buyer/seller sidedness convention throughout:**
+- **Seller-side (add-back inflates EBITDA):** owner-comp overpay, personal expenses, one-time settlements/severance/legal, discontinued-ops loss, one-time bad debt, related-party rent/service overpay.
+- **Buyer-side (add-back deflates EBITDA):** owner-comp underpay (below market), related-party rent/service underpay, missing replacement CapEx, missing insurance/benefits burden.
+- **Both directions permitted; every adjustment carries a sign and a rationale.**
+
+| # | Category | Definition | Detection rule | Computation | Evidence required | Recurrence test | Authoritative reference |
+|---|---|---|---|---|---|---|---|
+| **1** | **Owner / executive compensation to market** | Adjust reported owner/executive comp (incl. bonuses, distributions treated as comp) to arm's-length market rate for the role. | Owner-comp > 150% or < 50% of BLS OEWS median for occupation × MSA. | `Adj = Reported comp − Market comp (BLS OEWS median for role + geography, adjusted for revenue-tier)` | BLS OEWS citation (role code, geography, year) + role-fit justification + post-close staffing plan. | Recurring — always adjusted, never treated as one-time. | Replacement-cost doctrine (§11.1D); BLS OEWS (public) |
+| **2** | **Related-party rent to fair-market rent** | Adjust rent paid to owner-controlled real estate entity to arm's-length market rent. | Any lease where landlord is related party per ASC 850. | `Adj = Reported rent − Market rent (broker BOV, CoStar / LoopNet MSA benchmark)` | Third-party rent benchmark (broker letter, CoStar comp, LoopNet comp) + lease terms. | Recurring — adjusted permanently. | ASC 850 Related Party Disclosures (FASB, free) |
+| **3** | **Related-party service arrangements to arm's-length** | Adjust management fees, consulting fees, admin services from related entities to arm's-length pricing. | Any service paid to related party per ASC 850. | `Adj = Reported fee − Arm's-length fee (industry benchmark or documented cost-plus)` | Written third-party benchmark or cost-plus study. | Recurring. | ASC 850 |
+| **4** | **Personal / non-business expenses run through P&L** | Remove personal expenses (travel, meals, vehicles, club memberships, family payroll for no-show roles). | Charge codes flagged as personal; entity-name matches owner personal. | `Adj = Personal expenses (sum, evidence-linked)` | Individual expense-report lines + owner attestation + receipts sampled. | Recurring — treated as permanent add-back. | Reg S-K Item 10(e); practitioner convention |
+| **5** | **One-time legal / settlement expenses** | Remove non-recurring legal fees + settlement costs tied to closed matters (litigation, IP, employment). | Legal expense spike > 200% of trailing 3-yr baseline; settlement reserve movements. | `Adj = Non-recurring legal + settlements, netted against recurring counsel run-rate` | Matter list + closure evidence + counsel confirmation + no-repeat basis. | One-time — but only if closed; open matters DO NOT qualify. | ASC 450 Contingencies |
+| **6** | **One-time restructuring / severance** | Remove severance + facility closure + reorganization costs from a defined restructuring event. | Restructuring reserve activity (ASC 420); event-defined severance schedule. | `Adj = Total restructuring cost, netted against ongoing severance run-rate` | Board-approved restructuring plan + severance schedule + facility disposal docs. | One-time per event — not per year. | ASC 420 Exit or Disposal Cost Obligations |
+| **7** | **Discontinued / divested operations** | Remove revenue + costs of a component of an entity that has been disposed of or is held for sale. | ASC 205-20 conformity: (a) component of an entity, (b) strategic shift, (c) disposal-group criteria met. | `Adj = Discontinued-ops revenue − Discontinued-ops direct costs − allocated overhead (traceable only)` | ASC 205-20 test documentation + disposal date + P&L allocation methodology. | One-time (removed permanently from run-rate). | ASC 205-20 Discontinued Operations (FASB, free); IFRS 5 |
+| **8** | **Non-recurring bad-debt write-offs** | Remove concentrated bad-debt losses tied to a single failed customer or event; retain ongoing bad-debt provision. | Bad-debt spike > 300% of trailing 3-yr provision rate; single-customer concentration > 50% of the spike. | `Adj = Non-recurring write-off − expected recurring provision (per trailing rate)` | Customer-level A/R aging + failure evidence (bankruptcy, dispute file). | One-time only if isolated; systemic collection deterioration is recurring. | ASC 326 Financial Instruments — Credit Losses |
+| **9** | **One-time gain/loss on asset sale** | Remove gain/loss from disposal of PP&E, subsidiaries, non-operating assets. | Asset-disposal G/L line item; non-operating income section. | `Adj = Reported gain/loss on disposal (removed in full)` | Asset ledger + disposal document + book-value vs. proceeds. | One-time per disposal. | ASC 610-20 Gains and Losses from the Derecognition of Nonfinancial Assets |
+| **10** | **Insurance-recovery / catastrophe recovery** | Remove insurance proceeds tied to a specific incident (fire, weather, cyber, business interruption); remove matching one-time loss. | Insurance-recovery line item + incident report. | `Adj = Insurance proceeds netted against directly-related one-time loss` | Insurance claim documentation + incident report + policy terms. | One-time per incident. | Evidence + recurrence test (§11.1C) |
+| **11** | **Deferred-revenue / cash-vs-accrual timing** | Adjust for revenue-recognition timing distortions (deferred revenue drawdown; contract-modification catch-ups). | Deferred-revenue balance change > 15% of period revenue; ASC 606 modification disclosures. | `Adj = Timing-neutral revenue (accrual basis re-cast)` | Contract population + revenue-schedule reconciliation. | Depends on driver — timing normalization is typically recurring in some, non-recurring in others. | ASC 606 Revenue from Contracts with Customers |
+| **12** | **Founder-only healthcare / insurance / retirement** | Remove above-market benefits paid on behalf of owner/family that would not persist post-close. | Benefits-per-headcount > 200% of employee-population average, concentrated in owner family. | `Adj = Owner-family benefits − replacement cost of standard benefits package` | Benefits ledger + owner attestation + post-close benefits plan. | Recurring add-back. | Replacement-cost doctrine (§11.1D) |
+| **13** | **Above-market / below-market key contracts** | Adjust customer or supplier contracts materially off-market that will re-price on renewal. | Contract price ≥ 20% away from market benchmark + renewal in ≤ 24 months. | `Adj = (Market price − Contract price) × annualized units × probability-of-re-price` | Contract copy + market benchmark + renewal terms + probability rationale. | Recurring — but flagged as an **estimate**, not a hard adjustment. | Purchase-accounting analog (ASC 805) |
+| **14** | **Pro-forma synergies (BUYER-SIDE FLAG ONLY)** | Buyer-planned cost savings or revenue synergies. | Any adjustment labeled "synergy," "combination benefit," "consolidation savings." | **Flagged, never applied in the seller-side bridge.** Presented separately as "Buyer synergy view — Aegira does not underwrite these." | Buyer's own 100-day plan + owner + realization timeline. | N/A — never in normalized-seller EBITDA. | Practitioner convention |
+| **15** | **Run-rate revenue adjustments** | Annualize recent-period revenue to reflect a durable step-change (new contract, price change, capacity add). | Two consecutive quarters of ≥ 15% level shift + operational anchor (contract, capacity, pricing). | `Adj = (Run-rate period revenue × 4) − LTM revenue`, gated by stability test (see 11.3-B). | Contract / capacity / pricing evidence + monthly detail ≥ 24 months + stability test pass. | Highest-scrutiny category. Never applied to seasonal or volatile businesses (Liberto rule). | §11.1E (Liberto); COV / seasonality gate (§11.3-B) |
+| **16** | **Discontinued product-line contribution margin** | Remove revenue + direct costs of a product line the target has exited (short of a full discontinued-op). | Product-line exit announcement + no forward sales pipeline. | `Adj = Product-line revenue − direct COGS − direct SG&A (traceable only)` | Product-line P&L + exit-decision documentation. | One-time (removed permanently). | ASC 205-20 analog for below-component-of-entity exits |
+| **17** | **COVID / pandemic-era anomalies** | Remove PPP forgiveness income, ERTC credits, one-time pandemic operating disruptions. | Line items dated 2020-04 through 2022-06 with pandemic-related descriptors. | `Adj = Sum of pandemic-tagged one-time items (both sides)` | Documentation date-tagged; both revenue-side (PPP, ERTC) and cost-side (safety, closure) adjustments shown. | One-time. | Evidence + recurrence test (§11.1C) |
+| **18** | **Litigation-in-progress reserves** | Do **not** remove reserves for **open** matters; only close-out adjustments after settlement. | Any legal-reserve movement tied to a still-open matter. | **Flagged, not removed** unless matter is closed. Open reserves stay in EBITDA. | Matter status + counsel letter (partner CPA path, §10.5). | Recurring while matter is open. | ASC 450 Contingencies |
+| **19** | **Non-cash stock-based compensation** | **DO NOT reflexively add back SBC.** SBC is a real cost of retaining talent; treat as recurring in most cases. Add back only if the plan is (a) grandfathered / closed post-close AND (b) not being replaced with equivalent cash comp. | Explicit SBC add-back proposed. | `Adj = 0` in the default seller bridge; `Adj = SBC` only if the two conditions above are both met with evidence. | Plan documents + post-close comp design + board resolution. | Almost always recurring; add-back is the exception. | ASC 718 Compensation — Stock Compensation; buyer-side skepticism convention |
+| **20** | **Change in accounting policy** | Restate historical results for a change in accounting method (e.g. inventory LIFO→FIFO, revenue-recognition policy) to a common basis. | ASC 250 policy-change disclosure or auditor-noted change. | `Adj = ASC 250 restated amount − reported amount` | ASC 250 disclosure + auditor confirmation. | One-time restatement effect; new policy going forward is recurring. | ASC 250 Accounting Changes and Error Corrections |
+
+### 11.3 Guardrails (non-negotiable — enforced by code, not by convention)
+
+**A. Evidence Quality Grade (from §10.8) required on every adjustment.**
+- **A** = external / independent (attorney letter, third-party benchmark, government source, counterparty confirmation).
+- **B** = original internal document (contract, invoice, plan document, board resolution).
+- **C** = management-prepared / representation only.
+- **No adjustment ships with grade < B** without an explicit `EVIDENCE_C_OVERRIDE` flag and a written rationale in the working-paper artifact.
+
+**B. Run-rate stability gate (Liberto rule enforced deterministically).**
+Before any run-rate annualization (category #15) can be applied, the code enforces:
+- **Coefficient of variation (COV)** of monthly revenue over the trailing 24 months **< 0.30** — else annualization blocked.
+- **Seasonality F-statistic** (12-month decomposition, additive) — must fall below threshold — else annualization blocked and seasonality-adjusted normalization required instead.
+- **Operational anchor test** — contract, capacity add, or pricing change **must be documented**, dated, and quantifiable — else blocked.
+- **Longer-period comparison** — the run-rate result must be shown alongside LTM and 3-year-average in the workbook; the analyst chooses with visible evidence.
+
+**C. Owner-compensation calculator (deterministic).**
+- Inputs: role code, geography (MSA), business revenue tier, owner's actual comp.
+- Lookup: BLS OEWS median for role × MSA (via DATA_GOV adapter, cached, dated, sourced).
+- Revenue-tier adjustment: no published band exists (Founder research confirmed); we apply a documented multiplier ladder (< $2M rev → 1.0×, $2M-$10M → 1.15×, $10M-$50M → 1.30×, > $50M → 1.50× of BLS median) as a **stated Aegira convention**, editable by engagement.
+- Output: `Adj = Reported comp − Market comp × Revenue-tier multiplier`.
+
+**D. Related-party rent benchmark.**
+- No hardcoded benchmark; requires **at least one** of: broker letter (Grade A), CoStar/LoopNet comparable (Grade A), or three arm's-length lease citations for comparable properties (Grade B). C-grade owner assertion **blocked**.
+
+**E. Buyer-view vs. seller-view columns.**
+- Every adjustment carries a `SellerSide` and `BuyerSide` value (usually equal; opposite when reasonable perspectives diverge).
+- Bridge presents **three totals:** Reported EBITDA · Seller Adjusted EBITDA · Buyer Adjusted EBITDA. **No hidden disagreements.**
+
+**F. Bridge summary output (mandatory format).**
+```
+Reported EBITDA                         X,XXX
+  + Cat 1 owner-comp to market            XXX  [Grade A · Recurring · BLS OEWS 11-1021 Chicago 2025]
+  + Cat 2 related-party rent              XXX  [Grade A · Recurring · CoStar comp #45231 2026-01]
+  + Cat 4 personal expenses               XXX  [Grade B · Recurring · Expense-report sample n=142]
+  + Cat 5 legal (one-time)                XXX  [Grade A · One-time · Matter closed 2026-Q1]
+  ...
+Adjusted EBITDA (Seller view)           Y,YYY
+Adjusted EBITDA (Buyer view)            Y,YYY
+LTM / Run-Rate / 3-Yr-Avg presentation  Z,ZZZ | Z,ZZZ | Z,ZZZ  (run-rate shown only if stability gate passes)
+```
+
+**G. Opinion-vocabulary lint (from §10.8) applies.**
+No word of the bridge output uses "audited," "opinion," "fair presentation," "certified," or "attested."
+
+### 11.4 Mapping to Aegira build (implementation contract)
+
+**A. New backend module — `backend/app/qoe_bridge.py`.**
+- 20 category detectors + calculators from §11.2.
+- Evidence Quality Grade enforcement (from §10.8).
+- Run-rate stability gate (COV + seasonality F-stat + operational-anchor tests).
+- Owner-comp calculator with BLS OEWS lookup (via existing DATA_GOV adapter).
+- Buyer/seller sidedness.
+- Deterministic driver notes per adjustment (LLM elevation via existing E2 fact-lock).
+
+**B. New workbook sheet — `EBITDA_Bridge` embedded in every QoE + private-target diligence workbook.**
+- Reported → adjustments (name, amount, evidence grade, recurrence flag, source, driver note) → Adjusted (Seller / Buyer views) → LTM / Run-Rate / 3-Yr-Avg comparison.
+- Native Excel formatting; matplotlib waterfall PNG for the bridge visual.
+
+**C. Wired to §10 QoE workbook tabs.**
+- Feeds into the **Findings & Recommended Actions** section on the Cover.
+- Materiality-flag rollup: any adjustment > materiality threshold (default 5% of reported EBITDA or $50k, whichever greater — §10.9 pending Founder confirm) surfaces on the Cover.
+
+**D. Tests (P1 build — mandatory).**
+- 20-category unit tests (one detector + one calculator per category, plus overriding rules).
+- Run-rate stability-gate tests (pass / fail on synthetic seasonal / volatile / stable series).
+- Owner-comp calculator tests against known BLS role codes.
+- Evidence-grade enforcement tests.
+- Buyer/seller-view divergence test.
+- Opinion-vocabulary lint test.
+
+### 11.5 Governance & change control (extends §§8.7, 9.11, 10.9)
+- **Adjustment library, materiality thresholds, stability-gate parameters, and owner-comp revenue-tier multipliers** live in the metric registry (`backend/app/data_registry.py`) as `QoEAdjustmentProfile`, versioned.
+- **Reviewed quarterly** alongside ratio and sector-profile registries.
+- **Every published adjustment carries** its version stamp so historical deliverables remain reproducible.
+
+### 11.6 Action items (§11 addendum to §§6, 8.8, 9.12, 10.10)
+1. **Build `backend/app/qoe_bridge.py`** — 20 categories per §11.2 + guardrails per §11.3. *(Cy — this session, P1.)*
+2. **Wire `EBITDA_Bridge` sheet** into the QoE workbook generator. *(Cy — this session, P1.)*
+3. **BLS OEWS integration** for owner-comp calculator via existing DATA_GOV adapter. *(Cy — this session, P1.)*
+4. **QoE adjustment library exposed** on the `Findings & Recommended Actions` Cover section with materiality flags. *(Cy — this session, P1.)*
+5. **Founder confirm** — default materiality threshold (proposal: 5% of reported EBITDA or $50k floor, whichever greater; per-engagement override permitted).
+6. **Founder confirm** — revenue-tier multiplier ladder for owner-comp calculator (proposal captured in §11.3C; editable per engagement).
+7. Keep the **decision-support / research-not-audit, derived-only, fact-locked, evidence-graded** posture on every bridge output. *(Ongoing.)*
+
+---
+
+*Recorded by Cy Henry, VP Software Engineering (AI). JHI-SIG: 69M2705M. This blueprint — §§1–11 — is adopted of record as the target for Aegira's institutional financial-analysis deliverables (Tier 1 & 2 PE / search-fund / operator-buyer audience). Reference write-ups from the Founder will continue to be appended as they arrive (see standing directive above). How we do anything is how we do everything. TeamWork makes the DreamWork.*
 
 > **§9 (personal-finance dashboard) was removed per Founder direction on 2026-08-27:** the original Investopedia write-up was misread as a personal-finance guide when the Founder's intent was business financial dashboards (already covered in §8). Aegira is an **institutional / operating-company research and diligence product** — personal-finance dashboards are out of scope.
