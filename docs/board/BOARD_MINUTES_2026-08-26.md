@@ -1,11 +1,13 @@
 # Board Minutes — JHI Research & Analytics Firm, Inc.
 
-**Meeting date:** 2026-08-26 · **Type:** Founder directive — product build blueprint (financial ratios + PE/search-fund workbook toolkit + financial dashboards) · **Recorder:** Cy Henry (VP, Software Engineering — Cloud Agent)
+**Meeting date:** 2026-08-26 (living document — extended 2026-08-27) · **Type:** Founder directive — product build blueprint (financial ratios + PE/search-fund workbook toolkit + institutional financial dashboards + personal-finance dashboards) · **Recorder:** Cy Henry (VP, Software Engineering — Cloud Agent)
 **Product:** Aegira · **Publisher:** JHI Research & Analytics Firm, Inc.
 **Present:** Founder (Galen Marcellus Miller).
 
 > NOT legal/tax/accounting/investment advice. Prior session: `docs/board/BOARD_MINUTES_2026-08-13.md`.
 > Signature of record — `JHI-SIG: 69M2705M`. Ethos: *How we do anything is how we do everything.*
+
+> **Standing Founder directive (2026-08-27):** *"These previous and moving forward write-ups are the tools which are required for building our platform. Please ensure these documents are added to board of minutes. There will be more following."* — every reference write-up delivered by the Founder is captured **verbatim and in full** in this living document (or a successor session), adopted of record, and mapped to a concrete Aegira build target. New sections are appended as they arrive.
 
 ---
 
@@ -366,4 +368,140 @@ Dashboards **must be reviewed at least quarterly** and updated as **business con
 
 ---
 
-*Recorded by Cy Henry, VP Software Engineering (AI). JHI-SIG: 69M2705M. This blueprint — §§1–8 — is adopted of record as the target for Aegira's financial-analysis deliverables. How we do anything is how we do everything. TeamWork makes the DreamWork.*
+---
+
+## 9. Personal-finance dashboard — build specification (adopted verbatim)
+
+*(Founder addendum, 2026-08-27 — Investopedia reference on how to build a personal financial dashboard. Capture every detail. Complements §8, which specified the **institutional / operating-company** dashboard; §9 specifies the **personal-finance / household** dashboard that becomes the basis of an Aegira subscriber-facing personal-finance deliverable.)*
+
+### 9.1 Key takeaways (non-negotiable framing)
+1. **Start with clear goals**, then select **only** the metrics that show progress toward them.
+2. **Consolidate** income, spending, debt, savings, and investments into **one regularly updated view.**
+3. Use **monthly budget-versus-actual** tracking and a **net-worth trend** to monitor financial progress.
+4. **Separate essential, flexible, and non-monthly spending** to make the budget more actionable.
+5. **Keep the main dashboard simple;** use supporting tabs for transaction detail and investment analysis.
+
+### 9.2 Step 1 — Define the purpose and format
+Decide what decisions the dashboard should support: **controlling monthly spending, paying down debt, building an emergency fund, tracking retirement savings, or monitoring a portfolio**. Begin with **specific goals** and choose **key performance indicators (KPIs)** that measure them; **avoid cramming every available number onto one page**. The dashboard should **evolve as needs, priorities, and financial circumstances change**.
+
+**Format options** (both are valid):
+- **A spreadsheet** — works well because it can **consolidate data from multiple sheets** and **calculate returns, gains/losses, and risk measures.**
+- **A financial portal or app** — can **aggregate accounts** and show **spending, budgets, investments, debt, and net worth in one place.**
+
+### 9.3 Step 2 — Build a simple workbook structure
+Use these tabs or sections:
+
+| Tab | What to track | Update frequency |
+|---|---|---|
+| **Dashboard** | KPI summary, charts, alerts, goals | Monthly |
+| **Transactions** | Date, account, category, amount, notes | Weekly or automatically |
+| **Budget** | Planned versus actual spending by category | Monthly |
+| **Accounts & net worth** | Cash, savings, investments, loans, credit cards, property | Monthly |
+| **Investments** | Holdings, cost basis, current value, return, allocation | Monthly or quarterly |
+| **Goals & debt** | Emergency fund, debt balances, retirement, other targets | Monthly |
+
+**For a clear budget**, track **all income sources** and **categorize expenses**. Common categories include:
+- **Fixed costs** — housing, utilities, insurance, and loan payments
+- **Discretionary spending** — dining, shopping, and travel
+- **Savings**
+
+**Regular tracking identifies where money is actually going and where spending can be reduced.**
+
+### 9.4 Step 3 — Create the monthly budget view
+- Enter **take-home income** rather than **gross pay**, then compare **planned spending with actual spending**.
+- A practical structure separates expenses into **fixed, flexible, and non-monthly** categories; this makes **annual bills and irregular costs visible rather than treating them as surprises.**
+- Include a **chart of spending by category** and a **planned-versus-actual bar chart.**
+- A **budgeting calculator** similarly uses income and expense inputs to show **category percentages, remaining funds, and whether spending is within available income.**
+
+### 9.5 Step 4 — Track net worth, cash, and debt
+Create a **monthly net-worth statement**:
+
+> **Net worth = total assets − total liabilities.**
+
+- **Assets** can include checking and savings balances, retirement accounts, brokerage holdings, real estate, and other significant property.
+- **Liabilities** include credit cards, student loans, auto loans, mortgages, and other debt.
+- Track the **monthly change in net worth** and break it into:
+  - **contributions,**
+  - **debt reduction,**
+  - **investment gains or losses, and**
+  - **major purchases.**
+- A **consolidated view** of everything you earn, spend, and own **can keep these figures current and easier to interpret.**
+
+Add:
+- **Emergency-fund progress measure** = *emergency-fund balance ÷ target emergency fund.*
+- **Per-debt row** showing **balance, interest rate, required payment, and payoff progress.**
+- **Budgeting and debt tracking support an action plan** to repay outstanding debt and improve net worth.
+
+### 9.6 Step 5 — Add an investment tracker
+**For each holding**, record: **account, ticker or fund name, units, average purchase price, current value, cost basis, gain/loss, and portfolio weight.**
+
+**At the portfolio level**, show: **total value, contributions, total return, asset allocation, and performance over time.**
+
+- Excel can calculate **percentage returns, profit and loss, and standard deviation**, which can help assess **volatility.**
+- **Keep investment performance separate from contributions.** A rising portfolio may reflect **new deposits rather than market returns**, so **showing both prevents misleading conclusions.**
+- **Use only information you understand** and **hide unnecessary columns** to keep the tracker readable.
+
+### 9.7 Step 6 — Choose a concise KPI panel (top of Dashboard tab)
+Put the following measures at the top of the Dashboard tab:
+- **Monthly income, expenses, and surplus/deficit**
+- **Savings and investment contribution rate**
+- **Budget variance by category**
+- **Cash balance and emergency-fund progress**
+- **Total debt and debt-paydown progress**
+- **Net worth and month-over-month change**
+- **Investment balance, allocation, and return**
+- **One to three goal-progress bars**, such as **debt payoff, home down payment, or retirement contribution target**
+
+**Set targets for each KPI**, such as a **desired savings amount** or **maximum discretionary-spending limit.** **Effective dashboards connect metrics to stated goals, remain adaptable as conditions change, and avoid overwhelming users with too many indicators.**
+
+### 9.8 Step 7 — Establish a monthly review routine
+**Once a month**, do all of the following:
+- **Reconcile account balances.**
+- **Categorize uncategorized transactions.**
+- **Compare actual spending with the budget.**
+- **Update investments and debt.**
+- **Write a brief explanation for major variances.**
+- **Review whether goals advanced**, then **adjust next month's spending plan** for income changes, inflation, or unexpected expenses.
+
+**A flexible budget that is reviewed and revised monthly is more useful than a static plan.**
+
+Finally, **use the dashboard to make decisions, not merely record data**:
+- If **discretionary spending exceeds plan**, **reduce a category or redirect funds.**
+- If **debt is costly**, **prioritize repayment.**
+- If **savings fall short**, **automate a contribution after essential expenses.**
+- **Consistent tracking of earnings and spending helps keep the budget on target and reveals opportunities to save or invest.**
+
+### 9.9 Mapping to Aegira (implementation contract)
+
+**A. New subscriber-facing deliverable — Aegira Personal Financial Dashboard (Excel workbook).**
+- **Six tabs, exactly as specified in §9.3:** `Dashboard`, `Transactions`, `Budget`, `Accounts_and_Net_Worth`, `Investments`, `Goals_and_Debt`.
+- **Dashboard tab** — top-row KPI panel per §9.7 (income/expense/surplus, contribution rate, budget variance, cash + emergency-fund progress, total debt + paydown, net worth + MoM Δ, investment balance/allocation/return, 1–3 goal-progress bars); mid-row spending-by-category chart + planned-vs-actual bar chart (§9.4); bottom-row net-worth trend + debt-paydown chart.
+- **Budget** — take-home-income entry, **fixed / flexible / non-monthly** split (§9.4), category-percentages + remaining-funds computation.
+- **Investments** — per-holding rows (account, ticker, units, avg price, current value, cost basis, gain/loss, weight) + portfolio-level totals; **contributions kept separate from performance** so returns are not confused with deposits.
+- **Goals & debt** — emergency-fund progress bar (balance ÷ target); per-debt row (balance, interest rate, required payment, payoff progress); goal-progress bars linked to the Dashboard.
+- **Compliance layer (unchanged):** derived-only, fact-locked, dated, `JHI-SIG: 69M2705M`, **research/decision-support — not investment, tax, or legal advice.**
+
+**B. Platform — new on-screen module: "My Aegira" (personal-finance dashboard).**
+- **Same three-row canonical layout** — top KPI strip, middle trend charts, bottom net-worth/debt panels.
+- **Manual-entry-first** (workbook import + hand-entry), with a documented adapter surface for future account aggregation (Plaid / MX / open-banking) — **no third-party account aggregation is enabled until a formal privacy/security review is completed and the Founder approves.** No PII crosses AI-agent boundaries.
+- **Sits under a new "Personal" section in the TOC**, separate from Aegira's institutional/research modules to prevent scope confusion.
+- **Tier gating (proposed, Founder to confirm):** basic net-worth + budget-vs-actual visible to free/newsletter tier; full KPI panel, per-debt tracker, investment analytics, and goal-progress reserved for Tier 1/2.
+
+**C. Positioning — how §9 differs from §8.**
+- **§8 = institutional / operating-company dashboard** — Revenue/EBITDA/Net income/OCF/Cash balance/Net debt; peer-benchmarked; part of the QoE / per-ticker / diligence workbooks.
+- **§9 = personal-finance / household dashboard** — take-home income, category spend, net worth, emergency fund, per-debt payoff, per-holding investment tracker; monthly review routine.
+- **Both share the same doctrine** — clear goals, KPI focus, targets & variance, trend context, drill-down tabs, review cadence, and the *Always-Deliver · Cadence-Aware · As-Of-Disclosed* data-foundation posture.
+
+### 9.10 Governance & change control (extends §8.7)
+The personal-finance dashboard is reviewed **monthly** (its own cadence — see §9.8). Metric definitions still live in the **canonical metric registry** (`backend/app/data_registry.py`) so terms shared with §8 (e.g. net debt, cash flow, investment return) have **one definition** across institutional and personal deliverables — no drift.
+
+### 9.11 Action items (§9 addendum to §§6, 8.8)
+1. **Build the Personal Financial Dashboard workbook** (six tabs per §9.3, KPI panel per §9.7, budget/net-worth/investment logic per §§9.4–9.6). *(Cy → tested PR, sequenced after §8 Dashboard sheet ships.)*
+2. **Scaffold the "My Aegira" on-screen module** (manual-entry first, three-row canonical layout, no third-party aggregation until Founder-approved). *(Cy → tested PR.)*
+3. **Extend the metric registry** with the personal-finance line items (income, expense categories, emergency-fund progress, per-debt schedule, per-holding returns). *(Cy.)*
+4. **Founder confirm** — tier-gating proposal in §9.9-B and any privacy/security review requirements before enabling third-party account aggregation.
+5. Keep the **derived-only, fact-locked, research-not-advice, as-of-dated** posture on every personal-finance surface.
+
+---
+
+*Recorded by Cy Henry, VP Software Engineering (AI). JHI-SIG: 69M2705M. This blueprint — §§1–9 — is adopted of record as the target for Aegira's financial-analysis and personal-finance deliverables. Reference write-ups from the Founder will continue to be appended as they arrive (see standing directive above). How we do anything is how we do everything. TeamWork makes the DreamWork.*
