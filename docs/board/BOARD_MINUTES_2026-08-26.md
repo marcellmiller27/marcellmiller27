@@ -1,6 +1,6 @@
 # Board Minutes — JHI Research & Analytics Firm, Inc.
 
-**Meeting date:** 2026-08-26 (living document — extended 2026-08-27) · **Type:** Founder directive — product build blueprint (financial ratios + PE/search-fund workbook toolkit + institutional financial dashboards + personal-finance dashboards + ratio-dashboard build guide) · **Recorder:** Cy Henry (VP, Software Engineering — Cloud Agent)
+**Meeting date:** 2026-08-26 (living document — extended 2026-08-27) · **Type:** Founder directive — product build blueprint (financial ratios + PE/search-fund workbook toolkit + institutional financial dashboards + personal-finance dashboards + ratio-dashboard build guide + audit reference) · **Recorder:** Cy Henry (VP, Software Engineering — Cloud Agent)
 **Product:** Aegira · **Publisher:** JHI Research & Analytics Firm, Inc.
 **Present:** Founder (Galen Marcellus Miller).
 
@@ -662,4 +662,159 @@ This structure follows the common approach:
 
 ---
 
-*Recorded by Cy Henry, VP Software Engineering (AI). JHI-SIG: 69M2705M. This blueprint — §§1–10 — is adopted of record as the target for Aegira's financial-analysis and personal-finance deliverables. Reference write-ups from the Founder will continue to be appended as they arrive (see standing directive above). How we do anything is how we do everything. TeamWork makes the DreamWork.*
+---
+
+## 11. Audit — reference framework and Aegira scope boundary (adopted verbatim)
+
+*(Founder addendum, 2026-08-27 — Investopedia reference on financial-statement audits. Capture every detail. **Critical scope note:** Aegira does **not** perform statutory audits and does **not** issue audit opinions — that work is reserved to a licensed **partner CPA** who engages the target (established in §5). This section is adopted because the **audit doctrine — risk-based procedures, evidence triangulation, working-paper discipline, professional skepticism, audit trail — is the standard our QoE bridge, document-review pipeline, and diligence workbooks are built to.** The Aegira mapping in §11.7 formalizes that boundary.)*
+
+### 11.1 Key takeaways (non-negotiable framing)
+1. A **financial-statement audit** is an **independent examination** of records, controls, and evidence supporting the statements.
+2. The **core phases** are **planning, execution, and reporting.**
+3. Auditors **assess material-misstatement risk** and **establish materiality** before testing.
+4. **Effective procedures combine** inquiries, analytics, document testing, observations, and **third-party confirmations.**
+5. **Sufficient, reliable, and relevant evidence** — especially **external or original evidence** — is central to a credible opinion.
+6. **Strong documentation, professional skepticism, independence, and clear communication** make the audit more dependable.
+
+### 11.2 Step 1 — Plan the engagement
+Start by defining the audit's **scope, objectives, reporting framework** (such as **GAAP** or **IFRS**), **timetable, and methodology**. The auditor develops an **understanding of the business**, its **operations, financial-reporting process, internal controls, and known fraud or error risks**; then **assesses the risk of material misstatement** and **sets materiality thresholds** to focus work on matters capable of affecting users' decisions.
+
+> As **Tobi Opeyemi Amure** explains in *Audit: Meaning in Finance and Accounting and 3 Main Types*, **"The audit begins with comprehensive planning, where auditors define the scope, objectives, and methodology of the engagement."**
+
+**Best practices at this stage:**
+- **Maintain auditor independence** and **apply professional judgment.**
+- **Identify higher-risk accounts and assertions** — such as **revenue, receivables, inventory, estimates, related parties, and significant disclosures.**
+- **Design procedures responsive to the assessed risks** rather than using a **one-size-fits-all checklist.**
+- **Establish clear communication** with **management and those charged with governance** about **timing, information requests, and significant audit matters.**
+
+### 11.3 Step 2 — Understand and test internal controls
+**Evaluate the processes and controls that produce the financial statements.** Controls commonly include:
+- **authorization,**
+- **documentation,**
+- **reconciliations,**
+- **security safeguards,**
+- **physical controls, and**
+- **segregation of duties.**
+
+Auditors test relevant controls to determine whether they are **designed appropriately** and **operating effectively**; this helps determine the **nature, timing, and extent of substantive testing.**
+
+**Control-exception handling.** Where control exceptions are identified, **evaluate their severity.** A **material weakness** is a **major internal-control flaw that could lead to a material financial-statement error**; auditors **report such weaknesses to the audit committee**, which oversees corrective action.
+
+### 11.4 Step 3 — Perform substantive procedures and gather audit evidence
+Obtain evidence **directly from records, third parties, and observation**. Typical procedures include:
+- **inspecting** invoices, contracts, journals, bank statements, and general-ledger entries;
+- **tracing** transactions through the **audit trail**;
+- **testing** account balances and transaction samples;
+- **performing analytical procedures**;
+- **observing** physical inventory counts;
+- **confirming** receivables or other third-party balances.
+
+**Evidence quality standard.** Evidence should be **sufficient in quantity** and **reliable and relevant in quality.** **Original documents, independent third-party confirmations, and firsthand observation generally provide stronger support than management representations alone.** For example, auditors may **obtain bank statements directly from the bank, inspect sales invoices and receipts, and physically observe inventory.**
+
+**Sampling.** **Use sampling thoughtfully** when testing large populations. **Attribute sampling** can efficiently test whether controls were followed — for example, **whether purchase orders received required approval** — but **the sample must be large enough for the intended assurance level**, and auditors must **consider sampling error when extrapolating results.**
+
+### 11.5 Step 4 — Investigate exceptions, estimates, and disclosures
+Follow up on:
+- **unusual fluctuations,**
+- **discrepancies,**
+- **missing support,** or
+- **control deviations.**
+
+This may involve **management and staff interviews, expanded testing, review of accounting policies and estimates, and assessment of whether the financial statements include adequate disclosures.** Auditors should **examine both amounts and qualitative disclosures**, including **significant risks that could make the financial statements misleading.**
+
+**Contingent legal matters.** For contingent legal matters, an **attorney's letter** helps verify management's information on **pending litigation**, including:
+- the **nature and timing** of a potential loss,
+- its **likelihood, and**
+- the **estimated financial effect where material.**
+
+This work supports a conclusion about whether **legal exposures are appropriately reflected or disclosed.**
+
+### 11.6 Step 5 — Document, communicate, and report
+**Working papers.** Keep **complete working papers** that show:
+- the **work performed,**
+- **evidence obtained,**
+- **judgments made,**
+- **exceptions found, and**
+- **how those exceptions were resolved.**
+
+**Audit documentation supports the final conclusion and makes the audit reviewable.** Communicate significant findings to **management and the audit committee or other governance body**, including **control deficiencies and recommended remediation.**
+
+**Opinion outcomes.** Finally, form and issue the **audit opinion**:
+- **Unqualified (clean) opinion** — concludes the statements **fairly present the company's financial position, in all material respects,** under the applicable accounting framework.
+- **Qualified opinion,** **adverse opinion,** or **disclaimer** — if evidence is insufficient or problems are material.
+
+**Boundary of the opinion.** An audit opinion **addresses fair presentation and material misstatement — not whether the company is economically healthy or guaranteed to remain successful.**
+
+### 11.7 Practical audit-quality checklist (adopted verbatim)
+- **Be independent and skeptical:** Do not accept explanations without **corroborating evidence**, particularly in high-risk areas.
+- **Use a risk-based approach:** Direct more work to **accounts, transactions, estimates, and disclosures most likely to contain material misstatements.**
+- **Triangulate evidence:** Reconcile management explanations to **original documents, external confirmations, audit trails, and physical observation** where possible.
+- **Evaluate controls but do not over-rely on them:** Controls offer **reasonable — not absolute — assurance** and can fail because of **judgment errors, override, or collusion.**
+- **Escalate and remediate findings:** Report **material weaknesses** promptly and ensure **corrective actions are tracked.**
+- **Preserve a clear audit trail:** Documentation should allow **another qualified reviewer to understand the procedures, evidence, and basis for the opinion.**
+
+### 11.8 Mapping to Aegira (scope boundary + doctrine adoption)
+
+**A. Scope boundary (non-negotiable, restates §5).**
+- Aegira **does not perform statutory audits.**
+- Aegira **does not issue audit opinions** (unqualified / qualified / adverse / disclaimer).
+- Aegira **does not attest to fair presentation** under GAAP or IFRS.
+- Every Aegira deliverable is **decision-support / research, informational only — not audit, valuation, tax, or investment advice.**
+- **Formal assurance opinions come only from a licensed partner CPA who engages the target.** Aegira may hand off its diligence workbook + evidence log to that CPA as a starting point — never as a substitute.
+- Every workbook and dashboard carries this statement plus **`JHI-SIG: 69M2705M`.**
+
+**B. Doctrine we DO adopt (audit-grade rigor inside our own deliverables).**
+
+**Planning discipline (§11.2 → QoE & document-review kickoff).**
+- Every Financial Diligence / QoE engagement starts with an explicit **Scope tab**: **objective, reporting framework (GAAP / IFRS / management accounts), period covered, methodology, timetable, deliverables.**
+- **Business understanding tab** — industry, revenue model, customer/vendor concentration, key contracts, known risks — populated before any testing.
+- **Risk register** — higher-risk areas flagged (**revenue, receivables, inventory, estimates, related parties, disclosures** — per §11.2). Procedures are **responsive to those risks**, not one-size-fits-all.
+- **Materiality thresholds** are **set and recorded** (analog to audit materiality — for our QoE, expressed as a **% of EBITDA** and a **$ floor**; any adjustment above threshold surfaces on the summary).
+
+**Controls awareness (§11.3 → private-target QoE + document review).**
+- New **Controls Snapshot tab** — records the target's control environment across the six control categories (**authorization / documentation / reconciliations / security / physical / segregation of duties**), with a **strength rating** and **`Material Weakness?` flag** per category.
+- Flags feed the QoE narrative and elevate the sampling intensity in §11.4.
+
+**Evidence-gathering doctrine (§11.4 → document-review pipeline).**
+- The document-review engine already ingests bank statements, invoices, contracts, ledgers; §11 formalizes an **Evidence Quality Grade** on every artifact: **A (external/independent), B (original internal), C (management-prepared / representation only)** — surfaced in the review record and rolled up on the summary.
+- **Sampling procedure recorded** — for attribute tests (e.g. approvals on POs), the workbook records **population size, sample size, method (random / haphazard / judgmental), exceptions, projected error, assurance level, sampling-error caveat** — per §11.4.
+- **Analytical procedures** — expected-vs-actual by month/segment already generated by the QoE engine; §11 formalizes an **"unexpected fluctuation" callout list** with explanations required before sign-off.
+
+**Exceptions, estimates, disclosures (§11.5 → QoE bridge + attorney-letter path).**
+- Exceptions log (per §7.9 audit controls) is now the **§11 formal exceptions workbook** — every unusual fluctuation, discrepancy, missing support, or control deviation gets a **status (Open / Explained / Adjusted / Escalated)**, an **owner**, and a **resolution note**.
+- **Estimates & judgments tab** — records management estimates (allowances, reserves, useful lives, purchase-price allocations) and Aegira's independent read.
+- **Legal & contingencies tab** — captures management's litigation schedule and a placeholder for a **partner-CPA-obtained attorney's letter** per §11.5 (Aegira **does not** obtain attorney letters directly — that stays with the CPA who engages the target).
+
+**Working-paper discipline (§11.6 → every Aegira workbook run).**
+- **Working-paper artifact** auto-generated on every workbook / document-review run: **procedure performed, evidence reviewed (with hash + timestamp), judgment made, exception found, resolution.** Analog to auditor working papers — **another qualified reviewer must be able to retrace our work.**
+- **Reviewable by design** — same fact-lock rules, same dated citations, same `JHI-SIG: 69M2705M` provenance.
+
+**"Opinion" language ban (§11.6 → house style).**
+- No Aegira deliverable ever uses the words **"audited," "opinion," "unqualified," "qualified," "adverse," "disclaimer,"** or **"fair presentation"** to describe its own output. Reserved wording exists **only** when quoting the partner CPA's actual opinion.
+- Enforced by a lint check on newsletter / workbook / report generation (`backend/app/editorial_llm.py` fact-lock + a docs lint job).
+
+**C. The §11.7 audit-quality checklist becomes our internal ops rubric.**
+- **Independent & skeptical** — no management assertion accepted without corroborating evidence in the document-review pipeline.
+- **Risk-based** — higher-risk accounts get deeper sampling; standardized in the QoE engine.
+- **Triangulate** — reconcile to originals, external confirmations, audit trail, physical observation where possible; graded via the Evidence Quality Grade above.
+- **Controls ≠ absolute assurance** — Controls Snapshot never on its own supports a "clean" narrative; substantive procedures always run.
+- **Escalate & remediate** — material findings surface on the Cover sheet and in the CTA panel of the client deliverable.
+- **Clear audit trail** — enforced by the working-paper artifact above.
+
+### 11.9 Governance & change control (extends §§8.7, 9.10, 10.11)
+- **Materiality thresholds** (default and any per-engagement override), **sampling standards**, and the **Evidence Quality Grade rubric** live in the metric registry (`backend/app/data_registry.py`), versioned.
+- **Reviewed quarterly** alongside the ratio and sector-profile registries.
+- **Independence check** — every engagement records that Aegira has no ownership, advisory, or conflicting economic interest in the target; the check is a required cell on the Scope tab.
+
+### 11.10 Action items (§11 addendum to §§6, 8.8, 9.11, 10.12)
+1. **Add Scope / Business-Understanding / Risk-Register / Materiality / Controls-Snapshot / Estimates / Legal-Contingencies / Exceptions tabs** to the QoE workbook per §11.8-B. *(Cy → tested PR, folded into the P1 QoE build.)*
+2. **Ship the Evidence Quality Grade (A/B/C)** on every document-review artifact and roll it up on the summary. *(Cy → tested PR.)*
+3. **Auto-generate the working-paper artifact** on every workbook / review run (procedure · evidence hash · judgment · exception · resolution) — one file per run, provenance-signed. *(Cy → tested PR.)*
+4. **Lint / fact-lock the reserved-opinion vocabulary** — no "audit," "opinion," "unqualified," "fair presentation," etc. in Aegira-authored outputs. *(Cy → tested PR.)*
+5. **Independence-check cell** on every Scope tab; **materiality thresholds recorded**; **sampling standard applied and disclosed.** *(Cy.)*
+6. **Founder confirm** — default materiality thresholds (proposal: **5% of EBITDA** or **$50k floor**, whichever is greater; per-engagement override permitted).
+7. Keep the **decision-support / research-not-audit, derived-only, fact-locked, as-of-dated** posture on every surface. *(Ongoing.)*
+
+---
+
+*Recorded by Cy Henry, VP Software Engineering (AI). JHI-SIG: 69M2705M. This blueprint — §§1–11 — is adopted of record as the target for Aegira's financial-analysis and personal-finance deliverables. Reference write-ups from the Founder will continue to be appended as they arrive (see standing directive above). How we do anything is how we do everything. TeamWork makes the DreamWork.*
