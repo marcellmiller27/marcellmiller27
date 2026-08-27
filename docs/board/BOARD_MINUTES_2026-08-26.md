@@ -1,6 +1,6 @@
 # Board Minutes — JHI Research & Analytics Firm, Inc.
 
-**Meeting date:** 2026-08-26 (living document — extended 2026-08-27) · **Type:** Founder directive — product build blueprint (financial ratios + PE/search-fund workbook toolkit + institutional financial dashboards + personal-finance dashboards) · **Recorder:** Cy Henry (VP, Software Engineering — Cloud Agent)
+**Meeting date:** 2026-08-26 (living document — extended 2026-08-27) · **Type:** Founder directive — product build blueprint (financial ratios + PE/search-fund workbook toolkit + institutional financial dashboards + personal-finance dashboards + ratio-dashboard build guide) · **Recorder:** Cy Henry (VP, Software Engineering — Cloud Agent)
 **Product:** Aegira · **Publisher:** JHI Research & Analytics Firm, Inc.
 **Present:** Founder (Galen Marcellus Miller).
 
@@ -504,4 +504,162 @@ The personal-finance dashboard is reviewed **monthly** (its own cadence — see 
 
 ---
 
-*Recorded by Cy Henry, VP Software Engineering (AI). JHI-SIG: 69M2705M. This blueprint — §§1–9 — is adopted of record as the target for Aegira's financial-analysis and personal-finance deliverables. Reference write-ups from the Founder will continue to be appended as they arrive (see standing directive above). How we do anything is how we do everything. TeamWork makes the DreamWork.*
+---
+
+## 10. Financial-ratio dashboard — build guide from company financial statements (adopted verbatim)
+
+*(Founder addendum, 2026-08-27 — Investopedia reference: "How do I build a financial ratio dashboard from a company's financial statements?" Capture every detail. This is the **operational, step-by-step "how to build" spec** for the ratio dashboard whose taxonomy is in §1, whose Excel architecture is in §4, and whose peer-comparison methodology is in §7 — the section that binds them into a working analyst deliverable.)*
+
+### 10.1 Key takeaways (non-negotiable framing)
+1. **Build the dashboard from consistently defined income-statement, balance-sheet, and cash-flow inputs.**
+2. **Group ratios into profitability, liquidity, solvency, efficiency, cash flow, and valuation sections.**
+3. **Use several ratios together** because each reveals only one part of a company's financial condition.
+4. **Compare each result with prior periods and direct industry peers**, not a universal threshold.
+5. **Add trend and alert columns** so the dashboard **explains changes** rather than merely displaying formulas.
+
+### 10.2 Step 1 — Create a clean financial-statement input sheet
+Set up **one source-data tab** with columns for the **latest fiscal year, prior years, and optionally trailing 12 months**. Pull **every** line item required by the ratios:
+- **Income statement:** revenue, gross profit, EBIT, net income, interest expense, EPS
+- **Balance sheet:** current assets, current liabilities, total assets, total liabilities, total equity, debt
+- **Cash flow:** cash flow from operations (CFO), capital expenditures (CapEx)
+- **Market:** shares outstanding, current share price
+
+Ratio analysis **combines line items from the income statement, balance sheet, and cash-flow statement** to show **liquidity, profitability, debt use, and earnings strength**.
+
+**Averaging rule (mandatory):** use **average balance-sheet balances** when pairing a balance-sheet item with an income-statement flow. For example, calculate **average total assets** as `(beginning assets + ending assets) ÷ 2` before calculating **ROA**.
+
+**Data hygiene (mandatory):**
+- **Keep units consistent** — do not divide revenue reported in millions by debt reported in thousands.
+- **Use the same reporting periods** across all calculations.
+
+### 10.3 Step 2 — Use a dashboard layout with trend and comparison columns
+Create **one row per ratio** and the following **columns**:
+1. **Latest period**
+2. **Prior period**
+3. **3- to 5-year trend**
+4. **Peer median**
+5. **Industry benchmark**
+6. **Status flag**
+7. **Explanation**
+
+This lets you identify **whether a ratio is improving** and **whether that improvement is competitive**. **Key ratios summarize financial condition relative to peers**, but **the most relevant measures vary by industry and company type.**
+
+**Six canonical dashboard sections** (adopted verbatim):
+
+| Dashboard section | Core question answered | Typical metrics |
+|---|---|---|
+| **Profitability** | Does the company convert sales and capital into profit? | Gross margin, operating margin, net margin, ROA, ROE, ROCE |
+| **Liquidity** | Can it meet near-term obligations? | Working-capital ratio / current ratio, quick ratio |
+| **Solvency** | Is debt manageable over the long term? | Debt-to-equity, debt-to-assets, interest coverage |
+| **Efficiency** | How productively are assets and receivables used? | Asset turnover, receivables turnover, days sales outstanding |
+| **Cash flow** | Can operations fund investment? | CFO-to-CapEx, CFO trend |
+| **Valuation** | How is the market pricing earnings and equity? | P/E, P/B, P/S |
+
+This structure follows the common approach:
+- **Balance-sheet measures** → liquidity, leverage, operating efficiency
+- **Income-statement measures** → profit margins and coverage
+- **Cash-flow measures** → cash-generation capacity
+- **Comprehensive return measures** (ROA, ROE) → combined view
+
+### 10.4 Step 3 — Add profitability and return ratios
+- **ROA** measures the profit earned relative to the company's **asset base**.
+- **ROE** measures how effectively management generates profit from **shareholders' capital**.
+- **ROCE** uses **EBIT relative to capital employed** and is **best considered alongside ROA, ROE, and other return measures — not in isolation.**
+- **Capital employed** = **total assets − current liabilities**, applied **consistently across all periods and peers.**
+
+**Interpretation caveats:**
+- Rising margins and returns **can** reflect stronger operations, pricing, or capital use.
+- A **high ROE** can also be **influenced by a smaller equity base** — so **read it with debt metrics** (§10.6).
+
+### 10.5 Step 4 — Add liquidity and operating-efficiency ratios
+- **Working-capital ratio** = **current assets ÷ current liabilities** — measures capacity to meet current obligations.
+- Common balance-sheet-oriented metrics: **asset turnover, quick ratio, receivables turnover, days sales outstanding.**
+
+**Read them together:**
+- A **stable current ratio** accompanied by **worsening receivables turnover** may mean the reported current assets are **becoming less liquid** (receivables aging up).
+- Conversely, **better turnover** can support **stronger operating cash flow** — assuming **sales quality remains sound.**
+
+### 10.6 Step 5 — Add solvency and debt-service ratios
+- **Debt-to-equity** compares **liabilities with shareholder equity**; a **high** result can indicate **greater investment risk** because the company has more obligations to support.
+- **Interest coverage** tests whether **EBIT is sufficient to cover interest expense**; a **higher** figure is generally more favorable. **A ratio below 2 can signal difficulty servicing long-term debt.**
+
+**Dashboard mechanics:**
+- Add **conditional formatting** to flag **rising leverage, falling interest coverage, or a combination of both.**
+- **Do not** label a company **healthy or distressed from debt-to-equity alone** — **capital structures differ materially by sector.**
+
+### 10.7 Step 6 — Include cash-flow capacity
+- **CF/CapEx** = **CFO ÷ CapEx** (both from the cash-flow statement).
+- A **higher ratio** generally indicates **greater capacity to fund capital investments internally.**
+- **Negative operating cash flow** means **CapEx is being financed from external sources.**
+
+**Why this section is required:**
+- Avoid relying solely on **accounting earnings**.
+- A company may report **attractive profitability ratios** but **still lack sufficient operating cash** to sustain **expansion, debt service, or investment.**
+- Conversely, a **temporary drop** in CF/CapEx **may be reasonable** if management is investing in **productive long-term assets.**
+
+### 10.8 Step 7 — Add valuation ratios (public companies)
+- **P/E** — what investors pay for each dollar of earnings.
+- **P/B** — share price vs. book value.
+- **P/S** — price vs. sales.
+- A **lower ratio** *may* suggest a **relatively inexpensive stock**, but **meaningful interpretation requires comparison with peers** and **consideration of growth, profitability, risk, and the business model.**
+
+**Guardrails:**
+- **Do not calculate P/E when EPS is negative or economically insignificant.**
+- **Place valuation ratios next to revenue growth, margins, ROE, interest coverage, and CFO-to-CapEx** so the dashboard can distinguish a **potentially attractive discount from weak fundamentals.**
+
+### 10.9 Step 8 — Turn the dashboard into a decision tool
+- **For each ratio, include a short driver note** — such as:
+  - *"margin increased because revenue grew faster than operating costs"*
+  - *"interest coverage fell because borrowing rose and EBIT declined"*
+- Use **green/yellow/red status** **only after setting thresholds that suit the industry** — **technology, banks, and industrial companies may require different key ratios and normal ranges.**
+- **Finish with a one-page summary** containing **all five** elements:
+  1. **the latest ratios,**
+  2. **three- to five-year sparklines,**
+  3. **peer medians,**
+  4. **the biggest positive and negative changes, and**
+  5. **a concise conclusion** on **profitability, liquidity, solvency, operating efficiency, cash-generation ability, and valuation.**
+
+**Multiple key ratios give a fuller view than any single metric** because each highlights a different aspect of financial health.
+
+### 10.10 Mapping to Aegira (implementation contract)
+
+**A. Ratio-dashboard sheet — schema (applies to every institutional / QoE / per-ticker workbook).**
+- **One row per ratio.** Fixed column set per §10.3: `Metric | Latest | Prior | 3–5y Trend (sparkline) | Peer Median | Industry Benchmark | Status | Driver Note`.
+- **Six sections, in this order** (per §10.3): **Profitability → Liquidity → Solvency → Efficiency → Cash Flow → Valuation.** No re-ordering — the order is the reading order for the analyst.
+- **Averages enforced** — the Ratios engine (`backend/app/equity_ratios.py`) computes average balances for every asset/receivable/inventory/working-capital ratio automatically (per §10.2, §1.7).
+- **Unit-consistency guard** — Inputs sheet declares `Currency` + `Unit Scale`; a top-of-sheet audit check (per §7.9) fails loudly if any input row's unit differs.
+- **Valuation section guard** — **P/E, P/B, P/S are only rendered when EPS/BV/S are positive & economically meaningful**; otherwise the cell shows `"N/M"` (not meaningful) — never `#DIV/0!`, never a misleading number.
+- **Cross-read rows** — sparkline + peer median + industry benchmark on every ratio, so §10.5's "read liquidity and efficiency together" and §10.4's "read ROE with debt metrics" are visual, not something the analyst has to remember.
+
+**B. Status flags & driver notes (deterministic + LLM-elevated, fact-locked).**
+- **Deterministic status logic first** — green/yellow/red is computed from **industry-appropriate thresholds** loaded from a **`SectorProfile`** (tech / bank / industrial / consumer / energy / etc. — per §10.9 + §8.5). No universal threshold anywhere in the code.
+- **Driver notes** are drafted **deterministically** from the underlying ratio change decomposition (e.g. margin change ⇒ revenue growth vs. cost growth; interest coverage change ⇒ EBIT change vs. interest change) and then **elevated by the E2 LLM (Ellery)** in the existing fact-locked pipeline — **numbers never sent, only prose rephrased**, per the E2 fact-lock (`backend/app/editorial_llm.py`).
+- **Section flags roll up** — six section badges appear on the Cover/Dashboard sheet so the reader sees the overall posture before drilling in.
+
+**C. One-page summary (per §10.9) becomes the Cover sheet.**
+- **Latest ratios** — top KPI strip (echoes §8.5 canonical layout, sector-aware).
+- **3–5 year sparklines** — one per ratio, rendered by `backend/app/ticker_charts.py` (already in place).
+- **Peer medians** — pulled from **`tblBenchmarks`** (per §7.4), median-preferred (§7.4).
+- **Biggest positive & negative changes** — top 3 improvers / top 3 deteriorators, YoY, direction-aware (§7.5).
+- **Concise conclusion** — a six-line paragraph, one line per canonical section (Profitability / Liquidity / Solvency / Efficiency / Cash flow / Valuation), Ellery-voiced via E2, strictly fact-locked.
+
+**D. Compliance layer (unchanged).**
+- Dashboards are **decision-support / research, informational only — not investment, valuation, audit, or CPA advice.**
+- All numbers **derived, deterministic, and fact-locked**, every value dated with source.
+- Provenance: `JHI-SIG: 69M2705M` on every output surface.
+
+### 10.11 Governance & change control (extends §§8.7, 9.10)
+- **Sector profiles** (thresholds + relevant KPI list per §10.9) live in the **metric registry** (`backend/app/data_registry.py`), versioned. Reviewed **at least quarterly** or when a new sector goes into production.
+- **Ratio definitions** are shared across §§1, 4, 7, 8, 10 — **one definition per metric** across dashboard, ratios sheet, peer sheet, personal-finance dashboard, and on-screen surfaces. **No drift.**
+- **P/E "N/M" rule** and **industry-threshold rule** are enforced by tests, not by convention.
+
+### 10.12 Action items (§10 addendum to §§6, 8.8, 9.11)
+1. **Implement the ratio-dashboard sheet schema** in every institutional / QoE / per-ticker workbook per §10.10-A (six sections, fixed 8-column layout, `N/M` guard, unit-consistency guard). *(Cy → tested PR, folded into the P1 QoE + institutional-workbook build.)*
+2. **Build the `SectorProfile` registry** (thresholds + relevant KPI list per §10.9) — start with **tech, banks, industrials, consumer, energy** — extend as we take on new sectors. *(Cy.)*
+3. **Wire deterministic driver-note generation** for every ratio (margin decomposition, coverage decomposition, turnover decomposition, ROE via DuPont); pipe through E2 LLM for prose elevation, keeping numeric fact-lock intact. *(Cy.)*
+4. **Cover sheet = one-page §10.9 summary** — top KPI strip + sparklines + peer medians + top movers + six-line conclusion — canonical on every workbook. *(Cy.)*
+5. Keep the **derived-only, fact-locked, research-not-advice, as-of-dated** posture on every dashboard surface. *(Ongoing.)*
+
+---
+
+*Recorded by Cy Henry, VP Software Engineering (AI). JHI-SIG: 69M2705M. This blueprint — §§1–10 — is adopted of record as the target for Aegira's financial-analysis and personal-finance deliverables. Reference write-ups from the Founder will continue to be appended as they arrive (see standing directive above). How we do anything is how we do everything. TeamWork makes the DreamWork.*
