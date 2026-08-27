@@ -182,6 +182,7 @@ def test_full_workbook_opens_with_all_sheets() -> None:
         "Technicals — Weekly",
         "Options context",
         "Fundamental Ratios",
+        "Ratio Dashboard",
         "DCF Valuation",
         "Legal & Provenance",
     ]
@@ -282,6 +283,7 @@ def test_workbook_degrades_without_bars_keeps_tables() -> None:
         "Technicals — Weekly",
         "Options context",
         "Fundamental Ratios",
+        "Ratio Dashboard",
         "DCF Valuation",
         "Legal & Provenance",
     ]

@@ -26,7 +26,7 @@ from openpyxl.drawing.image import Image as XLImage
 from openpyxl.styles import Alignment
 
 from app import edgar_services, equity_ratios, equity_technicals, excel_export as xl, fundamentals
-from app import market_services, ticker_charts
+from app import market_services, ratio_dashboard as rd, sector_profiles as sp, ticker_charts
 from app.equity_ratios import FundamentalRatios, RatioMetric
 from app.equity_technicals import Bar, OptionsContext, TechnicalsRead
 from app.equity_valuation import EquityValuation, value_equity
@@ -668,6 +668,84 @@ def _valuation_sheet(wb: Workbook, data: TickerWorkbookData) -> None:
     xl._watermark(ws)
 
 
+# ── Ratio Dashboard sheet (unified 6-section / 8-column dashboard) ───────────
+# Maps our existing `equity_ratios` label-keyed metrics into the canonical
+# ratio_ids used by `sector_profiles` + `ratio_dashboard`, so the ticker
+# workbook gets the same institutional dashboard used by the QoE workbook.
+_METRIC_ID_MAP: dict[str, str] = {
+    "Gross margin": sp.GROSS_MARGIN,
+    "Operating margin": sp.OPERATING_MARGIN,
+    "Net margin": sp.NET_MARGIN,
+    "EBITDA margin": sp.EBITDA_MARGIN,
+    "Return on equity (ROE)": sp.ROE,
+    "Return on assets (ROA)": sp.ROA,
+    "Return on invested capital (ROIC)": sp.ROCE,   # ROIC ~ ROCE proxy for dashboard purposes
+    "Debt to equity": sp.DEBT_TO_EQUITY,
+    "Debt / equity": sp.DEBT_TO_EQUITY,
+    "Interest coverage": sp.INTEREST_COVERAGE,
+    "Current ratio": sp.CURRENT_RATIO,
+    "Quick ratio": sp.QUICK_RATIO,
+    "Cash ratio": sp.CASH_RATIO,
+    "P/E": sp.PE,
+    "Price / Earnings (P/E)": sp.PE,
+    "P/B": sp.PB,
+    "Price / Book (P/B)": sp.PB,
+    "P/S": sp.PS,
+    "Price / Sales (P/S)": sp.PS,
+    "EV / EBITDA": sp.EV_EBITDA,
+    "FCF margin": sp.FCF_MARGIN,
+    "Free cash flow margin": sp.FCF_MARGIN,
+}
+
+
+def _dashboard_inputs_from_ratios(
+    ratios: FundamentalRatios,
+    *,
+    sector: str | None = None,
+) -> rd.DashboardInputs:
+    """Build DashboardInputs from a FundamentalRatios bundle (label-keyed) plus
+    the multi-year trend rows (for the arrow column)."""
+    ratio_series: dict[str, rd.RatioSeries] = {}
+    for section in ratios.sections:
+        for metric in section.metrics:
+            rid = _METRIC_ID_MAP.get(metric.label)
+            if rid is None:
+                continue
+            existing = ratio_series.setdefault(rid, rd.RatioSeries())
+            existing.latest = metric.value
+
+    trend_gross = [r.gross_margin for r in ratios.trend if r.gross_margin is not None]
+    trend_op = [r.operating_margin for r in ratios.trend if r.operating_margin is not None]
+    trend_net = [r.net_margin for r in ratios.trend if r.net_margin is not None]
+    if trend_gross:
+        ratio_series.setdefault(sp.GROSS_MARGIN, rd.RatioSeries()).history = trend_gross
+        if len(trend_gross) >= 2:
+            ratio_series[sp.GROSS_MARGIN].prior = trend_gross[-2]
+    if trend_op:
+        ratio_series.setdefault(sp.OPERATING_MARGIN, rd.RatioSeries()).history = trend_op
+        if len(trend_op) >= 2:
+            ratio_series[sp.OPERATING_MARGIN].prior = trend_op[-2]
+    if trend_net:
+        ratio_series.setdefault(sp.NET_MARGIN, rd.RatioSeries()).history = trend_net
+        if len(trend_net) >= 2:
+            ratio_series[sp.NET_MARGIN].prior = trend_net[-2]
+
+    return rd.DashboardInputs(
+        entity_name=f"{ratios.name} ({ratios.ticker})",
+        period_label=ratios.fiscal_period,
+        sector=sector or sp.Sector.DEFAULT,
+        ratios=ratio_series,
+    )
+
+
+def _dashboard_sheet(wb: Workbook, data: TickerWorkbookData) -> None:
+    """Add the unified Ratio Dashboard sheet immediately after the Ratios sheet."""
+    ws = wb.create_sheet("Ratio Dashboard")
+    inputs = _dashboard_inputs_from_ratios(data.ratios)
+    result = rd.compute_dashboard(inputs)
+    rd.render_dashboard_sheet(ws, result)
+
+
 def build_ticker_workbook(ticker: str, price: float | None = None) -> tuple[bytes, TickerWorkbookData]:
     """Assemble data and render the full institutional per-ticker workbook.
 
@@ -715,6 +793,7 @@ def render_workbook(data: TickerWorkbookData) -> bytes:
     )
     _options_sheet(wb, data.options, data.ticker)
     _ratios_sheet(wb, data.ratios)
+    _dashboard_sheet(wb, data)
     _valuation_sheet(wb, data)
     xl._legal_sheet(wb)
     for sheet in wb.worksheets:

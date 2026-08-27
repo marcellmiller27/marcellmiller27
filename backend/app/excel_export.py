@@ -23,6 +23,26 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 from app.deal_xray_models import DealInput, DealXRayReport
 from app.financial_diligence_models import DiligenceInput, DiligenceReport
+from app.qoe_bridge import (
+    AdjustmentInput,
+    BridgeInput,
+    EvidenceGrade,
+    Side,
+    build_bridge,
+)
+from app.qoe_bridge_workbook import render_ebitda_bridge_sheet
+from app.ratio_dashboard import (
+    DashboardInputs,
+    RatioSeries,
+    compute_dashboard,
+    render_dashboard_sheet,
+)
+from app.sector_profiles import (
+    CURRENT_RATIO,
+    DEBT_TO_EQUITY,
+    EBITDA_MARGIN,
+    Sector,
+)
 
 SIG = "JHI-SIG: 69M2705M"
 ENTITY = "JHI Research & Analytics Firm, Inc."  # legal entity / publisher of record
@@ -318,7 +338,89 @@ def diligence_workbook(deal: DiligenceInput, report: DiligenceReport) -> bytes:
         for i, flag in enumerate(report.red_flags):
             ws.cell(row=30 + i, column=1, value=f"• {flag}").alignment = Alignment(wrap_text=True)
 
+    _add_ebitda_bridge_sheet(wb, deal, report)
+    _add_ratio_dashboard_sheet(wb, deal, report)
     _legal_sheet(wb)
     for sheet in wb.worksheets:
         _watermark(sheet)
     return _finalize(wb)
+
+
+def _add_ebitda_bridge_sheet(wb: Workbook, deal: DiligenceInput, report: DiligenceReport) -> None:
+    """Build the P1 EBITDA bridge sheet from the diligence input.
+
+    The two structured adjustments the DiligenceInput already carries (questionable
+    add-backs at 50%, one-time items at 100%) are mapped to two bridge categories
+    from the 20-category library so the sheet always has content — additional
+    categories are populated per engagement by the analyst.
+    """
+    adjustments: list[AdjustmentInput] = []
+    if deal.one_time_items and deal.one_time_items > 0:
+        adjustments.append(AdjustmentInput(
+            category_id="one_time_legal",
+            amount=float(deal.one_time_items),
+            sign=+1,
+            side=Side.SELLER,
+            evidence_grade=EvidenceGrade.B,
+            evidence_source="One-time items reported by seller",
+            note="Verify each item is matter-closed before applying (§11.2 #5).",
+        ))
+    if deal.questionable_addbacks and deal.questionable_addbacks > 0:
+        # 50% discount, as-was in the legacy engine, mapped to personal expenses
+        # category so the evidence-grade + recurrence discipline applies.
+        adjustments.append(AdjustmentInput(
+            category_id="personal_expenses",
+            amount=float(deal.questionable_addbacks) * 0.5,
+            sign=+1,
+            side=Side.SELLER,
+            evidence_grade=EvidenceGrade.C,
+            evidence_c_override=True,
+            evidence_source="Seller-claimed add-backs discounted 50% pending documentation",
+            note="Provisional — replace with per-item evidence in engagement (§11.3-A).",
+        ))
+    bridge_input = BridgeInput(
+        business_name=deal.business_name,
+        period_label=deal.period_label,
+        reported_ebitda=float(deal.reported_ebitda),
+        adjustments=adjustments,
+    )
+    bridge = build_bridge(bridge_input)
+    ws = wb.create_sheet("EBITDA Bridge")
+    render_ebitda_bridge_sheet(ws, bridge)
+
+
+def _add_ratio_dashboard_sheet(wb: Workbook, deal: DiligenceInput, report: DiligenceReport) -> None:
+    """Attach the unified 6-section ratio dashboard using the QoE inputs.
+
+    Only the ratios we can compute deterministically from the DiligenceInput are
+    populated; the rest render as `N/M — data`, keeping the dashboard honest and
+    signaling to the analyst what to supply next."""
+    rev = float(deal.revenue) if deal.revenue else 0.0
+    reported = float(deal.reported_ebitda) if deal.reported_ebitda else 0.0
+    ebitda_margin = reported / rev if rev else None
+    nwc = float(deal.accounts_receivable) + float(deal.inventory) - float(deal.accounts_payable)
+    current_ratio = (
+        (float(deal.accounts_receivable) + float(deal.inventory)) / float(deal.accounts_payable)
+        if deal.accounts_payable else None
+    )
+    debt_to_equity = None  # not captured in DiligenceInput; force N/M-data
+
+    ratios: dict[str, RatioSeries] = {
+        EBITDA_MARGIN: RatioSeries(latest=ebitda_margin),
+    }
+    if current_ratio is not None:
+        ratios[CURRENT_RATIO] = RatioSeries(latest=current_ratio)
+    else:
+        ratios[CURRENT_RATIO] = RatioSeries(force_nm_data=True)
+    ratios[DEBT_TO_EQUITY] = RatioSeries(force_nm_data=True)
+
+    result = compute_dashboard(DashboardInputs(
+        entity_name=deal.business_name,
+        period_label=deal.period_label,
+        sector=Sector.DEFAULT,
+        ratios=ratios,
+    ))
+    ws = wb.create_sheet("Ratio Dashboard")
+    render_dashboard_sheet(ws, result)
+    ws.cell(row=1, column=1).comment = None
+    _ = nwc  # kept for future analyst reference in an engagement-scope column
