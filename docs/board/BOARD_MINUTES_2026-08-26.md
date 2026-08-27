@@ -1,6 +1,6 @@
 # Board Minutes — JHI Research & Analytics Firm, Inc.
 
-**Meeting date:** 2026-08-26 (living document — extended 2026-08-27) · **Type:** Founder directive — product build blueprint (financial ratios + PE/search-fund workbook toolkit + institutional financial dashboards + personal-finance dashboards + ratio-dashboard build guide + audit reference) · **Recorder:** Cy Henry (VP, Software Engineering — Cloud Agent)
+**Meeting date:** 2026-08-26 (living document — extended 2026-08-27) · **Type:** Founder directive — institutional product build blueprint (financial ratios + PE/search-fund workbook toolkit + institutional financial dashboards + ratio-dashboard build guide + audit reference) · **Recorder:** Cy Henry (VP, Software Engineering — Cloud Agent)
 **Product:** Aegira · **Publisher:** JHI Research & Analytics Firm, Inc.
 **Present:** Founder (Galen Marcellus Miller).
 
@@ -370,154 +370,18 @@ Dashboards **must be reviewed at least quarterly** and updated as **business con
 
 ---
 
-## 9. Personal-finance dashboard — build specification (adopted verbatim)
-
-*(Founder addendum, 2026-08-27 — Investopedia reference on how to build a personal financial dashboard. Capture every detail. Complements §8, which specified the **institutional / operating-company** dashboard; §9 specifies the **personal-finance / household** dashboard that becomes the basis of an Aegira subscriber-facing personal-finance deliverable.)*
-
-### 9.1 Key takeaways (non-negotiable framing)
-1. **Start with clear goals**, then select **only** the metrics that show progress toward them.
-2. **Consolidate** income, spending, debt, savings, and investments into **one regularly updated view.**
-3. Use **monthly budget-versus-actual** tracking and a **net-worth trend** to monitor financial progress.
-4. **Separate essential, flexible, and non-monthly spending** to make the budget more actionable.
-5. **Keep the main dashboard simple;** use supporting tabs for transaction detail and investment analysis.
-
-### 9.2 Step 1 — Define the purpose and format
-Decide what decisions the dashboard should support: **controlling monthly spending, paying down debt, building an emergency fund, tracking retirement savings, or monitoring a portfolio**. Begin with **specific goals** and choose **key performance indicators (KPIs)** that measure them; **avoid cramming every available number onto one page**. The dashboard should **evolve as needs, priorities, and financial circumstances change**.
-
-**Format options** (both are valid):
-- **A spreadsheet** — works well because it can **consolidate data from multiple sheets** and **calculate returns, gains/losses, and risk measures.**
-- **A financial portal or app** — can **aggregate accounts** and show **spending, budgets, investments, debt, and net worth in one place.**
-
-### 9.3 Step 2 — Build a simple workbook structure
-Use these tabs or sections:
-
-| Tab | What to track | Update frequency |
-|---|---|---|
-| **Dashboard** | KPI summary, charts, alerts, goals | Monthly |
-| **Transactions** | Date, account, category, amount, notes | Weekly or automatically |
-| **Budget** | Planned versus actual spending by category | Monthly |
-| **Accounts & net worth** | Cash, savings, investments, loans, credit cards, property | Monthly |
-| **Investments** | Holdings, cost basis, current value, return, allocation | Monthly or quarterly |
-| **Goals & debt** | Emergency fund, debt balances, retirement, other targets | Monthly |
-
-**For a clear budget**, track **all income sources** and **categorize expenses**. Common categories include:
-- **Fixed costs** — housing, utilities, insurance, and loan payments
-- **Discretionary spending** — dining, shopping, and travel
-- **Savings**
-
-**Regular tracking identifies where money is actually going and where spending can be reduced.**
-
-### 9.4 Step 3 — Create the monthly budget view
-- Enter **take-home income** rather than **gross pay**, then compare **planned spending with actual spending**.
-- A practical structure separates expenses into **fixed, flexible, and non-monthly** categories; this makes **annual bills and irregular costs visible rather than treating them as surprises.**
-- Include a **chart of spending by category** and a **planned-versus-actual bar chart.**
-- A **budgeting calculator** similarly uses income and expense inputs to show **category percentages, remaining funds, and whether spending is within available income.**
-
-### 9.5 Step 4 — Track net worth, cash, and debt
-Create a **monthly net-worth statement**:
-
-> **Net worth = total assets − total liabilities.**
-
-- **Assets** can include checking and savings balances, retirement accounts, brokerage holdings, real estate, and other significant property.
-- **Liabilities** include credit cards, student loans, auto loans, mortgages, and other debt.
-- Track the **monthly change in net worth** and break it into:
-  - **contributions,**
-  - **debt reduction,**
-  - **investment gains or losses, and**
-  - **major purchases.**
-- A **consolidated view** of everything you earn, spend, and own **can keep these figures current and easier to interpret.**
-
-Add:
-- **Emergency-fund progress measure** = *emergency-fund balance ÷ target emergency fund.*
-- **Per-debt row** showing **balance, interest rate, required payment, and payoff progress.**
-- **Budgeting and debt tracking support an action plan** to repay outstanding debt and improve net worth.
-
-### 9.6 Step 5 — Add an investment tracker
-**For each holding**, record: **account, ticker or fund name, units, average purchase price, current value, cost basis, gain/loss, and portfolio weight.**
-
-**At the portfolio level**, show: **total value, contributions, total return, asset allocation, and performance over time.**
-
-- Excel can calculate **percentage returns, profit and loss, and standard deviation**, which can help assess **volatility.**
-- **Keep investment performance separate from contributions.** A rising portfolio may reflect **new deposits rather than market returns**, so **showing both prevents misleading conclusions.**
-- **Use only information you understand** and **hide unnecessary columns** to keep the tracker readable.
-
-### 9.7 Step 6 — Choose a concise KPI panel (top of Dashboard tab)
-Put the following measures at the top of the Dashboard tab:
-- **Monthly income, expenses, and surplus/deficit**
-- **Savings and investment contribution rate**
-- **Budget variance by category**
-- **Cash balance and emergency-fund progress**
-- **Total debt and debt-paydown progress**
-- **Net worth and month-over-month change**
-- **Investment balance, allocation, and return**
-- **One to three goal-progress bars**, such as **debt payoff, home down payment, or retirement contribution target**
-
-**Set targets for each KPI**, such as a **desired savings amount** or **maximum discretionary-spending limit.** **Effective dashboards connect metrics to stated goals, remain adaptable as conditions change, and avoid overwhelming users with too many indicators.**
-
-### 9.8 Step 7 — Establish a monthly review routine
-**Once a month**, do all of the following:
-- **Reconcile account balances.**
-- **Categorize uncategorized transactions.**
-- **Compare actual spending with the budget.**
-- **Update investments and debt.**
-- **Write a brief explanation for major variances.**
-- **Review whether goals advanced**, then **adjust next month's spending plan** for income changes, inflation, or unexpected expenses.
-
-**A flexible budget that is reviewed and revised monthly is more useful than a static plan.**
-
-Finally, **use the dashboard to make decisions, not merely record data**:
-- If **discretionary spending exceeds plan**, **reduce a category or redirect funds.**
-- If **debt is costly**, **prioritize repayment.**
-- If **savings fall short**, **automate a contribution after essential expenses.**
-- **Consistent tracking of earnings and spending helps keep the budget on target and reveals opportunities to save or invest.**
-
-### 9.9 Mapping to Aegira (implementation contract)
-
-**A. New subscriber-facing deliverable — Aegira Personal Financial Dashboard (Excel workbook).**
-- **Six tabs, exactly as specified in §9.3:** `Dashboard`, `Transactions`, `Budget`, `Accounts_and_Net_Worth`, `Investments`, `Goals_and_Debt`.
-- **Dashboard tab** — top-row KPI panel per §9.7 (income/expense/surplus, contribution rate, budget variance, cash + emergency-fund progress, total debt + paydown, net worth + MoM Δ, investment balance/allocation/return, 1–3 goal-progress bars); mid-row spending-by-category chart + planned-vs-actual bar chart (§9.4); bottom-row net-worth trend + debt-paydown chart.
-- **Budget** — take-home-income entry, **fixed / flexible / non-monthly** split (§9.4), category-percentages + remaining-funds computation.
-- **Investments** — per-holding rows (account, ticker, units, avg price, current value, cost basis, gain/loss, weight) + portfolio-level totals; **contributions kept separate from performance** so returns are not confused with deposits.
-- **Goals & debt** — emergency-fund progress bar (balance ÷ target); per-debt row (balance, interest rate, required payment, payoff progress); goal-progress bars linked to the Dashboard.
-- **Compliance layer (unchanged):** derived-only, fact-locked, dated, `JHI-SIG: 69M2705M`, **research/decision-support — not investment, tax, or legal advice.**
-
-**B. Platform — new on-screen module: "My Aegira" (personal-finance dashboard).**
-- **Same three-row canonical layout** — top KPI strip, middle trend charts, bottom net-worth/debt panels.
-- **Manual-entry-first** (workbook import + hand-entry), with a documented adapter surface for future account aggregation (Plaid / MX / open-banking) — **no third-party account aggregation is enabled until a formal privacy/security review is completed and the Founder approves.** No PII crosses AI-agent boundaries.
-- **Sits under a new "Personal" section in the TOC**, separate from Aegira's institutional/research modules to prevent scope confusion.
-- **Tier gating (proposed, Founder to confirm):** basic net-worth + budget-vs-actual visible to free/newsletter tier; full KPI panel, per-debt tracker, investment analytics, and goal-progress reserved for Tier 1/2.
-
-**C. Positioning — how §9 differs from §8.**
-- **§8 = institutional / operating-company dashboard** — Revenue/EBITDA/Net income/OCF/Cash balance/Net debt; peer-benchmarked; part of the QoE / per-ticker / diligence workbooks.
-- **§9 = personal-finance / household dashboard** — take-home income, category spend, net worth, emergency fund, per-debt payoff, per-holding investment tracker; monthly review routine.
-- **Both share the same doctrine** — clear goals, KPI focus, targets & variance, trend context, drill-down tabs, review cadence, and the *Always-Deliver · Cadence-Aware · As-Of-Disclosed* data-foundation posture.
-
-### 9.10 Governance & change control (extends §8.7)
-The personal-finance dashboard is reviewed **monthly** (its own cadence — see §9.8). Metric definitions still live in the **canonical metric registry** (`backend/app/data_registry.py`) so terms shared with §8 (e.g. net debt, cash flow, investment return) have **one definition** across institutional and personal deliverables — no drift.
-
-### 9.11 Action items (§9 addendum to §§6, 8.8)
-1. **Build the Personal Financial Dashboard workbook** (six tabs per §9.3, KPI panel per §9.7, budget/net-worth/investment logic per §§9.4–9.6). *(Cy → tested PR, sequenced after §8 Dashboard sheet ships.)*
-2. **Scaffold the "My Aegira" on-screen module** (manual-entry first, three-row canonical layout, no third-party aggregation until Founder-approved). *(Cy → tested PR.)*
-3. **Extend the metric registry** with the personal-finance line items (income, expense categories, emergency-fund progress, per-debt schedule, per-holding returns). *(Cy.)*
-4. **Founder confirm** — tier-gating proposal in §9.9-B and any privacy/security review requirements before enabling third-party account aggregation.
-5. Keep the **derived-only, fact-locked, research-not-advice, as-of-dated** posture on every personal-finance surface.
-
----
-
----
-
-## 10. Financial-ratio dashboard — build guide from company financial statements (adopted verbatim)
+## 9. Financial-ratio dashboard — build guide from company financial statements (adopted verbatim)
 
 *(Founder addendum, 2026-08-27 — Investopedia reference: "How do I build a financial ratio dashboard from a company's financial statements?" Capture every detail. This is the **operational, step-by-step "how to build" spec** for the ratio dashboard whose taxonomy is in §1, whose Excel architecture is in §4, and whose peer-comparison methodology is in §7 — the section that binds them into a working analyst deliverable.)*
 
-### 10.1 Key takeaways (non-negotiable framing)
+### 9.1 Key takeaways (non-negotiable framing)
 1. **Build the dashboard from consistently defined income-statement, balance-sheet, and cash-flow inputs.**
 2. **Group ratios into profitability, liquidity, solvency, efficiency, cash flow, and valuation sections.**
 3. **Use several ratios together** because each reveals only one part of a company's financial condition.
 4. **Compare each result with prior periods and direct industry peers**, not a universal threshold.
 5. **Add trend and alert columns** so the dashboard **explains changes** rather than merely displaying formulas.
 
-### 10.2 Step 1 — Create a clean financial-statement input sheet
+### 9.2 Step 1 — Create a clean financial-statement input sheet
 Set up **one source-data tab** with columns for the **latest fiscal year, prior years, and optionally trailing 12 months**. Pull **every** line item required by the ratios:
 - **Income statement:** revenue, gross profit, EBIT, net income, interest expense, EPS
 - **Balance sheet:** current assets, current liabilities, total assets, total liabilities, total equity, debt
@@ -532,7 +396,7 @@ Ratio analysis **combines line items from the income statement, balance sheet, a
 - **Keep units consistent** — do not divide revenue reported in millions by debt reported in thousands.
 - **Use the same reporting periods** across all calculations.
 
-### 10.3 Step 2 — Use a dashboard layout with trend and comparison columns
+### 9.3 Step 2 — Use a dashboard layout with trend and comparison columns
 Create **one row per ratio** and the following **columns**:
 1. **Latest period**
 2. **Prior period**
@@ -561,7 +425,7 @@ This structure follows the common approach:
 - **Cash-flow measures** → cash-generation capacity
 - **Comprehensive return measures** (ROA, ROE) → combined view
 
-### 10.4 Step 3 — Add profitability and return ratios
+### 9.4 Step 3 — Add profitability and return ratios
 - **ROA** measures the profit earned relative to the company's **asset base**.
 - **ROE** measures how effectively management generates profit from **shareholders' capital**.
 - **ROCE** uses **EBIT relative to capital employed** and is **best considered alongside ROA, ROE, and other return measures — not in isolation.**
@@ -569,9 +433,9 @@ This structure follows the common approach:
 
 **Interpretation caveats:**
 - Rising margins and returns **can** reflect stronger operations, pricing, or capital use.
-- A **high ROE** can also be **influenced by a smaller equity base** — so **read it with debt metrics** (§10.6).
+- A **high ROE** can also be **influenced by a smaller equity base** — so **read it with debt metrics** (§9.6).
 
-### 10.5 Step 4 — Add liquidity and operating-efficiency ratios
+### 9.5 Step 4 — Add liquidity and operating-efficiency ratios
 - **Working-capital ratio** = **current assets ÷ current liabilities** — measures capacity to meet current obligations.
 - Common balance-sheet-oriented metrics: **asset turnover, quick ratio, receivables turnover, days sales outstanding.**
 
@@ -579,7 +443,7 @@ This structure follows the common approach:
 - A **stable current ratio** accompanied by **worsening receivables turnover** may mean the reported current assets are **becoming less liquid** (receivables aging up).
 - Conversely, **better turnover** can support **stronger operating cash flow** — assuming **sales quality remains sound.**
 
-### 10.6 Step 5 — Add solvency and debt-service ratios
+### 9.6 Step 5 — Add solvency and debt-service ratios
 - **Debt-to-equity** compares **liabilities with shareholder equity**; a **high** result can indicate **greater investment risk** because the company has more obligations to support.
 - **Interest coverage** tests whether **EBIT is sufficient to cover interest expense**; a **higher** figure is generally more favorable. **A ratio below 2 can signal difficulty servicing long-term debt.**
 
@@ -587,7 +451,7 @@ This structure follows the common approach:
 - Add **conditional formatting** to flag **rising leverage, falling interest coverage, or a combination of both.**
 - **Do not** label a company **healthy or distressed from debt-to-equity alone** — **capital structures differ materially by sector.**
 
-### 10.7 Step 6 — Include cash-flow capacity
+### 9.7 Step 6 — Include cash-flow capacity
 - **CF/CapEx** = **CFO ÷ CapEx** (both from the cash-flow statement).
 - A **higher ratio** generally indicates **greater capacity to fund capital investments internally.**
 - **Negative operating cash flow** means **CapEx is being financed from external sources.**
@@ -597,7 +461,7 @@ This structure follows the common approach:
 - A company may report **attractive profitability ratios** but **still lack sufficient operating cash** to sustain **expansion, debt service, or investment.**
 - Conversely, a **temporary drop** in CF/CapEx **may be reasonable** if management is investing in **productive long-term assets.**
 
-### 10.8 Step 7 — Add valuation ratios (public companies)
+### 9.8 Step 7 — Add valuation ratios (public companies)
 - **P/E** — what investors pay for each dollar of earnings.
 - **P/B** — share price vs. book value.
 - **P/S** — price vs. sales.
@@ -607,7 +471,7 @@ This structure follows the common approach:
 - **Do not calculate P/E when EPS is negative or economically insignificant.**
 - **Place valuation ratios next to revenue growth, margins, ROE, interest coverage, and CFO-to-CapEx** so the dashboard can distinguish a **potentially attractive discount from weak fundamentals.**
 
-### 10.9 Step 8 — Turn the dashboard into a decision tool
+### 9.9 Step 8 — Turn the dashboard into a decision tool
 - **For each ratio, include a short driver note** — such as:
   - *"margin increased because revenue grew faster than operating costs"*
   - *"interest coverage fell because borrowing rose and EBIT declined"*
@@ -621,22 +485,22 @@ This structure follows the common approach:
 
 **Multiple key ratios give a fuller view than any single metric** because each highlights a different aspect of financial health.
 
-### 10.10 Mapping to Aegira (implementation contract)
+### 9.10 Mapping to Aegira (implementation contract)
 
 **A. Ratio-dashboard sheet — schema (applies to every institutional / QoE / per-ticker workbook).**
-- **One row per ratio.** Fixed column set per §10.3: `Metric | Latest | Prior | 3–5y Trend (sparkline) | Peer Median | Industry Benchmark | Status | Driver Note`.
-- **Six sections, in this order** (per §10.3): **Profitability → Liquidity → Solvency → Efficiency → Cash Flow → Valuation.** No re-ordering — the order is the reading order for the analyst.
-- **Averages enforced** — the Ratios engine (`backend/app/equity_ratios.py`) computes average balances for every asset/receivable/inventory/working-capital ratio automatically (per §10.2, §1.7).
+- **One row per ratio.** Fixed column set per §9.3: `Metric | Latest | Prior | 3–5y Trend (sparkline) | Peer Median | Industry Benchmark | Status | Driver Note`.
+- **Six sections, in this order** (per §9.3): **Profitability → Liquidity → Solvency → Efficiency → Cash Flow → Valuation.** No re-ordering — the order is the reading order for the analyst.
+- **Averages enforced** — the Ratios engine (`backend/app/equity_ratios.py`) computes average balances for every asset/receivable/inventory/working-capital ratio automatically (per §9.2, §1.7).
 - **Unit-consistency guard** — Inputs sheet declares `Currency` + `Unit Scale`; a top-of-sheet audit check (per §7.9) fails loudly if any input row's unit differs.
 - **Valuation section guard** — **P/E, P/B, P/S are only rendered when EPS/BV/S are positive & economically meaningful**; otherwise the cell shows `"N/M"` (not meaningful) — never `#DIV/0!`, never a misleading number.
-- **Cross-read rows** — sparkline + peer median + industry benchmark on every ratio, so §10.5's "read liquidity and efficiency together" and §10.4's "read ROE with debt metrics" are visual, not something the analyst has to remember.
+- **Cross-read rows** — sparkline + peer median + industry benchmark on every ratio, so §9.5's "read liquidity and efficiency together" and §9.4's "read ROE with debt metrics" are visual, not something the analyst has to remember.
 
 **B. Status flags & driver notes (deterministic + LLM-elevated, fact-locked).**
-- **Deterministic status logic first** — green/yellow/red is computed from **industry-appropriate thresholds** loaded from a **`SectorProfile`** (tech / bank / industrial / consumer / energy / etc. — per §10.9 + §8.5). No universal threshold anywhere in the code.
+- **Deterministic status logic first** — green/yellow/red is computed from **industry-appropriate thresholds** loaded from a **`SectorProfile`** (tech / bank / industrial / consumer / energy / etc. — per §9.9 + §8.5). No universal threshold anywhere in the code.
 - **Driver notes** are drafted **deterministically** from the underlying ratio change decomposition (e.g. margin change ⇒ revenue growth vs. cost growth; interest coverage change ⇒ EBIT change vs. interest change) and then **elevated by the E2 LLM (Ellery)** in the existing fact-locked pipeline — **numbers never sent, only prose rephrased**, per the E2 fact-lock (`backend/app/editorial_llm.py`).
 - **Section flags roll up** — six section badges appear on the Cover/Dashboard sheet so the reader sees the overall posture before drilling in.
 
-**C. One-page summary (per §10.9) becomes the Cover sheet.**
+**C. One-page summary (per §9.9) becomes the Cover sheet.**
 - **Latest ratios** — top KPI strip (echoes §8.5 canonical layout, sector-aware).
 - **3–5 year sparklines** — one per ratio, rendered by `backend/app/ticker_charts.py` (already in place).
 - **Peer medians** — pulled from **`tblBenchmarks`** (per §7.4), median-preferred (§7.4).
@@ -648,27 +512,27 @@ This structure follows the common approach:
 - All numbers **derived, deterministic, and fact-locked**, every value dated with source.
 - Provenance: `JHI-SIG: 69M2705M` on every output surface.
 
-### 10.11 Governance & change control (extends §§8.7, 9.10)
-- **Sector profiles** (thresholds + relevant KPI list per §10.9) live in the **metric registry** (`backend/app/data_registry.py`), versioned. Reviewed **at least quarterly** or when a new sector goes into production.
-- **Ratio definitions** are shared across §§1, 4, 7, 8, 10 — **one definition per metric** across dashboard, ratios sheet, peer sheet, personal-finance dashboard, and on-screen surfaces. **No drift.**
+### 9.11 Governance & change control (extends §8.7)
+- **Sector profiles** (thresholds + relevant KPI list per §9.9) live in the **metric registry** (`backend/app/data_registry.py`), versioned. Reviewed **at least quarterly** or when a new sector goes into production.
+- **Ratio definitions** are shared across §§1, 4, 7, 8, 9 — **one definition per metric** across dashboard, ratios sheet, peer sheet, and on-screen surfaces. **No drift.**
 - **P/E "N/M" rule** and **industry-threshold rule** are enforced by tests, not by convention.
 
-### 10.12 Action items (§10 addendum to §§6, 8.8, 9.11)
-1. **Implement the ratio-dashboard sheet schema** in every institutional / QoE / per-ticker workbook per §10.10-A (six sections, fixed 8-column layout, `N/M` guard, unit-consistency guard). *(Cy → tested PR, folded into the P1 QoE + institutional-workbook build.)*
-2. **Build the `SectorProfile` registry** (thresholds + relevant KPI list per §10.9) — start with **tech, banks, industrials, consumer, energy** — extend as we take on new sectors. *(Cy.)*
+### 9.12 Action items (§9 addendum to §§6, 8.8)
+1. **Implement the ratio-dashboard sheet schema** in every institutional / QoE / per-ticker workbook per §9.10-A (six sections, fixed 8-column layout, `N/M` guard, unit-consistency guard). *(Cy → tested PR, folded into the P1 QoE + institutional-workbook build.)*
+2. **Build the `SectorProfile` registry** (thresholds + relevant KPI list per §9.9) — start with **tech, banks, industrials, consumer, energy** — extend as we take on new sectors. *(Cy.)*
 3. **Wire deterministic driver-note generation** for every ratio (margin decomposition, coverage decomposition, turnover decomposition, ROE via DuPont); pipe through E2 LLM for prose elevation, keeping numeric fact-lock intact. *(Cy.)*
-4. **Cover sheet = one-page §10.9 summary** — top KPI strip + sparklines + peer medians + top movers + six-line conclusion — canonical on every workbook. *(Cy.)*
+4. **Cover sheet = one-page §9.9 summary** — top KPI strip + sparklines + peer medians + top movers + six-line conclusion — canonical on every workbook. *(Cy.)*
 5. Keep the **derived-only, fact-locked, research-not-advice, as-of-dated** posture on every dashboard surface. *(Ongoing.)*
 
 ---
 
 ---
 
-## 11. Audit — reference framework and Aegira scope boundary (adopted verbatim)
+## 10. Audit — reference framework and Aegira scope boundary (adopted verbatim)
 
-*(Founder addendum, 2026-08-27 — Investopedia reference on financial-statement audits. Capture every detail. **Critical scope note:** Aegira does **not** perform statutory audits and does **not** issue audit opinions — that work is reserved to a licensed **partner CPA** who engages the target (established in §5). This section is adopted because the **audit doctrine — risk-based procedures, evidence triangulation, working-paper discipline, professional skepticism, audit trail — is the standard our QoE bridge, document-review pipeline, and diligence workbooks are built to.** The Aegira mapping in §11.7 formalizes that boundary.)*
+*(Founder addendum, 2026-08-27 — Investopedia reference on financial-statement audits. Capture every detail. **Critical scope note:** Aegira does **not** perform statutory audits and does **not** issue audit opinions — that work is reserved to a licensed **partner CPA** who engages the target (established in §5). This section is adopted because the **audit doctrine — risk-based procedures, evidence triangulation, working-paper discipline, professional skepticism, audit trail — is the standard our QoE bridge, document-review pipeline, and diligence workbooks are built to.** The Aegira mapping in §10.8 formalizes that boundary.)*
 
-### 11.1 Key takeaways (non-negotiable framing)
+### 10.1 Key takeaways (non-negotiable framing)
 1. A **financial-statement audit** is an **independent examination** of records, controls, and evidence supporting the statements.
 2. The **core phases** are **planning, execution, and reporting.**
 3. Auditors **assess material-misstatement risk** and **establish materiality** before testing.
@@ -676,7 +540,7 @@ This structure follows the common approach:
 5. **Sufficient, reliable, and relevant evidence** — especially **external or original evidence** — is central to a credible opinion.
 6. **Strong documentation, professional skepticism, independence, and clear communication** make the audit more dependable.
 
-### 11.2 Step 1 — Plan the engagement
+### 10.2 Step 1 — Plan the engagement
 Start by defining the audit's **scope, objectives, reporting framework** (such as **GAAP** or **IFRS**), **timetable, and methodology**. The auditor develops an **understanding of the business**, its **operations, financial-reporting process, internal controls, and known fraud or error risks**; then **assesses the risk of material misstatement** and **sets materiality thresholds** to focus work on matters capable of affecting users' decisions.
 
 > As **Tobi Opeyemi Amure** explains in *Audit: Meaning in Finance and Accounting and 3 Main Types*, **"The audit begins with comprehensive planning, where auditors define the scope, objectives, and methodology of the engagement."**
@@ -687,7 +551,7 @@ Start by defining the audit's **scope, objectives, reporting framework** (such a
 - **Design procedures responsive to the assessed risks** rather than using a **one-size-fits-all checklist.**
 - **Establish clear communication** with **management and those charged with governance** about **timing, information requests, and significant audit matters.**
 
-### 11.3 Step 2 — Understand and test internal controls
+### 10.3 Step 2 — Understand and test internal controls
 **Evaluate the processes and controls that produce the financial statements.** Controls commonly include:
 - **authorization,**
 - **documentation,**
@@ -700,7 +564,9 @@ Auditors test relevant controls to determine whether they are **designed appropr
 
 **Control-exception handling.** Where control exceptions are identified, **evaluate their severity.** A **material weakness** is a **major internal-control flaw that could lead to a material financial-statement error**; auditors **report such weaknesses to the audit committee**, which oversees corrective action.
 
-### 11.4 Step 3 — Perform substantive procedures and gather audit evidence
+*(Aegira mapping note: Aegira is not an audit firm and its client is typically a buyer, not the target's audit committee. We surface the same content in a plain-English **"Findings & Recommended Actions"** section of the deliverable — same substance, buyer-appropriate framing. See §10.8.)*
+
+### 10.4 Step 3 — Perform substantive procedures and gather audit evidence
 Obtain evidence **directly from records, third parties, and observation**. Typical procedures include:
 - **inspecting** invoices, contracts, journals, bank statements, and general-ledger entries;
 - **tracing** transactions through the **audit trail**;
@@ -713,7 +579,7 @@ Obtain evidence **directly from records, third parties, and observation**. Typic
 
 **Sampling.** **Use sampling thoughtfully** when testing large populations. **Attribute sampling** can efficiently test whether controls were followed — for example, **whether purchase orders received required approval** — but **the sample must be large enough for the intended assurance level**, and auditors must **consider sampling error when extrapolating results.**
 
-### 11.5 Step 4 — Investigate exceptions, estimates, and disclosures
+### 10.5 Step 4 — Investigate exceptions, estimates, and disclosures
 Follow up on:
 - **unusual fluctuations,**
 - **discrepancies,**
@@ -729,7 +595,7 @@ This may involve **management and staff interviews, expanded testing, review of 
 
 This work supports a conclusion about whether **legal exposures are appropriately reflected or disclosed.**
 
-### 11.6 Step 5 — Document, communicate, and report
+### 10.6 Step 5 — Document, communicate, and report
 **Working papers.** Keep **complete working papers** that show:
 - the **work performed,**
 - **evidence obtained,**
@@ -745,7 +611,7 @@ This work supports a conclusion about whether **legal exposures are appropriatel
 
 **Boundary of the opinion.** An audit opinion **addresses fair presentation and material misstatement — not whether the company is economically healthy or guaranteed to remain successful.**
 
-### 11.7 Practical audit-quality checklist (adopted verbatim)
+### 10.7 Practical audit-quality checklist (adopted verbatim)
 - **Be independent and skeptical:** Do not accept explanations without **corroborating evidence**, particularly in high-risk areas.
 - **Use a risk-based approach:** Direct more work to **accounts, transactions, estimates, and disclosures most likely to contain material misstatements.**
 - **Triangulate evidence:** Reconcile management explanations to **original documents, external confirmations, audit trails, and physical observation** where possible.
@@ -753,7 +619,7 @@ This work supports a conclusion about whether **legal exposures are appropriatel
 - **Escalate and remediate findings:** Report **material weaknesses** promptly and ensure **corrective actions are tracked.**
 - **Preserve a clear audit trail:** Documentation should allow **another qualified reviewer to understand the procedures, evidence, and basis for the opinion.**
 
-### 11.8 Mapping to Aegira (scope boundary + doctrine adoption)
+### 10.8 Mapping to Aegira (scope boundary + doctrine adoption)
 
 **A. Scope boundary (non-negotiable, restates §5).**
 - Aegira **does not perform statutory audits.**
@@ -765,35 +631,35 @@ This work supports a conclusion about whether **legal exposures are appropriatel
 
 **B. Doctrine we DO adopt (audit-grade rigor inside our own deliverables).**
 
-**Planning discipline (§11.2 → QoE & document-review kickoff).**
+**Planning discipline (§10.2 → QoE & document-review kickoff).**
 - Every Financial Diligence / QoE engagement starts with an explicit **Scope tab**: **objective, reporting framework (GAAP / IFRS / management accounts), period covered, methodology, timetable, deliverables.**
 - **Business understanding tab** — industry, revenue model, customer/vendor concentration, key contracts, known risks — populated before any testing.
-- **Risk register** — higher-risk areas flagged (**revenue, receivables, inventory, estimates, related parties, disclosures** — per §11.2). Procedures are **responsive to those risks**, not one-size-fits-all.
+- **Risk register** — higher-risk areas flagged (**revenue, receivables, inventory, estimates, related parties, disclosures** — per §10.2). Procedures are **responsive to those risks**, not one-size-fits-all.
 - **Materiality thresholds** are **set and recorded** (analog to audit materiality — for our QoE, expressed as a **% of EBITDA** and a **$ floor**; any adjustment above threshold surfaces on the summary).
 
-**Controls awareness (§11.3 → private-target QoE + document review).**
+**Controls awareness (§10.3 → private-target QoE + document review).**
 - New **Controls Snapshot tab** — records the target's control environment across the six control categories (**authorization / documentation / reconciliations / security / physical / segregation of duties**), with a **strength rating** and **`Material Weakness?` flag** per category.
-- Flags feed the QoE narrative and elevate the sampling intensity in §11.4.
+- Flags feed the QoE narrative and elevate the sampling intensity in §10.4.
 
-**Evidence-gathering doctrine (§11.4 → document-review pipeline).**
-- The document-review engine already ingests bank statements, invoices, contracts, ledgers; §11 formalizes an **Evidence Quality Grade** on every artifact: **A (external/independent), B (original internal), C (management-prepared / representation only)** — surfaced in the review record and rolled up on the summary.
-- **Sampling procedure recorded** — for attribute tests (e.g. approvals on POs), the workbook records **population size, sample size, method (random / haphazard / judgmental), exceptions, projected error, assurance level, sampling-error caveat** — per §11.4.
-- **Analytical procedures** — expected-vs-actual by month/segment already generated by the QoE engine; §11 formalizes an **"unexpected fluctuation" callout list** with explanations required before sign-off.
+**Evidence-gathering doctrine (§10.4 → document-review pipeline).**
+- The document-review engine already ingests bank statements, invoices, contracts, ledgers; §10 formalizes an **Evidence Quality Grade** on every artifact: **A (external/independent), B (original internal), C (management-prepared / representation only)** — surfaced in the review record and rolled up on the summary.
+- **Sampling procedure recorded** — for attribute tests (e.g. approvals on POs), the workbook records **population size, sample size, method (random / haphazard / judgmental), exceptions, projected error, assurance level, sampling-error caveat** — per §10.4.
+- **Analytical procedures** — expected-vs-actual by month/segment already generated by the QoE engine; §10 formalizes an **"unexpected fluctuation" callout list** with explanations required before sign-off.
 
-**Exceptions, estimates, disclosures (§11.5 → QoE bridge + attorney-letter path).**
-- Exceptions log (per §7.9 audit controls) is now the **§11 formal exceptions workbook** — every unusual fluctuation, discrepancy, missing support, or control deviation gets a **status (Open / Explained / Adjusted / Escalated)**, an **owner**, and a **resolution note**.
+**Exceptions, estimates, disclosures (§10.5 → QoE bridge + attorney-letter path).**
+- Exceptions log (per §7.9 audit controls) is now the **§10 formal exceptions workbook** — every unusual fluctuation, discrepancy, missing support, or control deviation gets a **status (Open / Explained / Adjusted / Escalated)**, an **owner**, and a **resolution note**.
 - **Estimates & judgments tab** — records management estimates (allowances, reserves, useful lives, purchase-price allocations) and Aegira's independent read.
-- **Legal & contingencies tab** — captures management's litigation schedule and a placeholder for a **partner-CPA-obtained attorney's letter** per §11.5 (Aegira **does not** obtain attorney letters directly — that stays with the CPA who engages the target).
+- **Legal & contingencies callout** — captures management's litigation schedule and a **single-cell callout on the Legal & Contingencies section**: *"For material contingencies, an attorney letter is required — engagement responsibility rests with partner CPA."* Aegira **does not** obtain attorney letters directly — that stays with the CPA who engages the target (per §10.5).
 
-**Working-paper discipline (§11.6 → every Aegira workbook run).**
+**Working-paper discipline (§10.6 → every Aegira workbook run).**
 - **Working-paper artifact** auto-generated on every workbook / document-review run: **procedure performed, evidence reviewed (with hash + timestamp), judgment made, exception found, resolution.** Analog to auditor working papers — **another qualified reviewer must be able to retrace our work.**
 - **Reviewable by design** — same fact-lock rules, same dated citations, same `JHI-SIG: 69M2705M` provenance.
 
-**"Opinion" language ban (§11.6 → house style).**
+**"Opinion" language ban (§10.6 → house style).**
 - No Aegira deliverable ever uses the words **"audited," "opinion," "unqualified," "qualified," "adverse," "disclaimer,"** or **"fair presentation"** to describe its own output. Reserved wording exists **only** when quoting the partner CPA's actual opinion.
 - Enforced by a lint check on newsletter / workbook / report generation (`backend/app/editorial_llm.py` fact-lock + a docs lint job).
 
-**C. The §11.7 audit-quality checklist becomes our internal ops rubric.**
+**C. The §10.7 audit-quality checklist becomes our internal ops rubric.**
 - **Independent & skeptical** — no management assertion accepted without corroborating evidence in the document-review pipeline.
 - **Risk-based** — higher-risk accounts get deeper sampling; standardized in the QoE engine.
 - **Triangulate** — reconcile to originals, external confirmations, audit trail, physical observation where possible; graded via the Evidence Quality Grade above.
@@ -801,13 +667,13 @@ This work supports a conclusion about whether **legal exposures are appropriatel
 - **Escalate & remediate** — material findings surface on the Cover sheet and in the CTA panel of the client deliverable.
 - **Clear audit trail** — enforced by the working-paper artifact above.
 
-### 11.9 Governance & change control (extends §§8.7, 9.10, 10.11)
+### 10.9 Governance & change control (extends §§8.7, 9.11)
 - **Materiality thresholds** (default and any per-engagement override), **sampling standards**, and the **Evidence Quality Grade rubric** live in the metric registry (`backend/app/data_registry.py`), versioned.
 - **Reviewed quarterly** alongside the ratio and sector-profile registries.
 - **Independence check** — every engagement records that Aegira has no ownership, advisory, or conflicting economic interest in the target; the check is a required cell on the Scope tab.
 
-### 11.10 Action items (§11 addendum to §§6, 8.8, 9.11, 10.12)
-1. **Add Scope / Business-Understanding / Risk-Register / Materiality / Controls-Snapshot / Estimates / Legal-Contingencies / Exceptions tabs** to the QoE workbook per §11.8-B. *(Cy → tested PR, folded into the P1 QoE build.)*
+### 10.10 Action items (§10 addendum to §§6, 8.8, 9.12)
+1. **Add Scope / Business-Understanding / Risk-Register / Materiality / Controls-Snapshot / Estimates / Legal-Contingencies / Exceptions tabs** to the QoE workbook per §10.8-B. *(Cy → tested PR, folded into the P1 QoE build.)*
 2. **Ship the Evidence Quality Grade (A/B/C)** on every document-review artifact and roll it up on the summary. *(Cy → tested PR.)*
 3. **Auto-generate the working-paper artifact** on every workbook / review run (procedure · evidence hash · judgment · exception · resolution) — one file per run, provenance-signed. *(Cy → tested PR.)*
 4. **Lint / fact-lock the reserved-opinion vocabulary** — no "audit," "opinion," "unqualified," "fair presentation," etc. in Aegira-authored outputs. *(Cy → tested PR.)*
@@ -817,4 +683,6 @@ This work supports a conclusion about whether **legal exposures are appropriatel
 
 ---
 
-*Recorded by Cy Henry, VP Software Engineering (AI). JHI-SIG: 69M2705M. This blueprint — §§1–11 — is adopted of record as the target for Aegira's financial-analysis and personal-finance deliverables. Reference write-ups from the Founder will continue to be appended as they arrive (see standing directive above). How we do anything is how we do everything. TeamWork makes the DreamWork.*
+*Recorded by Cy Henry, VP Software Engineering (AI). JHI-SIG: 69M2705M. This blueprint — §§1–10 — is adopted of record as the target for Aegira's institutional financial-analysis deliverables (Tier 1 & 2 PE / search-fund / operator-buyer audience). Reference write-ups from the Founder will continue to be appended as they arrive (see standing directive above). How we do anything is how we do everything. TeamWork makes the DreamWork.*
+
+> **§9 (personal-finance dashboard) was removed per Founder direction on 2026-08-27:** the original Investopedia write-up was misread as a personal-finance guide when the Founder's intent was business financial dashboards (already covered in §8). Aegira is an **institutional / operating-company research and diligence product** — personal-finance dashboards are out of scope.
