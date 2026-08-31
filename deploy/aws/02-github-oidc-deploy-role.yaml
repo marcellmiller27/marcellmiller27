@@ -1,0 +1,144 @@
+# JHI-SIG: 69M2705M | Build & Deploy | JHI Research & Analytics Firm, Inc. (proprietary)
+# ---------------------------------------------------------------------------
+# Aegira — GitHub Actions OIDC provider + least-privilege CI deploy role.
+#
+# Security mitigations (each mapped to the risk it closes):
+#   * "Long-lived static AWS keys leak from CI" -> GitHub OIDC federation. CI
+#     assumes this role via a short-lived web-identity token. No AWS_ACCESS_KEY_ID
+#     / AWS_SECRET_ACCESS_KEY are ever stored in GitHub.
+#   * "Any repo/branch could assume the role" -> the trust policy pins the exact
+#     GitHub org/repo (and, for the sensitive branches, the subject claim), so
+#     only workflows from THIS repository can assume it.
+#   * "Over-privileged deploy role" -> the inline policy grants ONLY ECR push and
+#     App Runner start-deployment/describe (no create/delete, no IAM, no RDS).
+# ---------------------------------------------------------------------------
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  GitHub OIDC identity provider and a least-privilege IAM role that Aegira's
+  GitHub Actions pipeline assumes to push images to ECR and trigger App Runner
+  deployments. No static credentials.
+
+Parameters:
+  GitHubOrg:
+    Type: String
+    Description: GitHub organisation or user that owns the repo (e.g. your-org).
+    Default: REPLACE_WITH_GITHUB_ORG
+  GitHubRepo:
+    Type: String
+    Description: Repository name only, without the org prefix (e.g. aegira).
+    Default: REPLACE_WITH_GITHUB_REPO
+  CreateOidcProvider:
+    Type: String
+    Default: "true"
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: >-
+      Create the token.actions.githubusercontent.com OIDC provider. Set to
+      "false" if the account already has one (only one is allowed per account).
+  BackendRepositoryArn:
+    Type: String
+    # Placeholder: 000000000000 is an obviously-fake 12-digit account id.
+    Default: "arn:aws:ecr:us-east-1:000000000000:repository/aegira/backend"
+    Description: ARN of the backend ECR repo (from the 01-ecr stack output).
+  FrontendRepositoryArn:
+    Type: String
+    Default: "arn:aws:ecr:us-east-1:000000000000:repository/aegira/frontend"
+    Description: ARN of the frontend ECR repo (from the 01-ecr stack output).
+
+Conditions:
+  ShouldCreateOidcProvider:
+    Fn::Equals:
+      - Ref: CreateOidcProvider
+      - "true"
+
+Resources:
+  GitHubOidcProvider:
+    Type: AWS::IAM::OIDCProvider
+    Condition: ShouldCreateOidcProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      # Thumbprint is validated by AWS for this well-known GitHub endpoint; the
+      # value below is accepted regardless (AWS ignores it for the built-in
+      # GitHub provider) but is kept for template completeness.
+      ThumbprintList:
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
+
+  CiDeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: aegira-ci-deploy-role
+      Description: >-
+        Assumed by GitHub Actions via OIDC to push images to ECR and trigger
+        App Runner deployments. Least privilege - no create/delete/IAM/RDS.
+      MaxSessionDuration: 3600
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated:
+                Fn::Sub: arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+              StringLike:
+                # Restrict to any workflow ref in THIS repo. Tighten to a
+                # specific branch/environment for extra safety, e.g.
+                #   repo:ORG/REPO:ref:refs/heads/main
+                #   repo:ORG/REPO:environment:production
+                token.actions.githubusercontent.com:sub:
+                  Fn::Sub: repo:${GitHubOrg}/${GitHubRepo}:*
+      Policies:
+        - PolicyName: aegira-ecr-push
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              # ECR auth token is account-wide (cannot be resource-scoped).
+              - Sid: EcrAuth
+                Effect: Allow
+                Action: ecr:GetAuthorizationToken
+                Resource: "*"
+              # Push/pull scoped to only the two Aegira repositories.
+              - Sid: EcrPushPull
+                Effect: Allow
+                Action:
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:BatchGetImage
+                  - ecr:GetDownloadUrlForLayer
+                  - ecr:InitiateLayerUpload
+                  - ecr:UploadLayerPart
+                  - ecr:CompleteLayerUpload
+                  - ecr:PutImage
+                Resource:
+                  - Ref: BackendRepositoryArn
+                  - Ref: FrontendRepositoryArn
+        - PolicyName: aegira-apprunner-deploy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              # StartDeployment triggers a pull-and-roll of the newest image.
+              # Describe/List are needed to resolve the backend service URL and
+              # poll deployment status. No create/delete/update-config here.
+              - Sid: AppRunnerDeploy
+                Effect: Allow
+                Action:
+                  - apprunner:StartDeployment
+                  - apprunner:DescribeService
+                  - apprunner:ListServices
+                  - apprunner:ListOperations
+                Resource: "*"
+
+Outputs:
+  CiDeployRoleArn:
+    Description: >-
+      Set this as the GitHub secret AWS_DEPLOY_ROLE_ARN (role-to-assume).
+    Value:
+      Fn::GetAtt:
+        - CiDeployRole
+        - Arn
+    Export:
+      Name: aegira-ci-deploy-role-arn

@@ -1,0 +1,314 @@
+# JHI-SIG: 69M2705M | Build & Deploy | JHI Research & Analytics Firm, Inc. (proprietary)
+# ---------------------------------------------------------------------------
+# Aegira — AWS App Runner services (backend + frontend), always-on.
+#
+# Wiring notes:
+#   * Backend runs the FastAPI image on port 8000, health check GET /health,
+#     reaches RDS through the VPC connector (private subnets + connector SG),
+#     and reads runtime secrets from Secrets Manager (never baked into the image).
+#   * Frontend runs the Next.js image on port 3000, health check GET /. The
+#     same-origin /api/v1 proxy target is BAKED AT BUILD TIME (API_PROXY_TARGET
+#     build arg = the backend service URL) — see the construct doc + deploy.yml.
+#     So the frontend needs no DB/secret wiring and uses DEFAULT (public) egress
+#     to reach the backend's public App Runner URL. Because the browser only ever
+#     talks to the frontend origin, backend CORS (localhost-only) is a non-issue.
+#   * AutoDeployments = true: pushing a new image to the referenced tag rolls the
+#     service automatically (the CI pipeline also calls StartDeployment).
+#
+# Deploy PER ENVIRONMENT after 01-ecr, 03-secrets, 04-network, 05-rds.
+# ---------------------------------------------------------------------------
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  Aegira App Runner backend + frontend services with a VPC connector to RDS,
+  Secrets Manager runtime secrets, health checks, and auto-deploy on new image.
+
+Parameters:
+  EnvironmentName:
+    Type: String
+    Default: staging
+    AllowedValues:
+      - staging
+      - production
+  BackendImageUri:
+    Type: String
+    Description: >-
+      Full backend image URI incl. tag, e.g.
+      ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/aegira/backend:staging
+      (000000000000 below is an obviously-fake placeholder account id).
+    Default: "000000000000.dkr.ecr.us-east-1.amazonaws.com/aegira/backend:staging"
+  FrontendImageUri:
+    Type: String
+    Description: >-
+      Full frontend image URI incl. tag, e.g.
+      ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/aegira/frontend:staging
+      (000000000000 below is an obviously-fake placeholder account id).
+    Default: "000000000000.dkr.ecr.us-east-1.amazonaws.com/aegira/frontend:staging"
+  AppEnv:
+    Type: String
+    Default: production
+    Description: >-
+      APP_ENV for the backend. Keep "production" for both staging and prod so the
+      hardening path (real secrets, Postgres, no dev OTP) is exercised.
+  AwsRegionValue:
+    Type: String
+    Default: us-east-1
+    Description: AWS_REGION env for the backend (Bedrock/SES region).
+  AutoDeploymentsEnabled:
+    Type: String
+    Default: "true"
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: Roll the service automatically when a new image is pushed.
+  BackendCpu:
+    Type: String
+    Default: "1 vCPU"
+  BackendMemory:
+    Type: String
+    Default: "2 GB"
+  FrontendCpu:
+    Type: String
+    Default: "1 vCPU"
+  FrontendMemory:
+    Type: String
+    Default: "2 GB"
+  FrontendOrigin:
+    Type: String
+    Default: "https://REPLACE_WITH_FRONTEND_URL_OR_CUSTOM_DOMAIN"
+    Description: >-
+      Origin the backend renders newsletter PDFs from (headless Chromium hits the
+      real frontend page). Set to the frontend App Runner URL or the custom
+      domain once known; a stable custom domain avoids a post-create update.
+
+Resources:
+  # --- IAM: access role lets App Runner pull the private ECR image -----------
+  AppRunnerEcrAccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: aegira-${EnvironmentName}-apprunner-ecr-access
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: build.apprunner.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess
+
+  # --- IAM: instance role lets the running backend read its secrets ----------
+  AppRunnerInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: aegira-${EnvironmentName}-apprunner-instance
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: tasks.apprunner.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: read-runtime-secrets
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              # Least privilege: read ONLY Aegira secrets for this environment.
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource:
+                  - Fn::ImportValue:
+                      Fn::Sub: aegira-${EnvironmentName}-secrets-arn-prefix
+
+  # --- VPC connector: backend's private path to RDS --------------------------
+  VpcConnector:
+    Type: AWS::AppRunner::VpcConnector
+    Properties:
+      VpcConnectorName:
+        Fn::Sub: aegira-${EnvironmentName}-connector
+      Subnets:
+        Fn::Split:
+          - ","
+          - Fn::ImportValue:
+              Fn::Sub: aegira-${EnvironmentName}-private-subnet-ids
+      SecurityGroups:
+        - Fn::ImportValue:
+            Fn::Sub: aegira-${EnvironmentName}-apprunner-connector-sg-id
+
+  # --- Backend service -------------------------------------------------------
+  BackendService:
+    Type: AWS::AppRunner::Service
+    Properties:
+      ServiceName:
+        Fn::Sub: aegira-${EnvironmentName}-backend
+      SourceConfiguration:
+        AutoDeploymentsEnabled:
+          Ref: AutoDeploymentsEnabled
+        AuthenticationConfiguration:
+          AccessRoleArn:
+            Fn::GetAtt:
+              - AppRunnerEcrAccessRole
+              - Arn
+        ImageRepository:
+          ImageRepositoryType: ECR
+          ImageIdentifier:
+            Ref: BackendImageUri
+          ImageConfiguration:
+            Port: "8000"
+            RuntimeEnvironmentVariables:
+              - Name: APP_ENV
+                Value:
+                  Ref: AppEnv
+              - Name: AWS_REGION
+                Value:
+                  Ref: AwsRegionValue
+              - Name: WEB_CONCURRENCY
+                Value: "2"
+              - Name: FRONTEND_ORIGIN
+                Value:
+                  Ref: FrontendOrigin
+            RuntimeEnvironmentSecrets:
+              - Name: DATABASE_URL
+                Value:
+                  Fn::ImportValue:
+                    Fn::Sub: aegira-${EnvironmentName}-secret-database-url-arn
+              - Name: AUTH_JWT_SECRET
+                Value:
+                  Fn::ImportValue:
+                    Fn::Sub: aegira-${EnvironmentName}-secret-auth-jwt-arn
+              - Name: APP_ENCRYPTION_KEY
+                Value:
+                  Fn::ImportValue:
+                    Fn::Sub: aegira-${EnvironmentName}-secret-app-encryption-key-arn
+              - Name: JHI_STAFF_EMAILS
+                Value:
+                  Fn::ImportValue:
+                    Fn::Sub: aegira-${EnvironmentName}-secret-jhi-staff-emails-arn
+              - Name: FRED_API_KEY
+                Value:
+                  Fn::ImportValue:
+                    Fn::Sub: aegira-${EnvironmentName}-secret-fred-api-key-arn
+              - Name: NASDAQ_DATA_LINK_API_KEY
+                Value:
+                  Fn::ImportValue:
+                    Fn::Sub: aegira-${EnvironmentName}-secret-nasdaq-api-key-arn
+              - Name: DATA_GOV_API_KEY
+                Value:
+                  Fn::ImportValue:
+                    Fn::Sub: aegira-${EnvironmentName}-secret-data-gov-api-key-arn
+      InstanceConfiguration:
+        Cpu:
+          Ref: BackendCpu
+        Memory:
+          Ref: BackendMemory
+        InstanceRoleArn:
+          Fn::GetAtt:
+            - AppRunnerInstanceRole
+            - Arn
+      HealthCheckConfiguration:
+        Protocol: HTTP
+        Path: /health
+        Interval: 10
+        Timeout: 5
+        HealthyThreshold: 1
+        UnhealthyThreshold: 5
+      NetworkConfiguration:
+        EgressConfiguration:
+          EgressType: VPC
+          VpcConnectorArn:
+            Fn::GetAtt:
+              - VpcConnector
+              - VpcConnectorArn
+      Tags:
+        - Key: Name
+          Value:
+            Fn::Sub: aegira-${EnvironmentName}-backend
+
+  # --- Frontend service ------------------------------------------------------
+  # The API proxy target is baked at build time; no runtime secrets needed.
+  # Default (public) egress so it can reach the backend's public App Runner URL.
+  FrontendService:
+    Type: AWS::AppRunner::Service
+    Properties:
+      ServiceName:
+        Fn::Sub: aegira-${EnvironmentName}-frontend
+      SourceConfiguration:
+        AutoDeploymentsEnabled:
+          Ref: AutoDeploymentsEnabled
+        AuthenticationConfiguration:
+          AccessRoleArn:
+            Fn::GetAtt:
+              - AppRunnerEcrAccessRole
+              - Arn
+        ImageRepository:
+          ImageRepositoryType: ECR
+          ImageIdentifier:
+            Ref: FrontendImageUri
+          ImageConfiguration:
+            Port: "3000"
+      InstanceConfiguration:
+        Cpu:
+          Ref: FrontendCpu
+        Memory:
+          Ref: FrontendMemory
+      HealthCheckConfiguration:
+        Protocol: HTTP
+        Path: /
+        Interval: 10
+        Timeout: 5
+        HealthyThreshold: 1
+        UnhealthyThreshold: 5
+      NetworkConfiguration:
+        EgressConfiguration:
+          EgressType: DEFAULT
+      Tags:
+        - Key: Name
+          Value:
+            Fn::Sub: aegira-${EnvironmentName}-frontend
+
+Outputs:
+  BackendServiceArn:
+    Description: >-
+      Backend App Runner service ARN - set as the GitHub var
+      APPRUNNER_BACKEND_SERVICE_ARN_STAGING / _PRODUCTION.
+    Value:
+      Fn::GetAtt:
+        - BackendService
+        - ServiceArn
+    Export:
+      Name:
+        Fn::Sub: aegira-${EnvironmentName}-backend-service-arn
+  BackendServiceUrl:
+    Description: >-
+      Backend public URL. Use as the frontend build arg API_PROXY_TARGET
+      (https://<this>). The pipeline reads it via describe-service.
+    Value:
+      Fn::GetAtt:
+        - BackendService
+        - ServiceUrl
+    Export:
+      Name:
+        Fn::Sub: aegira-${EnvironmentName}-backend-service-url
+  FrontendServiceArn:
+    Description: >-
+      Frontend App Runner service ARN - set as the GitHub var
+      APPRUNNER_FRONTEND_SERVICE_ARN_STAGING / _PRODUCTION.
+    Value:
+      Fn::GetAtt:
+        - FrontendService
+        - ServiceArn
+    Export:
+      Name:
+        Fn::Sub: aegira-${EnvironmentName}-frontend-service-arn
+  FrontendServiceUrl:
+    Description: Frontend public URL (point Route 53 / custom domain here).
+    Value:
+      Fn::GetAtt:
+        - FrontendService
+        - ServiceUrl
+    Export:
+      Name:
+        Fn::Sub: aegira-${EnvironmentName}-frontend-service-url

@@ -1,0 +1,142 @@
+# JHI-SIG: 69M2705M | Build & Deploy | JHI Research & Analytics Firm, Inc. (proprietary)
+# ---------------------------------------------------------------------------
+# Aegira — Amazon RDS for PostgreSQL (private, not publicly accessible).
+#
+# Security mitigations:
+#   * "Public DB / credential exposure" -> PubliclyAccessible=false, deployed in
+#     the private subnet group, SG locked to the App Runner connector (imported
+#     from 04-network.yaml). The master password is generated and stored by RDS
+#     in Secrets Manager (ManageMasterUserPassword) — never in this template.
+#   * "Data loss" -> StorageEncrypted, automated backups, deletion protection.
+#
+# Deploy PER ENVIRONMENT after 04-network.yaml (imports its exports).
+# ---------------------------------------------------------------------------
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  Aegira RDS for PostgreSQL in private subnets, reachable only via the App
+  Runner VPC connector. Encrypted, backed up, master password managed by RDS.
+
+Parameters:
+  EnvironmentName:
+    Type: String
+    Default: staging
+    AllowedValues:
+      - staging
+      - production
+  DbName:
+    Type: String
+    Default: aegira
+    Description: Initial database name.
+  DbMasterUsername:
+    Type: String
+    Default: aegira
+    Description: Master username (password is generated + stored by RDS).
+  DbInstanceClass:
+    Type: String
+    Default: db.t4g.micro
+    Description: >-
+      Instance size. db.t4g.micro/small for staging; scale to db.t4g.medium+ or
+      Multi-AZ for production.
+  DbAllocatedStorage:
+    Type: Number
+    Default: 20
+    Description: Allocated storage in GiB.
+  EngineVersion:
+    Type: String
+    Default: "16.4"
+    Description: PostgreSQL engine version (parity with local postgres:16).
+  MultiAz:
+    Type: String
+    Default: "false"
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: Enable Multi-AZ (recommended "true" for production).
+
+Resources:
+  DbSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription:
+        Fn::Sub: Aegira ${EnvironmentName} private subnet group for RDS.
+      SubnetIds:
+        Fn::Split:
+          - ","
+          - Fn::ImportValue:
+              Fn::Sub: aegira-${EnvironmentName}-private-subnet-ids
+      Tags:
+        - Key: Name
+          Value:
+            Fn::Sub: aegira-${EnvironmentName}-db-subnet-group
+
+  DbInstance:
+    Type: AWS::RDS::DBInstance
+    DeletionPolicy: Snapshot
+    UpdateReplacePolicy: Snapshot
+    Properties:
+      DBInstanceIdentifier:
+        Fn::Sub: aegira-${EnvironmentName}-postgres
+      Engine: postgres
+      EngineVersion:
+        Ref: EngineVersion
+      DBInstanceClass:
+        Ref: DbInstanceClass
+      AllocatedStorage:
+        Ref: DbAllocatedStorage
+      DBName:
+        Ref: DbName
+      MasterUsername:
+        Ref: DbMasterUsername
+      # RDS generates the master password and stores it in Secrets Manager.
+      # No password is ever placed in this template or in source control.
+      ManageMasterUserPassword: true
+      DBSubnetGroupName:
+        Ref: DbSubnetGroup
+      VPCSecurityGroups:
+        - Fn::ImportValue:
+            Fn::Sub: aegira-${EnvironmentName}-rds-sg-id
+      PubliclyAccessible: false
+      StorageEncrypted: true
+      StorageType: gp3
+      MultiAZ:
+        Ref: MultiAz
+      BackupRetentionPeriod: 7
+      DeletionProtection: true
+      EnablePerformanceInsights: true
+      AutoMinorVersionUpgrade: true
+      Tags:
+        - Key: Name
+          Value:
+            Fn::Sub: aegira-${EnvironmentName}-postgres
+
+Outputs:
+  DbEndpointAddress:
+    Description: RDS endpoint host - use in the DATABASE_URL secret.
+    Value:
+      Fn::GetAtt:
+        - DbInstance
+        - Endpoint.Address
+    Export:
+      Name:
+        Fn::Sub: aegira-${EnvironmentName}-rds-endpoint
+  DbEndpointPort:
+    Description: RDS port.
+    Value:
+      Fn::GetAtt:
+        - DbInstance
+        - Endpoint.Port
+    Export:
+      Name:
+        Fn::Sub: aegira-${EnvironmentName}-rds-port
+  DbMasterSecretArn:
+    Description: >-
+      ARN of the RDS-managed master credential secret. Compose the app's
+      DATABASE_URL (postgresql+psycopg://USER:PASSWORD@ENDPOINT:5432/DBNAME) from
+      this and store it in the aegira/<env>/DATABASE_URL secret.
+    Value:
+      Fn::GetAtt:
+        - DbInstance
+        - MasterUserSecret.SecretArn
+    Export:
+      Name:
+        Fn::Sub: aegira-${EnvironmentName}-rds-master-secret-arn
